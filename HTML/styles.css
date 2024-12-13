@@ -1,0 +1,77 @@
+:root {
+  --cor-fundo-claro: #f0f0f0;
+  --cor-texto-claro: #333;
+  --cor-fundo-escuro: #1a1a1a;
+  --cor-texto-escuro: #e0e0e0;
+  --cor-card-claro: #ffffff;
+  --cor-card-escuro: #2c2c2c;
+  --cor-borda-escura: #3a3a3a;
+}
+
+body {
+  background: linear-gradient(to bottom right, #f4f4f4, #ffffff);
+  background-color: var(--cor-fundo-claro);
+  color: var(--cor-texto-claro);
+  transition: all 0.3s ease;
+}
+
+/* Estilos para o tema escuro */
+.tema-escuro {
+  background: linear-gradient(to bottom right, #1a1a1a, #2a2a2a);
+  background-color: var(--cor-fundo-escuro) !important;
+  color: var(--cor-texto-escuro) !important;
+}
+
+/* Ajustes para elementos específicos no tema escuro */
+.tema-escuro section > div {
+  background-color: var(--cor-card-escuro) !important;
+  border-color: var(--cor-borda-escura) !important;
+}
+
+.tema-escuro h1, 
+.tema-escuro h2, 
+.tema-escuro h3 {
+  color: var(--cor-texto-escuro) !important;
+}
+
+.tema-escuro a, 
+.tema-escuro nav a {
+  color: #a0a0a0 !important;
+}
+
+.tema-escuro .text-gray-600 {
+  color: #b0b0b0 !important;
+}
+
+.tema-escuro .text-gray-900 {
+  color: var(--cor-texto-escuro) !important;
+}
+
+.tema-escuro .bg-gray-50 {
+  background-color: var(--cor-fundo-escuro) !important;
+}
+
+.tema-escuro footer {
+  border-color: var(--cor-borda-escura) !important;
+}
+
+.container-botao {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+}
+
+.icone-celestial {
+  width: 24px; 
+  height: 24px;
+  margin-right: 8px;
+}
+
+.animacao-transição {
+  transition: all 0.5s ease-in-out;
+}
+
+.icone-celestial img[src="lua.png"] {
+  transform: rotate(180deg);
+  filter: invert(1); 
+}

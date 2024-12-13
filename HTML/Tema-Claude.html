@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>myAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
+</head>
+<body class="font-sans antialiased text-gray-800 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <!-- Cabeçalho -->
+        <header class="border-b border-gray-200 pb-6 mb-8">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-semibold text-gray-900">AI Design</h1>
+                <nav class="space-x-4">
+                    <a href="#" class="text-gray-600 hover:text-gray-900 transition">Início</a>
+                    <a href="https://github.com/Victor-Gabriel-Barbosa" target="_blank" rel="noopener noreferrer" class="text-gray-600 hover:text-gray-900 transition">Sobre</a>
+                    <a href="#" class="text-gray-600 hover:text-gray-900 transition">Contato</a>
+                </nav>
+            </div>
+        </header>
+
+        <div class="container-botao">
+            <button id="botao-tema" class="bg-gray-800 text-white px-6 py-2 rounded-md hover:bg-gray-700 transition">
+                <span class="icone-celestial">
+                    <img id="imagem-celestial" src="sol.png" alt="Sol" width="24" height="24">
+                </span>
+                Tema Escuro
+            </button>
+        </div>
+
+        <!-- Conteúdo Principal -->
+        <main class="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">
+                    Design Minimalista e Elegante
+                </h2>
+                <p class="text-gray-600 mb-6 leading-relaxed">
+                    Inspirado na simplicidade e clareza do design do Claude, 
+                    este template combina funcionalidade e estética em um 
+                    layout limpo e contemporâneo.
+                </p>
+                <div class="flex space-x-4">
+                    <button id="botao-ChatGPT" class="bg-gray-800 text-white px-6 py-2 rounded-md 
+                        hover:bg-gray-700 transition">
+                        ChatGPT
+                    </button>
+                    <button id="botao-Gemini" class="border border-gray-300 text-gray-700 
+                        px-6 py-2 rounded-md hover:bg-gray-100 transition">
+                        Gemini
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex justify-center">
+                <a href="https://claude.ai/new" target="_blank" rel="noopener noreferrer">
+                    <img 
+                        src="https://macmagazine.com.br/wp-content/uploads/2024/08/1-claude-ai.png" 
+                        alt="Logo Claude" 
+                        class="max-w-full h-auto"
+                    >
+                </a>
+            </div>
+        </main>
+
+        <!-- Seção de Destaques -->
+        <section class="mt-16 grid md:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-100 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-800 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.036 9.526c-.26-.72-.404-1.507-.404-2.318C6.232 6.275 8.536 4 12 4s5.768 2.275 5.768 5.382c0 .811-.144 1.598-.404 2.318l-1.4 3.836a2 2 0 01-1.894 1.264H9.93a2 2 0 01-1.894-1.264l-1.4-3.836z" />
+                </svg>
+                <h3 class="text-xl font-semibold mb-2">Inovação</h3>
+                <p class="text-gray-600">Soluções criativas e inteligentes.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-100 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-800 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <h3 class="text-xl font-semibold mb-2">Precisão</h3>
+                <p class="text-gray-600">Detalhes que fazem a diferença.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-100 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-800 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                </svg>
+                <h3 class="text-xl font-semibold mb-2">Flexibilidade</h3>
+                <p class="text-gray-600">Adaptável a diferentes necessidades.</p>
+            </div>
+        </section>
+
+        <!-- Rodapé -->
+        <footer class="mt-16 pt-8 border-t border-gray-200 text-center">
+            <p class="text-gray-600">© 2024 Inspiração Claude. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+</body>
+</html>

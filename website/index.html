@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Página Inicial</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      background: #F8F9FA;
+      color: #333;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background: #fff;
+      border-bottom: 1px solid #EAEAEA;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    nav a {
+      margin-left: 1rem;
+      text-decoration: none;
+      color: #444;
+      font-weight: 400;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: #000;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    main p {
+      line-height: 1.6;
+      font-size: 1rem;
+    }
+
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      /* 16:9 ratio */
+      height: 0;
+      overflow: hidden;
+      margin: 2rem 0;
+      border-radius: 8px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      background: #fff;
+      border: 1px solid #EAEAEA;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    table th,
+    table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #EAEAEA;
+    }
+
+    table th {
+      background: #F0F0F0;
+      font-weight: 600;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 0;
+      font-size: 0.8rem;
+      color: #777;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Página Index</h1>
+    <nav>
+      <a href="inicio.html">Inicial</a>
+      <a href="page.html">Page</a>
+      <a href="./about/team.html">Team</a>
+    </nav>
+  </header>
+
+  <main>
+    <p>Esta é a página index da minha web. Abaixo você encontra um vídeo incorporado do YouTube e, em seguida, uma
+      tabela com dados adicionais.</p>
+
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/watch?v=tNn7bxwUI-s" title="Exemplo de vídeo" allowfullscreen></iframe>
+    </div>
+
+    <table>
+      <tr>
+        <th>Produto</th>
+        <th>Preço</th>
+        <th>Descrição</th>
+      </tr>
+      <tr>
+        <td>Camiseta</td>
+        <td>R$ 50,00</td>
+        <td>Camiseta de algodão, confortável e durável.</td>
+      </tr>
+      <tr>
+        <td>Mochila</td>
+        <td>R$ 120,00</td>
+        <td>Mochila resistente à água com múltiplos compartimentos.</td>
+      </tr>
+      <tr>
+        <td>Livro</td>
+        <td>R$ 35,00</td>
+        <td>Livro de desenvolvimento web com conteúdo atualizado.</td>
+      </tr>
+    </table>
+  </main>
+
+  <footer>
+    &copy; 2024 Minha Web
+  </footer>
+
+  <script>
+    console.log("Olá, mundo!");
+  </script>
+</body>
+
+</html>

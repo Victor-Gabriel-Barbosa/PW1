@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galeria de Animes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      background: #F8F9FA;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    p {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .images-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+    .images-container a {
+      text-decoration: none;
+      color: inherit;
+      text-align: center;
+    }
+
+    .images-container img {
+      max-width: 250px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
+      display: block;
+      margin: 0 auto 0.5rem;
+    }
+
+    .images-container img:hover {
+      transform: scale(1.05);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 2rem;
+      text-decoration: none;
+      color: #0077B6;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Galeria de Animes</h1>
+  <p>Clique em uma imagem para saber mais sobre o anime correspondente.</p>
+
+  <div class="images-container">
+    <a href="mushoku-tensei.html">
+      <img
+        src="https://media.giphy.com/media/8QEPXgFem3wS5g8El8/giphy.gif?cid=ecf05e47vu0vhqscjujeqmerpub7lp5mrvawy1q99y5pj9wm&ep=v1_gifs_search&rid=giphy.gif&ct=g"
+        alt="Mushoku Tensei">
+      <span>Mushoku Tensei</span>
+    </a>
+
+    <a href="solo-leveling.html">
+      <img
+        src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3M0MWU0a2cyb2Z2ZnhvY2gwdHFjM3A0MjZnN2J1a3JtM2kwMTZsNCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/jOZt5tdGYxzz0H6Nfi/giphy.gif"
+        alt="Solo Leveling">
+      <span>Solo Leveling</span>
+    </a>
+
+    <a href="jujutsu-kaisen.html">
+      <img src="https://giffiles.alphacoders.com/220/220764.gif" alt="Jujutsu Kaisen">
+      <span>Jujutsu Kaisen</span>
+    </a>
+  </div>
+
+  <p>Esse é um exemplo simples de uma galeria de animes.</p>
+
+  <a href="inicio.html">Voltar para o início</a>
+
+  <footer>
+    &copy; 2024 Minha Galeria de Animes
+  </footer>
+</body>
+
+</html>
