@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+  <!-- Definição do tipo de documento e idioma para português do Brasil -->
+  <meta charset="UTF-8">
+  <!-- Configuração de viewport para responsividade em dispositivos móveis -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Título da página -->
+  <title>Animu</title>
+  <!-- Inclusão da biblioteca Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Fonte personalizada Inter do Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Estilos adicionais personalizados -->
+  <link rel="stylesheet" href="animu-styles.css">
+  <!-- Ícone da página -->
+  <link rel="icon" href="./favicon/favicon.ico" type="image/x-icon">
+</head>
+
+<body class="text-gray-900">
+  <!-- Botão de alternância de tema claro/escuro -->
+  <div class="theme-toggle-container">
+    <button id="theme-toggle" class="toggle">
+      <span class="icon sun"></span>
+      <span class="icon moon"></span>
+    </button>
+  </div>
+
+  <!-- Painel de administração, escondido inicialmente -->
+  <div id="admin-panel" class="hidden absolute top-0 left-0 bg-white text-white p-2 rounded">
+    <!-- Links de administração -->
+    <ul class="flex space-x-4">
+      <li><a href="#" class="text-gray-700 hover:text-purple-600 transition-colors font-medium">Usuários</a></li>
+      <li><a href="#" class="text-gray-700 hover:text-purple-600 transition-colors font-medium">Categorias</a></li>
+      <li><a href="./admin/admin-cadastro.html"
+          class="text-gray-700 hover:text-purple-600 transition-colors font-medium">Animes</a></li>
+      <li><a href="#" class="text-gray-700 hover:text-purple-600 transition-colors font-medium">Sair</a></li>
+    </ul>
+  </div>
+
+  <!-- Painel de usuário -->
+  <div id="user-panel" class="hidden absolute flex items-center top-0 left-0 text-gray-700 p-2 rounded"
+    style="width: fit-content;">
+    <!-- Avatar do usuário -->
+    <img class="h-10 w-10 rounded-full object-cover" src="https://via.placeholder.com/100" alt="Avatar do Usuário" />
+    <!-- Nome do usuário -->
+    <a href="./login-usuario/login.html">
+      <span class="ml-2 font-medium">Nome do Usuário</span>
+    </a>
+  </div>
+
+  <!-- Conteúdo principal, container centralizado -->
+  <div class="container mx-auto px-4 py-12 max-w-6xl">
+    <!-- Cabeçalho com título e descrição -->
+    <header class="text-center mb-16">
+      <h1 class="text-6xl font-bold mb-4 tracking-tight anime-gradient">Animu</h1>
+      <p class="text-xl text-gray-700 max-w-2xl mx-auto font-light leading-relaxed">
+        Descubra universos infinitos, explore narrativas épicas e mergulhe nas histórias mais fascinantes do mundo dos
+        animes.
+      </p>
+    </header>
+
+    <!-- Navegação principal -->
+    <nav class="flex justify-center mb-16">
+      <ul class="flex space-x-8 bg-white rounded-full px-8 py-3 shadow-md">
+        <!-- Links do menu de navegação -->
+        <li><a href="#" class="text-gray-700 hover:text-purple-600 transition-colors font-medium">Início</a></li>
+        <li><a href="#" class="text-gray-700 hover:text-purple-600 transition-colors font-medium">Reviews</a></li>
+        <li><a href="#" class="text-gray-700 hover:text-purple-600 transition-colors font-medium">Categorias</a></li>
+        <li><a href="#" class="text-gray-700 hover:text-purple-600 transition-colors font-medium">Sobre</a></li>
+      </ul>
+    </nav>
+
+    <!-- Seções principais da página -->
+    <section class="grid md:grid-cols-3 gap-8 mb-16">
+      <!-- Card com últimos reviews -->
+      <div class="bg-white rounded-2xl p-8 shadow-lg card-hover overflow-hidden relative">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-blue-500"></div>
+        <h2 class="text-2xl font-bold mb-6 text-gray-800">Últimos Reviews</h2>
+        <ul class="space-y-4">
+          <!-- Lista de reviews -->
+          <li class="border-b border-gray-100 pb-3">
+            <a href="#" class="block text-gray-700 hover:text-purple-600 transition-colors">
+              <span class="font-semibold">Demon Slayer</span>
+              <p class="text-sm text-gray-500">Temporada 3: Uma jornada épica</p>
+            </a>
+          </li>
+          <li class="border-b border-gray-100 pb-3">
+            <a href="#" class="block text-gray-700 hover:text-purple-600 transition-colors">
+              <span class="font-semibold">Jujutsu Kaisen</span>
+              <p class="text-sm text-gray-500">Magia e combate supernatural</p>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="block text-gray-700 hover:text-purple-600 transition-colors">
+              <span class="font-semibold">Attack on Titan</span>
+              <p class="text-sm text-gray-500">O épico final da série</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Card com categorias populares -->
+      <div class="bg-white rounded-2xl p-8 shadow-lg card-hover overflow-hidden relative">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-blue-500"></div>
+        <h2 class="text-2xl font-bold mb-6 text-gray-800">Categorias Populares</h2>
+        <ul class="space-y-4">
+          <!-- Lista de categorias -->
+          <li class="border-b border-gray-100 pb-3">
+            <a href="#" class="block text-gray-700 hover:text-green-600 transition-colors">
+              <span class="font-semibold">Shounen</span>
+              <p class="text-sm text-gray-500">Ação e aventura</p>
+            </a>
+          </li>
+          <li class="border-b border-gray-100 pb-3">
+            <a href="#" class="block text-gray-700 hover:text-green-600 transition-colors">
+              <span class="font-semibold">Slice of Life</span>
+              <p class="text-sm text-gray-500">Histórias cotidianas</p>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="block text-gray-700 hover:text-green-600 transition-colors">
+              <span class="font-semibold">Mecha</span>
+              <p class="text-sm text-gray-500">Robôs e tecnologia</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Card com novidades -->
+      <div class="bg-white rounded-2xl p-8 shadow-lg card-hover overflow-hidden relative">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 to-red-500"></div>
+        <h2 class="text-2xl font-bold mb-6 text-gray-800">Novidades</h2>
+        <ul class="space-y-4">
+          <!-- Lista de novidades -->
+          <li class="border-b border-gray-100 pb-3">
+            <a href="#" class="block text-gray-700 hover:text-pink-600 transition-colors">
+              <span class="font-semibold">Próximos Lançamentos</span>
+              <p class="text-sm text-gray-500">Animes que vão estrear</p>
+            </a>
+          </li>
+          <li class="border-b border-gray-100 pb-3">
+            <a href="#" class="block text-gray-700 hover:text-pink-600 transition-colors">
+              <span class="font-semibold">Melhores da Temporada</span>
+              <p class="text-sm text-gray-500">Top animes do momento</p>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="block text-gray-700 hover:text-pink-600 transition-colors">
+              <span class="font-semibold">Recomendações</span>
+              <p class="text-sm text-gray-500">Seleção especial</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Seção de animes em destaque -->
+    <section class="mb-16">
+      <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Animes em Destaque</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <!-- Cartões com imagens e títulos de animes -->
+        <a href="#" class="anime-card">
+          <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <img src="https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=480,height=720/catalog/crunchyroll/765ee047befcfb677d169f5de4c82d5c.jpg" alt="Anime 1" class="w-full h-[450px] object-cover">
+            <div class="p-4">
+              <h3 class="text-lg font-semibold text-gray-800">Demon Slayer</h3>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="anime-card">
+          <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <img src="https://infinitasvidas.wordpress.com/wp-content/uploads/2021/03/poster-jujutsu-kaisen.png" alt="Anime 2" class="w-full h-[450px] object-cover">
+            <div class="p-4">
+              <h3 class="text-lg font-semibold text-gray-800">Jujutsu Kaisen</h3>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="anime-card">
+          <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <img src="https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=480,height=720/catalog/crunchyroll/323c82257b2f6567fabbb7bd55bfa753.jpg" alt="Anime 3" class="w-full h-[450px] object-cover">
+            <div class="p-4">
+              <h3 class="text-lg font-semibold text-gray-800">Attack on Titan</h3>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="anime-card">
+          <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <img src="https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=1200,height=675/catalog/crunchyroll/9ca680632ac63f44c7220f61ace9a81b.jpg" alt="Anime 4" class="w-full h-[450px] object-cover">
+            <div class="p-4">
+              <h3 class="text-lg font-semibold text-gray-800">My Hero Academia</h3>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Rodapé com direitos autorais -->
+    <footer class="text-center mt-16 text-gray-600">
+      <p class="font-light">&copy; 2024 Animu. Todos os direitos reservados.</p>
+    </footer>
+  </div>
+
+  <!-- Script personalizado para funcionalidade adicional -->
+  <script src="animu-script.js"></script>
+</body>
+
+</html>

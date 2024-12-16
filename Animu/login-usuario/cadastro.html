@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animu - Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../animu-styles.css">
+  <link rel="stylesheet" href="login-styles.css">
+  <link rel="icon" href="../favicon/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+  <!-- Botão de voltar -->
+  <button class="back-button" onclick="window.history.back()" title="Voltar">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 18l-6-6 6-6" />
+    </svg>
+  </button>
+
+  <!-- Botão de alternância de tema claro/escuro -->
+  <div class="theme-toggle-container">
+    <button id="theme-toggle" class="toggle">
+      <span class="icon sun"></span>
+      <span class="icon moon"></span>
+    </button>
+  </div>
+
+  <div class="signup-container card-hover">
+    <div class="signup-title">
+      <h1>Animu</h1>
+    </div>
+    <form>
+      <div class="form-group">
+        <label for="username">Nome de Usuário</label>
+        <input type="text" id="username" name="username" required>
+      </div>
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <div class="form-group">
+        <label for="confirm-password">Confirmar Senha</label>
+        <input type="password" id="confirm-password" name="confirm-password" required>
+      </div>
+      <button type="submit" class="signup-btn">Criar Conta</button>
+    </form>
+  </div>
+
+  <script src="../animu-script.js"></script>
+  <script src="login-script.js"></script>
+</body>
+
+</html>
