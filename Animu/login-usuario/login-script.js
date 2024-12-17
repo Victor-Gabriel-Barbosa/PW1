@@ -1,136 +1,214 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const form = document.querySelector('form');
-  const usernameInput = document.getElementById('username');
-  const emailInput = document.getElementById('email');
-  const passwordInput = document.getElementById('password');
-  const confirmPasswordInput = document.getElementById('confirm-password');
-
-  form.addEventListener('submit', function (event) {
-    event.preventDefault();
-
-    // Validações
-    if (!validateForm()) {
-      return;
+document.addEventListener('DOMContentLoaded', function() {
+  // Classe de Gerenciamento de Autenticação
+  class AuthManager {
+    constructor() {
+      this.users = this.loadUsers();
     }
 
-    // Criar objeto de usuário
-    const newUser = {
-      username: usernameInput.value,
-      email: emailInput.value,
-      password: passwordInput.value
-    };
-
-    // Verificar se usuário já existe
-    const existingUsers = JSON.parse(localStorage.getItem('animuUsers') || '[]');
-
-    const userExists = existingUsers.some(user =>
-      user.username === newUser.username || user.email === newUser.email
-    );
-
-    if (userExists) {
-      alert('Usuário ou e-mail já cadastrado!');
-      return;
+    // Carregar usuários do localStorage
+    loadUsers() {
+      return JSON.parse(localStorage.getItem('animuUsers') || '[]');
     }
 
-    // Adicionar novo usuário
-    existingUsers.push(newUser);
-    localStorage.setItem('animuUsers', JSON.stringify(existingUsers));
-
-    // Limpar formulário
-    form.reset();
-
-    // Redirecionar ou mostrar mensagem de sucesso
-    alert('Conta criada com sucesso! Você será redirecionado para a página de login.');
-    window.location.href = 'login.html'; // Assumindo que você tenha uma página de login
-  });
-
-  function validateForm() {
-    // Validar nome de usuário
-    if (usernameInput.value.length < 3) {
-      alert('Nome de usuário deve ter pelo menos 3 caracteres.');
-      return false;
+    // Salvar usuários no localStorage
+    saveUsers() {
+      localStorage.setItem('animuUsers', JSON.stringify(this.users));
     }
 
-    // Validar email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(emailInput.value)) {
-      alert('Por favor, insira um e-mail válido.');
-      return false;
-    }
-
-    // Validar senha
-    if (passwordInput.value.length < 8) {
-      alert('A senha deve ter pelo menos 8 caracteres.');
-      return false;
-    }
-
-    // Validar confirmação de senha
-    if (passwordInput.value !== confirmPasswordInput.value) {
-      alert('As senhas não coincidem.');
-      return false;
-    }
-
-    return true;
-  }
-});
-
-document.addEventListener('DOMContentLoaded', function () {
-  const loginForm = document.getElementById('login-form');
-  const usernameInput = document.getElementById('username');
-  const passwordInput = document.getElementById('password');
-  const rememberMeCheckbox = document.getElementById('remember-me');
-  const forgotPasswordLink = document.getElementById('forgot-password');
-
-  // Verificar se há credenciais salvas
-  const savedUsername = localStorage.getItem('rememberedUsername');
-  if (savedUsername) {
-    usernameInput.value = savedUsername;
-    rememberMeCheckbox.checked = true;
-  }
-
-  loginForm.addEventListener('submit', function (event) {
-    event.preventDefault();
-
-    const username = usernameInput.value;
-    const password = passwordInput.value;
-
-    // Verificar login
-    const result = loginUser(username, password);
-
-    if (result) {
-      // Gerenciar opção "Lembrar de mim"
-      if (rememberMeCheckbox.checked) {
-        localStorage.setItem('rememberedUsername', username);
-      } else {
-        localStorage.removeItem('rememberedUsername');
+    // Validar registro de usuário
+    validateRegistration(username, email, password, confirmPassword) {
+      // Validações básicas
+      if (username.length < 3) {
+        throw new Error('Nome de usuário deve ter pelo menos 3 caracteres.');
       }
 
-      // Redirecionar para página principal
-      window.location.href = '../animu-inicio.html';
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        throw new Error('Por favor, insira um e-mail válido.');
+      }
+
+      if (password.length < 8) {
+        throw new Error('A senha deve ter pelo menos 8 caracteres.');
+      }
+
+      if (password !== confirmPassword) {
+        throw new Error('As senhas não coincidem.');
+      }
+
+      // Verificar usuário ou e-mail existente
+      const userExists = this.users.some(user => 
+        user.username === username || user.email === email
+      );
+
+      if (userExists) {
+        throw new Error('Usuário ou e-mail já cadastrado!');
+      }
     }
-  });
 
-  function loginUser(username, password) {
-    const existingUsers = JSON.parse(localStorage.getItem('animuUsers') || '[]');
+    // Registro de usuário
+    registerUser(username, email, password, confirmPassword) {
+      try {
+        // Validar registro
+        this.validateRegistration(username, email, password, confirmPassword);
 
-    const user = existingUsers.find(user =>
-      user.username === username && user.password === password
-    );
+        // Criar novo usuário
+        const newUser = {
+          id: Date.now().toString(), // ID único
+          username,
+          email,
+          password, // Em produção, use hash de senha
+          createdAt: new Date().toISOString()
+        };
 
-    if (user) {
-      // Login bem-sucedido
-      alert('Login bem-sucedido!');
-      return true;
-    } else {
-      // Falha no login
-      alert('Usuário ou senha incorretos.');
+        // Adicionar usuário
+        this.users.push(newUser);
+        this.saveUsers();
+
+        return true;
+      } catch (error) {
+        alert(error.message);
+        return false;
+      }
+    }
+
+    // Login de usuário
+    loginUser(username, password) {
+      // Encontrar usuário
+      const user = this.users.find(u => 
+        u.username === username && u.password === password
+      );
+
+      if (user) {
+        // Criar sessão
+        const sessionData = {
+          userId: user.id,
+          username: user.username,
+          loginTime: new Date().toISOString()
+        };
+        
+        localStorage.setItem('userSession', JSON.stringify(sessionData));
+        return true;
+      } else {
+        alert('Usuário ou senha incorretos.');
+        return false;
+      }
+    }
+
+    // Atualizar painel de usuário
+    updateUserPanel() {
+      const userPanel = document.getElementById('user-panel');
+      const userNameSpan = userPanel ? userPanel.querySelector('span') : null;
+      const userAvatar = userPanel ? userPanel.querySelector('img') : null;
+
+      // Verificar se há uma sessão ativa
+      const sessionData = JSON.parse(localStorage.getItem('userSession'));
+
+      if (sessionData && userPanel && userNameSpan) {
+        // Encontrar usuário na lista de usuários
+        const user = this.users.find(u => u.id === sessionData.userId);
+
+        if (user) {
+          // Mostrar painel de usuário
+          userPanel.classList.remove('hidden');
+          
+          // Atualizar nome de usuário
+          userNameSpan.textContent = user.username;
+
+          // Gerar avatar único baseado no nome de usuário
+          if (userAvatar) {
+            userAvatar.src = this.generateAvatar(user.username);
+          }
+
+          return true;
+        }
+      }
+
       return false;
+    }
+
+    // Gerar avatar único baseado no nome de usuário
+    generateAvatar(username) {
+      // Gerar cor baseada no hash do nome de usuário
+      let hash = 0;
+      for (let i = 0; i < username.length; i++) {
+        hash = username.charCodeAt(i) + ((hash << 5) - hash);
+      }
+
+      // Converter hash para cor
+      const color = (hash & 0x00FFFFFF)
+        .toString(16)
+        .toUpperCase();
+
+      // URL de placeholder colorido
+      return `https://via.placeholder.com/100/${color}/FFFFFF?text=${username.charAt(0).toUpperCase()}`;
+    }
+
+    // Logout
+    logout() {
+      // Remover sessão
+      localStorage.removeItem('userSession');
+      
+      // Redirecionar para página de login
+      window.location.href = './login-usuario/login.html';
     }
   }
 
-  // Tratamento de recuperação de senha (placeholder)
-  forgotPasswordLink.addEventListener('click', function (event) {
-    event.preventDefault();
-    alert('Funcionalidade de recuperação de senha ainda não implementada. Entre em contato com o suporte.');
-  });
+  // Inicializar AuthManager
+  const authManager = new AuthManager();
+
+  // Atualizar painel de usuário ao carregar página
+  authManager.updateUserPanel();
+
+  // Registro de usuário
+  const registerForm = document.getElementById('register-form');
+  if (registerForm) {
+    registerForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      const username = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+
+      const success = authManager.registerUser(
+        username, 
+        email, 
+        password, 
+        confirmPassword
+      );
+
+      if (success) {
+        alert('Conta criada com sucesso!');
+        window.location.href = 'login.html';
+      }
+    });
+  }
+
+  // Login de usuário
+  const loginForm = document.getElementById('login-form');
+  if (loginForm) {
+    loginForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      const success = authManager.loginUser(username, password);
+
+      if (success) {
+        // Atualizar painel de usuário após login
+        authManager.updateUserPanel();
+        window.location.href = '../animu-inicio.html';
+      }
+    });
+  }
+
+  // Adicionar botão/link de logout (se existir)
+  const logoutLink = document.getElementById('logout-link');
+  if (logoutLink) {
+    logoutLink.addEventListener('click', function(event) {
+      event.preventDefault();
+      authManager.logout();
+    });
+  }
 });

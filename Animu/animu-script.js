@@ -1,21 +1,30 @@
-// Seleciona o botão de alternância de tema e o elemento body
-const toggleButton = document.getElementById('theme-toggle');
-const body = document.body;
+document.addEventListener('DOMContentLoaded', () => {
+  const themeToggle = document.querySelector('.toggle');
+  const body = document.body;
 
-// Verifica no localStorage se o modo escuro está ativo
-if (localStorage.getItem('dark-mode') === 'true') {
-  // Ativa o modo escuro adicionando a classe ao body e ao botão
-  body.classList.add('dark-mode');
-  toggleButton.classList.add('dark');
-}
+  // Verifica a preferência salva no localStorage
+  const savedTheme = localStorage.getItem('theme');
+  
+  // Aplica o tema salvo ou o tema padrão do sistema
+  if (savedTheme === 'dark') {
+    body.classList.add('dark-mode');
+    themeToggle.classList.add('dark');
+  }
 
-// Adiciona um evento de clique ao botão de alternância
-toggleButton.addEventListener('click', () => {
-  // Alterna o modo escuro no body e no botão
-  const isDarkMode = body.classList.toggle('dark-mode');
-  toggleButton.classList.toggle('dark');
-  // Salva o estado do modo escuro no localStorage
-  localStorage.setItem('dark-mode', isDarkMode);
+  themeToggle.addEventListener('click', () => {
+    // Alterna a classe de tema no body
+    body.classList.toggle('dark-mode');
+    
+    // Alterna a classe do botão
+    themeToggle.classList.toggle('dark');
+    
+    // Salva a preferência no localStorage
+    if (body.classList.contains('dark-mode')) {
+      localStorage.setItem('theme', 'dark');
+    } else {
+      localStorage.setItem('theme', 'light');
+    }
+  });
 });
 
 // Seleciona os elementos de painel de administração e de usuário

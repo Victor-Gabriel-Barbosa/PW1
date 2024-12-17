@@ -1,143 +1,123 @@
-/* Esconde um elemento da página */
-.hidden { 
-  display: none;
+:root {
+  color-scheme: light dark;
+  
+  /* Paleta de cores */
+  --background-light: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  --background-dark: linear-gradient(135deg, #2b2d42 0%, #121212 100%);
+  --text-light: #000000;
+  --text-dark: #ffffff;
+  --card-shadow-light: rgba(0, 0, 0, 0.1);
+  --card-shadow-dark: rgba(255, 255, 255, 0.1);
+
+  /* Cores padrão (tema claro) */
+  --background: var(--background-light);
+  --text-color: var(--text-light);
+  --card-shadow: var(--card-shadow-light);
 }
 
-/* Define os temas principais com variáveis CSS */
-:root {
-  --background-light: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); /* Fundo claro */
-  --background-dark: linear-gradient(135deg, #2b2d42 0%, #121212 100%); /* Fundo escuro */
-  --text-light: #000000; /* Cor do texto em tema claro */
-  --text-dark: #ffffff; /* Cor do texto em tema escuro */
-  --card-shadow-light: rgba(0, 0, 0, 0.1); /* Sombra leve para cards */
-  --card-shadow-dark: rgba(255, 255, 255, 0.1); /* Sombra leve em tema escuro */
+/* Classe para tema escuro */
+body.dark-mode {
+  --background: var(--background-dark);
+  --text-color: var(--text-dark);
+  --card-shadow: var(--card-shadow-dark);
 }
 
 /* Configurações gerais do corpo */
 body {
-  font-family: 'Inter', sans-serif; /* Fonte principal */
-  background: var(--background-light); /* Fundo padrão claro */
-  color: var(--text-light); /* Cor padrão do texto */
-  margin: 0; /* Remover margens padrão */
-  padding: 0; /* Remover padding padrão */
-  transition: background 0.3s ease, color 0.3s ease; /* Animações suaves para mudanças de tema */
-  overflow-x: hidden; /* Evitar rolagem horizontal */
-  overflow-y: auto; /* Permitir rolagem vertical */
-  display: flex; /* Configurar layout flexível */
-  justify-content: space-between; /* Espaçamento entre elementos */
-  align-items: center; /* Centralizar elementos verticalmente */
-  padding: 20px; /* Espaçamento interno */
+  font-family: 'Inter', sans-serif;
+  background: var(--background);
+  color: var(--text-color);
+  margin: 0;
+  padding: 20px;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Alterações para o tema escuro */
-body.dark-mode {
-  background: var(--background-dark); /* Fundo escuro */
-  color: var(--text-dark); /* Texto claro */
-}
-
-/* Estilo do botão de alternância de tema */
+/* Configurações do botão de alternância de tema */
 .theme-toggle-container {
-  position: fixed; /* Fixa na tela */
-  top: 20px; /* Distância do topo */
-  right: 20px; /* Distância da direita */
-  z-index: 1000; /* Garantir que fique acima de outros elementos */
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
 }
 
-/* Botão de alternância */
 .toggle {
   position: relative;
   width: 60px;
   height: 30px;
-  background-color: #ccc; /* Cor padrão */
+  background-color: #ccc;
   border: none;
-  border-radius: 30px; /* Bordas arredondadas */
+  border-radius: 30px;
   cursor: pointer;
-  overflow: hidden; /* Esconde elementos fora do botão */
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 5px; /* Espaçamento interno */
-  transition: background-color 0.3s ease; /* Animação na mudança de cor */
+  padding: 0 5px;
+  transition: background-color 0.3s ease;
 }
 
-/* Estilo do botão no tema escuro */
 .toggle.dark {
-  background-color: #444; /* Cor escura */
+  background-color: #444;
 }
 
-/* Ícones de sol e lua */
 .toggle .icon {
   width: 20px;
   height: 20px;
-  transition: transform 0.3s ease, opacity 0.3s ease; /* Animações suaves */
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* Ícone do sol para tema claro */
 .icon.sun {
-  background: url('sol.png') no-repeat center; /* Imagem do sol */
+  background: url('sol.png') no-repeat center;
   background-size: contain;
-  opacity: 1; /* Totalmente visível */
-  transform: translateY(0); /* Posição inicial */
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* Ícone da lua para tema escuro */
 .icon.moon {
-  background: url('lua.png') no-repeat center; /* Imagem da lua */
+  background: url('lua.png') no-repeat center;
   background-size: contain;
-  opacity: 0; /* Invisível inicialmente */
-  transform: translateX(-30px); /* Fora da posição visível */
+  opacity: 0;
+  transform: translateX(-30px);
 }
 
-/* Sol no tema escuro */
 .toggle.dark .icon.sun {
-  transform: translateX(30px); /* Move para fora */
-  opacity: 0; /* Torna invisível */
+  transform: translateX(30px);
+  opacity: 0;
 }
 
-/* Lua no tema escuro */
 .toggle.dark .icon.moon {
-  transform: translateY(0); /* Posição visível */
-  opacity: 1; /* Torna visível */
+  transform: translateY(0);
+  opacity: 1;
 }
 
-/* Estilos das cards com efeito de hover */
+/* Efeitos de hover para cards */
 .card-hover {
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animação ao passar o mouse */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card-hover:hover {
-  transform: translateY(-10px); /* Eleva o card */
-  box-shadow: 0 20px 25px -5px var(--card-shadow-light), 0 10px 10px -5px var(--card-shadow-light); /* Sombra em hover */
+  transform: translateY(-10px);
+  box-shadow: 0 20px 25px -5px var(--card-shadow), 0 10px 10px -5px var(--card-shadow);
 }
 
-/* Sombra no tema escuro */
-body.dark-mode .card-hover:hover {
-  box-shadow: 0 20px 25px -5px var(--card-shadow-dark), 0 10px 10px -5px var(--card-shadow-dark);
-}
-
-/* Gradiente para título com destaque */
+/* Gradiente para título */
 .anime-gradient {
   background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
-  background-clip: text; /* Faz o gradiente aplicar no texto */
-  -webkit-text-fill-color: transparent; /* Torna o fundo visível */
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* Estilo para os cards de animes */
+/* Estilo para cards de animes */
 .anime-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animações ao interagir */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .anime-card:hover {
-  transform: scale(1.05); /* Aumenta levemente o card */
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12); /* Adiciona sombra */
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px var(--card-shadow);
 }
 
-/* Sombra no tema escuro */
-body.dark-mode .anime-card:hover {
-  box-shadow: 0 10px 20px rgba(255, 255, 255, 0.12);
-}
-
-/* Estilo para o botão de voltar */
+/* Botão de voltar */
 .back-button {
   position: fixed;
   top: 20px;
