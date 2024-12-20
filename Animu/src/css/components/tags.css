@@ -1,0 +1,26 @@
+/* Container das tags */
+.tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+/* Estilo básico de cada tag */
+.tag {
+  background: blueviolet;
+  color: white;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.9em;
+  max-width: fit-content;
+}
+
+/* Estilo do ícone ou botão para remover uma tag */
+.tag-remove {
+  cursor: pointer;
+  color: #ff4444;
+}

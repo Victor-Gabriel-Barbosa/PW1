@@ -1,4 +1,5 @@
-document.addEventListener('DOMContentLoaded', function() {
+// Aguarda o carregamento completo do DOM antes de executar o código
+document.addEventListener('DOMContentLoaded', function () {
   // Classe de Gerenciamento de Autenticação
   class AuthManager {
     constructor() {
@@ -36,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       // Verificar usuário ou e-mail existente
-      const userExists = this.users.some(user => 
+      const userExists = this.users.some(user =>
         user.username === username || user.email === email
       );
 
@@ -74,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Login de usuário
     loginUser(username, password) {
       // Encontrar usuário
-      const user = this.users.find(u => 
+      const user = this.users.find(u =>
         u.username === username && u.password === password
       );
 
@@ -85,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
           username: user.username,
           loginTime: new Date().toISOString()
         };
-        
+
         localStorage.setItem('userSession', JSON.stringify(sessionData));
         return true;
       } else {
@@ -110,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (user) {
           // Mostrar painel de usuário
           userPanel.classList.remove('hidden');
-          
+
           // Atualizar nome de usuário
           userNameSpan.textContent = user.username;
 
@@ -147,9 +148,9 @@ document.addEventListener('DOMContentLoaded', function() {
     logout() {
       // Remover sessão
       localStorage.removeItem('userSession');
-      
-      // Redirecionar para página de login
-      window.location.href = './login-usuario/login.html';
+
+      // Recarrega a janela
+      window.location.reload();
     }
   }
 
@@ -162,18 +163,18 @@ document.addEventListener('DOMContentLoaded', function() {
   // Registro de usuário
   const registerForm = document.getElementById('register-form');
   if (registerForm) {
-    registerForm.addEventListener('submit', function(event) {
+    registerForm.addEventListener('submit', function (event) {
       event.preventDefault();
-      
+
       const username = document.getElementById('username').value;
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
       const confirmPassword = document.getElementById('confirm-password').value;
 
       const success = authManager.registerUser(
-        username, 
-        email, 
-        password, 
+        username,
+        email,
+        password,
         confirmPassword
       );
 
@@ -187,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Login de usuário
   const loginForm = document.getElementById('login-form');
   if (loginForm) {
-    loginForm.addEventListener('submit', function(event) {
+    loginForm.addEventListener('submit', function (event) {
       event.preventDefault();
 
       const username = document.getElementById('username').value;
@@ -206,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Adicionar botão/link de logout (se existir)
   const logoutLink = document.getElementById('logout-link');
   if (logoutLink) {
-    logoutLink.addEventListener('click', function(event) {
+    logoutLink.addEventListener('click', function (event) {
       event.preventDefault();
       authManager.logout();
     });

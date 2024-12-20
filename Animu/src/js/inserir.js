@@ -120,18 +120,27 @@ function escapeHTML(str) {
 
 /**
  * Salva os dados do formulário no Local Storage.
+ * Adiciona o novo anime ao array de animes existente ou cria um novo array.
  * @param {object} formData - Dados do formulário a serem salvos.
  */
 function saveToLocalStorage(formData) {
-  localStorage.setItem('animeData', JSON.stringify(formData)); // Salva os dados como JSON no Local Storage
-  alert('Dados salvos no Local Storage!');
+  // Recupera os animes existentes no Local Storage (se houver)
+  const existingAnimes = JSON.parse(localStorage.getItem('animeData')) || [];
+
+  // Adiciona o novo anime à lista
+  existingAnimes.push(formData);
+
+  // Salva a lista atualizada no Local Storage
+  localStorage.setItem('animeData', JSON.stringify(existingAnimes));
+
+  alert('Anime salvo no Local Storage!');
 }
 
 /**
  * Carrega os dados salvos no Local Storage e atualiza os campos do formulário e a interface.
  * Antes de carregar, solicita a confirmação do usuário.
  */
-function loadDataFromLocalStorage() {
+function loadDataFromLocalStorage() { 
   const savedData = localStorage.getItem('animeData'); // Obtém os dados salvos no Local Storage
   if (!savedData) return; // Sai se não houver dados salvos
 

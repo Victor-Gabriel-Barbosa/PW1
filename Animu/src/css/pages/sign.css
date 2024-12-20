@@ -1,15 +1,6 @@
-/* Remover margens e espaçamentos padrão de todos os elementos */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 /* Estilo básico do body */
-body {
+.sign-body {
   font-family: 'Inter', sans-serif;
-  background: var(--background-light);
-  color: var(--text-light);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,27 +8,14 @@ body {
   transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Ajustes do modo escuro no body */
-body.dark-mode {
-  background: var(--background-dark);
-  color: var(--text-dark);
-}
-
 /* Container principal do formulário de cadastro */
 .signup-container {
-  background-color: rgba(255, 255, 255, 0.9);
   border-radius: 15px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   padding: 40px;
   width: 100%;
   max-width: 450px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Ajustes do modo escuro no container de cadastro */
-body.dark-mode .signup-container {
-  background-color: rgba(30, 30, 30, 0.9);
-  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
 }
 
 /* Efeito de hover no container de cadastro */
@@ -80,13 +58,6 @@ body.dark-mode .signup-container {
   border-radius: 8px;
   background-color: rgba(255, 255, 255, 0.7);
   transition: border-color 0.3s ease, background-color 0.3s ease;
-}
-
-/* Inputs no modo escuro */
-body.dark-mode .form-group input {
-  background-color: rgba(50, 50, 50, 0.7);
-  border-color: rgba(255, 255, 255, 0.2);
-  color: var(--text-dark);
 }
 
 /* Estado de foco dos inputs */

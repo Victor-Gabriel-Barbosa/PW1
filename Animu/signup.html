@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <!-- Metadados essenciais -->
+  <meta charset="UTF-8"> <!-- Define o conjunto de caracteres para suporte ao idioma -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Torna o site responsivo para dispositivos móveis -->
+  <title>Animu - Login</title> <!-- Título exibido na aba do navegador -->
+  <!-- Importação de fonte personalizada -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Link para o arquivo de estilos principal -->
+  <link rel="stylesheet" href="./src/css/main.css">
+  <!-- Favicon do site -->
+  <link rel="icon" href="./src/favicon/favicon.ico" type="image/x-icon">
+</head>
+
+<body class="sign-body">
+  <!-- Botão para voltar à página anterior -->
+  <button class="back-button" onclick="window.history.back()" title="Voltar">
+    <!-- Ícone SVG representando a seta de voltar -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 18l-6-6 6-6" /> <!-- Desenha a seta -->
+    </svg>
+  </button>
+
+  <!-- Botão de alternância entre temas claro e escuro -->
+  <div class="theme-toggle-container">
+    <button id="theme-toggle" class="toggle">
+      <!-- Ícones representando os temas claro (sol) e escuro (lua) -->
+      <span class="icon sun"></span>
+      <span class="icon moon"></span>
+    </button>
+  </div>
+
+  <!-- Container principal do formulário de cadastro -->
+  <div class="signup-container card-hover">
+    <!-- Título da página -->
+    <div class="signup-title">
+      <h1>Animu</h1> <!-- Nome do site -->
+    </div>
+
+    <!-- Formulário de cadastro -->
+    <form id="register-form">
+      <!-- Campo para nome de usuário -->
+      <div class="form-group">
+        <label for="username">Nome de Usuário</label>
+        <input type="text" id="username" name="username" required> <!-- Input obrigatório -->
+      </div>
+
+      <!-- Campo para e-mail -->
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" required> <!-- Validação automática para e-mail -->
+      </div>
+
+      <!-- Campo para senha -->
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input type="password" id="password" name="password" required> <!-- Senha protegida -->
+      </div>
+
+      <!-- Campo para confirmar a senha -->
+      <div class="form-group">
+        <label for="confirm-password">Confirmar Senha</label>
+        <input type="password" id="confirm-password" name="confirm-password" required> <!-- Confirmação de senha -->
+      </div>
+
+      <!-- Botão para submeter o formulário -->
+      <button type="submit" class="signup-btn">Criar Conta</button>
+    </form>
+  </div>
+
+  <!-- Inclusão de scripts JavaScript -->
+  <script src="./src/js/animu.js"></script> <!-- Script principal do site -->
+  <script src="./src/js/sign.js"></script> <!-- Script específico para funcionalidade de login -->
+</body>
+
+</html>

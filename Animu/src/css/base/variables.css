@@ -1,0 +1,33 @@
+/* Configurações globais de cores, espaçamentos e fontes utilizando variáveis CSS */
+:root { 
+  /* Paleta de cores */
+  --background-light: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  --background-dark: linear-gradient(135deg, #2b2d42 0%, #121212 100%);
+  --text-light: #000000;
+  --text-dark: #ffffff;
+  --card-shadow-light: rgba(0, 0, 0, 0.1);
+  --card-shadow-dark: rgba(255, 255, 255, 0.1);
+  --primary-gradient: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+
+  /* Cores padrão (tema claro) */
+  --background: var(--background-light);
+  --text-color: var(--text-light);
+  --card-shadow: var(--card-shadow-light);
+
+  /* Espaçamentos e tamanhos */
+  --spacing-xs: 5px;
+  --spacing-sm: 10px;
+  --spacing-md: 15px;
+  --spacing-lg: 20px;
+  --spacing-xl: 30px;
+
+  /* Fontes */
+  --font-family: 'Inter', sans-serif;
+}
+
+/* Classe para tema escuro */
+body.dark-mode {
+  --background: var(--background-dark);
+  --text-color: var(--text-dark);
+  --card-shadow: var(--card-shadow-dark);
+}

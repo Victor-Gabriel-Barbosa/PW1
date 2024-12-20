@@ -1,59 +1,85 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8">
+  <!-- Metadados essenciais -->
+  <meta charset="UTF-8"> <!-- Define o conjunto de caracteres para suporte a caracteres especiais -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Animu - Login</title>
+  <!-- Responsividade para dispositivos móveis -->
+  <title>Animu - Login</title> <!-- Título exibido na aba do navegador -->
+  <!-- Fonte personalizada do Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../animu-styles.css">
-  <link rel="stylesheet" href="login-styles.css">
-  <link rel="icon" href="../favicon/favicon.ico" type="image/x-icon">
+  <!-- Link para o arquivo de estilo principal -->
+  <link rel="stylesheet" href="./src/css/main.css">
+  <!-- Favicon do site -->
+  <link rel="icon" href="./src/favicon/favicon.ico" type="image/x-icon">
 </head>
-<body>
+
+<body class="sign-body">
   <!-- Botão de voltar -->
   <button class="back-button" onclick="window.history.back()" title="Voltar">
+    <!-- Ícone SVG de seta para indicar voltar -->
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
       stroke-linecap="round" stroke-linejoin="round">
-      <path d="M15 18l-6-6 6-6" />
+      <path d="M15 18l-6-6 6-6" /> <!-- Define o formato da seta -->
     </svg>
   </button>
-  
+
   <!-- Botão de alternância de tema claro/escuro -->
   <div class="theme-toggle-container">
     <button id="theme-toggle" class="toggle">
+      <!-- Ícones para os temas claro (sol) e escuro (lua) -->
       <span class="icon sun"></span>
       <span class="icon moon"></span>
     </button>
   </div>
 
+  <!-- Container para o formulário de login -->
   <div class="signup-container card-hover">
+    <!-- Título da página de login -->
     <div class="signup-title">
       <h1>Animu</h1>
     </div>
+
+    <!-- Formulário de login -->
     <form id="login-form">
+      <!-- Campo de nome de usuário -->
       <div class="form-group">
         <label for="username">Nome de Usuário</label>
         <input type="text" id="username" name="username" required>
       </div>
+
+      <!-- Campo de senha -->
       <div class="form-group">
         <label for="password">Senha</label>
         <input type="password" id="password" name="password" required>
       </div>
-      <div class="form-group" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;">
+
+      <!-- Opções adicionais: lembrar senha e link de recuperação -->
+      <div class="form-group"
+        style="display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;">
+        <!-- Checkbox para lembrar login -->
         <label style="display: flex; align-items: center; gap: 8px;">
           <input type="checkbox" id="remember-me" style="width: auto;">
           Lembrar de mim
         </label>
+        <!-- Link para recuperação de senha -->
         <a href="#" id="forgot-password" style="color: #2575fc; text-decoration: none;">Esqueceu a senha?</a>
       </div>
+
+      <!-- Botão para submeter o formulário -->
       <button type="submit" class="signup-btn">Entrar</button>
     </form>
+
+    <!-- Link para redirecionar ao cadastro -->
     <div style="text-align: center; margin-top: 20px; font-size: 0.9rem;">
-      Não tem uma conta? <a href="cadastro.html" style="color: #2575fc; text-decoration: none;">Cadastre-se</a>
+      Não tem uma conta? <a href="signup.html" style="color: #2575fc; text-decoration: none;">Cadastre-se</a>
     </div>
   </div>
 
-  <script src="../animu-script.js"></script>
-  <script src="login-script.js"></script>
+  <!-- Scripts JavaScript para funcionalidades adicionais -->
+  <script src="./src/js/animu.js"></script>
+  <script src="./src/js/sign.js"></script>
 </body>
+
 </html>

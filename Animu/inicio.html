@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 
 <head>
@@ -14,9 +13,9 @@
   <!-- Fonte personalizada Inter do Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <!-- Estilos adicionais personalizados -->
-  <link rel="stylesheet" href="animu-styles.css">
+  <link rel="stylesheet" href="./src/css/main.css">
   <!-- Ícone da página -->
-  <link rel="icon" href="./favicon/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="./src/favicon/favicon.ico" type="image/x-icon">
 </head>
 
 <body>
@@ -29,13 +28,13 @@
   </div>
 
   <!-- Painel de administração, escondido inicialmente -->
-  <div id="admin-panel" class="hidden absolute top-0 left-0 text-white p-2 rounded">
+  <div id="admin-panel" class="hidden absolute top-0 left-0 p-2 rounded">
     <!-- Links de administração -->
     <ul class="flex space-x-4">
       <li><a href="#" class="hover:text-purple-600 transition-colors font-medium">Usuários</a></li>
       <li><a href="#" class="hover:text-purple-600 transition-colors font-medium">Categorias</a></li>
-      <li><a href="./admin/admin-cadastro.html" class="hover:text-purple-600 transition-colors font-medium">Animes</a>
-      </li>
+      <li><a href="inserir.html" class="hover:text-purple-600 transition-colors font-medium">Inserir</a></li>
+      <li><a href="animes.html" class="hover:text-purple-600 transition-colors font-medium">Animes</a></li>
       <li><a href="#" class="hover:text-purple-600 transition-colors font-medium">Sair</a></li>
     </ul>
   </div>
@@ -46,7 +45,7 @@
     <img class="h-10 w-10 rounded-full object-cover" src="https://via.placeholder.com/100" alt="Avatar do Usuário" />
     <!-- Nome do usuário -->
     <div class="flex flex-col ml-2">
-      <span class="font-medium"><a href="./login-usuario/login.html">Login</a></span>
+      <span class="font-medium"><a href="signin.html">Login</a></span>
       <a href="#" id="logout-link" class="text-sm text-gray-500 hover:text-gray-700">Sair</a>
     </div>
   </div>
@@ -56,7 +55,7 @@
   <div class="container mx-auto px-4 py-12 max-w-6xl">
     <!-- Cabeçalho com título e descrição -->
     <header class="text-center mb-16">
-      <h1 class="text-6xl font-bold mb-4 tracking-tight anime-gradient">Animu</h1>
+      <h1 style="color: blueviolet" class="text-6xl font-bold mb-4 tracking-tight anime-gradient">Animu</h1>
       <p class="text-xl max-w-2xl mx-auto font-light leading-relaxed">
         Descubra universos infinitos, explore narrativas épicas e mergulhe nas histórias mais fascinantes do mundo dos
         animes.
@@ -73,6 +72,22 @@
         <li><a href="#" class="hover:text-purple-600 transition-colors font-medium">Sobre</a></li>
       </ul>
     </nav>
+
+    <!-- Barra de busca -->
+    <div class="flex justify-center items-center mb-12">
+      <div class="w-full max-w-3xl">
+        <div class="flex items-center bg-gray-100 rounded-full shadow-lg p-2">
+          <input type="text" id="search-title" placeholder="Digite o nome do anime..."
+            class="flex-grow bg-transparent px-4 py-2 text-gray-700 focus:outline-none rounded-l-full" />
+          <button onclick="searchAnime()"
+            class="bg-purple-500 text-white px-6 py-2 rounded-full hover:bg-purple-600 transition">
+            Buscar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="anime-result"></div>
 
     <!-- Seções principais da página -->
     <section class="grid md:grid-cols-3 gap-8 mb-16">
@@ -212,8 +227,9 @@
   </div>
 
   <!-- Script personalizado para funcionalidade adicional -->
-  <script src="animu-script.js"></script>
-  <script src="./login-usuario/login-script.js"></script>
+  <script src="./src/js/animu.js"></script>
+  <script src="./src/js/signin.js"></script>
+  <script src="./src/js/animes.js"></script>
 </body>
 
 </html>

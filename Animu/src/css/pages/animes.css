@@ -1,0 +1,62 @@
+/* Estilo principal para os cartões de anime */
+.anime-card {
+  display: block;
+  overflow: hidden;
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Estilo ao passar o mouse sobre os cartões */
+.anime-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 10px 20px var(--card-shadow);
+}
+
+/* Estilo para imagens dentro do cartão */
+.anime-card img {
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* Estilo para cartões destacados em um layout de grid na página inicial */
+.anime-card.featured {
+  width: 100%;
+  height: 100%;
+}
+
+/* Ajuste da imagem dentro de um cartão destacado */
+.anime-card.featured img {
+  width: 100%;
+  height: 450px;
+}
+
+/* Estilo para cartões em um layout de lista ou outros contextos */
+.anime-card.list {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-sm);
+}
+
+/* Ajuste da imagem dentro de um cartão no layout de lista */
+.anime-card.list img {
+  width: 150px;
+  height: 225px;
+}
+
+/* Estilo para os detalhes de um cartão */
+.anime-details {
+  display: flex;
+  gap: var(--spacing-lg);
+  align-items: flex-start;
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-sm);
+}
+
+/* Estilo para mensagens exibidas quando nenhum anime é encontrado */
+.no-anime-found {
+  text-align: center;
+  color: #666;
+  margin-top: var(--spacing-xl);
+}

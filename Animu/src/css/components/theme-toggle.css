@@ -1,0 +1,67 @@
+/* Container que posiciona o botão de alternância de tema fixo no canto superior direito da página */
+.theme-toggle-container {
+  position: fixed;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  z-index: 1000;
+}
+
+/* Estilo principal do botão de alternância */
+.toggle {
+  position: relative;
+  width: 60px;
+  height: 30px;
+  background-color: #ccc;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5px;
+  transition: background-color 0.3s ease;
+}
+
+/* Estilo do botão quando o tema escuro está ativo */
+.toggle.dark {
+  background-color: #444;
+}
+
+/* Estilo dos ícones internos do botão */
+.toggle .icon {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Estilo do ícone do Sol (tema claro) */
+.toggle .icon.sun {
+  background: url('../sol.png') no-repeat center;
+  background-size: contain;
+  left: 5px;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Estilo do ícone da Lua (tema escuro) */
+.toggle .icon.moon {
+  background: url('../lua.png') no-repeat center;
+  background-size: contain;
+  right: 5px;
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/* Estilo do ícone do Sol no tema escuro */
+.toggle.dark .icon.sun {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+/* Estilo do ícone da Lua no tema escuro */
+.toggle.dark .icon.moon {
+  opacity: 1;
+  transform: translateX(0);
+}

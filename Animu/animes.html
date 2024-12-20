@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <!-- Definição do tipo de documento e idioma para português do Brasil -->
+  <meta charset="UTF-8"> <!-- Define o conjunto de caracteres UTF-8 para suporte ao idioma -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Responsividade para dispositivos móveis -->
+  <title>Animes</title> <!-- Título da página exibido na aba do navegador -->
+  <!-- Inclusão da biblioteca Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Fonte personalizada Inter do Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Link para o arquivo de estilos personalizados -->
+  <link rel="stylesheet" href="./src/css/main.css">
+  <!-- Ícone do site (favicon) -->
+  <link rel="icon" href="./src/favicon/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+  <!-- Botão para voltar à página anterior -->
+  <button class="back-button" onclick="window.history.back()" title="Voltar">
+    <!-- Ícone SVG de seta para indicar a função de voltar -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 18l-6-6 6-6" /> <!-- Define a forma da seta -->
+    </svg>
+  </button>
+
+  <!-- Botão para alternância de tema claro/escuro -->
+  <div class="theme-toggle-container">
+    <button id="theme-toggle" class="toggle">
+      <!-- Ícones representando os estados de tema claro (sol) e escuro (lua) -->
+      <span class="icon sun"></span>
+      <span class="icon moon"></span>
+    </button>
+  </div>
+
+  <!-- Cabeçalho principal da página -->
+  <header class="text-center mb-16">
+    <!-- Título estilizado com Tailwind CSS -->
+    <h1 style="color:blueviolet" class="text-6xl font-bold mb-4 tracking-tight anime-gradient">Animes</h1>
+  </header>
+
+  <!-- Contêiner onde será exibida a lista de animes -->
+  <div id="anime-list"></div>
+
+  <!-- Inclusão de scripts para funcionalidades do site -->
+  <script src="./src/js/animu.js"></script> <!-- Script principal com funcionalidades globais -->
+  <script src="./src/js/animes.js"></script> <!-- Script específico para manipular a lista de animes -->
+</body>
+
+</html>

@@ -1,0 +1,48 @@
+/* Container para todo o formulário de administração */
+.admin-form {
+  border-radius: 12px;
+  padding: 30px;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  box-shadow: 0 10px 25px var(--card-shadow-light);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Título do formulário com efeito de gradiente no texto */
+.form-title {
+  background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+  background-clip: text;
+  -webkit-text-fill-color: transparent; /* Efeito de gradiente no texto */
+  margin-bottom: 20px;
+}
+
+/* Estilização genérica dos grupos de campos do formulário */
+.admin-form .form-group {
+  margin-bottom: 15px;
+}
+
+/* Labels para os campos de formulário */
+.admin-form .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+/* Botões dentro do formulário (adicionar e enviar) */
+.btn-add,
+.admin-form #submit-btn {
+  background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+/* Efeito de hover para os botões */
+.btn-add:hover,
+.admin-form #submit-btn:hover {
+  transform: scale(1.05);
+}
