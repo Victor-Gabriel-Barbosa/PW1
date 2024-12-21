@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (success) {
         alert('Conta criada com sucesso!');
-        window.location.href = 'login.html';
+        window.location.href = 'signin.html';
       }
     });
   }
@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (success) {
         // Atualizar painel de usuário após login
         authManager.updateUserPanel();
-        window.location.href = '../animu-inicio.html';
+        window.location.href = './inicio.html';
       }
     });
   }

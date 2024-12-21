@@ -13,222 +13,251 @@
   <!-- Fonte personalizada Inter do Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <!-- Estilos adicionais personalizados -->
-  <link rel="stylesheet" href="./src/css/main.css">
+  <link rel="stylesheet" href="./src/css/styles.css">
   <!-- Ícone da página -->
   <link rel="icon" href="./src/favicon/favicon.ico" type="image/x-icon">
 </head>
 
 <body>
-  <!-- Botão de alternância de tema claro/escuro -->
-  <div class="theme-toggle-container">
-    <button id="theme-toggle" class="toggle">
-      <span class="icon sun"></span>
-      <span class="icon moon"></span>
-    </button>
-  </div>
+  <!-- Barra de navegação fixa -->
+  <nav class="fixed top-0 left-0 right-0 backdrop-blur-md shadow-sm z-50">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <div class="flex-shrink-0">
+          <a href="/" class="text-2xl font-bold text-purple-600">Animu</a>
+        </div>
 
-  <!-- Painel de administração, escondido inicialmente -->
-  <div id="admin-panel" class="hidden absolute top-0 left-0 p-2 rounded">
-    <!-- Links de administração -->
-    <ul class="flex space-x-4">
-      <li><a href="#" class="hover:text-purple-600 transition-colors font-medium">Usuários</a></li>
-      <li><a href="#" class="hover:text-purple-600 transition-colors font-medium">Categorias</a></li>
-      <li><a href="inserir.html" class="hover:text-purple-600 transition-colors font-medium">Inserir</a></li>
-      <li><a href="animes.html" class="hover:text-purple-600 transition-colors font-medium">Animes</a></li>
-      <li><a href="#" class="hover:text-purple-600 transition-colors font-medium">Sair</a></li>
-    </ul>
-  </div>
+        <!-- Links de navegação principais -->
+        <div class="hidden md:block">
+          <div class="ml-10 flex items-center space-x-4">
+            <a href="#" class="hover:text-purple-600 transition-colors font-medium">Início</a>
+            <a href="#" class="hover:text-purple-600 transition-colors font-medium">Reviews</a>
+            <a href="#" class="hover:text-purple-600 transition-colors font-medium">Categorias</a>
+            <a href="sobre.html" class="hover:text-purple-600 transition-colors font-medium">Sobre</a>
+          </div>
+        </div>
 
-  <!-- Painel de usuário -->
-  <div id="user-panel" class="hidden absolute flex items-center top-0 left-0 p-2 rounded" style="width: fit-content;">
-    <!-- Avatar do usuário -->
-    <img class="h-10 w-10 rounded-full object-cover" src="https://via.placeholder.com/100" alt="Avatar do Usuário" />
-    <!-- Nome do usuário -->
-    <div class="flex flex-col ml-2">
-      <span class="font-medium"><a href="signin.html">Login</a></span>
-      <a href="#" id="logout-link" class="text-sm text-gray-500 hover:text-gray-700">Sair</a>
-    </div>
-  </div>
+        <!-- Barra de pesquisa -->
+        <div class="flex-1 max-w-2xl mx-4" id="search-area">
+          <div class="search-container">
+            <div class="search-input-wrapper">
+              <input type="text" id="search-title" class="search-input" placeholder="Pesquisar anime..."
+                onkeydown="if(event.key === 'Enter') searchAnime()">
+              <div class="search-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                  <path
+                    d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                </svg>
+              </div>
+            </div>
+            <button onclick="searchAnime()" class="search-button">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path
+                  d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+              </svg>
+            </button>
+          </div>
+          <div id="anime-result" class="anime-search"></div>
+        </div>
 
+        <!-- Área do usuário/admin -->
+        <div class="flex items-center space-x-4">
+          <div id="user-panel" class="flex items-center top-0 left-0 p-2 rounded" style="width: fit-content;">
+            <!-- Avatar do usuário -->
+            <img class="h-10 w-10 rounded-full object-cover" src="https://via.placeholder.com/100"
+              alt="Avatar do Usuário" />
+            <!-- Nome do usuário -->
+            <div class="flex flex-col ml-2">
+              <span class="font-medium"><a href="signin.html">Login</a></span>
+              <a href="#" id="logout-link" class="text-sm text-gray-500 hover:text-gray-700">Sair</a>
+            </div>
+          </div>
 
-  <!-- Conteúdo principal, container centralizado -->
-  <div class="container mx-auto px-4 py-12 max-w-6xl">
-    <!-- Cabeçalho com título e descrição -->
-    <header class="text-center mb-16">
-      <h1 style="color: blueviolet" class="text-6xl font-bold mb-4 tracking-tight anime-gradient">Animu</h1>
-      <p class="text-xl max-w-2xl mx-auto font-light leading-relaxed">
-        Descubra universos infinitos, explore narrativas épicas e mergulhe nas histórias mais fascinantes do mundo dos
-        animes.
-      </p>
-    </header>
-
-    <!-- Navegação principal -->
-    <nav class="flex justify-center mb-16">
-      <ul class="flex space-x-8 rounded-full px-8 py-3 shadow-md">
-        <!-- Links do menu de navegação -->
-        <li><a href="#" class="hover:text-purple-600 transition-colors font-medium">Início</a></li>
-        <li><a href="#" class="hover:text-purple-600 transition-colors font-medium">Reviews</a></li>
-        <li><a href="#" class="hover:text-purple-600 transition-colors font-medium">Categorias</a></li>
-        <li><a href="#" class="hover:text-purple-600 transition-colors font-medium">Sobre</a></li>
-      </ul>
-    </nav>
-
-    <!-- Barra de busca -->
-    <div class="flex justify-center items-center mb-12">
-      <div class="w-full max-w-3xl">
-        <div class="flex items-center bg-gray-100 rounded-full shadow-lg p-2">
-          <input type="text" id="search-title" placeholder="Digite o nome do anime..."
-            class="flex-grow bg-transparent px-4 py-2 text-gray-700 focus:outline-none rounded-l-full" />
-          <button onclick="searchAnime()"
-            class="bg-purple-500 text-white px-6 py-2 rounded-full hover:bg-purple-600 transition">
-            Buscar
+          <!-- Botão de alternância de tema claro/escuro -->
+          <button id="theme-toggle">
+            <span class="icon sun"></span>
+            <span class="icon moon"></span>
           </button>
         </div>
       </div>
     </div>
+  </nav>
 
-    <div id="anime-result"></div>
+  <!-- Adicionar padding-top para compensar a navbar fixa -->
+  <div class="pt-16">
+    <!-- Botão de alternância de tema claro/escuro -->
+    <div class="theme-toggle-container">
+      <button id="theme-toggle" class="toggle">
+        <span class="icon sun"></span>
+        <span class="icon moon"></span>
+      </button>
+    </div>
 
-    <!-- Seções principais da página -->
-    <section class="grid md:grid-cols-3 gap-8 mb-16">
-      <!-- Card com últimos reviews -->
-      <div class="rounded-2xl p-8 shadow-lg card-hover overflow-hidden relative">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-blue-500"></div>
-        <h2 class="text-2xl font-bold mb-6">Últimos Reviews</h2>
-        <ul class="space-y-4">
-          <!-- Lista de reviews -->
-          <li class="border-b border-gray-100 pb-3">
-            <a href="#" class="block hover:text-purple-600 transition-colors">
-              <span class="font-semibold">Demon Slayer</span>
-              <p class="text-sm">Temporada 3: Uma jornada épica</p>
-            </a>
-          </li>
-          <li class="border-b border-gray-100 pb-3">
-            <a href="#" class="block hover:text-purple-600 transition-colors">
-              <span class="font-semibold">Jujutsu Kaisen</span>
-              <p class="text-sm">Magia e combate supernatural</p>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="block hover:text-purple-600 transition-colors">
-              <span class="font-semibold">Attack on Titan</span>
-              <p class="text-sm">O épico final da série</p>
-            </a>
-          </li>
-        </ul>
-      </div>
+    <!-- Painel de administração, escondido inicialmente -->
+    <div id="admin-panel" class="hidden absolute p-2 rounded">
+      <!-- Links de administração -->
+      <ul class="flex space-x-4">
+        <li><a href="#" class="hover:text-purple-600 transition-colors font-medium">Usuários</a></li>
+        <li><a href="#" class="hover:text-purple-600 transition-colors font-medium">Categorias</a></li>
+        <li><a href="inserir.html" class="hover:text-purple-600 transition-colors font-medium">Inserir</a></li>
+        <li><a href="animes.html" class="hover:text-purple-600 transition-colors font-medium">Animes</a></li>
+        <li><a href="#" class="hover:text-purple-600 transition-colors font-medium">Sair</a></li>
+      </ul>
+    </div>
 
-      <!-- Card com categorias populares -->
-      <div class="rounded-2xl p-8 shadow-lg card-hover overflow-hidden relative">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-blue-500"></div>
-        <h2 class="text-2xl font-bold mb-6">Categorias Populares</h2>
-        <ul class="space-y-4">
-          <!-- Lista de categorias -->
-          <li class="border-b border-gray-100 pb-3">
-            <a href="#" class="block hover:text-green-600 transition-colors">
-              <span class="font-semibold">Shounen</span>
-              <p class="text-sm">Ação e aventura</p>
-            </a>
-          </li>
-          <li class="border-b border-gray-100 pb-3">
-            <a href="#" class="block hover:text-green-600 transition-colors">
-              <span class="font-semibold">Slice of Life</span>
-              <p class="text-sm">Histórias cotidianas</p>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="block hover:text-green-600 transition-colors">
-              <span class="font-semibold">Mecha</span>
-              <p class="text-sm">Robôs e tecnologia</p>
-            </a>
-          </li>
-        </ul>
-      </div>
+    <!-- Conteúdo principal, container centralizado -->
+    <div class="container mx-auto px-4 py-12 max-w-6xl">
+      <!-- Cabeçalho com título e descrição -->
+      <header class="text-center mb-16">
+        <h1 style="color: blueviolet" class="text-6xl font-bold mb-4 tracking-tight anime-gradient">Animu</h1>
+        <p class="text-xl max-w-2xl mx-auto font-light leading-relaxed">
+          Descubra universos infinitos, explore narrativas épicas e mergulhe nas histórias mais fascinantes do mundo dos
+          animes.
+        </p>
+      </header>
 
-      <!-- Card com novidades -->
-      <div class="rounded-2xl p-8 shadow-lg card-hover overflow-hidden relative">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 to-red-500"></div>
-        <h2 class="text-2xl font-bold mb-6">Novidades</h2>
-        <ul class="space-y-4">
-          <!-- Lista de novidades -->
-          <li class="border-b border-gray-100 pb-3">
-            <a href="#" class="block hover:text-pink-600 transition-colors">
-              <span class="font-semibold">Próximos Lançamentos</span>
-              <p class="text-sm">Animes que vão estrear</p>
-            </a>
-          </li>
-          <li class="border-b border-gray-100 pb-3">
-            <a href="#" class="block hover:text-pink-600 transition-colors">
-              <span class="font-semibold">Melhores da Temporada</span>
-              <p class="text-sm">Top animes do momento</p>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="block hover:text-pink-600 transition-colors">
-              <span class="font-semibold">Recomendações</span>
-              <p class="text-sm">Seleção especial</p>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </section>
+      <!-- Seções principais da página -->
+      <section class="grid md:grid-cols-3 gap-8 mb-16">
+        <!-- Card com últimos reviews -->
+        <div class="rounded-2xl p-8 shadow-lg card-hover overflow-hidden relative">
+          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-blue-500"></div>
+          <h2 class="text-2xl font-bold mb-6">Últimos Reviews</h2>
+          <ul class="space-y-4">
+            <!-- Lista de reviews -->
+            <li class="border-b border-gray-100 pb-3">
+              <a href="animes.html?anime=Demon Slayer" class="block hover:text-purple-600 transition-colors">
+                <span class="font-semibold">Demon Slayer</span>
+                <p class="text-sm">Temporada 3: Uma jornada épica</p>
+              </a>
+            </li>
+            <li class="border-b border-gray-100 pb-3">
+              <a href="animes.html?anime=Jujutsu Kaisen" class="block hover:text-purple-600 transition-colors">
+                <span class="font-semibold">Jujutsu Kaisen</span>
+                <p class="text-sm">Magia e combate supernatural</p>
+              </a>
+            </li>
+            <li>
+              <a href="animes.html?anime=Attack on Titan" class="block hover:text-purple-600 transition-colors">
+                <span class="font-semibold">Attack on Titan</span>
+                <p class="text-sm">O épico final da série</p>
+              </a>
+            </li>
+          </ul>
+        </div>
 
-    <!-- Seção de animes em destaque -->
-    <section class="mb-16">
-      <h2 class="text-3xl font-bold text-center mb-8">Animes em Destaque</h2>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-        <!-- Cartões com imagens e títulos de animes -->
-        <a href="#" class="anime-card">
-          <div class="rounded-2xl shadow-lg overflow-hidden">
-            <img
-              src="https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=480,height=720/catalog/crunchyroll/765ee047befcfb677d169f5de4c82d5c.jpg"
-              alt="Anime 1" class="w-full h-[450px] object-cover">
-            <div class="p-4">
-              <h3 class="text-lg font-semibold">Demon Slayer</h3>
+        <!-- Card com categorias populares -->
+        <div class="rounded-2xl p-8 shadow-lg card-hover overflow-hidden relative">
+          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-blue-500"></div>
+          <h2 class="text-2xl font-bold mb-6">Categorias Populares</h2>
+          <ul class="space-y-4">
+            <!-- Lista de categorias -->
+            <li class="border-b border-gray-100 pb-3">
+              <a href="#" class="block hover:text-green-600 transition-colors">
+                <span class="font-semibold">Shounen</span>
+                <p class="text-sm">Ação e aventura</p>
+              </a>
+            </li>
+            <li class="border-b border-gray-100 pb-3">
+              <a href="#" class="block hover:text-green-600 transition-colors">
+                <span class="font-semibold">Slice of Life</span>
+                <p class="text-sm">Histórias cotidianas</p>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="block hover:text-green-600 transition-colors">
+                <span class="font-semibold">Mecha</span>
+                <p class="text-sm">Robôs e tecnologia</p>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Card com novidades -->
+        <div class="rounded-2xl p-8 shadow-lg card-hover overflow-hidden relative">
+          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 to-red-500"></div>
+          <h2 class="text-2xl font-bold mb-6">Novidades</h2>
+          <ul class="space-y-4">
+            <!-- Lista de novidades -->
+            <li class="border-b border-gray-100 pb-3">
+              <a href="#" class="block hover:text-pink-600 transition-colors">
+                <span class="font-semibold">Próximos Lançamentos</span>
+                <p class="text-sm">Animes que vão estrear</p>
+              </a>
+            </li>
+            <li class="border-b border-gray-100 pb-3">
+              <a href="#" class="block hover:text-pink-600 transition-colors">
+                <span class="font-semibold">Melhores da Temporada</span>
+                <p class="text-sm">Top animes do momento</p>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="block hover:text-pink-600 transition-colors">
+                <span class="font-semibold">Recomendações</span>
+                <p class="text-sm">Seleção especial</p>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Seção de animes em destaque -->
+      <section class="mb-16">
+        <h2 class="text-3xl font-bold text-center mb-8">Animes em Destaque</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <!-- Cartões com imagens e títulos de animes -->
+          <a href="animes.html?anime=Demon Slayer" class="anime-card">
+            <div class="rounded-2xl shadow-lg overflow-hidden">
+              <img
+                src="https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=480,height=720/catalog/crunchyroll/765ee047befcfb677d169f5de4c82d5c.jpg"
+                alt="Anime 1" class="w-full h-[450px] object-cover">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold">Demon Slayer</h3>
+              </div>
             </div>
-          </div>
-        </a>
-        <a href="#" class="anime-card">
-          <div class="rounded-2xl shadow-lg overflow-hidden">
-            <img src="https://infinitasvidas.wordpress.com/wp-content/uploads/2021/03/poster-jujutsu-kaisen.png"
-              alt="Anime 2" class="w-full h-[450px] object-cover">
-            <div class="p-4">
-              <h3 class="text-lg font-semibold">Jujutsu Kaisen</h3>
+          </a>
+          <a href="animes.html?anime=Jujutsu Kaisen" class="anime-card">
+            <div class="rounded-2xl shadow-lg overflow-hidden">
+              <img src="https://infinitasvidas.wordpress.com/wp-content/uploads/2021/03/poster-jujutsu-kaisen.png"
+                alt="Anime 2" class="w-full h-[450px] object-cover">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold">Jujutsu Kaisen</h3>
+              </div>
             </div>
-          </div>
-        </a>
-        <a href="#" class="anime-card">
-          <div class="rounded-2xl shadow-lg overflow-hidden">
-            <img
-              src="https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=480,height=720/catalog/crunchyroll/323c82257b2f6567fabbb7bd55bfa753.jpg"
-              alt="Anime 3" class="w-full h-[450px] object-cover">
-            <div class="p-4">
-              <h3 class="text-lg font-semibold">Attack on Titan</h3>
+          </a>
+          <a href="animes.html?anime=Attack on Titan" class="anime-card">
+            <div class="rounded-2xl shadow-lg overflow-hidden">
+              <img
+                src="https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=480,height=720/catalog/crunchyroll/323c82257b2f6567fabbb7bd55bfa753.jpg"
+                alt="Anime 3" class="w-full h-[450px] object-cover">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold">Attack on Titan</h3>
+              </div>
             </div>
-          </div>
-        </a>
-        <a href="#" class="anime-card">
-          <div class="rounded-2xl shadow-lg overflow-hidden">
-            <img
-              src="https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=1200,height=675/catalog/crunchyroll/9ca680632ac63f44c7220f61ace9a81b.jpg"
-              alt="Anime 4" class="w-full h-[450px] object-cover">
-            <div class="p-4">
-              <h3 class="text-lg font-semibold">My Hero Academia</h3>
+          </a>
+          <a href="animes.html?anime=My Hero Academia" class="anime-card">
+            <div class="rounded-2xl shadow-lg overflow-hidden">
+              <img
+                src="https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=1200,height=675/catalog/crunchyroll/9ca680632ac63f44c7220f61ace9a81b.jpg"
+                alt="Anime 4" class="w-full h-[450px] object-cover">
+              <div class="p-4">
+                <h3 class="text-lg font-semibold">My Hero Academia</h3>
+              </div>
             </div>
-          </div>
-        </a>
-      </div>
-    </section>
+          </a>
+        </div>
+      </section>
 
-    <!-- Rodapé com direitos autorais -->
-    <footer class="text-center mt-16">
-      <p class="font-light">&copy; 2024 Animu. Todos os direitos reservados.</p>
-    </footer>
+      <!-- Rodapé com direitos autorais -->
+      <footer class="text-center mt-16">
+        <p class="font-light">&copy; 2024 Animu. Todos os direitos reservados.</p>
+      </footer>
+    </div>
   </div>
 
   <!-- Script personalizado para funcionalidade adicional -->
   <script src="./src/js/animu.js"></script>
-  <script src="./src/js/signin.js"></script>
+  <script src="./src/js/sign.js"></script>
   <script src="./src/js/animes.js"></script>
 </body>
 

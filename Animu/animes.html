@@ -6,13 +6,13 @@
   <meta charset="UTF-8"> <!-- Define o conjunto de caracteres UTF-8 para suporte ao idioma -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Responsividade para dispositivos móveis -->
-  <title>Animes</title> <!-- Título da página exibido na aba do navegador -->
+  <title>Anime</title> <!-- Título da página exibido na aba do navegador -->
   <!-- Inclusão da biblioteca Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Fonte personalizada Inter do Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <!-- Link para o arquivo de estilos personalizados -->
-  <link rel="stylesheet" href="./src/css/main.css">
+  <link rel="stylesheet" href="./src/css/styles.css">
   <!-- Ícone do site (favicon) -->
   <link rel="icon" href="./src/favicon/favicon.ico" type="image/x-icon">
 </head>
@@ -36,14 +36,8 @@
     </button>
   </div>
 
-  <!-- Cabeçalho principal da página -->
-  <header class="text-center mb-16">
-    <!-- Título estilizado com Tailwind CSS -->
-    <h1 style="color:blueviolet" class="text-6xl font-bold mb-4 tracking-tight anime-gradient">Animes</h1>
-  </header>
-
-  <!-- Contêiner onde será exibida a lista de animes -->
-  <div id="anime-list"></div>
+  <!-- O conteúdo será inserido dinamicamente via JavaScript -->
+  <div class="anime-container" id="anime-content"></div>
 
   <!-- Inclusão de scripts para funcionalidades do site -->
   <script src="./src/js/animu.js"></script> <!-- Script principal com funcionalidades globais -->

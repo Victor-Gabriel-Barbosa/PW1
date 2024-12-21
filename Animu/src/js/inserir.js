@@ -1,6 +1,8 @@
 // Arrays globais para armazenar títulos alternativos e gêneros
 let titles = [];
 let genres = [];
+let producers = [];
+let licensors = [];
 
 /**
  * Adiciona um título alternativo à lista `titles`.
@@ -108,6 +110,102 @@ function removeGenre(index) {
 }
 
 /**
+ * Adiciona um produtor à lista `producers`.
+ * Valida o campo de entrada, impede valores vazios e escapa caracteres perigosos.
+ */
+function addProducer() {
+  const producerInput = document.getElementById('producer-input'); // Campo de entrada para produtor
+
+  // Verifica se o campo de produtor está vazio
+  if (producerInput.value.trim() === '') {
+    alert('Por favor, insira um produtor válido.');
+    return;
+  }
+
+  const producer = escapeHTML(producerInput.value); // Escapa caracteres perigosos
+  producers.push(producer);
+
+  renderProducers(); // Atualiza a interface com os produtores
+  producerInput.value = ''; // Limpa o campo de entrada
+}
+
+/**
+ * Atualiza a interface exibindo todos os produtores adicionados.
+ */
+function renderProducers() {
+  const container = document.getElementById('producers-container'); // Container onde os produtores são exibidos
+  // Gera o HTML para cada produtor e exibe na interface
+  container.innerHTML = producers
+    .map(
+      (producer, index) => `
+        <div class="tag">
+            ${producer} 
+            <span class="tag-remove" onclick="removeProducer(${index})">✖</span>
+        </div>
+    `
+    )
+    .join('');
+}
+
+/**
+ * Remove um produtor da lista `producers` pelo índice.
+ * Atualiza a interface após a remoção.
+ * @param {number} index - Índice do produtor a ser removido.
+ */
+function removeProducer(index) {
+  producers.splice(index, 1); // Remove o produtor da lista
+  renderProducers(); // Atualiza a interface
+}
+
+/**
+ * Adiciona um licenciador à lista `licensors`.
+ * Valida o campo de entrada, impede valores vazios e escapa caracteres perigosos.
+ */
+function addLicensor() {
+  const licensorInput = document.getElementById('licensor-input'); // Campo de entrada para licenciador
+
+  // Verifica se o campo de licenciador está vazio
+  if (licensorInput.value.trim() === '') {
+    alert('Por favor, insira um licenciador válido.');
+    return;
+  }
+
+  const licensor = escapeHTML(licensorInput.value); // Escapa caracteres perigosos
+  licensors.push(licensor);
+
+  renderLicensors(); // Atualiza a interface com os licenciadores
+  licensorInput.value = ''; // Limpa o campo de entrada
+}
+
+/**
+ * Atualiza a interface exibindo todos os licenciadores adicionados.
+ */
+function renderLicensors() {
+  const container = document.getElementById('licensors-container'); // Container onde os licenciadores são exibidos
+  // Gera o HTML para cada licenciador e exibe na interface
+  container.innerHTML = licensors
+    .map(
+      (licensor, index) => `
+        <div class="tag">
+            ${licensor} 
+            <span class="tag-remove" onclick="removeLicensor(${index})">✖</span>
+        </div>
+    `
+    )
+    .join('');
+}
+
+/**
+ * Remove um licenciador da lista `licensors` pelo índice.
+ * Atualiza a interface após a remoção.
+ * @param {number} index - Índice do licenciador a ser removido.
+ */
+function removeLicensor(index) {
+  licensors.splice(index, 1); // Remove o licenciador da lista
+  renderLicensors(); // Atualiza a interface
+}
+
+/**
  * Escapa caracteres HTML perigosos para evitar ataques de XSS.
  * @param {string} str - Texto a ser escapado.
  * @returns {string} - Texto seguro para exibição em HTML.
@@ -126,6 +224,20 @@ function escapeHTML(str) {
 function saveToLocalStorage(formData) {
   // Recupera os animes existentes no Local Storage (se houver)
   const existingAnimes = JSON.parse(localStorage.getItem('animeData')) || [];
+
+  // Adiciona os novos campos ao formData
+  formData.status = document.getElementById('status').value;
+  formData.ageRating = document.getElementById('age-rating').value;
+  formData.season = {
+    period: document.getElementById('season-period').value,
+    year: parseInt(document.getElementById('season-year').value)
+  };
+  formData.episodeDuration = parseInt(document.getElementById('episode-duration').value);
+  formData.producers = producers;
+  formData.licensors = licensors;
+  formData.source = document.getElementById('source').value;
+  formData.score = parseFloat(document.getElementById('score').value);
+  formData.popularity = parseInt(document.getElementById('popularity').value);
 
   // Adiciona o novo anime à lista
   existingAnimes.push(formData);
@@ -161,9 +273,13 @@ function loadDataFromLocalStorage() {
 
   titles = formData.alternativeTitles || []; // Atualiza a lista de títulos
   genres = formData.genres || []; // Atualiza a lista de gêneros
+  producers = formData.producers || []; // Atualiza a lista de produtores
+  licensors = formData.licensors || []; // Atualiza a lista de licenciadores
 
   renderTitles(); // Atualiza a interface com os títulos
   renderGenres(); // Atualiza a interface com os gêneros
+  renderProducers(); // Atualiza a interface com os produtores
+  renderLicensors(); // Atualiza a interface com os licenciadores
 
   // alert('Dados carregados do Local Storage!');
 }
@@ -233,13 +349,17 @@ document.getElementById('anime-admin-form').addEventListener('submit', function 
 window.addEventListener('DOMContentLoaded', loadDataFromLocalStorage);
 
 /**
- * Reseta o formulário e limpa as listas `titles` e `genres`.
+ * Reseta o formulário e limpa as listas `titles`, `genres`, `producers` e `licensors`.
  * Atualiza a interface após a limpeza.
  */
 function resetForm() {
   document.getElementById('anime-admin-form').reset(); // Reseta os campos do formulário
   titles = []; // Limpa a lista de títulos
   genres = []; // Limpa a lista de gêneros
+  producers = []; // Limpa a lista de produtores
+  licensors = []; // Limpa a lista de licenciadores
   renderTitles(); // Atualiza a interface com os títulos
   renderGenres(); // Atualiza a interface com os gêneros
+  renderProducers(); // Atualiza a interface com os produtores
+  renderLicensors(); // Atualiza a interface com os licenciadores
 }

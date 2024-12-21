@@ -41,7 +41,4 @@ const userPanel = document.getElementById("user-panel");
 if (userRole === "admin") {
   // Caso o usuário seja um administrador, remove a classe "hidden" do painel de administração
   adminPanel.classList.remove("hidden");
-} else if (userRole === "user") {
-  // Caso o usuário seja um usuário comum, remove a classe "hidden" do painel de usuário
-  userPanel.classList.remove("hidden");
-}
+} 

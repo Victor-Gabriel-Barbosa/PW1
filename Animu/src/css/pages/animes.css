@@ -1,4 +1,4 @@
-/* Estilo principal para os cartões de anime */
+/* Estilo principal para os cartões de anime - Define a estrutura básica do cartão */
 .anime-card {
   display: block;
   overflow: hidden;
@@ -6,46 +6,31 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Estilo ao passar o mouse sobre os cartões */
+/* Efeito de hover - Amplia levemente o cartão e adiciona sombra ao passar o mouse */
 .anime-card:hover {
   transform: scale(1.03);
   box-shadow: 0 10px 20px var(--card-shadow);
 }
 
-/* Estilo para imagens dentro do cartão */
+/* Configuração das imagens dentro dos cartões - Ajusta o comportamento da imagem */
 .anime-card img {
   object-fit: cover;
   border-radius: 4px;
 }
 
-/* Estilo para cartões destacados em um layout de grid na página inicial */
+/* Estilo para cartões em destaque - Ocupa todo o espaço disponível */
 .anime-card.featured {
   width: 100%;
   height: 100%;
 }
 
-/* Ajuste da imagem dentro de um cartão destacado */
+/* Dimensões específicas para imagens em cartões destacados */
 .anime-card.featured img {
   width: 100%;
   height: 450px;
 }
 
-/* Estilo para cartões em um layout de lista ou outros contextos */
-.anime-card.list {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-lg);
-  margin-bottom: var(--spacing-xl);
-  padding: var(--spacing-sm);
-}
-
-/* Ajuste da imagem dentro de um cartão no layout de lista */
-.anime-card.list img {
-  width: 150px;
-  height: 225px;
-}
-
-/* Estilo para os detalhes de um cartão */
+/* Seção de detalhes do anime - Layout flexível para informações */
 .anime-details {
   display: flex;
   gap: var(--spacing-lg);
@@ -54,9 +39,105 @@
   padding: var(--spacing-sm);
 }
 
-/* Estilo para mensagens exibidas quando nenhum anime é encontrado */
+/* Mensagem para quando nenhum anime é encontrado */
 .no-anime-found {
   text-align: center;
   color: #666;
   margin-top: var(--spacing-xl);
+}
+
+/* Container principal - Define largura máxima e centraliza o conteúdo */
+.anime-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Cabeçalho da página de anime - Layout em grid com duas colunas */
+.anime-header {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+/* Container para tags de gênero - Layout flexível com wrap */
+.genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Estilo individual para cada tag de gênero */
+.genre-tag {
+  background-color: blueviolet;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+}
+
+/* Estilo para o texto da sinopse */
+.synopsis {
+  margin: 20px 0;
+  line-height: 1.8;
+}
+
+/* Grid responsivo para detalhes do anime */
+.details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin: 20px 0;
+  padding: 20px;
+  border-radius: 4px;
+}
+
+/* Estilo para cada item de detalhe */
+.detail-item {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Rótulo para itens de detalhe */
+.detail-label {
+  font-weight: bold;
+  color: #666;
+  font-size: 14px;
+}
+
+/* Container para o trailer - Mantém proporção 16:9 */
+.trailer-container {
+  margin-top: 20px;
+  aspect-ratio: 16/9;
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+/* Configuração do iframe do trailer */
+.trailer-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 4px;
+}
+
+/* Estilo para página não encontrada */
+.not-found {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+/* Media query para telas menores que 768px */
+@media (max-width: 768px) {
+  .anime-header {
+    grid-template-columns: 1fr; /* Muda para uma coluna em telas pequenas */
+  }
+
+  .cover-image {
+    margin: 0 auto; /* Centraliza a imagem de capa */
+  }
 }
