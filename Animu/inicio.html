@@ -2,19 +2,12 @@
 <html lang="pt-BR">
 
 <head>
-  <!-- Definição do tipo de documento e idioma para português do Brasil -->
   <meta charset="UTF-8">
-  <!-- Configuração de viewport para responsividade em dispositivos móveis -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Título da página -->
   <title>Animu</title>
-  <!-- Inclusão da biblioteca Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Fonte personalizada Inter do Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-  <!-- Estilos adicionais personalizados -->
   <link rel="stylesheet" href="./src/css/styles.css">
-  <!-- Ícone da página -->
   <link rel="icon" href="./src/favicon/favicon.ico" type="image/x-icon">
 </head>
 
@@ -63,6 +56,19 @@
 
         <!-- Área do usuário/admin -->
         <div class="flex items-center space-x-4">
+          <!-- Painel do administrador -->
+          <select id="admin-panel"
+            class="hidden px-3 py-1 rounded border focus:outline-none focus:ring-2 focus:ring-purple-600 cursor-pointer"
+            onchange="window.location.href=this.value">
+            <option value="#">Administração</option>
+            <option value="#">Usuários</option>
+            <option value="#">Categorias</option>
+            <option value="admin.html">Inserir</option>
+            <option value="animes.html">Animes</option>
+            <option value="#">Sair</option>
+          </select>
+
+          <!-- Painel do usuário -->
           <div id="user-panel" class="flex items-center top-0 left-0 p-2 rounded" style="width: fit-content;">
             <!-- Avatar do usuário -->
             <img class="h-10 w-10 rounded-full object-cover" src="https://via.placeholder.com/100"
@@ -75,10 +81,12 @@
           </div>
 
           <!-- Botão de alternância de tema claro/escuro -->
-          <button id="theme-toggle">
-            <span class="icon sun"></span>
-            <span class="icon moon"></span>
-          </button>
+          <div class="theme-toggle-container">
+            <button id="theme-toggle" class="toggle">
+              <span class="icon sun"></span>
+              <span class="icon moon"></span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -86,26 +94,6 @@
 
   <!-- Adicionar padding-top para compensar a navbar fixa -->
   <div class="pt-16">
-    <!-- Botão de alternância de tema claro/escuro -->
-    <div class="theme-toggle-container">
-      <button id="theme-toggle" class="toggle">
-        <span class="icon sun"></span>
-        <span class="icon moon"></span>
-      </button>
-    </div>
-
-    <!-- Painel de administração, escondido inicialmente -->
-    <div id="admin-panel" class="hidden absolute p-2 rounded">
-      <!-- Links de administração -->
-      <ul class="flex space-x-4">
-        <li><a href="#" class="hover:text-purple-600 transition-colors font-medium">Usuários</a></li>
-        <li><a href="#" class="hover:text-purple-600 transition-colors font-medium">Categorias</a></li>
-        <li><a href="inserir.html" class="hover:text-purple-600 transition-colors font-medium">Inserir</a></li>
-        <li><a href="animes.html" class="hover:text-purple-600 transition-colors font-medium">Animes</a></li>
-        <li><a href="#" class="hover:text-purple-600 transition-colors font-medium">Sair</a></li>
-      </ul>
-    </div>
-
     <!-- Conteúdo principal, container centralizado -->
     <div class="container mx-auto px-4 py-12 max-w-6xl">
       <!-- Cabeçalho com título e descrição -->

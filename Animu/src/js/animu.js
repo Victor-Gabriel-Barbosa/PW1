@@ -28,17 +28,17 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('theme', 'light'); // Armazena "light" como tema escolhido
     }
   });
+
+  // Seleciona os elementos do painel de administração e de usuário pelo ID
+  const adminPanel = document.getElementById("admin-panel");
+  const userPanel = document.getElementById("user-panel");
+
+  // Obtém os dados da sessão
+  const sessionData = JSON.parse(localStorage.getItem('userSession'));
+
+  // Verifica se o usuário está logado e é admin
+  if (sessionData && sessionData.isAdmin && adminPanel) {
+    // Remove a classe "hidden" do painel de administração
+    adminPanel.classList.remove("hidden");
+  }
 });
-
-// Gerenciamento de visibilidade de painéis baseado no papel do usuário
-const userRole = "user";
-
-// Seleciona os elementos do painel de administração e de usuário pelo ID
-const adminPanel = document.getElementById("admin-panel");
-const userPanel = document.getElementById("user-panel");
-
-// Verifica o papel do usuário e ajusta a visibilidade dos painéis
-if (userRole === "admin") {
-  // Caso o usuário seja um administrador, remove a classe "hidden" do painel de administração
-  adminPanel.classList.remove("hidden");
-} 

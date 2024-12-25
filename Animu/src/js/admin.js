@@ -1,3 +1,20 @@
+// Verificar se o usuário é admin antes de permitir acesso à página
+function checkAdminAccess() {
+  const session = JSON.parse(localStorage.getItem('userSession'));
+  if (!session || !session.isAdmin) {
+    alert('Acesso negado. Esta página é restrita a administradores.');
+    window.location.href = 'inicio.html';
+    return false;
+  }
+  return true;
+}
+
+// Executar verificação quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+  if (!checkAdminAccess()) return;
+  loadDataFromLocalStorage();
+});
+
 // Arrays globais para armazenar títulos alternativos e gêneros
 let titles = [];
 let genres = [];
@@ -285,12 +302,6 @@ function loadDataFromLocalStorage() {
 }
 
 /**
- * Carrega os dados do Local Storage quando a página é carregada.
- * Pede confirmação ao usuário.
- */
-window.addEventListener('DOMContentLoaded', loadDataFromLocalStorage);
-
-/**
  * Manipula o evento de envio do formulário.
  * Valida os dados do formulário, salva-os no Local Storage e reseta o formulário.
  */
@@ -342,11 +353,6 @@ document.getElementById('anime-admin-form').addEventListener('submit', function 
   saveToLocalStorage(formData); // Salva os dados no Local Storage
   resetForm(); // Reseta o formulário
 });
-
-/**
- * Carrega os dados do Local Storage quando a página é carregada.
- */
-window.addEventListener('DOMContentLoaded', loadDataFromLocalStorage);
 
 /**
  * Reseta o formulário e limpa as listas `titles`, `genres`, `producers` e `licensors`.

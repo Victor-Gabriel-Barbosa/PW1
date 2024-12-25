@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animu - Reviews de Anime</title>
+    <link rel="stylesheet" href="animu.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>アニム</h1>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#reviews">Reviews</a></li>
+                <li><a href="#top">Top Animes</a></li>
+                <li><a href="#forum">Fórum</a></li>
+                <li>
+                    <button id="theme-toggle" aria-label="Alternar tema">
+                        <span class="theme-icon">🌓</span>
+                    </button>
+                </li>
+                <li>
+                    <button id="loginBtn" class="login-btn">Login</button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Modal de Login/Cadastro -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="auth-tabs">
+                <button class="tab-btn active" data-tab="login">Login</button>
+                <button class="tab-btn" data-tab="register">Cadastro</button>
+            </div>
+
+            <form id="loginForm" class="auth-form">
+                <h3>Login</h3>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="senha" placeholder="Senha" required>
+                <button type="submit">Entrar</button>
+            </form>
+
+            <form id="registerForm" class="auth-form hidden">
+                <h3>Cadastro</h3>
+                <input type="text" name="nome" placeholder="Nome" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="senha" placeholder="Senha" required>
+                <input type="password" name="confirmarSenha" placeholder="Confirmar Senha" required>
+                <button type="submit">Cadastrar</button>
+            </form>
+        </div>
+    </div>
+
+    <main>
+        <section id="destaque">
+            <h2>Reviews em Destaque</h2>
+            <div class="review-grid">
+                <!-- Cards de reviews serão inseridos via JS -->
+            </div>
+        </section>
+
+        <section id="temporada">
+            <h2>Animes da Temporada</h2>
+            <div class="carousel-container">
+                <button class="carousel-button prev" aria-label="Anterior">◀</button>
+                <div class="season-grid">
+                    <!-- Animes serão inseridos aqui via JavaScript -->
+                </div>
+                <button class="carousel-button next" aria-label="Próximo">▶</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Animu - Sua fonte de reviews de anime em português &copy; 2024</p>
+    </footer>
+    <script src="animu.js"></script>
+</body>
+</html>

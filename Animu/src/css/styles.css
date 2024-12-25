@@ -1,20 +1,22 @@
-/* Configurações globais de cores, espaçamentos e fontes utilizando variáveis CSS */
+/* Variáveis globais do tema */
 :root {
-  /* Paleta de cores */
-  --background-light: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  --background-dark: linear-gradient(135deg, #2b2d42 0%, #121212 100%);
+  /* Cores */
+  --background-light: #c3cfe2;
+  --background-dark: #2d2d2d;
   --text-light: #000000;
   --text-dark: #ffffff;
   --card-shadow-light: rgba(0, 0, 0, 0.1);
   --card-shadow-dark: rgba(255, 255, 255, 0.1);
   --primary-gradient: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
-
-  /* Cores padrão (tema claro) */
+  --primary-color: blueviolet;
+  --input-border-color: #e0e0e0;
+  
+  /* Tema padrão */
   --background: var(--background-light);
   --text-color: var(--text-light);
   --card-shadow: var(--card-shadow-light);
 
-  /* Espaçamentos e tamanhos */
+  /* Espaçamentos */
   --spacing-xs: 5px;
   --spacing-sm: 10px;
   --spacing-md: 15px;
@@ -25,50 +27,14 @@
   --font-family: 'Inter', sans-serif;
 }
 
-/* Classe para tema escuro */
-body.dark-mode {
-  --background: var(--background-dark);
-  --text-color: var(--text-dark);
-  --card-shadow: var(--card-shadow-dark);
-}
-
-/* Estilos para cabeçalhos */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin-bottom: var(--spacing-md);
-}
-
-/* Texto com gradiente */
-.gradient-text {
-  background: var(--primary-gradient);
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Estilo para títulos de cartões */
-.card-title {
-  font-weight: 600;
-  font-size: 1.2rem;
-}
-
-/* Estilo para subtítulos */
-.subtitle {
-  color: #666;
-  font-size: 0.9rem;
-}
-
-/* Reset básico */
+/* Reset global de estilos */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Estilos gerais do body */
+/* Estilos base do corpo da página */
 body {
   font-family: var(--font-family);
   background: var(--background);
@@ -77,41 +43,34 @@ body {
   transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Links */
+/* Tema escuro: Modificações gerais */
+body.dark-mode {
+  --background: var(--background-dark);
+  --text-color: var(--text-dark);
+  --card-shadow: var(--card-shadow-dark);
+}
+
+/* Estilos globais de links */
 a {
   text-decoration: none;
   color: inherit;
 }
 
-/* Listas */
-ul,
-ol {
+/* Reset de listas */
+ul, ol {
   list-style: none;
 }
 
-/* Inputs, botões, textarea e selects */
-input,
-button,
-textarea,
-select {
-  font-family: inherit;
-  font-size: inherit;
+/* Estilos base para elementos de formulário */
+input, button, textarea, select {
+  background: var(--background);
+  color: var(--text-color);
+  border-color: var(--input-border-color);
+  font-family: var(--font-family);
+  font-size: var(--font-size);
 }
 
-/* Inputs no modo escuro */
-body.dark-mode .admin-form .form-group input,
-body.dark-mode .admin-form .form-group textarea {
-  background: #2b2b2b;
-  color: #e0e0e0;
-}
-
-/* Select no modo escuro */
-body.dark-mode .admin-form .form-group select {
-  background: #2b2b2b;
-  color: #e0e0e0;
-}
-
-/* Botão básico com estilo reutilizável */
+/* Componente: Botão base */
 .btn {
   display: inline-block;
   padding: var(--spacing-sm) var(--spacing-md);
@@ -121,25 +80,69 @@ body.dark-mode .admin-form .form-group select {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* Estilo para o botão principal */
+/* Variante: Botão primário */
 .btn-primary {
   background: var(--primary-gradient);
   color: white;
 }
 
-/* Efeito de hover para o botão principal */
-.btn-primary:hover {
+/* Estado: Hover do botão */
+.btn:hover {
   opacity: 0.9;
   transform: scale(1.05);
 }
 
-/* Estilo para o botão secundário */
-.btn-secondary {
-  background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
-  color: #333;
+/* Componente: Card base */
+.card {
+  background: var(--background);
+  border-radius: 12px;
+  padding: var(--spacing-xl);
+  box-shadow: 0 10px 25px var(--card-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Ajustar o container da barra de busca para o navbar */
+/* Componente: Grupo de formulário */
+.form-group {
+  margin-bottom: var(--spacing-md);
+}
+
+/* Subcomponente: Label do grupo de formulário */
+.form-group label {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  font-weight: 600;
+}
+
+/* Subcomponente: Campos de entrada do grupo de formulário */
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--input-border-color);
+  border-radius: 8px;
+  transition: border-color 0.3s ease;
+}
+
+/* Estado: Foco nos campos de formulário */
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+/* Componente: Tag/Badge */
+.tag {
+  background: var(--primary-color);
+  color: white;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.9em;
+}
+
+/* Componente: Container de busca */
 .search-container {
   display: flex;
   align-items: center;
@@ -148,7 +151,7 @@ body.dark-mode .admin-form .form-group select {
   margin: 0 auto;
 }
 
-/* Wrapper do input de busca */
+/* Subcomponente: Wrapper do input de busca */
 .search-input-wrapper {
   position: relative;
   flex: 1;
@@ -156,7 +159,7 @@ body.dark-mode .admin-form .form-group select {
   align-items: center;
 }
 
-/* Ajustar o input de busca */
+/* Subcomponente: Campo de busca */
 .search-input {
   width: 100%;
   height: 40px;
@@ -164,11 +167,11 @@ body.dark-mode .admin-form .form-group select {
   border: 1px solid #ccc;
   border-radius: 20px 0 0 20px;
   font-size: 16px;
-  background: white;
+  background: var(--background);
   transition: all 0.3s ease;
 }
 
-/* Ícone de busca dentro do input */
+/* Subcomponente: Ícone de busca */
 .search-icon {
   position: absolute;
   left: 12px;
@@ -176,15 +179,16 @@ body.dark-mode .admin-form .form-group select {
   pointer-events: none;
 }
 
+/* Estado: Foco no campo de busca */
 .search-icon svg {
   fill: #666;
 }
 
-/* Ajustar o botão de busca para o navbar */
+/* Subcomponente: Botão de busca */
 .search-button {
   height: 40px;
   padding: 0 20px;
-  background: #f8f8f8;
+  background: var(--background);
   border: 1px solid #ccc;
   border-left: none;
   border-radius: 0 20px 20px 0;
@@ -192,50 +196,30 @@ body.dark-mode .admin-form .form-group select {
   transition: background-color 0.3s ease;
 }
 
+/* Estado hover do botão de busca */
 .search-button:hover {
   background: #f0f0f0;
 }
 
+/* Estado hover do ícone de busca */
 .search-button svg {
-  fill: #666;
+  fill: blueviolet;
 }
 
-/* Estados de foco */
+/* Estado: Foco no campo de busca */
 .search-input:focus {
   outline: none;
   border-color: blueviolet;
   box-shadow: 0 0 0 1px blueviolet;
 }
 
+/* Estado: Foco no campo de busca */
 .search-input:focus + .search-button {
   border-color: blueviolet;
   box-shadow: 1px 0 0 1px blueviolet;
 }
 
-/* Modo escuro */
-body.dark-mode .search-input {
-  background: #2b2b2b;
-  color: #fff;
-  border-color: #444;
-}
-
-body.dark-mode .search-button {
-  background: #2b2b2b;
-  border-color: #444;
-}
-
-body.dark-mode .search-icon svg,
-body.dark-mode .search-button svg {
-  fill: blueviolet;
-}
-
-/* Modo escuro para os resultados */
-body.dark-mode #anime-result {
-  background: #2b2b2b;
-  color: var(--text-dark);
-}
-
-/* Estilo para botão de retorno ou navegação */
+/* Componente: Botão voltar */
 .back-button {
   position: fixed;
   top: 20px;
@@ -251,20 +235,20 @@ body.dark-mode #anime-result {
   z-index: 1000;
 }
 
-/* Efeito de hover para o botão de retorno */
+/* Estado hover do botão voltar */
 .back-button:hover {
   transform: scale(1.1);
 }
 
-/* Estilo para o ícone SVG do botão de voltar */
+/* Subcomponente: Ícone do botão voltar */
 .back-button svg {
   width: 30px;
   height: 30px;
 }
 
-/* Container do formulário */
+/* Componente: Container de formulário */
 .form-container {
-  background: white;
+  background: var(--background);
   border-radius: 12px;
   padding: var(--spacing-xl);
   width: 100%;
@@ -274,50 +258,7 @@ body.dark-mode #anime-result {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Formulário no modo escuro */
-body.dark-mode .form-container {
-  background: #2b2d42;
-  box-shadow: 0 10px 25px var(--card-shadow-dark);
-}
-
-/* Grupo de campos do formulário */
-.form-group {
-  margin-bottom: var(--spacing-md);
-}
-
-/* Labels dos campos do formulário */
-.form-group label {
-  display: block;
-  margin-bottom: var(--spacing-xs);
-  font-weight: 600;
-}
-
-/* Inputs e textarea do formulário */
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: var(--spacing-sm);
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  transition: border-color 0.3s ease;
-}
-
-/* Estado de foco dos inputs e textarea */
-.form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #2575fc;
-}
-
-/* Inputs e textarea no modo escuro */
-body.dark-mode .form-group input,
-body.dark-mode .form-group textarea {
-  background: #2b2b2b;
-  color: #e0e0e0;
-  border-color: #444;
-}
-
-/* Container das tags */
+/* Componente: Container de tags */
 .tag-container {
   display: flex;
   flex-wrap: wrap;
@@ -325,26 +266,13 @@ body.dark-mode .form-group textarea {
   margin-top: var(--spacing-sm);
 }
 
-/* Estilo básico de cada tag */
-.tag {
-  background: blueviolet;
-  color: white;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  font-size: 0.9em;
-  max-width: fit-content;
-}
-
-/* Estilo do ícone ou botão para remover uma tag */
+/* Subcomponente: Tag de remoção */
 .tag-remove {
   cursor: pointer;
   color: #ff4444;
 }
 
-/* Container que posiciona o botão de alternância de tema fixo no canto superior direito da página */
+/* Componente: Toggle de tema */
 .theme-toggle-container {
   position: fixed;
   top: var(--spacing-lg);
@@ -352,12 +280,12 @@ body.dark-mode .form-group textarea {
   z-index: 1000;
 }
 
-/* Estilo principal do botão de alternância */
+/* Subcomponente: Botão toggle */
 .toggle {
   position: relative;
   width: 60px;
   height: 30px;
-  background-color: #ccc;
+  background-color: var(--background);
   border: none;
   border-radius: 30px;
   cursor: pointer;
@@ -369,12 +297,7 @@ body.dark-mode .form-group textarea {
   transition: background-color 0.3s ease;
 }
 
-/* Estilo do botão quando o tema escuro está ativo */
-.toggle.dark {
-  background-color: blueviolet;
-}
-
-/* Estilo dos ícones internos do botão */
+/* Subcomponente: Ícone do toggle */
 .toggle .icon {
   width: 20px;
   height: 20px;
@@ -382,7 +305,7 @@ body.dark-mode .form-group textarea {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* Estilo do ícone do Sol (tema claro) */
+/* Subcomponente: Ícone do sol */
 .toggle .icon.sun {
   background: url('./sol.png') no-repeat center;
   background-size: contain;
@@ -391,7 +314,7 @@ body.dark-mode .form-group textarea {
   transform: translateX(0);
 }
 
-/* Estilo do ícone da Lua (tema escuro) */
+/* Subcomponente: Ícone da lua */
 .toggle .icon.moon {
   background: url('./lua.png') no-repeat center;
   background-size: contain;
@@ -400,19 +323,19 @@ body.dark-mode .form-group textarea {
   transform: translateX(30px);
 }
 
-/* Estilo do ícone do Sol no tema escuro */
+/* Estado: Ícone da lua no tema escuro */
 .toggle.dark .icon.sun {
   opacity: 0;
   transform: translateX(-30px);
 }
 
-/* Estilo do ícone da Lua no tema escuro */
+/* Estado: Ícone do sol no tema claro */
 .toggle.dark .icon.moon {
   opacity: 1;
   transform: translateX(0);
 }
 
-/* Container para todo o formulário de administração */
+/* Componente: Formulário administrativo */
 .admin-form {
   border-radius: 12px;
   padding: 30px;
@@ -423,28 +346,27 @@ body.dark-mode .form-group textarea {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Título do formulário com efeito de gradiente no texto */
+/* Componente: Título do formulário de cadastro */
 .form-title {
   background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  /* Efeito de gradiente no texto */
   margin-bottom: 20px;
 }
 
-/* Estilização genérica dos grupos de campos do formulário */
+/* Componente: Grupo de formulário */
 .admin-form .form-group {
   margin-bottom: 15px;
 }
 
-/* Labels para os campos de formulário */
+/* Subcomponente: Label do grupo de formulário */
 .admin-form .form-group label {
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
 }
 
-/* Botões dentro do formulário (adicionar e enviar) */
+/* Subcomponente: Campos de entrada do grupo de formulário */
 .btn-add,
 .admin-form #submit-btn {
   background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
@@ -456,13 +378,13 @@ body.dark-mode .form-group textarea {
   transition: transform 0.3s ease;
 }
 
-/* Efeito de hover para os botões */
+/* Estado hover do botão de adicionar */
 .btn-add:hover,
 .admin-form #submit-btn:hover {
   transform: scale(1.05);
 }
 
-/* Estilo principal para os cartões de anime - Define a estrutura básica do cartão */
+/* Componente: Card de anime */
 .anime-card {
   display: block;
   overflow: hidden;
@@ -470,19 +392,19 @@ body.dark-mode .form-group textarea {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Efeito de hover - Amplia levemente o cartão e adiciona sombra ao passar o mouse */
+/* Estado hover do card de anime */
 .anime-card:hover {
   transform: scale(1.03);
   box-shadow: 0 10px 20px var(--card-shadow);
 }
 
-/* Configuração das imagens dentro dos cartões - Ajusta o comportamento da imagem */
+/* Subcomponente: Imagem do card de anime */
 .anime-card img {
   object-fit: cover;
   border-radius: 4px;
 }
 
-/* Seção de detalhes do anime - Layout flexível para informações */
+/* Componente: Detalhes do anime */
 .anime-details {
   display: flex;
   gap: var(--spacing-lg);
@@ -496,7 +418,26 @@ body.dark-mode .form-group textarea {
   border-radius: 4px;
 }
 
-/* Mensagem para quando nenhum anime é encontrado */
+/* Componente: Sinopse do anime */
+.synopsis {
+  margin: 20px 0;
+  line-height: 1.8;
+}
+
+/* Componente: Item de detalhes */
+.detail-item {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Subcomponente: Label de detalhes */
+.detail-label {
+  font-weight: bold;
+  color: #666;
+  font-size: 14px;
+}
+
+/* Componente: Mensagem de anime não encontrado */
 .no-anime-found {
   text-align: center;
   color: #6a11cb;
@@ -504,7 +445,7 @@ body.dark-mode .form-group textarea {
   font-size: 1.5em;
 }
 
-/* Container principal - Define largura máxima e centraliza o conteúdo */
+/* Componente: Container principal de anime */
 .anime-container {
   max-width: 1000px;
   margin: 0 auto;
@@ -513,7 +454,7 @@ body.dark-mode .form-group textarea {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Cabeçalho da página de anime - Layout em grid com duas colunas */
+/* Componente: Cabeçalho de anime */
 .anime-header {
   display: grid;
   grid-template-columns: 300px 1fr;
@@ -521,37 +462,30 @@ body.dark-mode .form-group textarea {
   margin-bottom: 20px;
 }
 
-/* Visualização para os animes buscados - Layout flexível com wrap */
+/* Componente: Resultados da busca de anime */
 .anime-search {
   position: absolute;
-  background: white;
+  background: var(--background);
   border-radius: 8px;
   margin-top: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
-  display: none; /* Começa escondido */
+  display: none;
   flex-wrap: wrap;
   margin-top: 5px;
-  width: max-content;
-  max-height: 400px;
   overflow-y: auto;
+  overflow-x: hidden;
   transition: opacity 0.3s ease;
 }
 
-/* Estilo para modo escuro */
-body.dark-mode .anime-search {
-  background: #2b2b2b;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-/* Container para tags de gênero - Layout flexível com wrap */
+/* Componente: Gêneros de anime */
 .genres {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-/* Estilo individual para cada tag de gênero */
+/* Subcomponente: Tag de gênero */
 .genre-tag {
   background-color: blueviolet;
   color: white;
@@ -560,26 +494,7 @@ body.dark-mode .anime-search {
   font-size: 14px;
 }
 
-/* Estilo para o texto da sinopse */
-.synopsis {
-  margin: 20px 0;
-  line-height: 1.8;
-}
-
-/* Estilo para cada item de detalhe */
-.detail-item {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Rótulo para itens de detalhe */
-.detail-label {
-  font-weight: bold;
-  color: #666;
-  font-size: 14px;
-}
-
-/* Container para o trailer - Mantém proporção 16:9 */
+/* Componente: Container do trailer */
 .trailer-container {
   margin-top: 20px;
   aspect-ratio: 16/9;
@@ -587,7 +502,7 @@ body.dark-mode .anime-search {
   margin: 20px auto;
 }
 
-/* Configuração do iframe do trailer */
+/* Subcomponente: Iframe do trailer */
 .trailer-container iframe {
   width: 100%;
   height: 100%;
@@ -595,22 +510,19 @@ body.dark-mode .anime-search {
   border-radius: 4px;
 }
 
-/* Media query para telas menores que 768px */
+/* Media Queries: Responsividade */
 @media (max-width: 768px) {
   .anime-header {
     grid-template-columns: 1fr;
-    /* Muda para uma coluna em telas pequenas */
   }
 
   .cover-image {
     margin: 0 auto;
-    /* Centraliza a imagem de capa */
   }
 }
 
-/* Estilo básico do body */
+/* Layout de página de autenticação */
 .sign-body {
-  font-family: 'Inter', sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -618,7 +530,7 @@ body.dark-mode .anime-search {
   transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Container principal do formulário de cadastro */
+/* Componente: Container de cadastro */
 .signup-container {
   border-radius: 15px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
@@ -628,56 +540,55 @@ body.dark-mode .anime-search {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Efeito de hover no container de cadastro */
+/* Estado hover do container de cadastro */
 .signup-container:hover {
   transform: translateY(-10px);
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 }
 
-/* Título do formulário de cadastro */
+/* Componente: Título da seção de cadastro */
 .signup-title {
   text-align: center;
   margin-bottom: 30px;
 }
 
-/* Estilo para o título principal */
+/* Subcomponente: Cabeçalho do título de cadastro */
 .signup-title h1 {
   font-size: 2.5rem;
   background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  /* Necessário para o efeito de gradiente no texto */
 }
 
-/* Grupos de campo do formulário */
+/* Componente: Grupo de formulário */
 .form-group {
   margin-bottom: 20px;
 }
 
-/* Labels dos campos do formulário */
+/* Subcomponente: Label do grupo de formulário */
 .form-group label {
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
 }
 
-/* Inputs do formulário */
+/* Subcomponente: Campos de entrada do grupo de formulário */
 .form-group input {
   width: 100%;
   padding: 12px;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: var(--background);
   transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
-/* Estado de foco dos inputs */
+/* Estado: Foco nos campos de formulário */
 .form-group input:focus {
   outline: none;
   border-color: #2575fc;
 }
 
-/* Botão de envio do formulário */
+/* Componente: Botão de cadastro */
 .signup-btn {
   width: 100%;
   padding: 14px;
@@ -690,8 +601,201 @@ body.dark-mode .anime-search {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* Efeito de hover no botão de envio */
+/* Subcomponente: Estado hover do botão de cadastro */
 .signup-btn:hover {
   opacity: 0.9;
   transform: scale(1.02);
+}
+
+/* Componente: Seção de comentários */
+.comments-section {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: var(--background);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px var(--card-shadow);
+}
+
+/* Formulário de comentário */
+#comment-form {
+  margin-bottom: 30px;
+}
+
+#comment-form textarea {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid var(--input-border-color);
+  border-radius: 8px;
+  resize: vertical;
+  min-height: 100px;
+  background: var(--background);
+  color: var(--text-color);
+  transition: border-color 0.3s ease;
+}
+
+#comment-form textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+/* Lista de comentários */
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Comentário individual */
+.comment {
+  padding: 15px;
+  border: 1px solid var(--input-border-color);
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+  background: var(--background);
+}
+
+.comment:hover {
+  transform: translateX(5px);
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.comment-user {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.comment-date {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.comment-content {
+  line-height: 1.6;
+}
+
+/* Sistema de avaliação por estrelas */
+.star-rating {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 2px;
+}
+
+.star-rating input {
+  display: none;
+}
+
+.star-rating label {
+  cursor: pointer;
+  position: relative;
+  color: #ddd !important;
+  font-size: 16px; /* Reduzido para caber 10 estrelas */
+  transition: color 0.2s ease;
+}
+
+/* Estilo para meia estrela */
+.star-rating label.half {
+  width: 8px; /* Reduzido para caber 10 estrelas */
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.star-rating label.half:before {
+  content: "★";
+  position: absolute;
+  z-index: 2;
+}
+
+.star-rating input:checked ~ label,
+.star-rating input:checked ~ label.half:before {
+  color: #ffd700 !important;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating label.half:hover:before,
+.star-rating label.half:hover ~ label {
+  color: #ffed4a !important;
+}
+
+/* Ajuste para estrelas na lista de comentários */
+.comment-rating {
+  display: flex;
+  gap: 1px;
+  font-size: 14px; /* Reduzido para caber 10 estrelas */
+  color: #ffd700 !important;
+}
+
+.star, .half-star {
+  color: #ffd700 !important;
+  font-size: 1em;
+}
+
+.half-star {
+  position: relative;
+  width: 0.5em;
+  overflow: hidden;
+}
+
+/* Botões de ação do comentário */
+.comment-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.comment-action-btn {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: opacity 0.2s ease;
+}
+
+.comment-action-btn:hover {
+  opacity: 0.8;
+}
+
+.edit-btn {
+  background: var(--primary-color);
+  color: white;
+}
+
+.delete-btn {
+  background: #ff4444;
+  color: white;
+}
+
+/* Paginação de comentários */
+.comments-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.page-btn {
+  padding: 5px 10px;
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--primary-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.page-btn:hover,
+.page-btn.active {
+  background: var(--primary-color);
+  color: white;
 }

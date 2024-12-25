@@ -13,6 +13,16 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Ícone do site (favicon) -->
   <link rel="icon" href="./src/favicon/favicon.ico" type="image/x-icon">
+  <script>
+    // Verificação imediata antes de carregar o resto da página
+    (function () {
+      const session = JSON.parse(localStorage.getItem('userSession'));
+      if (!session || !session.isAdmin) {
+        alert('Acesso negado. Esta página é restrita a administradores.');
+        window.location.href = 'inicio.html';
+      }
+    })();
+  </script>
 </head>
 
 <body>
@@ -140,7 +150,8 @@
             <option value="Verão">Verão</option>
             <option value="Outono">Outono</option>
           </select>
-          <input type="number" id="season-year" name="season-year" placeholder="Ano" class="p-2 border rounded" required>
+          <input type="number" id="season-year" name="season-year" placeholder="Ano" class="p-2 border rounded"
+            required>
         </div>
       </div>
 
@@ -209,7 +220,7 @@
 
   <!-- Inclusão de scripts JavaScript para funcionalidades adicionais -->
   <script src="./src/js/animu.js"></script>
-  <script src="./src/js/inserir.js"></script>
+  <script src="./src/js/admin.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfólio Dev</title>
+  <link rel="stylesheet" href="portfolio.css">
+
+  <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon/web-app-manifest-192x192.png">
+  <link rel="manifest" href="favicon/site.webmanifest">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<body>
+  <header>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#sobre">Sobre</a>
+      <a href="#habilidades">Habilidades</a>
+      <a href="#contato">Contato</a>
+    </nav>
+    <div class="theme-switcher">
+      <button id="theme-system" title="Tema do Sistema">
+        <i class="fas fa-desktop"></i>
+      </button>
+      <button id="theme-light" title="Tema Claro">
+        <i class="fas fa-sun"></i>
+      </button>
+      <button id="theme-dark" title="Tema Escuro">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section id="home">
+      <h1><span class="cursor">></span> Olá, eu sou Desenvolvedor</h1>
+      <p class="typewriter">Bem-vindo ao meu portfólio pessoal. Aqui você encontra informações sobre mim e meus projetos.</p>
+      <div class="home-buttons">
+        <a href="#projetos" class="btn">Ver Projetos</a>
+        <a href="#contato" class="btn btn-outline">Contato</a>
+      </div>
+    </section>
+
+    <section id="sobre">
+      <h2>Sobre Mim</h2>
+      <div class="sobre-content">
+        <div class="sobre-text">
+          <p>Desenvolvedor apaixonado por criar soluções elegantes e eficientes. Com experiência em desenvolvimento web
+            e mobile, busco sempre aprender novas tecnologias e metodologias.</p>
+          <p>Principais áreas de interesse:</p>
+          <ul class="interesse-list">
+            <li>🚀 Desenvolvimento Web Full Stack</li>
+            <li>📱 Aplicações Mobile</li>
+            <li>🤖 Inteligência Artificial</li>
+            <li>🎨 UI/UX Design</li>
+          </ul>
+        </div>
+        <div class="stats">
+          <div class="stat-item">
+            <span class="stat-number">3+</span>
+            <span class="stat-label">Anos de Experiência</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">50+</span>
+            <span class="stat-label">Projetos Completos</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">20+</span>
+            <span class="stat-label">Clientes Satisfeitos</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="habilidades">
+      <h2>Habilidades</h2>
+      <div class="skills-categories">
+        <div class="skill-category">
+          <h3>Frontend</h3>
+          <div class="skills-grid">
+            <div class="skill">HTML5</div>
+            <div class="skill">CSS3</div>
+            <div class="skill">JavaScript</div>
+            <div class="skill">React</div>
+          </div>
+        </div>
+        <div class="skill-category">
+          <h3>Backend</h3>
+          <div class="skills-grid">
+            <div class="skill">Node.js</div>
+            <div class="skill">Python</div>
+            <div class="skill">Java</div>
+            <div class="skill">C</div>
+            <div class="skill">C++</div>
+            <div class="skill">C#</div>
+            <div class="skill">MySQL</div>
+            <div class="skill">PostgreSQL</div>
+          </div>
+        </div>
+        <div class="skill-category">
+          <h3>Ferramentas</h3>
+          <div class="skills-grid">
+            <div class="skill">Git</div>
+            <div class="skill">Docker</div>
+            <div class="skill">VS Code</div>
+            <div class="skill">Figma</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contato">
+      <h2>Contato</h2>
+      <p class="contato-intro">Vamos trabalhar juntos? Entre em contato!</p>
+      <div class="contact-container">
+        <div class="contact-info">
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <a href="mailto:victorgabrielbarbosa88@gmail.com">victorgabrielbarbosa88@gmail.com</a>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Minas Gerais, Brasil</span>
+          </div>
+        </div>
+        <div class="contact-links">
+          <a href="https://github.com/Victor-Gabriel-Barbosa" target="_blank" class="social-link">
+            <i class="fab fa-github"></i>
+            <span>GitHub</span>
+          </a>
+          <a href="https://www.linkedin.com/in/victor-barbosa-83284b334/" target="_blank" class="social-link">
+            <i class="fab fa-linkedin"></i>
+            <span>LinkedIn</a>
+          <a href="https://twitter.com/seu-usuario" target="_blank" class="social-link">
+            <i class="fab fa-twitter"></i>
+            <span>Twitter</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 - Desenvolvido com ❤️</p>
+  </footer>
+
+  <script src="portfolio.js"></script>
+</body>
+
+</html>

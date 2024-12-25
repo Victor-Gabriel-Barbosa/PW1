@@ -39,6 +39,62 @@
   <!-- O conteúdo será inserido dinamicamente via JavaScript -->
   <div class="anime-container" id="anime-content"></div>
 
+  <!-- Seção de comentários -->
+  <div class="comments-section container mx-auto px-4 mt-8 mb-12">
+    <h2 class="text-2xl font-bold mb-6">Avaliações e Comentários</h2>
+    
+    <!-- Formulário de comentário -->
+    <form id="comment-form" class="mb-8">
+      <div class="flex flex-col gap-4">
+        <!-- Sistema de avaliação por estrelas -->
+        <div class="rating-container mb-2">
+          <p class="mb-2 font-semibold">Sua avaliação:</p>
+          <div class="star-rating flex gap-2">
+            <input type="radio" id="star10" name="rating" value="10" class="hidden"/>
+            <label for="star10" class="cursor-pointer text-2xl">★</label>
+            <input type="radio" id="star9" name="rating" value="9" class="hidden"/>
+            <label for="star9" class="cursor-pointer text-2xl">★</label>
+            <input type="radio" id="star8" name="rating" value="8" class="hidden"/>
+            <label for="star8" class="cursor-pointer text-2xl">★</label>
+            <input type="radio" id="star7" name="rating" value="7" class="hidden"/>
+            <label for="star7" class="cursor-pointer text-2xl">★</label>
+            <input type="radio" id="star6" name="rating" value="6" class="hidden"/>
+            <label for="star6" class="cursor-pointer text-2xl">★</label>
+            <input type="radio" id="star5" name="rating" value="5" class="hidden"/>
+            <label for="star5" class="cursor-pointer text-2xl">★</label>
+            <input type="radio" id="star4" name="rating" value="4" class="hidden"/>
+            <label for="star4" class="cursor-pointer text-2xl">★</label>
+            <input type="radio" id="star3" name="rating" value="3" class="hidden"/>
+            <label for="star3" class="cursor-pointer text-2xl">★</label>
+            <input type="radio" id="star2" name="rating" value="2" class="hidden"/>
+            <label for="star2" class="cursor-pointer text-2xl">★</label>
+            <input type="radio" id="star1" name="rating" value="1" class="hidden"/>
+            <label for="star1" class="cursor-pointer text-2xl">★</label>
+          </div>
+        </div>
+        
+        <textarea
+          id="comment-text"
+          class="w-full p-3 border rounded-lg resize-none dark:bg-gray-800"
+          rows="4"
+          placeholder="Digite seu comentário..."
+          required
+        ></textarea>
+        <button
+          type="submit"
+          class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors w-fit"
+        >
+          Enviar avaliação
+        </button>
+      </div>
+    </form>
+
+    <!-- Lista de comentários -->
+    <div id="comments-list" class="space-y-6">
+      <!-- Os comentários serão inseridos aqui dinamicamente -->
+    </div>
+  </div>
+
   <!-- Inclusão de scripts para funcionalidades do site -->
   <script src="./src/js/animu.js"></script> <!-- Script principal com funcionalidades globais -->
   <script src="./src/js/animes.js"></script> <!-- Script específico para manipular a lista de animes -->

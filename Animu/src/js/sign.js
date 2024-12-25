@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
           username,
           email,
           password, // Em produção, use hash de senha
+          isAdmin: false, // Por padrão, usuários não são admin
           createdAt: new Date().toISOString()
         };
 
@@ -84,6 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const sessionData = {
           userId: user.id,
           username: user.username,
+          isAdmin: user.isAdmin, // Adiciona status de admin à sessão
           loginTime: new Date().toISOString()
         };
 
