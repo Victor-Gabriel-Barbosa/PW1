@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Verifica se o usuário atual é admin
     const sessionData = JSON.parse(localStorage.getItem('userSession'));
     if (!sessionData?.isAdmin) {
-        window.location.href = 'inicio.html';
+        window.location.href = '../inicio.html';
         return;
     }
 
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
         novosUsuarios.textContent = newUsers.length;
     }
 
-    // Gerar avatar único baseado no nome de usuário (mesma função do sign.js)
+    // Gerar avatar único baseado no nome de usuário (mesma função do login.js)
     function generateAvatar(username) {
         let hash = 0;
         for (let i = 0; i < username.length; i++) {

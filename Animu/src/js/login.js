@@ -100,13 +100,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // Atualizar painel de usuário
     updateUserPanel() {
       const userPanel = document.getElementById('user-panel');
-      const userNameSpan = userPanel ? userPanel.querySelector('span') : null;
+      const userNameSpan = document.getElementById('user-name');
       const userAvatar = userPanel ? userPanel.querySelector('img') : null;
+      const logoutLink = document.getElementById('logout-link');
 
       // Verificar se há uma sessão ativa
       const sessionData = JSON.parse(localStorage.getItem('userSession'));
 
-      if (sessionData && userPanel && userNameSpan) {
+      if (sessionData && userPanel) {
         // Encontrar usuário na lista de usuários
         const user = this.users.find(u => u.id === sessionData.userId);
 
@@ -114,8 +115,11 @@ document.addEventListener('DOMContentLoaded', function () {
           // Mostrar painel de usuário
           userPanel.classList.remove('hidden');
 
-          // Atualizar nome de usuário
-          userNameSpan.textContent = user.username;
+          // Atualizar nome de usuário (removendo o link de login)
+          userNameSpan.innerHTML = user.username;
+
+          // Mostrar link de logout
+          logoutLink.classList.remove('hidden');
 
           // Gerar avatar único baseado no nome de usuário
           if (userAvatar) {
@@ -123,6 +127,12 @@ document.addEventListener('DOMContentLoaded', function () {
           }
 
           return true;
+        }
+      } else if (userNameSpan) {
+        // Se não houver sessão, mostrar link de login e esconder logout
+        userNameSpan.innerHTML = '<a href="./login/signin.html">Login</a>';
+        if (logoutLink) {
+          logoutLink.classList.add('hidden');
         }
       }
 
@@ -201,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (success) {
         // Atualizar painel de usuário após login
         authManager.updateUserPanel();
-        window.location.href = './inicio.html';
+        window.location.href = '../inicio.html';
       }
     });
   }

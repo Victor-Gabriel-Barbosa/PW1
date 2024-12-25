@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8"> 
+  <title>Animu - Inserir Anime</title> 
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../src/css/styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="../src/favicon/favicon.ico" type="image/x-icon">
+  <script>
+    // Verificação imediata antes de carregar o resto da página
+    (function () {
+      const session = JSON.parse(localStorage.getItem('userSession'));
+      if (!session || !session.isAdmin) {
+        alert('Acesso negado. Esta página é restrita a administradores.');
+        window.location.href = '../inicio.html';
+      }
+    })();
+  </script>
+</head>
+
+<body>
+  <!-- Botão de voltar para a página anterior -->
+  <button class="back-button" onclick="window.history.back()" title="Voltar">
+    <!-- Ícone SVG representando uma seta de voltar -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 18l-6-6 6-6" /> <!-- Desenho da seta -->
+    </svg>
+  </button>
+
+  <!-- Botão de alternância entre temas claro e escuro -->
+  <div class="theme-toggle-container">
+    <button id="theme-toggle" class="toggle">
+      <!-- Ícones representando o sol (tema claro) e a lua (tema escuro) -->
+      <span class="icon sun"></span>
+      <span class="icon moon"></span>
+    </button>
+  </div>
+
+  <!-- Container principal para o formulário de inserção de animes -->
+  <div class="admin-form card-hover max-w-4xl mx-auto p-6">
+    <h1 class="form-title text-2xl mb-6"><b>Inserir Anime</b></h1> <!-- Título do formulário -->
+
+    <!-- Formulário para cadastrar um novo anime -->
+    <form id="anime-admin-form" class="space-y-4">
+      <!-- Informações Básicas -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="form-group">
+          <label for="primary-title">Título Principal</label>
+          <input type="text" id="primary-title" required>
+        </div>
+
+        <!-- Títulos Alternativos -->
+        <div class="form-group">
+          <label>Títulos Alternativos</label>
+          <div class="flex gap-2">
+            <input type="text" id="alternative-title" class="flex-grow">
+            <select id="title-type" class="w-24">
+              <option value="Japonês">Japonês</option>
+              <option value="Inglês">Inglês</option>
+              <option value="Romaji">Romaji</option>
+            </select>
+            <button type="button" class="btn-add px-2" onclick="addTitle()">+</button> <!-- Botão para adicionar -->
+          </div>
+          <div id="titles-container" class="tag-container mt-2"></div> <!-- Exibição dos títulos adicionados -->
+        </div>
+      </div>
+
+      <!-- Gêneros e Status -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="form-group">
+          <label>Gêneros</label>
+          <div class="flex gap-2">
+            <input type="text" id="genre-input" class="flex-grow">
+            <button type="button" class="btn-add px-2" onclick="addGenre()">+</button> <!-- Botão para adicionar -->
+          </div>
+          <div id="genres-container" class="tag-container mt-2"></div> <!-- Exibição dos gêneros adicionados -->
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" class="w-full">
+              <option value="Em andamento">Em Andamento</option>
+              <option value="Finalizado">Finalizado</option>
+              <option value="Anunciado">Anunciado</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="age-rating">Classificação</label>
+            <select id="age-rating" class="w-full">
+              <option value="livre">Livre</option>
+              <option value="10">10</option>
+              <option value="12">12</option>
+              <option value="14">14</option>
+              <option value="16">16</option>
+              <option value="18">18</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informações de Produção -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="form-group">
+          <label for="studio">Estúdio</label>
+          <input type="text" id="studio" required>
+        </div>
+        <div class="form-group">
+          <label for="episodes">Episódios</label>
+          <input type="number" id="episodes" min="1">
+        </div>
+        <div class="form-group">
+          <label for="episode-duration">Duração (min)</label>
+          <input type="number" id="episode-duration" required>
+        </div>
+      </div>
+
+      <!-- Temporada e Fonte -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="form-group">
+          <label for="season-period">Temporada</label>
+          <select id="season-period" class="w-full">
+            <option value="Inverno">Inverno</option>
+            <option value="Primavera">Primavera</option>
+            <option value="Verão">Verão</option>
+            <option value="Outono">Outono</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="season-year">Ano</label>
+          <input type="number" id="season-year" required>
+        </div>
+        <div class="form-group">
+          <label for="source">Fonte</label>
+          <select id="source" class="w-full">
+            <option value="Mangá">Mangá</option>
+            <option value="Light Novel">Light Novel</option>
+            <option value="Original">Original</option>
+            <option value="Game">Game</option>
+            <option value="Visual Novel">Visual Novel</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Produtores e Licenciadores -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="form-group">
+          <label>Produtores</label>
+          <div class="flex gap-2">
+            <input type="text" id="producer-input" class="flex-grow">
+            <button type="button" class="btn-add px-2" onclick="addProducer()">+</button> <!-- Botão para adicionar -->
+          </div>
+          <div id="producers-container" class="tag-container mt-2"></div> <!-- Exibição dos produtores adicionados -->
+        </div>
+        <div class="form-group">
+          <label>Licenciadores</label>
+          <div class="flex gap-2">
+            <input type="text" id="licensor-input" class="flex-grow">
+            <button type="button" class="btn-add px-2" onclick="addLicensor()">+</button> <!-- Botão para adicionar -->
+          </div>
+          <div id="licensors-container" class="tag-container mt-2"></div> <!-- Exibição dos licenciadores adicionados -->
+        </div>
+      </div>
+
+      <!-- Sinopse -->
+      <div class="form-group">
+        <label for="synopsis">Sinopse</label>
+        <textarea id="synopsis" rows="3" required></textarea>
+      </div>
+
+      <!-- URLs -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="form-group">
+          <label for="image-url">URL da Imagem</label>
+          <input type="url" id="image-url" required>
+        </div>
+        <div class="form-group">
+          <label for="trailer-url">URL do Trailer</label>
+          <input type="url" id="trailer-url">
+        </div>
+      </div>
+
+      <!-- Score e Popularidade -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="form-group">
+          <label for="score">Score (0-10)</label>
+          <input type="number" id="score" min="0" max="10" step="0.1" required>
+        </div>
+        <div class="form-group">
+          <label for="popularity">Popularidade</label>
+          <input type="number" id="popularity" min="1" required>
+        </div>
+      </div>
+
+      <!-- Botões do formulário -->
+      <div class="grid grid-cols-2 gap-4">
+        <button type="submit" id="submit-btn" class="w-full">Cadastrar Anime</button>
+        <button type="button" id="clear-btn" class="w-full" style="background: #ff4444; color: white; padding: 10px; border-radius: 8px;" onclick="resetForm()">Limpar Formulário</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Inclusão de scripts JavaScript para funcionalidades adicionais -->
+  <script src="../src/js/animu.js"></script>
+  <script src="../src/js/admin.js"></script>
+  <script src="../src/js/add-anime.js"></script>
+</body>
+
+</html>

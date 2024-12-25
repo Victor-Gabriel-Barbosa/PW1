@@ -635,7 +635,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const session = localStorage.getItem('userSession');
         if (!session) {
           alert('Você precisa estar logado para comentar!');
-          window.location.href = 'signin.html';
+          window.location.href = './login/signin.html';
           return;
         }
 

@@ -68,12 +68,14 @@
             <div id="admin-menu-items"
               class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
               <div class="py-1" role="menu">
-                <a href="usuarios.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100"
+                <a href="./admin/usuarios.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100"
                   role="menuitem">Usuários</a>
                 <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100"
                   role="menuitem">Categorias</a>
-                <a href="admin.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100"
+                <a href="./admin/add-anime.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100"
                   role="menuitem">Inserir</a>
+                <a href="./admin/edit-anime.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100"
+                  role="menuitem">Editar</a>
                 <a href="animes.html?anime=all" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100"
                   role="menuitem">Animes</a>
                 <div class="border-t border-gray-100"></div>
@@ -89,8 +91,8 @@
               alt="Avatar do Usuário" />
             <!-- Nome do usuário -->
             <div class="flex flex-col ml-2">
-              <span class="font-medium"><a href="signin.html">Login</a></span>
-              <a href="#" id="logout-link" class="text-sm text-gray-500 hover:text-gray-700">Sair</a>
+              <span class="font-medium" id="user-name"><a href="./login/signin.html">Login</a></span>
+              <a href="#" id="logout-link" class="text-sm text-gray-500 hover:text-gray-700 hidden">Sair</a>
             </div>
           </div>
 
@@ -220,7 +222,7 @@
 
   <!-- Script personalizado para funcionalidade adicional -->
   <script src="./src/js/animu.js"></script>
-  <script src="./src/js/sign.js"></script>
+  <script src="./src/js/login.js"></script>
   <script src="./src/js/animes.js"></script>
 </body>
 

@@ -2,18 +2,12 @@
 <html lang="pt-BR">
 
 <head>
-  <!-- Definição do tipo de documento e idioma para português do Brasil -->
-  <meta charset="UTF-8"> <!-- Define o conjunto de caracteres UTF-8 para suporte ao idioma -->
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Responsividade para dispositivos móveis -->
-  <title>Anime</title> <!-- Título da página exibido na aba do navegador -->
-  <!-- Inclusão da biblioteca Tailwind CSS -->
+  <title>Anime</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Fonte personalizada Inter do Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-  <!-- Link para o arquivo de estilos personalizados -->
   <link rel="stylesheet" href="./src/css/styles.css">
-  <!-- Ícone do site (favicon) -->
   <link rel="icon" href="./src/favicon/favicon.ico" type="image/x-icon">
 </head>
 
@@ -42,48 +36,62 @@
   <!-- Seção de comentários -->
   <div class="comments-section container mx-auto px-4 mt-8 mb-12">
     <h2 class="text-2xl font-bold mb-6">Avaliações e Comentários</h2>
-    
+
     <!-- Formulário de comentário -->
     <form id="comment-form" class="mb-8">
       <div class="flex flex-col gap-4">
         <!-- Sistema de avaliação por estrelas -->
         <div class="rating-container mb-2">
-          <p class="mb-2 font-semibold">Sua avaliação: <span id="rating-display" class="text-purple-600 ml-2">0.0</span></p>
+          <p class="mb-2 font-semibold">Sua avaliação: <span id="rating-display" class="text-purple-600 ml-2">0.0</span>
+          </p>
           <div class="star-rating flex gap-2">
-            <input type="radio" id="star10" name="rating" value="10" class="hidden" onchange="updateRatingDisplay(this.value)"/>
-            <label for="star10" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(10)" onmouseout="showSelectedRating()">★</label>
-            <input type="radio" id="star9" name="rating" value="9" class="hidden" onchange="updateRatingDisplay(this.value)"/>
-            <label for="star9" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(9)" onmouseout="showSelectedRating()">★</label>
-            <input type="radio" id="star8" name="rating" value="8" class="hidden" onchange="updateRatingDisplay(this.value)"/>
-            <label for="star8" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(8)" onmouseout="showSelectedRating()">★</label>
-            <input type="radio" id="star7" name="rating" value="7" class="hidden" onchange="updateRatingDisplay(this.value)"/>
-            <label for="star7" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(7)" onmouseout="showSelectedRating()">★</label>
-            <input type="radio" id="star6" name="rating" value="6" class="hidden" onchange="updateRatingDisplay(this.value)"/>
-            <label for="star6" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(6)" onmouseout="showSelectedRating()">★</label>
-            <input type="radio" id="star5" name="rating" value="5" class="hidden" onchange="updateRatingDisplay(this.value)"/>
-            <label for="star5" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(5)" onmouseout="showSelectedRating()">★</label>
-            <input type="radio" id="star4" name="rating" value="4" class="hidden" onchange="updateRatingDisplay(this.value)"/>
-            <label for="star4" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(4)" onmouseout="showSelectedRating()">★</label>
-            <input type="radio" id="star3" name="rating" value="3" class="hidden" onchange="updateRatingDisplay(this.value)"/>
-            <label for="star3" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(3)" onmouseout="showSelectedRating()">★</label>
-            <input type="radio" id="star2" name="rating" value="2" class="hidden" onchange="updateRatingDisplay(this.value)"/>
-            <label for="star2" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(2)" onmouseout="showSelectedRating()">★</label>
-            <input type="radio" id="star1" name="rating" value="1" class="hidden" onchange="updateRatingDisplay(this.value)"/>
-            <label for="star1" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(1)" onmouseout="showSelectedRating()">★</label>
+            <input type="radio" id="star10" name="rating" value="10" class="hidden"
+              onchange="updateRatingDisplay(this.value)" />
+            <label for="star10" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(10)"
+              onmouseout="showSelectedRating()">★</label>
+            <input type="radio" id="star9" name="rating" value="9" class="hidden"
+              onchange="updateRatingDisplay(this.value)" />
+            <label for="star9" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(9)"
+              onmouseout="showSelectedRating()">★</label>
+            <input type="radio" id="star8" name="rating" value="8" class="hidden"
+              onchange="updateRatingDisplay(this.value)" />
+            <label for="star8" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(8)"
+              onmouseout="showSelectedRating()">★</label>
+            <input type="radio" id="star7" name="rating" value="7" class="hidden"
+              onchange="updateRatingDisplay(this.value)" />
+            <label for="star7" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(7)"
+              onmouseout="showSelectedRating()">★</label>
+            <input type="radio" id="star6" name="rating" value="6" class="hidden"
+              onchange="updateRatingDisplay(this.value)" />
+            <label for="star6" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(6)"
+              onmouseout="showSelectedRating()">★</label>
+            <input type="radio" id="star5" name="rating" value="5" class="hidden"
+              onchange="updateRatingDisplay(this.value)" />
+            <label for="star5" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(5)"
+              onmouseout="showSelectedRating()">★</label>
+            <input type="radio" id="star4" name="rating" value="4" class="hidden"
+              onchange="updateRatingDisplay(this.value)" />
+            <label for="star4" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(4)"
+              onmouseout="showSelectedRating()">★</label>
+            <input type="radio" id="star3" name="rating" value="3" class="hidden"
+              onchange="updateRatingDisplay(this.value)" />
+            <label for="star3" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(3)"
+              onmouseout="showSelectedRating()">★</label>
+            <input type="radio" id="star2" name="rating" value="2" class="hidden"
+              onchange="updateRatingDisplay(this.value)" />
+            <label for="star2" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(2)"
+              onmouseout="showSelectedRating()">★</label>
+            <input type="radio" id="star1" name="rating" value="1" class="hidden"
+              onchange="updateRatingDisplay(this.value)" />
+            <label for="star1" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(1)"
+              onmouseout="showSelectedRating()">★</label>
           </div>
         </div>
-        
-        <textarea
-          id="comment-text"
-          class="w-full p-3 border rounded-lg resize-none dark:bg-gray-800"
-          rows="4"
-          placeholder="Digite seu comentário..."
-          required
-        ></textarea>
-        <button
-          type="submit"
-          class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors w-fit"
-        >
+
+        <textarea id="comment-text" class="w-full p-3 border rounded-lg resize-none dark:bg-gray-800" rows="4"
+          placeholder="Digite seu comentário..." required></textarea>
+        <button type="submit"
+          class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors w-fit">
           Enviar avaliação
         </button>
       </div>
@@ -96,8 +104,8 @@
   </div>
 
   <!-- Inclusão de scripts para funcionalidades do site -->
-  <script src="./src/js/animu.js"></script> <!-- Script principal com funcionalidades globais -->
-  <script src="./src/js/animes.js"></script> <!-- Script específico para manipular a lista de animes -->
+  <script src="./src/js/animu.js"></script> 
+  <script src="./src/js/animes.js"></script>
 </body>
 
 </html>
