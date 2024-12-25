@@ -34,8 +34,8 @@ function createAnimeCardHTML(anime) {
         
         <div class="flex flex-wrap gap-1 mb-3">
           ${anime.genres && anime.genres.length > 0
-            ? anime.genres.slice(0, 3).map(g => `<span class="genre-tag text-sm">${g}</span>`).join('')
-            : '<span class="genre-tag text-sm">Sem gêneros</span>'}
+      ? anime.genres.slice(0, 3).map(g => `<span class="genre-tag text-sm">${g}</span>`).join('')
+      : '<span class="genre-tag text-sm">Sem gêneros</span>'}
         </div>
 
         <div class="flex items-center gap-4 text-sm mb-3">
@@ -45,7 +45,7 @@ function createAnimeCardHTML(anime) {
 
         <div class="flex justify-between items-center mt-auto">
           ${anime.score ? `
-            <span class="text-sm bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded">
+            <span class="text-sm bg-purple-700 px-2 py-1 rounded">
               ⭐ ${anime.score}/10
             </span>
           ` : ''}
@@ -308,7 +308,7 @@ function saveComment(animeTitle, comment, rating) {
     if (!comments[animeTitle]) {
       comments[animeTitle] = [];
     }
-    
+
     const newComment = {
       id: Date.now(),
       text: comment,
@@ -316,7 +316,7 @@ function saveComment(animeTitle, comment, rating) {
       username: JSON.parse(localStorage.getItem('userSession'))?.username || 'Anônimo',
       timestamp: new Date().toISOString()
     };
-    
+
     comments[animeTitle].unshift(newComment);
     localStorage.setItem('animeComments', JSON.stringify(comments));
 
@@ -334,7 +334,7 @@ function updateAnimeRating(animeTitle) {
   try {
     const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
     const animeComments = comments[animeTitle] || [];
-    
+
     if (animeComments.length === 0) return;
 
     const totalRating = animeComments.reduce((sum, comment) => sum + (comment.rating || 0), 0);
@@ -343,7 +343,7 @@ function updateAnimeRating(animeTitle) {
     // Atualizar a avaliação no objeto do anime
     const animes = JSON.parse(localStorage.getItem('animeData')) || [];
     const animeIndex = animes.findIndex(a => a.primaryTitle === animeTitle);
-    
+
     if (animeIndex !== -1) {
       animes[animeIndex].score = averageRating.toFixed(1);
       localStorage.setItem('animeData', JSON.stringify(animes));
@@ -370,53 +370,245 @@ function renderStars(rating) {
   let stars = '';
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 >= 0.5;
-  
+
   // Adiciona estrelas cheias
   for (let i = 0; i < fullStars; i++) {
     stars += '<span class="star">★</span>';
   }
-  
+
   // Adiciona meia estrela se necessário
   if (hasHalfStar) {
     stars += '<span class="half-star">★</span>';
   }
-  
+
   // Adiciona estrelas vazias para completar 10
   const emptyStars = 10 - Math.ceil(rating);
   for (let i = 0; i < emptyStars; i++) {
     stars += '<span class="star" style="color: #ddd !important;">☆</span>';
   }
-  
+
   return stars;
 }
 
-// Função para renderizar um comentário
-function renderComment(comment) {
+// Função para deletar comentário
+function deleteComment(animeTitle, commentId) {
+  try {
+    const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
+    if (!comments[animeTitle]) return false;
+
+    // Filtra o comentário a ser removido
+    comments[animeTitle] = comments[animeTitle].filter(comment => comment.id !== commentId);
+    localStorage.setItem('animeComments', JSON.stringify(comments));
+
+    // Atualiza a média de avaliações do anime
+    updateAnimeRating(animeTitle);
+    return true;
+  } catch (e) {
+    console.error('Erro ao deletar comentário:', e);
+    return false;
+  }
+}
+
+// Função para votar em um comentário
+function voteComment(animeTitle, commentId, voteType) {
+  try {
+    const currentUser = JSON.parse(localStorage.getItem('userSession'))?.username;
+    if (!currentUser) {
+      alert('Você precisa estar logado para votar!');
+      return false;
+    }
+
+    const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
+    const comment = comments[animeTitle].find(c => c.id === commentId);
+
+    if (!comment) return false;
+
+    // Inicializar arrays de votos se não existirem
+    comment.likes = comment.likes || [];
+    comment.dislikes = comment.dislikes || [];
+
+    // Remover voto existente do usuário
+    comment.likes = comment.likes.filter(user => user !== currentUser);
+    comment.dislikes = comment.dislikes.filter(user => user !== currentUser);
+
+    // Adicionar novo voto
+    if (voteType === 'like') {
+      comment.likes.push(currentUser);
+    } else if (voteType === 'dislike') {
+      comment.dislikes.push(currentUser);
+    }
+
+    localStorage.setItem('animeComments', JSON.stringify(comments));
+    return true;
+  } catch (e) {
+    console.error('Erro ao votar:', e);
+    return false;
+  }
+}
+
+// Função para verificar se o usuário já votou
+function getUserVote(likes = [], dislikes = []) {
+  const currentUser = JSON.parse(localStorage.getItem('userSession'))?.username;
+  if (!currentUser) return null;
+
+  if (likes.includes(currentUser)) return 'like';
+  if (dislikes.includes(currentUser)) return 'dislike';
+  return null;
+}
+
+// Função para verificar se o usuário atual é admin
+function isUserAdmin() {
+  const sessionData = JSON.parse(localStorage.getItem('userSession'));
+  return sessionData?.isAdmin || false;
+}
+
+// Função para renderizar um comentário (atualizada para incluir permissão de admin)
+function renderComment(comment, animeTitle) {
+  const currentUser = JSON.parse(localStorage.getItem('userSession'))?.username;
+  const isCommentOwner = currentUser === comment.username;
+  const userVote = getUserVote(comment.likes, comment.dislikes);
+  const isAdmin = isUserAdmin();
+  const canDelete = isCommentOwner || isAdmin;
+
   return `
-    <div class="comment p-4 rounded-lg">
+    <div class="comment p-4 rounded-lg" data-comment-id="${comment.id}">
       <div class="flex items-center gap-2 mb-2">
         <strong class="text-purple-600">${comment.username}</strong>
         <span class="comment-rating">${renderStars(comment.rating)}</span>
         <span class="text-sm">${formatDate(comment.timestamp)}</span>
+        ${canDelete ? `
+          <button 
+            class="delete-btn ml-auto px-2 py-1 rounded text-sm"
+            onclick="if(confirm('Deseja realmente excluir este comentário?')) { 
+              deleteComment('${animeTitle}', ${comment.id}); 
+              updateCommentsList('${animeTitle}');
+            }"
+          >
+            ${isAdmin && !isCommentOwner ? '🛡️ Excluir' : 'Excluir'}
+          </button>
+        ` : ''}
       </div>
       <p>${comment.text}</p>
+      <div class="vote-buttons">
+        <button 
+          class="vote-btn ${userVote === 'like' ? 'active' : ''}"
+          onclick="voteComment('${animeTitle}', ${comment.id}, 'like') && updateCommentsList('${animeTitle}')"
+        >
+          👍 <span class="vote-count">${comment.likes?.length || 0}</span>
+        </button>
+        <button 
+          class="vote-btn ${userVote === 'dislike' ? 'active' : ''}"
+          onclick="voteComment('${animeTitle}', ${comment.id}, 'dislike') && updateCommentsList('${animeTitle}')"
+        >
+          👎 <span class="vote-count">${comment.dislikes?.length || 0}</span>
+        </button>
+      </div>
     </div>
   `;
 }
 
-// Função para atualizar a lista de comentários
+// Função para atualizar a lista de comentários (atualizada)
 function updateCommentsList(animeTitle) {
   const commentsList = document.getElementById('comments-list');
   const comments = loadComments(animeTitle);
-  
+
   if (comments.length === 0) {
     commentsList.innerHTML = `
       <p class="text-center">Nenhum comentário ainda. Seja o primeiro a comentar!</p>
     `;
     return;
   }
-  
-  commentsList.innerHTML = comments.map(renderComment).join('');
+
+  commentsList.innerHTML = comments.map(comment => renderComment(comment, animeTitle)).join('');
+}
+
+// Funções para gerenciar a exibição da nota
+function updateRatingDisplay(value) {
+  const display = document.getElementById('rating-display');
+  if (display) {
+    display.textContent = parseFloat(value).toFixed(1);
+  }
+}
+
+function showTemporaryRating(value) {
+  const display = document.getElementById('rating-display');
+  if (display) {
+    display.textContent = parseFloat(value).toFixed(1);
+    display.style.opacity = '0.7';
+  }
+}
+
+function showSelectedRating() {
+  const display = document.getElementById('rating-display');
+  const selectedRating = document.querySelector('input[name="rating"]:checked');
+  if (display) {
+    display.style.opacity = '1';
+    display.textContent = selectedRating ? parseFloat(selectedRating.value).toFixed(1) : '0.0';
+  }
+}
+
+// Função para calcular a pontuação de destaque de um anime
+function calculateHighlightScore(anime, comments) {
+  const commentCount = comments[anime.primaryTitle]?.length || 0;
+  const score = parseFloat(anime.score) || 0;
+  // Fórmula: (nota * 0.7) + (número de comentários * 0.3)
+  return (score * 0.7) + (commentCount * 0.3);
+}
+
+// Função para obter os animes em destaque
+function getFeaturedAnimes(limit = 4) {
+  try {
+    const animes = JSON.parse(localStorage.getItem('animeData')) || [];
+    const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
+
+    // Calcula a pontuação de destaque para cada anime
+    const scoredAnimes = animes.map(anime => ({
+      ...anime,
+      highlightScore: calculateHighlightScore(anime, comments)
+    }));
+
+    // Ordena os animes pela pontuação de destaque
+    return scoredAnimes
+      .sort((a, b) => b.highlightScore - a.highlightScore)
+      .slice(0, limit);
+  } catch (e) {
+    console.error('Erro ao obter animes em destaque:', e);
+    return [];
+  }
+}
+
+// Função para renderizar os animes em destaque
+function renderFeaturedAnimes() {
+  const featuredContainer = document.querySelector('.featured-animes');
+  if (!featuredContainer) return;
+
+  const featuredAnimes = getFeaturedAnimes();
+
+  if (featuredAnimes.length === 0) {
+    featuredContainer.innerHTML = '<p class="text-center">Nenhum anime em destaque disponível.</p>';
+    return;
+  }
+
+  featuredContainer.innerHTML = featuredAnimes.map(anime => `
+    <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="anime-card">
+      <div class="rounded-2xl shadow-lg overflow-hidden h-full flex flex-col">
+        <div class="relative w-full aspect-[3/4]">
+          <img 
+            src="${anime.coverImage}" 
+            alt="${anime.primaryTitle}" 
+            class="absolute w-full h-full object-cover"
+            onerror="this.src='https://via.placeholder.com/480x720?text=Sem+Imagem'">
+        </div>
+        <div class="p-4 flex flex-col flex-grow">
+          <h3 class="text-lg font-semibold mb-auto line-clamp-2">${anime.primaryTitle}</h3>
+          <div class="flex items-center gap-2 mt-2">
+            <span class="text-sm bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded">⭐ ${anime.score || 'N/A'}</span>
+            <span class="text-sm bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded">💬 ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  `).join('');
 }
 
 // Modifica o evento DOMContentLoaded
@@ -429,13 +621,16 @@ window.addEventListener('DOMContentLoaded', () => {
   } else {
     const anime = findAnimeByTitle(decodeURIComponent(animeTitle));
     renderAnimeDetails(anime);
-    
+
     // Adiciona handler para o formulário de comentários
     const commentForm = document.getElementById('comment-form');
     if (commentForm) {
+      // Inicializa o display da nota
+      showSelectedRating();
+
       commentForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+
         // Verifica se usuário está logado
         const session = localStorage.getItem('userSession');
         if (!session) {
@@ -443,46 +638,49 @@ window.addEventListener('DOMContentLoaded', () => {
           window.location.href = 'signin.html';
           return;
         }
-        
+
         const commentText = document.getElementById('comment-text').value.trim();
         const rating = document.querySelector('input[name="rating"]:checked')?.value;
-        
+
         if (!commentText || !rating) {
           alert('Por favor, escreva um comentário e dê uma avaliação em estrelas.');
           return;
         }
-        
+
         saveComment(decodeURIComponent(animeTitle), commentText, parseInt(rating));
         document.getElementById('comment-text').value = '';
         document.querySelector('input[name="rating"]:checked').checked = false;
         updateCommentsList(decodeURIComponent(animeTitle));
       });
     }
-    
+
     // Carrega comentários existentes
     updateCommentsList(decodeURIComponent(animeTitle));
   }
+
+  // Renderiza animes em destaque
+  renderFeaturedAnimes();
 });
 
 // Adicionar listener para fechar resultados quando clicar fora
-document.addEventListener('click', function(event) {
-    const searchArea = document.getElementById('search-area');
-    
-    // Verifica se o clique foi fora da área de busca
-    if (!searchArea.contains(event.target)) {
-        toggleAnimeResults(false); // Apenas esconde os resultados
-    }
+document.addEventListener('click', function (event) {
+  const searchArea = document.getElementById('search-area');
+
+  // Verifica se o clique foi fora da área de busca
+  if (!searchArea.contains(event.target)) {
+    toggleAnimeResults(false); // Apenas esconde os resultados
+  }
 });
 
 // Quando exibir resultados, garanta que o container esteja visível
 function showAnimeResults(results) {
-    const animeResult = document.getElementById('anime-result');
-    // ... seu código existente de exibição de resultados ...
-    animeResult.style.display = 'block'; // Garante que o container está visível
+  const animeResult = document.getElementById('anime-result');
+  // ... seu código existente de exibição de resultados ...
+  animeResult.style.display = 'block'; // Garante que o container está visível
 }
 
 // Função para mostrar/esconder resultados
 function toggleAnimeResults(show) {
-    const animeResult = document.getElementById('anime-result');
-    animeResult.style.display = show ? 'flex' : 'none';
+  const animeResult = document.getElementById('anime-result');
+  animeResult.style.display = show ? 'flex' : 'none';
 }

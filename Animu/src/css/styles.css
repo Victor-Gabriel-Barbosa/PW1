@@ -50,6 +50,24 @@ body.dark-mode {
   --card-shadow: var(--card-shadow-dark);
 }
 
+/* Estilos para o menu de administração no tema escuro */
+body.dark-mode #admin-menu-items {
+  background: var(--background-dark);
+  border: 1px solid var(--card-shadow-dark);
+}
+
+body.dark-mode #admin-menu-items a {
+  color: var(--text-dark);
+}
+
+body.dark-mode #admin-menu-items a:hover {
+  background: rgba(139, 92, 246, 0.1);
+}
+
+body.dark-mode #admin-menu-items .border-t {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
 /* Estilos globais de links */
 a {
   text-decoration: none;
@@ -203,7 +221,7 @@ input, button, textarea, select {
 
 /* Estado hover do ícone de busca */
 .search-button svg {
-  fill: blueviolet;
+  fill: black;
 }
 
 /* Estado: Foco no campo de busca */
@@ -275,6 +293,7 @@ input, button, textarea, select {
 /* Componente: Toggle de tema */
 .theme-toggle-container {
   position: fixed;
+  display: flex;
   top: var(--spacing-lg);
   right: var(--spacing-lg);
   z-index: 1000;
@@ -390,12 +409,28 @@ input, button, textarea, select {
   overflow: hidden;
   border-radius: 8px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
 }
 
 /* Estado hover do card de anime */
 .anime-card:hover {
   transform: scale(1.03);
   box-shadow: 0 10px 20px var(--card-shadow);
+}
+
+/* Forçar altura igual para todos os cards */
+.featured-animes {
+  display: grid;
+  grid-auto-rows: 1fr;
+}
+
+/* Limitar número de linhas do título */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.5rem; /* Altura mínima para 2 linhas */
 }
 
 /* Subcomponente: Imagem do card de anime */
@@ -774,6 +809,14 @@ input, button, textarea, select {
 .delete-btn {
   background: #ff4444;
   color: white;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.delete-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
 }
 
 /* Paginação de comentários */
@@ -798,4 +841,41 @@ input, button, textarea, select {
 .page-btn.active {
   background: var(--primary-color);
   color: white;
+}
+
+/* Botões de like/dislike */
+.vote-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.vote-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid var(--input-border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  color: var(--text-color);
+}
+
+.vote-btn:hover {
+  background: var(--input-border-color);
+}
+
+.vote-btn.active {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.vote-count {
+  font-size: 0.9em;
+  color: var(--text-color);
+  opacity: 0.8;
 }

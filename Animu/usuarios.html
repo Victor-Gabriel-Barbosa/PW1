@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animu - Gerenciamento de Usuários</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./src/css/styles.css">
+  <link rel="icon" href="./src/favicon/favicon.ico" type="image/x-icon">
+  <script>
+    // Verificação imediata antes de carregar o resto da página
+    (function () {
+      const session = JSON.parse(localStorage.getItem('userSession'));
+      if (!session || !session.isAdmin) {
+        alert('Acesso negado. Esta página é restrita a administradores.');
+        window.location.href = 'inicio.html';
+      }
+    })();
+  </script>
+</head>
+
+<body>
+  <!-- Botão para voltar à página anterior -->
+  <button class="back-button" onclick="window.history.back()" title="Voltar">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 18l-6-6 6-6" />
+    </svg>
+  </button>
+
+  <!-- Botão de alternância de tema -->
+  <div class="theme-toggle-container">
+    <button id="theme-toggle" class="toggle">
+      <span class="icon sun"></span>
+      <span class="icon moon"></span>
+    </button>
+  </div>
+
+  <!-- Container principal -->
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8 text-center text-purple-600">Gerenciamento de Usuários</h1>
+
+    <!-- Estatísticas rápidas -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="rounded-lg shadow-lg p-6 card-hover">
+        <h3 class="text-xl font-semibold mb-2">Total de Usuários</h3>
+        <p class="text-3xl font-bold text-purple-600" id="total-usuarios">0</p>
+      </div>
+      <div class="rounded-lg shadow-lg p-6 card-hover">
+        <h3 class="text-xl font-semibold mb-2">Administradores</h3>
+        <p class="text-3xl font-bold text-purple-600" id="total-admins">0</p>
+      </div>
+      <div class="rounded-lg shadow-lg p-6 card-hover">
+        <h3 class="text-xl font-semibold mb-2">Novos (Últimos 7 dias)</h3>
+        <p class="text-3xl font-bold text-purple-600" id="novos-usuarios">0</p>
+      </div>
+    </div>
+
+    <!-- Seção de pesquisa e filtros -->
+    <div class="flex flex-wrap gap-4 mb-6">
+      <div class="flex-1">
+        <input type="text" id="search-user" 
+               placeholder="Buscar usuário..." 
+               class="w-full p-2 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-1 focus:ring-purple-500">
+      </div>
+      <select id="filter-type" 
+              class="p-2 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-1 focus:ring-purple-500">
+        <option value="all">Todos</option>
+        <option value="admin">Administradores</option>
+        <option value="user">Usuários</option>
+      </select>
+    </div>
+
+    <!-- Tabela de usuários -->
+    <div class="overflow-x-auto rounded-lg shadow">
+      <table class="w-full table-auto">
+        <thead class="bg-purple-600 text-white">
+          <tr>
+            <th class="px-6 py-3 text-left">Usuário</th>
+            <th class="px-6 py-3 text-left">Email</th>
+            <th class="px-6 py-3 text-center">Tipo</th>
+            <th class="px-6 py-3 text-center">Data de Registro</th>
+            <th class="px-6 py-3 text-center">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="users-table-body">
+          <!-- Conteúdo será preenchido via JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="./src/js/animu.js"></script>
+  <script src="./src/js/usuarios.js"></script>
+</body>
+
+</html>

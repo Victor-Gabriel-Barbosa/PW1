@@ -48,28 +48,28 @@
       <div class="flex flex-col gap-4">
         <!-- Sistema de avaliação por estrelas -->
         <div class="rating-container mb-2">
-          <p class="mb-2 font-semibold">Sua avaliação:</p>
+          <p class="mb-2 font-semibold">Sua avaliação: <span id="rating-display" class="text-purple-600 ml-2">0.0</span></p>
           <div class="star-rating flex gap-2">
-            <input type="radio" id="star10" name="rating" value="10" class="hidden"/>
-            <label for="star10" class="cursor-pointer text-2xl">★</label>
-            <input type="radio" id="star9" name="rating" value="9" class="hidden"/>
-            <label for="star9" class="cursor-pointer text-2xl">★</label>
-            <input type="radio" id="star8" name="rating" value="8" class="hidden"/>
-            <label for="star8" class="cursor-pointer text-2xl">★</label>
-            <input type="radio" id="star7" name="rating" value="7" class="hidden"/>
-            <label for="star7" class="cursor-pointer text-2xl">★</label>
-            <input type="radio" id="star6" name="rating" value="6" class="hidden"/>
-            <label for="star6" class="cursor-pointer text-2xl">★</label>
-            <input type="radio" id="star5" name="rating" value="5" class="hidden"/>
-            <label for="star5" class="cursor-pointer text-2xl">★</label>
-            <input type="radio" id="star4" name="rating" value="4" class="hidden"/>
-            <label for="star4" class="cursor-pointer text-2xl">★</label>
-            <input type="radio" id="star3" name="rating" value="3" class="hidden"/>
-            <label for="star3" class="cursor-pointer text-2xl">★</label>
-            <input type="radio" id="star2" name="rating" value="2" class="hidden"/>
-            <label for="star2" class="cursor-pointer text-2xl">★</label>
-            <input type="radio" id="star1" name="rating" value="1" class="hidden"/>
-            <label for="star1" class="cursor-pointer text-2xl">★</label>
+            <input type="radio" id="star10" name="rating" value="10" class="hidden" onchange="updateRatingDisplay(this.value)"/>
+            <label for="star10" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(10)" onmouseout="showSelectedRating()">★</label>
+            <input type="radio" id="star9" name="rating" value="9" class="hidden" onchange="updateRatingDisplay(this.value)"/>
+            <label for="star9" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(9)" onmouseout="showSelectedRating()">★</label>
+            <input type="radio" id="star8" name="rating" value="8" class="hidden" onchange="updateRatingDisplay(this.value)"/>
+            <label for="star8" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(8)" onmouseout="showSelectedRating()">★</label>
+            <input type="radio" id="star7" name="rating" value="7" class="hidden" onchange="updateRatingDisplay(this.value)"/>
+            <label for="star7" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(7)" onmouseout="showSelectedRating()">★</label>
+            <input type="radio" id="star6" name="rating" value="6" class="hidden" onchange="updateRatingDisplay(this.value)"/>
+            <label for="star6" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(6)" onmouseout="showSelectedRating()">★</label>
+            <input type="radio" id="star5" name="rating" value="5" class="hidden" onchange="updateRatingDisplay(this.value)"/>
+            <label for="star5" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(5)" onmouseout="showSelectedRating()">★</label>
+            <input type="radio" id="star4" name="rating" value="4" class="hidden" onchange="updateRatingDisplay(this.value)"/>
+            <label for="star4" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(4)" onmouseout="showSelectedRating()">★</label>
+            <input type="radio" id="star3" name="rating" value="3" class="hidden" onchange="updateRatingDisplay(this.value)"/>
+            <label for="star3" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(3)" onmouseout="showSelectedRating()">★</label>
+            <input type="radio" id="star2" name="rating" value="2" class="hidden" onchange="updateRatingDisplay(this.value)"/>
+            <label for="star2" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(2)" onmouseout="showSelectedRating()">★</label>
+            <input type="radio" id="star1" name="rating" value="1" class="hidden" onchange="updateRatingDisplay(this.value)"/>
+            <label for="star1" class="cursor-pointer text-2xl" onmouseover="showTemporaryRating(1)" onmouseout="showSelectedRating()">★</label>
           </div>
         </div>
         

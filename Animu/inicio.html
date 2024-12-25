@@ -57,16 +57,30 @@
         <!-- Área do usuário/admin -->
         <div class="flex items-center space-x-4">
           <!-- Painel do administrador -->
-          <select id="admin-panel"
-            class="hidden px-3 py-1 rounded border focus:outline-none focus:ring-2 focus:ring-purple-600 cursor-pointer"
-            onchange="window.location.href=this.value">
-            <option value="#">Administração</option>
-            <option value="#">Usuários</option>
-            <option value="#">Categorias</option>
-            <option value="admin.html">Inserir</option>
-            <option value="animes.html">Animes</option>
-            <option value="#">Sair</option>
-          </select>
+          <div id="admin-panel" class="hidden relative">
+            <button id="admin-menu-button"
+              class="flex items-center space-x-2 px-4 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors">
+              <span>Administração</span>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div id="admin-menu-items"
+              class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+              <div class="py-1" role="menu">
+                <a href="usuarios.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100"
+                  role="menuitem">Usuários</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100"
+                  role="menuitem">Categorias</a>
+                <a href="admin.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100"
+                  role="menuitem">Inserir</a>
+                <a href="animes.html?anime=all" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100"
+                  role="menuitem">Animes</a>
+                <div class="border-t border-gray-100"></div>
+                <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50" role="menuitem">Sair</a>
+              </div>
+            </div>
+          </div>
 
           <!-- Painel do usuário -->
           <div id="user-panel" class="flex items-center top-0 left-0 p-2 rounded" style="width: fit-content;">
@@ -192,47 +206,8 @@
       <!-- Seção de animes em destaque -->
       <section class="mb-16">
         <h2 class="text-3xl font-bold text-center mb-8">Animes em Destaque</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <!-- Cartões com imagens e títulos de animes -->
-          <a href="animes.html?anime=Demon Slayer" class="anime-card">
-            <div class="rounded-2xl shadow-lg overflow-hidden">
-              <img
-                src="https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=480,height=720/catalog/crunchyroll/765ee047befcfb677d169f5de4c82d5c.jpg"
-                alt="Anime 1" class="w-full h-[450px] object-cover">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold">Demon Slayer</h3>
-              </div>
-            </div>
-          </a>
-          <a href="animes.html?anime=Jujutsu Kaisen" class="anime-card">
-            <div class="rounded-2xl shadow-lg overflow-hidden">
-              <img src="https://infinitasvidas.wordpress.com/wp-content/uploads/2021/03/poster-jujutsu-kaisen.png"
-                alt="Anime 2" class="w-full h-[450px] object-cover">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold">Jujutsu Kaisen</h3>
-              </div>
-            </div>
-          </a>
-          <a href="animes.html?anime=Attack on Titan" class="anime-card">
-            <div class="rounded-2xl shadow-lg overflow-hidden">
-              <img
-                src="https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=480,height=720/catalog/crunchyroll/323c82257b2f6567fabbb7bd55bfa753.jpg"
-                alt="Anime 3" class="w-full h-[450px] object-cover">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold">Attack on Titan</h3>
-              </div>
-            </div>
-          </a>
-          <a href="animes.html?anime=My Hero Academia" class="anime-card">
-            <div class="rounded-2xl shadow-lg overflow-hidden">
-              <img
-                src="https://imgsrv.crunchyroll.com/cdn-cgi/image/fit=contain,format=auto,quality=85,width=1200,height=675/catalog/crunchyroll/9ca680632ac63f44c7220f61ace9a81b.jpg"
-                alt="Anime 4" class="w-full h-[450px] object-cover">
-              <div class="p-4">
-                <h3 class="text-lg font-semibold">My Hero Academia</h3>
-              </div>
-            </div>
-          </a>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 featured-animes">
+          <!-- Os cards serão inseridos dinamicamente aqui -->
         </div>
       </section>
 

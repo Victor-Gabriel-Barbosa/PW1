@@ -43,6 +43,7 @@ function addTitle() {
 
   renderTitles(); // Atualiza a interface com os títulos
   titleInput.value = ''; // Limpa o campo de entrada
+  saveFormState(); // Adicionar esta linha
 }
 
 /**
@@ -71,6 +72,7 @@ function renderTitles() {
 function removeTitle(index) {
   titles.splice(index, 1); // Remove o título da lista
   renderTitles(); // Atualiza a interface
+  saveFormState(); // Adicionar esta linha
 }
 
 /**
@@ -96,6 +98,7 @@ function addGenre() {
 
   renderGenres(); // Atualiza a interface com os gêneros
   genreInput.value = ''; // Limpa o campo de entrada
+  saveFormState(); // Adicionar esta linha
 }
 
 /**
@@ -124,6 +127,7 @@ function renderGenres() {
 function removeGenre(index) {
   genres.splice(index, 1); // Remove o gênero da lista
   renderGenres(); // Atualiza a interface
+  saveFormState(); // Adicionar esta linha
 }
 
 /**
@@ -144,6 +148,7 @@ function addProducer() {
 
   renderProducers(); // Atualiza a interface com os produtores
   producerInput.value = ''; // Limpa o campo de entrada
+  saveFormState(); // Adicionar esta linha
 }
 
 /**
@@ -172,6 +177,7 @@ function renderProducers() {
 function removeProducer(index) {
   producers.splice(index, 1); // Remove o produtor da lista
   renderProducers(); // Atualiza a interface
+  saveFormState(); // Adicionar esta linha
 }
 
 /**
@@ -192,6 +198,7 @@ function addLicensor() {
 
   renderLicensors(); // Atualiza a interface com os licenciadores
   licensorInput.value = ''; // Limpa o campo de entrada
+  saveFormState(); // Adicionar esta linha
 }
 
 /**
@@ -220,6 +227,7 @@ function renderLicensors() {
 function removeLicensor(index) {
   licensors.splice(index, 1); // Remove o licenciador da lista
   renderLicensors(); // Atualiza a interface
+  saveFormState(); // Adicionar esta linha
 }
 
 /**
@@ -263,42 +271,52 @@ function saveToLocalStorage(formData) {
   localStorage.setItem('animeData', JSON.stringify(existingAnimes));
 
   alert('Anime salvo no Local Storage!');
+  localStorage.removeItem('animeFormState'); // Adicione esta linha
 }
 
 /**
  * Carrega os dados salvos no Local Storage e atualiza os campos do formulário e a interface.
  * Antes de carregar, solicita a confirmação do usuário.
  */
-function loadDataFromLocalStorage() { 
-  const savedData = localStorage.getItem('animeData'); // Obtém os dados salvos no Local Storage
-  if (!savedData) return; // Sai se não houver dados salvos
+function loadDataFromLocalStorage() {
+  const savedState = localStorage.getItem('animeFormState');
+  if (!savedState) {
+    console.log('Nenhum dado temporário encontrado');
+    return;
+  }
 
-  // Solicita confirmação ao usuário
-  const userConfirmed = confirm('Deseja carregar os dados salvos do formulário?');
-  if (!userConfirmed) return; // Sai se o usuário cancelar
-
-  const formData = JSON.parse(savedData); // Converte os dados de volta para um objeto
+  const formState = JSON.parse(savedState);
 
   // Preenche os campos do formulário com os dados salvos
-  document.getElementById('primary-title').value = formData.primaryTitle || '';
-  document.getElementById('synopsis').value = formData.synopsis || '';
-  document.getElementById('episodes').value = formData.episodes || '';
-  document.getElementById('release-year').value = formData.releaseYear || '';
-  document.getElementById('studio').value = formData.studio || '';
-  document.getElementById('image-url').value = formData.coverImage || '';
-  document.getElementById('trailer-url').value = formData.trailerUrl || '';
+  document.getElementById('primary-title').value = formState.primaryTitle || '';
+  document.getElementById('synopsis').value = formState.synopsis || '';
+  document.getElementById('episodes').value = formState.episodes || '';
+  document.getElementById('release-year').value = formState.releaseYear || '';
+  document.getElementById('studio').value = formState.studio || '';
+  document.getElementById('image-url').value = formState.coverImage || '';
+  document.getElementById('trailer-url').value = formState.trailerUrl || '';
+  document.getElementById('status').value = formState.status || 'Em andamento';
+  document.getElementById('age-rating').value = formState.ageRating || 'livre';
+  document.getElementById('season-period').value = formState.seasonPeriod || 'Inverno';
+  document.getElementById('season-year').value = formState.seasonYear || '';
+  document.getElementById('episode-duration').value = formState.episodeDuration || '';
+  document.getElementById('source').value = formState.source || 'Original';
+  document.getElementById('score').value = formState.score || '0';
+  document.getElementById('popularity').value = formState.popularity || '0';
 
-  titles = formData.alternativeTitles || []; // Atualiza a lista de títulos
-  genres = formData.genres || []; // Atualiza a lista de gêneros
-  producers = formData.producers || []; // Atualiza a lista de produtores
-  licensors = formData.licensors || []; // Atualiza a lista de licenciadores
+  // Atualiza as listas
+  titles = formState.alternativeTitles || [];
+  genres = formState.genres || [];
+  producers = formState.producers || [];
+  licensors = formState.licensors || [];
 
-  renderTitles(); // Atualiza a interface com os títulos
-  renderGenres(); // Atualiza a interface com os gêneros
-  renderProducers(); // Atualiza a interface com os produtores
-  renderLicensors(); // Atualiza a interface com os licenciadores
+  // Atualiza a interface
+  renderTitles();
+  renderGenres();
+  renderProducers();
+  renderLicensors();
 
-  // alert('Dados carregados do Local Storage!');
+  console.log('Estado do formulário restaurado com sucesso!');
 }
 
 /**
@@ -368,4 +386,35 @@ function resetForm() {
   renderGenres(); // Atualiza a interface com os gêneros
   renderProducers(); // Atualiza a interface com os produtores
   renderLicensors(); // Atualiza a interface com os licenciadores
+  localStorage.removeItem('animeFormState'); // Adicione esta linha
 }
+
+// Adicione esta função após as outras funções existentes
+function saveFormState() {
+  const formState = {
+    primaryTitle: document.getElementById('primary-title').value,
+    synopsis: document.getElementById('synopsis').value,
+    episodes: document.getElementById('episodes').value,
+    releaseYear: document.getElementById('release-year').value,
+    studio: document.getElementById('studio').value,
+    coverImage: document.getElementById('image-url').value,
+    trailerUrl: document.getElementById('trailer-url').value,
+    status: document.getElementById('status').value,
+    ageRating: document.getElementById('age-rating').value,
+    seasonPeriod: document.getElementById('season-period').value,
+    seasonYear: document.getElementById('season-year').value,
+    episodeDuration: document.getElementById('episode-duration').value,
+    source: document.getElementById('source').value,
+    score: document.getElementById('score').value,
+    popularity: document.getElementById('popularity').value,
+    alternativeTitles: titles,
+    genres: genres,
+    producers: producers,
+    licensors: licensors
+  };
+  
+  localStorage.setItem('animeFormState', JSON.stringify(formState));
+}
+
+// Adicione um event listener para salvar o estado do formulário quando houver mudanças
+document.getElementById('anime-admin-form').addEventListener('input', saveFormState);

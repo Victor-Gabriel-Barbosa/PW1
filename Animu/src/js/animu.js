@@ -41,4 +41,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // Remove a classe "hidden" do painel de administração
     adminPanel.classList.remove("hidden");
   }
+
+  const adminButton = document.getElementById('admin-menu-button');
+  const adminMenu = document.getElementById('admin-menu-items');
+
+  if (adminButton && adminMenu) {
+    // Toggle do menu ao clicar no botão
+    adminButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      adminMenu.classList.toggle('hidden');
+    });
+
+    // Fechar o menu ao clicar fora dele
+    document.addEventListener('click', (e) => {
+      if (!adminMenu.contains(e.target) && !adminButton.contains(e.target)) {
+        adminMenu.classList.add('hidden');
+      }
+    });
+  }
+
+  // Renderiza os animes em destaque
+  renderFeaturedAnimes();
 });
