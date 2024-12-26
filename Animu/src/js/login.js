@@ -117,15 +117,18 @@ document.addEventListener('DOMContentLoaded', function () {
           // Mostrar painel de usuário
           userPanel.classList.remove('hidden');
 
-          // Atualizar nome de usuário (removendo o link de login)
-          userNameSpan.innerHTML = user.username;
+          // Atualizar nome de usuário com link para o perfil
+          userNameSpan.innerHTML = `<a href="profile.html" class="hover:text-purple-600 transition-colors">${user.username}</a>`;
 
           // Mostrar link de logout
           logoutLink.classList.remove('hidden');
 
-          // Usar o avatar da sessão
+          // Usar o avatar da sessão e adicionar link para o perfil
           if (userAvatar) {
             userAvatar.src = sessionData.avatar;
+            userAvatar.style.cursor = 'pointer';
+            userAvatar.onclick = () => window.location.href = 'profile.html';
+            userAvatar.title = 'Ver perfil';
           }
 
           return true;

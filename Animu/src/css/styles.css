@@ -530,7 +530,7 @@ input, button, textarea, select {
   border-radius: 8px;
   margin-top: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+  z-index: 500;
   display: none;
   flex-wrap: wrap;
   margin-top: 5px;
@@ -1076,4 +1076,16 @@ input, button, textarea, select {
 
 .rating-emoji.animate {
   animation: bounce 0.5s ease;
+}
+
+#favorite-button {
+  transition: transform 0.2s ease;
+}
+
+#favorite-button:active {
+  transform: scale(0.95);
+}
+
+#favorite-button.favorited {
+  background-color: #dc2626; /* vermelho */
 }

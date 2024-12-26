@@ -104,21 +104,26 @@ function loadFavoriteAnimes(user) {
     return;
   }
 
-  container.innerHTML = favoriteAnimes.map(animeId => {
-    const anime = animes.find(a => a.id === animeId);
+  container.innerHTML = favoriteAnimes.map(animeTitle => {
+    const anime = animes.find(a => a.primaryTitle === animeTitle);
     if (!anime) return '';
 
     return `
-            <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
-               class="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                <img src="${anime.coverImage}" alt="${anime.primaryTitle}" 
-                     class="w-16 h-16 object-cover rounded-lg">
-                <div>
-                    <h3 class="font-semibold">${anime.primaryTitle}</h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">${anime.status}</p>
-                </div>
-            </a>
-        `;
+      <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
+         class="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+        <img src="${anime.coverImage}" alt="${anime.primaryTitle}" 
+             class="w-16 h-16 object-cover rounded-lg">
+        <div>
+          <h3 class="font-semibold">${anime.primaryTitle}</h3>
+          <div class="flex gap-2 mt-1">
+            <span class="text-sm bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded">
+              ⭐ ${anime.score || 'N/A'}
+            </span>
+            <span class="text-sm text-gray-500 dark:text-gray-400">${anime.status}</span>
+          </div>
+        </div>
+      </a>
+    `;
   }).join('');
 }
 

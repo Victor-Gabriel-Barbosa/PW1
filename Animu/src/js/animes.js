@@ -21,41 +21,19 @@ function showNoAnimeMessage(container, message) {
 // Recebe um objeto "anime" e retorna uma string de HTML com os detalhes do anime
 function createAnimeCardHTML(anime) {
   return `
-    <div class="anime-card rounded-lg shadow-md overflow-hidden flex">
-      <div class="relative w-[180px] h-[240px] flex-shrink-0">
-        <img src="${anime.coverImage}" 
-             alt="${anime.primaryTitle}" 
-             class="w-full h-full object-cover"
-             onerror="this.src='https://via.placeholder.com/180x240?text=Sem+Imagem'">
-      </div>
-      
-      <div class="p-4 flex-grow">
-        <h2 class="text-xl font-semibold mb-2" style="color: blueviolet">${anime.primaryTitle}</h2>
-        
-        <div class="flex flex-wrap gap-1 mb-3">
-          ${anime.genres && anime.genres.length > 0
-      ? anime.genres.slice(0, 3).map(g => `<span class="genre-tag text-sm">${g}</span>`).join('')
-      : '<span class="genre-tag text-sm">Sem gêneros</span>'}
-        </div>
-
-        <div class="flex items-center gap-4 text-sm mb-3">
-          <span>${anime.releaseYear || 'Ano: N/A'}</span>
-          <span>${anime.episodes ? `${anime.episodes} eps` : 'Eps: N/A'}</span>
-        </div>
-
-        <div class="flex justify-between items-center mt-auto">
-          ${anime.score ? `
-            <span class="text-sm bg-purple-700 px-2 py-1 rounded">
-              ⭐ ${anime.score}/10
-            </span>
-          ` : ''}
-          <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
-             class="text-blue-600 dark:text-blue-400 hover:underline text-sm">
-            Ver detalhes →
-          </a>
+    <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+      <img src="${anime.coverImage}" alt="${anime.primaryTitle}" 
+        class="w-16 h-16 object-cover rounded-lg">
+      <div>
+        <h3 class="font-semibold">${anime.primaryTitle}</h3>
+        <div class="flex gap-2 mt-1">
+          <span class="text-sm bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded">
+            ⭐ ${anime.score || 'N/A'}
+          </span>
+          <span class="text-sm text-gray-500 dark:text-gray-400">${anime.status}</span>
         </div>
       </div>
-    </div>
+    </a>
   `;
 }
 
@@ -154,7 +132,13 @@ function renderAnimeDetails(anime) {
     <div class="anime-header flex flex-col md:flex-row gap-4">
       <img src="${anime.coverImage}" alt="${anime.primaryTitle}" class="cover-image w-full md:w-1/3 rounded-lg shadow-md">
       <div class="anime-info flex-grow">
-        <h1 class="title text-3xl font-bold mb-2">${anime.primaryTitle}</h1>
+        <div class="flex justify-between items-start">
+          <h1 class="title text-3xl font-bold mb-2">${anime.primaryTitle}</h1>
+          <button id="favorite-button" 
+                  onclick="toggleFavorite('${anime.primaryTitle}')"
+                  class="px-4 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors">
+          </button>
+        </div>
         <div class="alternative-titles text-sm text-gray-500 mb-2">
           ${alternativeTitlesHtml}
         </div>
@@ -233,6 +217,9 @@ function renderAnimeDetails(anime) {
 
   // Atualiza o título da página
   document.title = `${anime.primaryTitle} - Detalhes do Anime`;
+
+  // Atualiza o estado inicial do botão de favorito
+  updateFavoriteButton(anime.primaryTitle);
 }
 
 // Nova função para renderizar todos os animes
@@ -739,8 +726,83 @@ document.addEventListener('click', function (event) {
 // Quando exibir resultados, garanta que o container esteja visível
 function showAnimeResults(results) {
   const animeResult = document.getElementById('anime-result');
-  // ... seu código existente de exibição de resultados ...
-  animeResult.style.display = 'block'; // Garante que o container está visível
+
+  if (results.length === 0) {
+    animeResult.innerHTML = `
+      <div class="search-empty-state">
+        <div class="search-empty-icon">🔍</div>
+        <p class="search-empty-text">Nenhum anime encontrado</p>
+        <p class="search-empty-subtext">Tente buscar com outros termos ou filtros</p>
+      </div>
+    `;
+    return;
+  }
+
+  const resultsHTML = `
+    <div class="search-results-container">
+      <div class="search-results-header">
+        <span class="results-count">${results.length} ${results.length === 1 ? 'resultado' : 'resultados'}</span>
+        <button onclick="toggleViewMode()" class="view-toggle-btn">
+          <svg class="view-icon grid" viewBox="0 0 24 24" width="24" height="24">
+            <path d="M3 3h7v7H3zm11 0h7v7h-7zm0 11h7v7h-7zM3 14h7v7H3z"/>
+          </svg>
+          <svg class="view-icon list" viewBox="0 0 24 24" width="24" height="24">
+            <path d="M3 13h18v-2H3zm0 5h18v-2H3zm0-10h18V6H3z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="search-results-grid" id="results-container">
+        ${results.map(anime => `
+          <div class="search-result-item" data-rating="${anime.score || 0}">
+            <div class="result-card">
+              <div class="result-image-container">
+                <img src="${anime.coverImage}" 
+                     alt="${anime.primaryTitle}"
+                     class="result-image"
+                     loading="lazy"
+                     onerror="this.src='https://via.placeholder.com/300x450?text=Sem+Imagem'">
+                <div class="result-overlay">
+                  <div class="result-quick-info">
+                    ${anime.episodes ? `<span class="quick-info-item">📺 ${anime.episodes} eps</span>` : ''}
+                    ${anime.score ? `<span class="quick-info-item">⭐ ${anime.score}</span>` : ''}
+                    ${anime.releaseYear ? `<span class="quick-info-item">📅 ${anime.releaseYear}</span>` : ''}
+                  </div>
+                  <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
+                     class="view-details-btn">Ver Detalhes</a>
+                </div>
+              </div>
+              <div class="result-info">
+                <h3 class="result-title">${anime.primaryTitle}</h3>
+                <div class="result-genres">
+                  ${anime.genres?.slice(0, 3).map(genre =>
+    `<span class="result-genre">${genre}</span>`
+  ).join('') || ''}
+                </div>
+                <p class="result-synopsis">${anime.synopsis?.slice(0, 150)}...</p>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+
+  animeResult.innerHTML = resultsHTML;
+  animeResult.style.display = 'block';
+
+  // Inicializa o modo de visualização
+  const viewMode = localStorage.getItem('animeSearchViewMode') || 'grid';
+  document.getElementById('results-container').className = `search-results-${viewMode}`;
+}
+
+// Nova função para alternar entre modos de visualização
+function toggleViewMode() {
+  const container = document.getElementById('results-container');
+  const currentMode = container.className.includes('grid') ? 'grid' : 'list';
+  const newMode = currentMode === 'grid' ? 'list' : 'grid';
+
+  container.className = `search-results-${newMode}`;
+  localStorage.setItem('animeSearchViewMode', newMode);
 }
 
 // Função para mostrar/esconder resultados
@@ -843,3 +905,65 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 });
+
+// Função para verificar se um anime está favoritado
+function isAnimeFavorited(animeTitle) {
+  const sessionData = JSON.parse(localStorage.getItem('userSession'));
+  if (!sessionData) return false;
+
+  const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+  const currentUser = users.find(user => user.id === sessionData.userId);
+
+  return currentUser?.favoriteAnimes?.includes(animeTitle) || false;
+}
+
+// Função para alternar favorito
+function toggleFavorite(animeTitle) {
+  const sessionData = JSON.parse(localStorage.getItem('userSession'));
+  if (!sessionData) {
+    alert('Você precisa estar logado para favoritar animes!');
+    window.location.href = './login/signin.html';
+    return;
+  }
+
+  const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+  const userIndex = users.findIndex(user => user.id === sessionData.userId);
+
+  if (userIndex === -1) return;
+
+  // Inicializa o array de favoritos se não existir
+  if (!users[userIndex].favoriteAnimes) {
+    users[userIndex].favoriteAnimes = [];
+  }
+
+  const isFavorited = users[userIndex].favoriteAnimes.includes(animeTitle);
+
+  if (isFavorited) {
+    // Remove dos favoritos
+    users[userIndex].favoriteAnimes = users[userIndex].favoriteAnimes.filter(
+      title => title !== animeTitle
+    );
+  } else {
+    // Adiciona aos favoritos
+    users[userIndex].favoriteAnimes.push(animeTitle);
+  }
+
+  // Atualiza o localStorage
+  localStorage.setItem('animuUsers', JSON.stringify(users));
+
+  // Atualiza o botão
+  updateFavoriteButton(animeTitle);
+}
+
+// Função para atualizar o botão de favorito
+function updateFavoriteButton(animeTitle) {
+  const favoriteButton = document.getElementById('favorite-button');
+  const isFavorited = isAnimeFavorited(animeTitle);
+
+  if (favoriteButton) {
+    favoriteButton.innerHTML = isFavorited ?
+      '❤️ Remover dos Favoritos' :
+      '🤍 Adicionar aos Favoritos';
+    favoriteButton.classList.toggle('favorited', isFavorited);
+  }
+}
