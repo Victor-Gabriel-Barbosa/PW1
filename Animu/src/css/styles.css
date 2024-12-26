@@ -803,7 +803,7 @@ input, button, textarea, select {
 
 .half-star {
   position: relative;
-  width: 0.5em;
+  width: 0.42em;
   overflow: hidden;
 }
 

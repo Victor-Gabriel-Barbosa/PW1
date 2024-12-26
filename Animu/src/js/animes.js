@@ -291,7 +291,7 @@ function saveComment(animeTitle, comment, rating) {
     }
 
     const sliderRating = document.getElementById('rating-slider').value / 10;
-    
+
     const newComment = {
       id: Date.now(),
       text: comment,
@@ -461,7 +461,7 @@ function editComment(animeTitle, commentId, newText) {
     comment.text = newText;
     comment.edited = true;
     comment.editedAt = new Date().toISOString();
-    
+
     localStorage.setItem('animeComments', JSON.stringify(comments));
     return true;
   } catch (e) {
@@ -482,7 +482,7 @@ function toggleEditMode(commentId) {
   } else {
     const currentText = commentText.textContent;
     commentText.style.display = 'none';
-    
+
     const form = document.createElement('form');
     form.className = 'edit-form mt-2';
     form.innerHTML = `
@@ -767,16 +767,16 @@ function applyFilters() {
 
   // Filtra os animes baseado nos critérios selecionados
   const filteredResults = savedData.filter(anime => {
-    const matchesSearch = !searchInput || 
+    const matchesSearch = !searchInput ||
       anime.primaryTitle.toLowerCase().includes(searchInput.toLowerCase());
-    
-    const matchesGenre = !genreFilter || 
+
+    const matchesGenre = !genreFilter ||
       anime.genres.some(g => g.toLowerCase() === genreFilter.toLowerCase());
-    
-    const matchesYear = !yearFilter || 
+
+    const matchesYear = !yearFilter ||
       anime.releaseYear.toString() === yearFilter;
-    
-    const matchesRating = !ratingFilter || 
+
+    const matchesRating = !ratingFilter ||
       (anime.score && parseFloat(anime.score) >= parseFloat(ratingFilter));
 
     return matchesSearch && matchesGenre && matchesYear && matchesRating;
@@ -795,10 +795,10 @@ function applyFilters() {
 }
 
 // Fechar o menu de filtros quando clicar fora
-document.addEventListener('click', function(event) {
+document.addEventListener('click', function (event) {
   const filterDropdown = document.querySelector('.filter-dropdown');
   const filterMenu = document.getElementById('filter-menu');
-  
+
   if (!filterDropdown.contains(event.target)) {
     filterMenu.classList.remove('show');
   }
@@ -809,7 +809,7 @@ function updateRatingEmoji(value) {
   const emoji = document.getElementById('rating-emoji');
   const display = document.getElementById('rating-display');
   const rating = value / 10;
-  
+
   // Adiciona classe de animação
   emoji.classList.remove('animate');
   void emoji.offsetWidth; // Força reflow
@@ -835,10 +835,10 @@ function updateRatingEmoji(value) {
 }
 
 // Evento para inicializar o slider de avaliação
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   const slider = document.getElementById('rating-slider');
   if (slider) {
-    slider.addEventListener('input', function() {
+    slider.addEventListener('input', function () {
       updateRatingEmoji(this.value);
     });
   }
