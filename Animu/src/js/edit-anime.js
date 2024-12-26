@@ -132,6 +132,12 @@ function editAnime(index) {
         </div>
       </div>
 
+      <!-- Sinopse -->
+      <div class="form-group">
+        <label for="synopsis">Sinopse*</label>
+        <textarea id="synopsis" name="synopsis" required class="form-input w-full h-24"></textarea>
+      </div>
+
       <!-- Gêneros -->
       <div class="form-group">
         <label>Gêneros</label>
@@ -485,8 +491,19 @@ function deleteAnime(index) {
   if (!confirm('Tem certeza que deseja excluir este anime?')) return;
 
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
+  const animeTitle = animes[index].primaryTitle;
+  
+  // Remove o anime do array de animes
   animes.splice(index, 1);
   localStorage.setItem('animeData', JSON.stringify(animes));
+  
+  // Remove os comentários relacionados ao anime
+  const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
+  if (comments[animeTitle]) {
+    delete comments[animeTitle];
+    localStorage.setItem('animeComments', JSON.stringify(comments));
+  }
+  
   loadAnimes();
 }
 
