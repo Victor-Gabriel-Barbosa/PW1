@@ -131,18 +131,18 @@ function renderAnimeDetails(anime) {
 
   if (!anime) {
     container.innerHTML = `
-                <div class="no-anime-found">
-                    <h2>Anime não encontrado</h2>
-                    <p>O anime solicitado não está disponível em nossa base de dados.</p>
-                </div>
-            `;
-    commentsSection.style.display = 'none'; // Esconde a seção de comentários
+      <div class="no-anime-found">
+        <h2>Anime não encontrado</h2>
+        <p>O anime solicitado não está disponível em nossa base de dados.</p>
+      </div>
+    `;
+    commentsSection.style.display = 'none';
     return;
   }
 
   const alternativeTitlesHtml = anime.alternativeTitles
-    .map(t => `<span>${t.title} (${t.type})</span>`)
-    .join(', ');
+    .map(t => `<span class="alt-title">${t.title} (${t.type})</span>`)
+    .join('');
 
   const genresHtml = anime.genres
     .map(genre => `<span class="genre-tag">${genre}</span>`)
@@ -151,83 +151,82 @@ function renderAnimeDetails(anime) {
   const embedUrl = getYouTubeEmbedUrl(anime.trailerUrl);
 
   container.innerHTML = `
-            <div class="anime-header">
-                <img src="${anime.coverImage}" alt="${anime.primaryTitle}" class="cover-image">
-                <div class="anime-info">
-                    <h1 class="title">${anime.primaryTitle}</h1>
-                    <div class="alternative-titles">
-                        ${alternativeTitlesHtml}
-                    </div>
-                    <div class="genres">
-                        ${genresHtml}
-                    </div>
-                </div>
-            </div>
-
-            <div class="synopsis">
-                ${anime.synopsis}
-            </div>
-
-            <div class="anime-details">
-                <div class="detail-item">
-                    <span class="detail-label">Episódios</span>
-                    <span>${anime.episodes}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Ano de Lançamento</span>
-                    <span>${anime.releaseYear}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Estúdio</span>
-                    <span>${anime.studio}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Status</span>
-                    <span>${anime.status || 'Não informado'}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Classificação Etária</span>
-                    <span>${anime.ageRating || 'Não informado'}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Temporada</span>
-                    <span>${anime.season ? `${anime.season.period} ${anime.season.year}` : 'Não informado'}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Duração por Episódio</span>
-                    <span>${anime.episodeDuration ? `${anime.episodeDuration} min` : 'Não informado'}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Produtores</span>
-                    <span>${anime.producers ? anime.producers.join(', ') : 'Não informado'}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Licenciadores</span>
-                    <span>${anime.licensors ? anime.licensors.join(', ') : 'Não informado'}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Fonte</span>
-                    <span>${anime.source || 'Não informado'}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Pontuação</span>
-                    <span>${anime.score ? `${anime.score}/10` : 'Não informado'}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Popularidade</span>
-                    <span>${anime.popularity ? `#${anime.popularity}` : 'Não informado'}</span>
-                </div>
-            </div>
-
-            ${embedUrl ? `
-                <div class="trailer-container">
-                    <iframe 
-                        src="${embedUrl}"
-                        allowfullscreen>
-                    </iframe>
-                </div>
-            ` : ''}
-        `;
+    <div class="anime-header flex flex-col md:flex-row gap-4">
+      <img src="${anime.coverImage}" alt="${anime.primaryTitle}" class="cover-image w-full md:w-1/3 rounded-lg shadow-md">
+      <div class="anime-info flex-grow">
+        <h1 class="title text-3xl font-bold mb-2">${anime.primaryTitle}</h1>
+        <div class="alternative-titles text-sm text-gray-500 mb-2">
+          ${alternativeTitlesHtml}
+        </div>
+        <div class="genres flex flex-wrap gap-2 mb-4">
+          ${genresHtml}
+        </div>
+        <div class="anime-details grid grid-cols-2 gap-4 text-sm">
+          <div class="detail-item">
+            <span class="detail-label font-semibold">Episódios:</span>
+            <span>${anime.episodes}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label font-semibold">Ano de Lançamento:</span>
+            <span>${anime.releaseYear}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label font-semibold">Estúdio:</span>
+            <span>${anime.studio}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label font-semibold">Status:</span>
+            <span>${anime.status || 'Não informado'}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label font-semibold">Classificação Etária:</span>
+            <span>${anime.ageRating || 'Não informado'}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label font-semibold">Temporada:</span>
+            <span>${anime.season ? `${anime.season.period} ${anime.season.year}` : 'Não informado'}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label font-semibold">Duração por Episódio:</span>
+            <span>${anime.episodeDuration ? `${anime.episodeDuration} min` : 'Não informado'}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label font-semibold">Produtores:</span>
+            <span>${anime.producers ? anime.producers.join(', ') : 'Não informado'}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label font-semibold">Licenciadores:</span>
+            <span>${anime.licensors ? anime.licensors.join(', ') : 'Não informado'}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label font-semibold">Fonte:</span>
+            <span>${anime.source || 'Não informado'}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label font-semibold">Pontuação:</span>
+            <span>${anime.score ? `${anime.score}/10` : 'Não informado'}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label font-semibold">Popularidade:</span>
+            <span>${anime.popularity ? `#${anime.popularity}` : 'Não informado'}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="synopsis mt-4">
+      <h2 class="text-2xl font-semibold mb-2">Sinopse</h2>
+      <p>${anime.synopsis}</p>
+    </div>
+    ${embedUrl ? `
+      <div class="trailer-container mt-4">
+        <iframe 
+          src="${embedUrl}"
+          allowfullscreen
+          class="w-full aspect-video rounded-lg shadow-md">
+        </iframe>
+      </div>
+    ` : ''}
+  `;
 
   // Mostra a seção de comentários apenas para detalhes de um anime específico
   commentsSection.style.display = 'block';
