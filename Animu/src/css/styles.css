@@ -683,6 +683,7 @@ input, button, textarea, select {
   margin-bottom: 30px;
 }
 
+/* Estado: área de texto */
 #comment-form textarea {
   width: 100%;
   padding: 15px;
@@ -696,6 +697,7 @@ input, button, textarea, select {
   transition: border-color 0.3s ease;
 }
 
+/* Estado: Foco na área de texto do formulário */
 #comment-form textarea:focus {
   outline: none;
   border-color: var(--primary-color);
@@ -717,10 +719,12 @@ input, button, textarea, select {
   background: var(--background);
 }
 
+/* Estado: hover do comentário */
 .comment:hover {
   transform: translateX(5px);
 }
 
+/* Cabeçalho do comentário */
 .comment-header {
   display: flex;
   align-items: center;
@@ -1014,6 +1018,7 @@ input, button, textarea, select {
 }
 
 .rating-slider {
+  appearance: none;
   -webkit-appearance: none;
   width: 100%;
   height: 8px;

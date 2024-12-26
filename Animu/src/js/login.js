@@ -81,11 +81,13 @@ document.addEventListener('DOMContentLoaded', function () {
       );
 
       if (user) {
+        const avatar = this.generateAvatar(user.username);
         // Criar sessão
         const sessionData = {
           userId: user.id,
           username: user.username,
           isAdmin: user.isAdmin, // Adiciona status de admin à sessão
+          avatar: avatar, // Salva o avatar na sessão
           loginTime: new Date().toISOString()
         };
 
@@ -121,9 +123,9 @@ document.addEventListener('DOMContentLoaded', function () {
           // Mostrar link de logout
           logoutLink.classList.remove('hidden');
 
-          // Gerar avatar único baseado no nome de usuário
+          // Usar o avatar da sessão
           if (userAvatar) {
-            userAvatar.src = this.generateAvatar(user.username);
+            userAvatar.src = sessionData.avatar;
           }
 
           return true;
@@ -147,13 +149,28 @@ document.addEventListener('DOMContentLoaded', function () {
         hash = username.charCodeAt(i) + ((hash << 5) - hash);
       }
 
-      // Converter hash para cor
-      const color = (hash & 0x00FFFFFF)
-        .toString(16)
-        .toUpperCase();
+      // Gerar uma cor mais agradável usando HSL
+      const hue = hash % 360;
+      const saturation = 70; // Fixo em 70% para cores não muito saturadas
+      const lightness = 60;  // Fixo em 60% para cores não muito claras ou escuras
 
-      // URL de placeholder colorido
-      return `https://via.placeholder.com/100/${color}/FFFFFF?text=${username.charAt(0).toUpperCase()}`;
+      // Converter HSL para HEX
+      const color = this.hslToHex(hue, saturation, lightness);
+
+      // Retorna URL do avatar usando a cor gerada
+      return `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=${color.substring(1)}&color=ffffff&size=100`;
+    }
+
+    // Função auxiliar para converter HSL para HEX
+    hslToHex(h, s, l) {
+      l /= 100;
+      const a = s * Math.min(l, 1 - l) / 100;
+      const f = n => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * color).toString(16).padStart(2, '0');
+      };
+      return `#${f(0)}${f(8)}${f(4)}`;
     }
 
     // Logout

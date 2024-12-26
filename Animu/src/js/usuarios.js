@@ -53,26 +53,22 @@ document.addEventListener('DOMContentLoaded', function () {
     novosUsuarios.textContent = newUsers.length;
   }
 
-  // Gerar avatar único baseado no nome de usuário (mesma função do login.js)
-  function generateAvatar(username) {
-    let hash = 0;
-    for (let i = 0; i < username.length; i++) {
-      hash = username.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const color = (hash & 0x00FFFFFF).toString(16).toUpperCase();
-    return `https://via.placeholder.com/40/${color}/FFFFFF?text=${username.charAt(0).toUpperCase()}`;
-  }
-
   // Criar linha da tabela para um usuário (função atualizada)
   function createUserRow(user) {
     const tr = document.createElement('tr');
     tr.className = 'border-b border-gray-200 hover:bg-gray-500';
 
+    // Buscar a sessão do usuário para obter o avatar
+    const sessionData = JSON.parse(localStorage.getItem('userSession'));
+    const avatar = sessionData && sessionData.userId === user.id 
+        ? sessionData.avatar 
+        : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=8B5CF6&color=ffffff&size=100`;
+
     tr.innerHTML = `
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
                     <img class="h-10 w-10 rounded-full object-cover"
-                         src="${user.avatar || 'https://via.placeholder.com/40/8B5CF6/FFFFFF?text=' + user.username[0].toUpperCase()}"
+                         src="${avatar}"
                          alt="${user.username}">
                     <div class="ml-4">
                         <div class="font-medium">${user.username}</div>
