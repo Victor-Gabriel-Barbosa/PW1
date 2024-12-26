@@ -76,34 +76,7 @@ function displayAnimes() {
 
 // Função para buscar um anime pelo título
 function searchAnime() {
-  const searchInput = document.getElementById('search-title').value.trim(); // Obtém o termo de busca digitado
-  const animeResultContainer = document.getElementById('anime-result'); // Elemento onde os resultados da busca serão exibidos
-
-  // Valida se o termo de busca é válido
-  if (!searchInput) {
-    alert('Por favor, digite um nome válido.');
-    return;
-  }
-
-  // Exibe mensagem de busca em andamento
-  animeResultContainer.innerHTML = `<p>Buscando...</p>`;
-  toggleAnimeResults(true); // Garante que os resultados estejam visíveis
-
-  const savedData = getSavedData(); // Recupera os dados do Local Storage
-
-  // Filtra os animes que contém o termo buscado no título principal (ignora maiúsculas e minúsculas)
-  const results = savedData.filter((item) =>
-    item.primaryTitle.toLowerCase().includes(searchInput.toLowerCase())
-  );
-
-  // Caso existam resultados, renderiza os animes encontrados
-  if (results.length > 0) {
-    const resultsWithListView = results.map(anime => ({ ...anime, listView: true }));
-    animeResultContainer.innerHTML = resultsWithListView.map(createAnimeCardHTML).join('');
-  } else {
-    // Se nenhum resultado for encontrado, exibe uma mensagem informando o usuário
-    showNoAnimeMessage(animeResultContainer, `Nenhum anime encontrado para "${searchInput}".`);
-  }
+  applyFilters(); // Usa a mesma lógica de filtros para a busca
 }
 
 // Adiciona um evento ao carregar a página para exibir a lista de animes salvos automaticamente
@@ -154,6 +127,7 @@ function getYouTubeEmbedUrl(url) {
 // Função para renderizar os detalhes do anime
 function renderAnimeDetails(anime) {
   const container = document.getElementById('anime-content');
+  const commentsSection = document.getElementById('comments-section');
 
   if (!anime) {
     container.innerHTML = `
@@ -162,6 +136,7 @@ function renderAnimeDetails(anime) {
                     <p>O anime solicitado não está disponível em nossa base de dados.</p>
                 </div>
             `;
+    commentsSection.style.display = 'none'; // Esconde a seção de comentários
     return;
   }
 
@@ -254,6 +229,9 @@ function renderAnimeDetails(anime) {
             ` : ''}
         `;
 
+  // Mostra a seção de comentários apenas para detalhes de um anime específico
+  commentsSection.style.display = 'block';
+
   // Atualiza o título da página
   document.title = `${anime.primaryTitle} - Detalhes do Anime`;
 }
@@ -261,7 +239,11 @@ function renderAnimeDetails(anime) {
 // Nova função para renderizar todos os animes
 function renderAllAnimes() {
   const container = document.getElementById('anime-content');
+  const commentsSection = document.getElementById('comments-section');
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
+
+  // Esconde a seção de comentários ao mostrar todos os animes
+  commentsSection.style.display = 'none';
 
   container.innerHTML = `
         <h1 class="text-3xl font-bold mb-6">Todos os Animes</h1>
@@ -684,3 +666,58 @@ function toggleAnimeResults(show) {
   const animeResult = document.getElementById('anime-result');
   animeResult.style.display = show ? 'flex' : 'none';
 }
+
+// Função para mostrar/esconder o menu de filtros
+function toggleFilterMenu() {
+  const filterMenu = document.getElementById('filter-menu');
+  filterMenu.classList.toggle('show');
+}
+
+// Função para aplicar os filtros
+function applyFilters() {
+  const genreFilter = document.getElementById('genre-filter').value;
+  const yearFilter = document.getElementById('year-filter').value;
+  const ratingFilter = document.getElementById('rating-filter').value;
+  const searchInput = document.getElementById('search-title').value.trim();
+
+  const animeResultContainer = document.getElementById('anime-result');
+  const savedData = getSavedData();
+
+  // Filtra os animes baseado nos critérios selecionados
+  const filteredResults = savedData.filter(anime => {
+    const matchesSearch = !searchInput || 
+      anime.primaryTitle.toLowerCase().includes(searchInput.toLowerCase());
+    
+    const matchesGenre = !genreFilter || 
+      anime.genres.some(g => g.toLowerCase() === genreFilter.toLowerCase());
+    
+    const matchesYear = !yearFilter || 
+      anime.releaseYear.toString() === yearFilter;
+    
+    const matchesRating = !ratingFilter || 
+      (anime.score && parseFloat(anime.score) >= parseFloat(ratingFilter));
+
+    return matchesSearch && matchesGenre && matchesYear && matchesRating;
+  });
+
+  // Exibe os resultados
+  if (filteredResults.length > 0) {
+    const resultsWithListView = filteredResults.map(anime => ({ ...anime, listView: true }));
+    animeResultContainer.innerHTML = resultsWithListView.map(createAnimeCardHTML).join('');
+  } else {
+    showNoAnimeMessage(animeResultContainer, 'Nenhum anime encontrado com os filtros selecionados.');
+  }
+
+  toggleAnimeResults(true);
+  toggleFilterMenu(); // Fecha o menu de filtros após aplicar
+}
+
+// Fechar o menu de filtros quando clicar fora
+document.addEventListener('click', function(event) {
+  const filterDropdown = document.querySelector('.filter-dropdown');
+  const filterMenu = document.getElementById('filter-menu');
+  
+  if (!filterDropdown.contains(event.target)) {
+    filterMenu.classList.remove('show');
+  }
+});
