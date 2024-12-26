@@ -82,8 +82,6 @@ ul, ol {
 /* Estilos base para elementos de formulário */
 input, button, textarea, select {
   background: var(--background);
-  color: var(--text-color);
-  border-color: var(--input-border-color);
   font-family: var(--font-family);
   font-size: var(--font-size);
 }
@@ -534,8 +532,11 @@ input, button, textarea, select {
   display: none;
   flex-wrap: wrap;
   margin-top: 5px;
-  overflow-y: auto;
-  overflow-x: hidden;
+  max-height: 300px;
+  max-width: 600px;
+  overflow: auto; 
+  scrollbar-width: none; 
+  -ms-overflow-style: none;
   transition: opacity 0.3s ease;
 }
 
@@ -637,8 +638,6 @@ input, button, textarea, select {
 .form-group input {
   width: 100%;
   padding: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
   background-color: var(--background);
   transition: border-color 0.3s ease, background-color 0.3s ease;
 }

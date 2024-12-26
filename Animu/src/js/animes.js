@@ -21,11 +21,10 @@ function showNoAnimeMessage(container, message) {
 // Recebe um objeto "anime" e retorna uma string de HTML com os detalhes do anime
 function createAnimeCardHTML(anime) {
   return `
-    <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-      <img src="${anime.coverImage}" alt="${anime.primaryTitle}" 
-        class="w-16 h-16 object-cover rounded-lg">
-      <div>
-        <h3 class="font-semibold">${anime.primaryTitle}</h3>
+    <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" style="width: 300px; height: 100px;">
+      <img src="${anime.coverImage}" alt="${anime.primaryTitle}" class="w-16 h-16 object-cover rounded-lg">
+      <div class="flex-1 overflow-hidden">
+        <h3 class="font-semibold truncate">${anime.primaryTitle}</h3>
         <div class="flex gap-2 mt-1">
           <span class="text-sm bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded">
             ⭐ ${anime.score || 'N/A'}
