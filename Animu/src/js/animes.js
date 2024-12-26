@@ -290,10 +290,12 @@ function saveComment(animeTitle, comment, rating) {
       comments[animeTitle] = [];
     }
 
+    const sliderRating = document.getElementById('rating-slider').value / 10;
+    
     const newComment = {
       id: Date.now(),
       text: comment,
-      rating: parseFloat(rating), // Converter para float para suportar meias estrelas
+      rating: sliderRating,
       username: JSON.parse(localStorage.getItem('userSession'))?.username || 'Anônimo',
       timestamp: new Date().toISOString()
     };
@@ -443,7 +445,70 @@ function isUserAdmin() {
   return sessionData?.isAdmin || false;
 }
 
-// Função para renderizar um comentário (atualizada para incluir permissão de admin)
+// Função para editar comentário
+function editComment(animeTitle, commentId, newText) {
+  try {
+    const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
+    if (!comments[animeTitle]) return false;
+
+    const comment = comments[animeTitle].find(c => c.id === commentId);
+    if (!comment) return false;
+
+    // Verifica se o usuário atual é o dono do comentário
+    const currentUser = JSON.parse(localStorage.getItem('userSession'))?.username;
+    if (currentUser !== comment.username) return false;
+
+    comment.text = newText;
+    comment.edited = true;
+    comment.editedAt = new Date().toISOString();
+    
+    localStorage.setItem('animeComments', JSON.stringify(comments));
+    return true;
+  } catch (e) {
+    console.error('Erro ao editar comentário:', e);
+    return false;
+  }
+}
+
+// Função para alternar modo de edição
+function toggleEditMode(commentId) {
+  const commentDiv = document.querySelector(`[data-comment-id="${commentId}"]`);
+  const commentText = commentDiv.querySelector('.comment-text');
+  const editForm = commentDiv.querySelector('.edit-form');
+
+  if (editForm) {
+    commentText.style.display = 'block';
+    editForm.remove();
+  } else {
+    const currentText = commentText.textContent;
+    commentText.style.display = 'none';
+    
+    const form = document.createElement('form');
+    form.className = 'edit-form mt-2';
+    form.innerHTML = `
+      <textarea class="w-full p-2 border rounded resize-none dark:bg-gray-800">${currentText}</textarea>
+      <div class="flex gap-2 mt-2">
+        <button type="submit" class="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700">Salvar</button>
+        <button type="button" onclick="toggleEditMode(${commentId})" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Cancelar</button>
+      </div>
+    `;
+
+    commentText.insertAdjacentElement('afterend', form);
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newText = form.querySelector('textarea').value.trim();
+      if (newText) {
+        const animeTitle = new URLSearchParams(window.location.search).get('anime');
+        if (editComment(decodeURIComponent(animeTitle), commentId, newText)) {
+          updateCommentsList(decodeURIComponent(animeTitle));
+        }
+      }
+    });
+  }
+}
+
+// Atualizar a função renderComment para incluir o botão de edição
 function renderComment(comment, animeTitle) {
   const currentUser = JSON.parse(localStorage.getItem('userSession'))?.username;
   const isCommentOwner = currentUser === comment.username;
@@ -457,19 +522,34 @@ function renderComment(comment, animeTitle) {
         <strong class="text-purple-600">${comment.username}</strong>
         <span class="comment-rating">${renderStars(comment.rating)}</span>
         <span class="text-sm">${formatDate(comment.timestamp)}</span>
-        ${canDelete ? `
-          <button 
-            class="delete-btn ml-auto px-2 py-1 rounded text-sm"
-            onclick="if(confirm('Deseja realmente excluir este comentário?')) { 
-              deleteComment('${animeTitle}', ${comment.id}); 
-              updateCommentsList('${animeTitle}');
-            }"
-          >
-            ${isAdmin && !isCommentOwner ? '🛡️ Excluir' : 'Excluir'}
-          </button>
-        ` : ''}
+        <div class="ml-auto flex gap-2">
+          ${isCommentOwner ? `
+            <button 
+              class="edit-btn px-2 py-1 rounded text-sm bg-blue-500 text-white hover:bg-blue-600"
+              onclick="toggleEditMode(${comment.id})"
+            >
+              Editar
+            </button>
+          ` : ''}
+          ${canDelete ? `
+            <button 
+              class="delete-btn px-2 py-1 rounded text-sm"
+              onclick="if(confirm('Deseja realmente excluir este comentário?')) { 
+                deleteComment('${animeTitle}', ${comment.id}); 
+                updateCommentsList('${animeTitle}');
+              }"
+            >
+              ${isAdmin && !isCommentOwner ? '🛡️ Excluir' : 'Excluir'}
+            </button>
+          ` : ''}
+        </div>
       </div>
-      <p>${comment.text}</p>
+      <p class="comment-text">${comment.text}</p>
+      ${comment.edited ? `
+        <small class="text-gray-500 italic">
+          (editado em ${formatDate(comment.editedAt)})
+        </small>
+      ` : ''}
       <div class="vote-buttons">
         <button 
           class="vote-btn ${userVote === 'like' ? 'active' : ''}"
@@ -606,9 +686,6 @@ window.addEventListener('DOMContentLoaded', () => {
     // Adiciona handler para o formulário de comentários
     const commentForm = document.getElementById('comment-form');
     if (commentForm) {
-      // Inicializa o display da nota
-      showSelectedRating();
-
       commentForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
@@ -621,16 +698,22 @@ window.addEventListener('DOMContentLoaded', () => {
         }
 
         const commentText = document.getElementById('comment-text').value.trim();
-        const rating = document.querySelector('input[name="rating"]:checked')?.value;
+        const ratingValue = document.getElementById('rating-slider').value;
 
-        if (!commentText || !rating) {
-          alert('Por favor, escreva um comentário e dê uma avaliação em estrelas.');
+        if (!commentText) {
+          alert('Por favor, escreva um comentário.');
           return;
         }
 
-        saveComment(decodeURIComponent(animeTitle), commentText, parseInt(rating));
+        if (ratingValue === '0') {
+          alert('Por favor, dê uma avaliação usando o slider.');
+          return;
+        }
+
+        saveComment(decodeURIComponent(animeTitle), commentText);
         document.getElementById('comment-text').value = '';
-        document.querySelector('input[name="rating"]:checked').checked = false;
+        document.getElementById('rating-slider').value = '0';
+        updateRatingEmoji(0); // Reseta o emoji
         updateCommentsList(decodeURIComponent(animeTitle));
       });
     }
@@ -718,5 +801,45 @@ document.addEventListener('click', function(event) {
   
   if (!filterDropdown.contains(event.target)) {
     filterMenu.classList.remove('show');
+  }
+});
+
+// Função para atualizar o emoji baseado no valor do slider
+function updateRatingEmoji(value) {
+  const emoji = document.getElementById('rating-emoji');
+  const display = document.getElementById('rating-display');
+  const rating = value / 10;
+  
+  // Adiciona classe de animação
+  emoji.classList.remove('animate');
+  void emoji.offsetWidth; // Força reflow
+  emoji.classList.add('animate');
+
+  // Define o emoji baseado no valor
+  if (value === 0) {
+    emoji.textContent = '😶';
+  } else if (value <= 20) {
+    emoji.textContent = '😭';
+  } else if (value <= 40) {
+    emoji.textContent = '☹️';
+  } else if (value <= 60) {
+    emoji.textContent = '😐';
+  } else if (value <= 80) {
+    emoji.textContent = '😊';
+  } else {
+    emoji.textContent = '🤩';
+  }
+
+  // Atualiza o display numérico
+  display.textContent = (value / 10).toFixed(1);
+}
+
+// Evento para inicializar o slider de avaliação
+document.addEventListener('DOMContentLoaded', function() {
+  const slider = document.getElementById('rating-slider');
+  if (slider) {
+    slider.addEventListener('input', function() {
+      updateRatingEmoji(this.value);
+    });
   }
 });

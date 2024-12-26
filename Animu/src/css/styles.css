@@ -828,8 +828,16 @@ input, button, textarea, select {
 }
 
 .edit-btn {
-  background: var(--primary-color);
+  background: #3b82f6;
   color: white;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.edit-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
 }
 
 .delete-btn {
@@ -983,4 +991,84 @@ input, button, textarea, select {
 
 .apply-filters-btn:hover {
   opacity: 0.9;
+}
+
+/* Formulário de edição */
+.edit-form textarea {
+  background: var(--background);
+  color: var(--text-color);
+  border-color: var(--input-border-color);
+  transition: border-color 0.3s ease;
+}
+
+.edit-form textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+/* Sistema de avaliação com slider */
+.rating-slider-container {
+  position: relative;
+  width: 100%;
+  padding: 20px 0;
+}
+
+.rating-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(to right,
+    #ff4444 0%,
+    #ffa534 25%,
+    #ffed4a 50%,
+    #4CAF50 75%,
+    #8e44ad 100%
+  );
+  outline: none;
+}
+
+.rating-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #8e44ad;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease;
+}
+
+.rating-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.rating-emoji-container {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.rating-emoji {
+  font-size: 2.5rem;
+  transition: transform 0.3s ease;
+}
+
+.rating-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  color: var(--text-color);
+  font-size: 0.9em;
+}
+
+/* Animação do emoji */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.rating-emoji.animate {
+  animation: bounce 0.5s ease;
 }
