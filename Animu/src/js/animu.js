@@ -50,6 +50,15 @@ document.addEventListener('DOMContentLoaded', () => {
     adminButton.addEventListener('click', (e) => {
       e.stopPropagation();
       adminMenu.classList.toggle('hidden');
+      
+      // Adiciona a classe de animação
+      const gearIcon = adminButton.querySelector('svg');
+      gearIcon.classList.add('gear-spin');
+      
+      // Remove a classe após a animação terminar
+      setTimeout(() => {
+        gearIcon.classList.remove('gear-spin');
+      }, 600); // 600ms = duração da animação
     });
 
     // Fechar o menu ao clicar fora dele

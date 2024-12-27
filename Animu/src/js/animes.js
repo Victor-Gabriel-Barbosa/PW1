@@ -268,9 +268,36 @@ function loadComments(animeTitle) {
   }
 }
 
-// Função para salvar comentários no localStorage
+// Nova função para verificar se usuário já comentou
+function hasUserAlreadyCommented(animeTitle, username) {
+  try {
+    const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
+    const animeComments = comments[animeTitle] || [];
+    return animeComments.some(comment => comment.username === username);
+  } catch (e) {
+    console.error('Erro ao verificar comentário existente:', e);
+    return false;
+  }
+}
+
+// Função saveComment modificada
 function saveComment(animeTitle, comment, rating) {
   try {
+    const currentUser = JSON.parse(localStorage.getItem('userSession'));
+    if (!currentUser) {
+      alert('Você precisa estar logado para comentar!');
+      return null;
+    }
+
+    // Verifica se o usuário é admin
+    const isAdmin = currentUser.isAdmin || false;
+
+    // Se não for admin, verifica se já comentou
+    if (!isAdmin && hasUserAlreadyCommented(animeTitle, currentUser.username)) {
+      alert('Você já fez um comentário neste anime. Apenas administradores podem fazer múltiplos comentários.');
+      return null;
+    }
+
     const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
     if (!comments[animeTitle]) {
       comments[animeTitle] = [];
@@ -282,7 +309,7 @@ function saveComment(animeTitle, comment, rating) {
       id: Date.now(),
       text: comment,
       rating: sliderRating,
-      username: JSON.parse(localStorage.getItem('userSession'))?.username || 'Anônimo',
+      username: currentUser.username,
       timestamp: new Date().toISOString()
     };
 
@@ -431,8 +458,8 @@ function isUserAdmin() {
   return sessionData?.isAdmin || false;
 }
 
-// Função para editar comentário
-function editComment(animeTitle, commentId, newText) {
+// Função para editar comentário (modificada)
+function editComment(animeTitle, commentId, newText, newRating) {
   try {
     const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
     if (!comments[animeTitle]) return false;
@@ -445,10 +472,14 @@ function editComment(animeTitle, commentId, newText) {
     if (currentUser !== comment.username) return false;
 
     comment.text = newText;
+    comment.rating = newRating;
     comment.edited = true;
     comment.editedAt = new Date().toISOString();
 
     localStorage.setItem('animeComments', JSON.stringify(comments));
+    
+    // Atualiza a média de avaliações do anime
+    updateAnimeRating(animeTitle);
     return true;
   } catch (e) {
     console.error('Erro ao editar comentário:', e);
@@ -456,22 +487,42 @@ function editComment(animeTitle, commentId, newText) {
   }
 }
 
-// Função para alternar modo de edição
+// Função para alternar modo de edição (modificada)
 function toggleEditMode(commentId) {
   const commentDiv = document.querySelector(`[data-comment-id="${commentId}"]`);
   const commentText = commentDiv.querySelector('.comment-text');
+  const commentRating = commentDiv.querySelector('.comment-rating');
   const editForm = commentDiv.querySelector('.edit-form');
 
   if (editForm) {
     commentText.style.display = 'block';
+    commentRating.style.display = 'block';
     editForm.remove();
   } else {
     const currentText = commentText.textContent;
+    const currentRating = parseFloat(commentDiv.getAttribute('data-rating')) * 10; // Converte para escala 0-100
+    
     commentText.style.display = 'none';
+    commentRating.style.display = 'none';
 
     const form = document.createElement('form');
     form.className = 'edit-form mt-2';
     form.innerHTML = `
+      <div class="rating-container mb-4">
+        <p class="mb-2 font-semibold">Sua avaliação: <span id="edit-rating-display">${(currentRating/10).toFixed(1)}</span></p>
+        <div class="rating-slider-container">
+          <input type="range" 
+                 id="edit-rating-slider" 
+                 min="0" 
+                 max="100" 
+                 value="${currentRating}"
+                 class="rating-slider"
+                 step="5">
+          <div class="rating-emoji-container">
+            <span id="edit-rating-emoji" class="rating-emoji">😊</span>
+          </div>
+        </div>
+      </div>
       <textarea class="w-full p-2 border rounded resize-none dark:bg-gray-800">${currentText}</textarea>
       <div class="flex gap-2 mt-2">
         <button type="submit" class="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700">Salvar</button>
@@ -481,12 +532,21 @@ function toggleEditMode(commentId) {
 
     commentText.insertAdjacentElement('afterend', form);
 
+    // Inicializa o slider de avaliação na edição
+    const editSlider = form.querySelector('#edit-rating-slider');
+    editSlider.addEventListener('input', function() {
+      updateEditRatingDisplay(this.value);
+    });
+    updateEditRatingDisplay(currentRating);
+
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       const newText = form.querySelector('textarea').value.trim();
+      const newRating = parseFloat(form.querySelector('#edit-rating-slider').value) / 10;
+      
       if (newText) {
         const animeTitle = new URLSearchParams(window.location.search).get('anime');
-        if (editComment(decodeURIComponent(animeTitle), commentId, newText)) {
+        if (editComment(decodeURIComponent(animeTitle), commentId, newText, newRating)) {
           updateCommentsList(decodeURIComponent(animeTitle));
         }
       }
@@ -494,7 +554,39 @@ function toggleEditMode(commentId) {
   }
 }
 
-// Atualizar a função renderComment para incluir o botão de edição
+// Nova função para atualizar o display de avaliação na edição
+function updateEditRatingDisplay(value) {
+  const emoji = document.getElementById('edit-rating-emoji');
+  const display = document.getElementById('edit-rating-display');
+  const rating = value / 10;
+
+  // Adiciona classe de animação
+  emoji.classList.remove('animate');
+  void emoji.offsetWidth;
+  emoji.classList.add('animate');
+
+  // Define o emoji baseado no valor
+  if (value === 0) {
+    emoji.textContent = '😶';
+  } else if (value <= 20) {
+    emoji.textContent = '😭';
+  } else if (value <= 40) {
+    emoji.textContent = '☹️';
+  } else if (value <= 60) {
+    emoji.textContent = '😐';
+  } else if (value <= 80) {
+    emoji.textContent = '😊';
+  } else {
+    emoji.textContent = '🤩';
+  }
+
+  // Atualiza o display numérico
+  if (display) {
+    display.textContent = rating.toFixed(1);
+  }
+}
+
+// Atualiza a função renderComment para incluir o rating como atributo data
 function renderComment(comment, animeTitle) {
   const currentUser = JSON.parse(localStorage.getItem('userSession'))?.username;
   const isCommentOwner = currentUser === comment.username;
@@ -503,7 +595,7 @@ function renderComment(comment, animeTitle) {
   const canDelete = isCommentOwner || isAdmin;
 
   return `
-    <div class="comment p-4 rounded-lg" data-comment-id="${comment.id}">
+    <div class="comment p-4 rounded-lg" data-comment-id="${comment.id}" data-rating="${comment.rating}">
       <div class="flex items-center gap-2 mb-2">
         <strong class="text-purple-600">${comment.username}</strong>
         <span class="comment-rating">${renderStars(comment.rating)}</span>

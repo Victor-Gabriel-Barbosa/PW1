@@ -16,24 +16,21 @@ function loadAnimes() {
 
   container.innerHTML = animes.map((anime, index) => `
       <div class="anime-card rounded-lg shadow-lg overflow-hidden">
-          <img src="${anime.coverImage}" alt="${anime.primaryTitle}" 
-               class="w-full h-48 object-cover">
-          <div class="p-4">
-              <h3 class="text-lg font-semibold mb-2">${anime.primaryTitle}</h3>
-              <p class="text-sm line-clamp-2 mb-4">
-                  ${anime.synopsis}
-              </p>
-              <div class="flex gap-2">
-                  <button onclick="editAnime(${index})" 
-                          class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
-                      Editar
-                  </button>
-                  <button onclick="deleteAnime(${index})" 
-                          class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
-                      Excluir
-                  </button>
-              </div>
+        <img src="${anime.coverImage}" alt="${anime.primaryTitle}" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h3 class="text-lg font-semibold mb-2">${anime.primaryTitle}</h3>
+          <p class="text-sm line-clamp-2 mb-4">
+            ${anime.synopsis}
+          </p>
+          <div class="flex gap-2">
+              <button onclick="editAnime(${index})" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
+                Editar
+              </button>
+              <button onclick="deleteAnime(${index})" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                Excluir
+              </button>
           </div>
+        </div>
       </div>
   `).join('');
 }
@@ -73,8 +70,7 @@ function renderFilteredAnimes(animes) {
                   ${anime.synopsis}
               </p>
               <div class="flex gap-2">
-                  <button onclick="editAnime(${index})" 
-                          class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
+                  <button onclick="editAnime(${index})" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
                       Editar
                   </button>
                   <button onclick="deleteAnime(${index})" 
@@ -334,8 +330,8 @@ function renderEditTitles() {
     .map(
       (t, index) => `
         <div class="tag">
-            ${t.title} (${t.type})
-            <span class="tag-remove" onclick="removeEditTitle(${index})">✖</span>
+          ${t.title} (${t.type})
+          <span class="tag-remove" onclick="removeEditTitle(${index})">✖</span>
         </div>
     `
     )
@@ -367,8 +363,8 @@ function renderEditGenres() {
     .map(
       (genre, index) => `
         <div class="tag">
-            ${genre}
-            <span class="tag-remove" onclick="removeEditGenre(${index})">✖</span>
+          ${genre}
+          <span class="tag-remove" onclick="removeEditGenre(${index})">✖</span>
         </div>
     `
     )
@@ -399,8 +395,8 @@ function renderEditProducers() {
     .map(
       (producer, index) => `
         <div class="tag">
-            ${producer}
-            <span class="tag-remove" onclick="removeEditProducer(${index})">✖</span>
+          ${producer}
+          <span class="tag-remove" onclick="removeEditProducer(${index})">✖</span>
         </div>
     `
     )
@@ -492,18 +488,18 @@ function deleteAnime(index) {
 
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
   const animeTitle = animes[index].primaryTitle;
-  
+
   // Remove o anime do array de animes
   animes.splice(index, 1);
   localStorage.setItem('animeData', JSON.stringify(animes));
-  
+
   // Remove os comentários relacionados ao anime
   const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
   if (comments[animeTitle]) {
     delete comments[animeTitle];
     localStorage.setItem('animeComments', JSON.stringify(comments));
   }
-  
+
   loadAnimes();
 }
 
