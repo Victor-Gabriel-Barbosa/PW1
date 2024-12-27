@@ -46,16 +46,37 @@ function initializeProfile(user) {
 // Função para carregar estatísticas
 function loadStatistics(user) {
   const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
+  const forumTopics = JSON.parse(localStorage.getItem('forumTopics')) || [];
   const userComments = Object.values(comments).flat().filter(c => c.username === user.username);
 
+  // Contagem de tópicos e respostas do fórum
+  const userTopics = forumTopics.filter(t => t.author === user.username);
+  const userReplies = forumTopics.flatMap(t => t.replies).filter(r => r.author === user.username);
+
+  // Total de likes recebidos em tópicos e respostas do fórum
+  const forumLikes = userTopics.reduce((sum, topic) => sum + (topic.likes || 0), 0) +
+    userReplies.reduce((sum, reply) => sum + (reply.likes || 0), 0);
+
   document.getElementById('stats-animes').textContent = user.watchedAnimes?.length || 0;
-  document.getElementById('stats-reviews').textContent = userComments.length;
-  document.getElementById('stats-likes').textContent = userComments.reduce((sum, comment) => sum + (comment.likes?.length || 0), 0);
+  document.getElementById('stats-reviews').textContent = userComments.length + userTopics.length;
+  document.getElementById('stats-likes').textContent =
+    userComments.reduce((sum, comment) => sum + (comment.likes?.length || 0), 0) + forumLikes;
   document.getElementById('stats-favorites').textContent = user.favoriteAnimes?.length || 0;
 }
 
 // Função para carregar conquistas
 function loadAchievements(user) {
+  const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
+  const forumTopics = JSON.parse(localStorage.getItem('forumTopics')) || [];
+  const userComments = Object.values(comments).flat().filter(c => c.username === user.username);
+  const userTopics = forumTopics.filter(t => t.author === user.username);
+  const userReplies = forumTopics.flatMap(t => t.replies).filter(r => r.author === user.username);
+
+  // Total de likes em comentários, tópicos e respostas
+  const totalLikes = userComments.reduce((sum, comment) => sum + (comment.likes?.length || 0), 0) +
+    userTopics.reduce((sum, topic) => sum + (topic.likes || 0), 0) +
+    userReplies.reduce((sum, reply) => sum + (reply.likes || 0), 0);
+
   const achievements = [
     {
       title: 'Iniciante',
@@ -67,30 +88,42 @@ function loadAchievements(user) {
       title: 'Crítico',
       description: 'Fez 5 reviews',
       icon: '📝',
-      unlocked: user.reviews?.length >= 5
+      unlocked: userComments.length >= 5
     },
     {
       title: 'Popular',
       description: 'Recebeu 10 likes',
       icon: '❤️',
-      unlocked: user.totalLikes >= 10
+      unlocked: totalLikes >= 10
     },
     {
       title: 'Otaku',
       description: 'Assistiu 20 animes',
       icon: '🏆',
       unlocked: user.watchedAnimes?.length >= 20
+    },
+    {
+      title: 'Influencer',
+      description: 'Criou 5 tópicos no fórum',
+      icon: '💭',
+      unlocked: userTopics.length >= 5
+    },
+    {
+      title: 'Comunicativo',
+      description: 'Fez 10 respostas no fórum',
+      icon: '💬',
+      unlocked: userReplies.length >= 10
     }
   ];
 
   const achievementsContainer = document.getElementById('achievements');
   achievementsContainer.innerHTML = achievements.map(achievement => `
-        <div class="achievement p-3 rounded-lg ${achievement.unlocked ? 'bg-purple-100 dark:bg-purple-900' : 'bg-gray-100 dark:bg-gray-700 opacity-50'}">
-            <div class="text-2xl mb-2">${achievement.icon}</div>
-            <h3 class="font-semibold">${achievement.title}</h3>
-            <p class="text-sm text-gray-600 dark:text-gray-400">${achievement.description}</p>
-        </div>
-    `).join('');
+    <div class="achievement p-3 rounded-lg ${achievement.unlocked ? 'bg-purple-100 dark:bg-purple-900' : 'bg-gray-100 dark:bg-gray-700 opacity-50'}">
+      <div class="text-2xl mb-2">${achievement.icon}</div>
+      <h3 class="font-semibold">${achievement.title}</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400">${achievement.description}</p>
+    </div>
+  `).join('');
 }
 
 // Função para carregar animes favoritos
@@ -130,6 +163,7 @@ function loadFavoriteAnimes(user) {
 // Função para carregar histórico de atividades
 function loadActivityTimeline(user) {
   const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
+  const forumTopics = JSON.parse(localStorage.getItem('forumTopics')) || [];
   const activities = [];
 
   // Adiciona comentários ao histórico
@@ -146,12 +180,38 @@ function loadActivityTimeline(user) {
     });
   });
 
-  // Adiciona animes favoritados
+  // Adiciona tópicos do fórum ao histórico
+  forumTopics.forEach(topic => {
+    if (topic.author === user.username) {
+      activities.push({
+        type: 'forum_topic',
+        title: topic.title,
+        timestamp: topic.date,
+        content: topic.content.substring(0, 100) + '...'
+      });
+    }
+  });
+
+  // Adiciona respostas do fórum ao histórico
+  forumTopics.forEach(topic => {
+    topic.replies.forEach(reply => {
+      if (reply.author === user.username) {
+        activities.push({
+          type: 'forum_reply',
+          topicTitle: topic.title,
+          timestamp: reply.date,
+          content: reply.content.substring(0, 100) + '...'
+        });
+      }
+    });
+  });
+
+  // Adiciona animes favoritados ao histórico
   user.favoriteAnimes?.forEach(favoriteAnime => {
     activities.push({
       type: 'favorite',
       animeTitle: favoriteAnime,
-      timestamp: new Date().toISOString() // Idealmente, armazenar timestamp real
+      timestamp: new Date().toISOString()
     });
   });
 
@@ -160,21 +220,40 @@ function loadActivityTimeline(user) {
 
   const container = document.getElementById('activity-timeline');
   container.innerHTML = activities.map(activity => `
-        <div class="activity-item border-l-2 border-purple-500 pl-4 pb-4">
-            <div class="text-sm text-gray-500 dark:text-gray-400">
-                ${new Date(activity.timestamp).toLocaleDateString('pt-BR')}
-            </div>
-            <div class="mt-1">
-                ${activity.type === 'comment'
-      ? `Comentou em <a href="animes.html?anime=${encodeURIComponent(activity.animeTitle)}" 
-                         class="text-purple-600 hover:underline">${activity.animeTitle}</a>: 
-                         <span class="text-gray-600 dark:text-gray-300">${activity.content}</span>`
-      : `Adicionou <a href="animes.html?anime=${encodeURIComponent(activity.animeTitle)}" 
-                         class="text-purple-600 hover:underline">${activity.animeTitle}</a> aos favoritos`
-    }
-            </div>
-        </div>
-    `).join('');
+    <div class="activity-item border-l-2 border-purple-500 pl-4 pb-4">
+      <div class="text-sm text-gray-500 dark:text-gray-400">
+        ${new Date(activity.timestamp).toLocaleDateString('pt-BR')}
+      </div>
+      <div class="mt-1">
+        ${getActivityContent(activity)}
+      </div>
+    </div>
+  `).join('');
+}
+
+// Função auxiliar para formatar o conteúdo da atividade
+function getActivityContent(activity) {
+  switch (activity.type) {
+    case 'comment':
+      return `Comentou em <a href="animes.html?anime=${encodeURIComponent(activity.animeTitle)}" 
+              class="text-purple-600 hover:underline">${activity.animeTitle}</a>: 
+              <span class="text-gray-600 dark:text-gray-300">${activity.content}</span>`;
+
+    case 'forum_topic':
+      return `Criou um tópico no fórum: <span class="font-semibold">${activity.title}</span>
+              <span class="text-gray-600 dark:text-gray-300">${activity.content}</span>`;
+
+    case 'forum_reply':
+      return `Respondeu ao tópico <span class="font-semibold">${activity.topicTitle}</span>: 
+              <span class="text-gray-600 dark:text-gray-300">${activity.content}</span>`;
+
+    case 'favorite':
+      return `Adicionou <a href="animes.html?anime=${encodeURIComponent(activity.animeTitle)}" 
+              class="text-purple-600 hover:underline">${activity.animeTitle}</a> aos favoritos`;
+
+    default:
+      return '';
+  }
 }
 
 // Função para mudar o avatar
@@ -182,7 +261,7 @@ function changeAvatar(avatar, userId) {
   // Atualizar no localStorage
   const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
   const userIndex = users.findIndex(u => u.id === userId);
-  
+
   if (userIndex !== -1) {
     users[userIndex].avatar = avatar;
     localStorage.setItem('animuUsers', JSON.stringify(users));
@@ -195,6 +274,23 @@ function changeAvatar(avatar, userId) {
 
   // Atualizar a imagem na interface
   document.getElementById('profile-avatar').src = avatar;
+}
+
+// Adicionar esta função após a função initializeProfile
+function setupGenreSelection() {
+  const genres = [
+    "Ação", "Aventura", "Comédia", "Drama", "Fantasia",
+    "Ficção Científica", "Horror", "Mistério", "Romance",
+    "Slice of Life", "Esportes", "Sobrenatural", "Thriller"
+  ];
+
+  const genreContainer = document.getElementById('edit-genres');
+  genreContainer.innerHTML = genres.map(genre => `
+    <label class="inline-flex items-center p-2 border rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900 cursor-pointer">
+      <input type="checkbox" name="genres" value="${genre}" class="mr-2">
+      ${genre}
+    </label>
+  `).join('');
 }
 
 // Configurar event listeners
@@ -212,6 +308,13 @@ function setupEventListeners(user) {
     // Preenche o formulário com dados atuais
     document.getElementById('edit-display-name').value = user.displayName || user.username;
     document.getElementById('edit-email').value = user.email;
+
+    // Configura e marca os gêneros favoritos
+    setupGenreSelection();
+    const checkboxes = document.querySelectorAll('input[name="genres"]');
+    checkboxes.forEach(checkbox => {
+      checkbox.checked = user.favoriteGenres?.includes(checkbox.value) || false;
+    });
   });
 
   // Botão de cancelar edição
@@ -226,6 +329,8 @@ function setupEventListeners(user) {
 
     const displayName = document.getElementById('edit-display-name').value;
     const email = document.getElementById('edit-email').value;
+    const selectedGenres = Array.from(document.querySelectorAll('input[name="genres"]:checked'))
+      .map(checkbox => checkbox.value);
 
     // Atualiza dados do usuário
     const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
@@ -235,7 +340,8 @@ function setupEventListeners(user) {
       users[userIndex] = {
         ...users[userIndex],
         displayName,
-        email
+        email,
+        favoriteGenres: selectedGenres
       };
 
       localStorage.setItem('animuUsers', JSON.stringify(users));
@@ -251,7 +357,7 @@ function setupEventListeners(user) {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
-    
+
     input.onchange = (e) => {
       const file = e.target.files[0];
       if (file) {
@@ -263,7 +369,7 @@ function setupEventListeners(user) {
         reader.readAsDataURL(file);
       }
     };
-    
+
     input.click();
   });
 }

@@ -44,11 +44,12 @@
                 </svg>
               </div>
             </div>
-            <!-- Novo botão de filtro -->
+            <!-- Botão de filtro -->
             <div class="filter-dropdown">
               <button class="filter-btn" onclick="toggleFilterMenu()">
                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                  <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
+                  <path
+                    d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z" />
                 </svg>
               </button>
               <div id="filter-menu" class="filter-menu">
@@ -100,28 +101,31 @@
         <div class="flex items-center space-x-4">
           <!-- Painel do administrador -->
           <div id="admin-panel" class="hidden relative">
-            <button id="admin-menu-button"
-              class="p-2 rounded-lg transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <button id="admin-menu-button" class="p-2 rounded-lg transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </button>
-            <div id="admin-menu-items" style="z-index: 1000;"
+
+            <!-- Menu de administrador -->
+            <div id="admin-menu-items" style="z-index: 3;"
               class="hidden absolute mt-2 w-48 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
-              <div class="py-1" role="menu">
-                <a href="./admin/usuarios.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100"
+              <div class="py-1" style="background: var(--background)" role="menu">
+                <a href="./admin/usuarios.html" class="block px-4 py-2 text-sm hover:bg-purple-600"
                   role="menuitem">Usuários</a>
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100"
-                  role="menuitem">Categorias</a>
-                <a href="./admin/add-anime.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100"
+                <a href="#" class="block px-4 py-2 text-sm hover:bg-purple-600" role="menuitem">Categorias</a>
+                <a href="./admin/add-anime.html" class="block px-4 py-2 text-sm hover:bg-purple-600"
                   role="menuitem">Inserir</a>
-                <a href="./admin/edit-anime.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100"
+                <a href="./admin/edit-anime.html" class="block px-4 py-2 text-sm hover:bg-purple-600"
                   role="menuitem">Editar</a>
-                <a href="animes.html?anime=all" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100"
+                <a href="animes.html?anime=all" class="block px-4 py-2 text-sm hover:bg-purple-600"
                   role="menuitem">Animes</a>
-                <div class="border-t border-gray-100"></div>
-                <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50" role="menuitem">Sair</a>
+                <div class="border-t border-gray-600"></div>
+                <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-purple-600" role="menuitem">Sair</a>
               </div>
             </div>
           </div>
@@ -134,7 +138,7 @@
             <!-- Nome do usuário -->
             <div class="flex flex-col ml-2">
               <span class="font-medium" id="user-name"><a href="./login/signin.html">Login</a></span>
-              <a href="#" id="logout-link" class="text-sm text-gray-500 hover:text-gray-700 hidden">Sair</a>
+              <a href="#" id="logout-link" class="text-sm text-gray-500 hover:text-gray-700  hidden">Sair</a>
             </div>
           </div>
 
@@ -156,7 +160,7 @@
     <div class="container mx-auto px-4 py-12 max-w-6xl">
       <!-- Cabeçalho com título e descrição -->
       <header class="text-center mb-16">
-        <h1 style="color: blueviolet" class="text-6xl font-bold mb-4 tracking-tight anime-gradient">Animu</h1>
+        <h1 class="text-6xl font-bold mb-4 tracking-tight anime-gradient">Animu</h1>
         <p class="text-xl max-w-2xl mx-auto font-light leading-relaxed">
           Descubra universos infinitos, explore narrativas épicas e mergulhe nas histórias mais fascinantes do mundo dos
           animes.
@@ -255,6 +259,119 @@
         </div>
       </section>
 
+      <!-- Seção do Fórum -->
+      <section class="forum-container">
+        <div class="flex justify-between items-center mb-8">
+          <h2 class="text-3xl font-bold">Fórum da Comunidade</h2>
+          <button id="new-topic-btn" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-500 text-white rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+            </svg>
+            Nova Discussão
+          </button>
+        </div>
+      
+        <!-- Modal para nova discussão -->
+        <div id="new-topic-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div class="new-topic-modal relative">
+            <!-- Header do modal -->
+            <div class="modal-header flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="modal-icon-wrapper">
+                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                    </path>
+                  </svg>
+                </div>
+                <h3 class="modal-title text-2xl">Iniciar Nova Discussão</h3>
+              </div>
+              <button id="close-modal-btn" class="modal-close hover:rotate-90 transition-transform">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+            
+            <!-- Formulário -->
+            <form id="new-topic-form" class="mt-6">
+              <div class="form-grid">
+                <!-- Categoria -->
+                <div class="form-group col-span-2 md:col-span-1">
+                  <label class="form-label">Categoria</label>
+                  <div class="select-wrapper">
+                    <select id="topic-category" class="form-select" required>
+                      <!-- Preenchido via JavaScript -->
+                    </select>
+                  </div>
+                </div>
+      
+                <!-- Tags -->
+                <div class="form-group col-span-2 md:col-span-1">
+                  <label class="form-label">Tags</label>
+                  <div class="input-wrapper">
+                    <input type="text" id="topic-tags" class="form-input" 
+                           placeholder="Ex: anime, discussão, opinião">
+                    <span class="input-icon">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
+                        </path>
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+      
+                <!-- Título -->
+                <div class="form-group col-span-2">
+                  <label class="form-label">Título</label>
+                  <div class="input-wrapper">
+                    <input type="text" id="topic-title" class="form-input" 
+                           placeholder="Digite um título interessante" required>
+                    <span class="input-icon">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                        </path>
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+      
+                <!-- Conteúdo -->
+                <div class="form-group col-span-2">
+                  <label class="form-label">Conteúdo</label>
+                  <div class="input-wrapper">
+                    <textarea id="topic-content" class="form-textarea" 
+                             placeholder="Compartilhe seus pensamentos..." required></textarea>
+                  </div>
+                </div>
+              </div>
+      
+              <!-- Botões -->
+              <div class="modal-footer">
+                <button type="button" id="cancel-topic-btn" class="btn btn-secondary">
+                  Cancelar
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                    </path>
+                  </svg>
+                  Publicar Discussão
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      
+        <!-- Lista de discussões -->
+        <div id="forum-topics" class="space-y-6">
+          <!-- Tópicos serão inseridos aqui via JavaScript -->
+        </div>
+      </section>
+      
       <!-- Rodapé com direitos autorais -->
       <footer class="text-center mt-16">
         <p class="font-light">&copy; 2024 Animu. Todos os direitos reservados.</p>
@@ -262,10 +379,11 @@
     </div>
   </div>
 
-  <!-- Script personalizado para funcionalidade adicional -->
+  <!-- Scripts -->
   <script src="./src/js/animu.js"></script>
   <script src="./src/js/login.js"></script>
   <script src="./src/js/animes.js"></script>
+  <script src="./src/js/forum.js"></script>
 </body>
 
 </html>
