@@ -14,7 +14,6 @@
 <body>
   <!-- Botão para voltar à página anterior -->
   <button class="back-button" onclick="window.history.back()" title="Voltar">
-    <!-- Ícone SVG de seta para indicar a função de voltar -->
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
       stroke-linecap="round" stroke-linejoin="round">
       <path d="M15 18l-6-6 6-6" /> <!-- Define a forma da seta -->
@@ -23,10 +22,9 @@
 
   <!-- Botão para alternância de tema claro/escuro -->
   <div class="theme-toggle-container">
-    <button id="theme-toggle" class="toggle">
-      <!-- Ícones representando os estados de tema claro (sol) e escuro (lua) -->
-      <span class="icon sun"></span>
-      <span class="icon moon"></span>
+    <button class="toggle-theme">
+      <div class="clouds"></div>
+      <div class="stars"><span><span></span></span></div>
     </button>
   </div>
 
@@ -42,15 +40,10 @@
       <div class="flex flex-col gap-4">
         <!-- Sistema de avaliação por estrelas -->
         <div class="rating-container mb-2">
-          <p class="mb-2 font-semibold">Sua avaliação: <span id="rating-display" class="text-purple-600 ml-2">0.0</span></p>
+          <p class="mb-2 font-semibold">Sua avaliação: <span id="rating-display" class="text-purple-600 ml-2">0.0</span>
+          </p>
           <div class="rating-slider-container">
-            <input type="range" 
-                   id="rating-slider" 
-                   min="0" 
-                   max="100" 
-                   value="0" 
-                   class="rating-slider"
-                   step="5">
+            <input type="range" id="rating-slider" min="0" max="100" value="0" class="rating-slider" step="5">
             <div class="rating-emoji-container">
               <span id="rating-emoji" class="rating-emoji">😶</span>
             </div>
@@ -80,7 +73,8 @@
   </div>
 
   <!-- Inclusão de scripts para funcionalidades do site -->
-  <script src="./src/js/animu.js"></script> 
+  <script src="./src/js/animu.js"></script>
+  <script src="./src/js/forum.js"></script>
   <script src="./src/js/animes.js"></script>
 </body>
 

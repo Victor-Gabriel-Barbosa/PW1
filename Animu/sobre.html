@@ -13,19 +13,17 @@
 <body>
   <!-- Botão de voltar para a página anterior -->
   <button class="back-button" onclick="window.history.back()" title="Voltar">
-    <!-- Ícone SVG representando uma seta de voltar -->
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
       stroke-linecap="round" stroke-linejoin="round">
       <path d="M15 18l-6-6 6-6" /> <!-- Desenho da seta -->
     </svg>
   </button>
 
-  <!-- Botão de alternância de tema claro/escuro -->
+  <!-- Botão para alternância de tema claro/escuro -->
   <div class="theme-toggle-container">
-    <button id="theme-toggle" class="toggle">
-      <!-- Ícones para os temas claro (sol) e escuro (lua) -->
-      <span class="icon sun"></span>
-      <span class="icon moon"></span>
+    <button class="toggle-theme">
+      <div class="clouds"></div>
+      <div class="stars"><span><span></span></span></div>
     </button>
   </div>
 

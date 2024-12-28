@@ -1,7 +1,7 @@
 // Aguarda o carregamento completo do DOM antes de executar o código
 document.addEventListener('DOMContentLoaded', () => {
-  // Seleciona o botão de alternância de tema
-  const themeToggle = document.querySelector('.toggle');
+  // Atualizar a seleção do botão de tema
+  const themeToggle = document.querySelector('.toggle-theme');
   const body = document.body; // Referência ao elemento <body>
 
   // Verifica no localStorage se existe um tema salvo anteriormente

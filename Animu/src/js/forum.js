@@ -97,7 +97,10 @@ class TextFormatter {
       ':)': '😊',
       ':(': '😢',
       ':D': '😀',
-      '<3': '❤️'
+      '<3': '❤️',
+      '>:(': '😡',
+      ':O': '😲',
+      ':P': '😛'
     };
 
     return text.replace(/:\)|:\(|:D|<3/g, match => emojiMap[match]);
@@ -230,8 +233,11 @@ function renderTopicCard(topic, userId) {
   const category = FORUM_CONFIG.categories.find(c => c.id === topic.category) ||
     { icon: '💬', name: 'Geral' };
 
+  // Adicione um wrapper div com evento de clique
   return `
-    <div class="card p-6 mb-4 transform transition-all hover:-translate-y-1 hover:shadow-lg" id="topic-${topic.id}">
+    <div class="card p-6 mb-4 transform transition-all hover:-translate-y-1 hover:shadow-lg cursor-pointer" 
+         id="topic-${topic.id}"
+         onclick="incrementTopicViews(${topic.id})">
       <div class="topic-content">
         <div class="flex justify-between items-start mb-4">
           <div>
@@ -534,11 +540,7 @@ function deleteTopic(topicId) {
   if (!topic || (!isAuthor(topic.author) && !isAdmin())) return;
 
   if (confirm('Tem certeza que deseja excluir esta discussão? Todos os comentários serão removidos permanentemente.')) {
-    try {
-      // Log para debug
-      console.log('Deletando tópico:', topic);
-      console.log('Número de respostas antes da exclusão:', topic.replies.length);
-      
+    try {   
       // Remove o tópico e todos seus dados relacionados
       forumTopics = forumTopics.filter(t => t.id !== topicId);
       
@@ -551,10 +553,6 @@ function deleteTopic(topicId) {
       // Salva as alterações e atualiza a visualização
       saveForumData();
       renderTopics();
-      
-      // Log de confirmação
-      console.log('Tópico excluído com sucesso');
-      console.log('Número atual de tópicos:', forumTopics.length);
       
       // Feedback visual para o usuário
       alert('Tópico excluído com sucesso!');
@@ -627,7 +625,7 @@ function deleteReply(topicId, replyId) {
 
   if (confirm('Tem certeza que deseja excluir esta resposta?')) {
     topic.replies = topic.replies.filter(r => r.id !== replyId);
-    saveForumData(); // Adicionar esta linha
+    saveForumData();
     renderTopics();
   }
 }
@@ -676,7 +674,7 @@ function addTopic(event) {
       author: getLoggedUsername(),
       date: new Date().toISOString(),
       likes: 0,
-      views: 0,
+      views: 0, // Inicializa as views como 0
       likedBy: [],
       replies: []
     };
@@ -710,15 +708,20 @@ function saveForumData() {
   localStorage.setItem('forumTopics', JSON.stringify(forumTopics));
 }
 
-// Modificar a função loadForumData para garantir que sempre retorne um array
+// Modificar a função loadForumData para garantir que todos os tópicos tenham a propriedade views
 function loadForumData() {
   try {
     const savedTopics = localStorage.getItem('forumTopics');
     forumTopics = savedTopics ? JSON.parse(savedTopics) : [];
 
-    // Garantir que é um array mesmo que o JSON seja inválido
+    // Garantir que é um array e que todos os tópicos têm a propriedade views
     if (!Array.isArray(forumTopics)) {
       forumTopics = [];
+    } else {
+      forumTopics = forumTopics.map(topic => ({
+        ...topic,
+        views: topic.views || 0
+      }));
     }
   } catch (error) {
     console.error('Erro ao carregar dados do fórum:', error);
@@ -783,6 +786,27 @@ function filterTopicsByCategory(categoryId) {
         filterTopicsByCategory(btn.dataset.category);
       });
     });
+  }
+}
+
+// Adicione esta função após as outras funções auxiliares
+function incrementTopicViews(topicId) {
+  const topic = forumTopics.find(t => t.id === topicId);
+  if (!topic) return;
+
+  // Obtém o histórico de visualizações do localStorage
+  const viewsHistory = JSON.parse(localStorage.getItem('topicViewsHistory') || '{}');
+  const userId = isUserLoggedIn() ? JSON.parse(localStorage.getItem('userSession')).userId : 'anonymous';
+  const userViewsKey = `${userId}_${topicId}`;
+
+  // Verifica se já se passou 1 hora desde a última visualização
+  const lastView = viewsHistory[userViewsKey];
+  const now = Date.now();
+  if (!lastView || (now - lastView) > 3600000) { // 3600000 ms = 1 hora
+    topic.views = (topic.views || 0) + 1;
+    viewsHistory[userViewsKey] = now;
+    localStorage.setItem('topicViewsHistory', JSON.stringify(viewsHistory));
+    saveForumData();
   }
 }
 

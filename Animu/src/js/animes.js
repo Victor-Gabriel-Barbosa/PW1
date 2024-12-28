@@ -219,7 +219,7 @@ function renderAllAnimes() {
   commentsSection.style.display = 'none';
 
   container.innerHTML = `
-        <h1 class="text-3xl font-bold mb-6">Todos os Animes</h1>
+        <h1 class="text-3xl font-bold mb-6">Animes</h1>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             ${animes.map(anime => `
                 <div class="anime-card rounded-lg shadow-md overflow-hidden">
@@ -268,7 +268,7 @@ function hasUserAlreadyCommented(animeTitle, username) {
   }
 }
 
-// Função saveComment modificada
+// Função saveComment modificada para usar o sistema de moderação
 function saveComment(animeTitle, comment, rating) {
   try {
     const currentUser = JSON.parse(localStorage.getItem('userSession'));
@@ -286,6 +286,14 @@ function saveComment(animeTitle, comment, rating) {
       return null;
     }
 
+    // Validação do conteúdo usando o ForumModerator
+    try {
+      ForumModerator.validateContent(comment, 'comentário');
+    } catch (error) {
+      alert(error.message);
+      return null;
+    }
+
     const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
     if (!comments[animeTitle]) {
       comments[animeTitle] = [];
@@ -295,7 +303,7 @@ function saveComment(animeTitle, comment, rating) {
 
     const newComment = {
       id: Date.now(),
-      text: comment,
+      text: TextFormatter.format(comment), // Usa o TextFormatter para formatar o texto
       rating: sliderRating,
       username: currentUser.username,
       timestamp: new Date().toISOString()
@@ -446,7 +454,7 @@ function isUserAdmin() {
   return sessionData?.isAdmin || false;
 }
 
-// Função para editar comentário (modificada)
+// Função para editar comentário (modificada para usar o sistema de moderação)
 function editComment(animeTitle, commentId, newText, newRating) {
   try {
     const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
@@ -459,7 +467,15 @@ function editComment(animeTitle, commentId, newText, newRating) {
     const currentUser = JSON.parse(localStorage.getItem('userSession'))?.username;
     if (currentUser !== comment.username) return false;
 
-    comment.text = newText;
+    // Validação do conteúdo usando o ForumModerator
+    try {
+      ForumModerator.validateContent(newText, 'comentário');
+    } catch (error) {
+      alert(error.message);
+      return false;
+    }
+
+    comment.text = TextFormatter.format(newText); // Usa o TextFormatter para formatar o texto
     comment.rating = newRating;
     comment.edited = true;
     comment.editedAt = new Date().toISOString();
