@@ -209,40 +209,95 @@ function renderAnimeDetails(anime) {
   updateFavoriteButton(anime.primaryTitle);
 }
 
-// Nova função para renderizar todos os animes
+// Nova função para normalizar categorias
+function normalizeCategory(category) {
+  const normalizations = {
+      'action': ['ação', 'action', 'acao'],
+      'drama': ['drama'],
+      'comedy': ['comédia', 'comedy', 'comedia'],
+      'fantasy': ['fantasia', 'fantasy'],
+      'sci-fi': ['ficção científica', 'sci-fi', 'sci fi', 'ficcao cientifica'],
+      'romance': ['romance', 'romântico', 'romantico'],
+      'supernatural': ['sobrenatural', 'supernatural'],
+      'game': ['game', 'games', 'jogos']
+  };
+
+  if (!category) return '';
+  
+  category = category.toLowerCase().trim();
+  
+  for (const [key, variants] of Object.entries(normalizations)) {
+      if (variants.includes(category)) {
+          return key;
+      }
+  }
+  
+  return category;
+}
+
+// Modificar a função renderAllAnimes para usar a normalização
 function renderAllAnimes() {
   const container = document.getElementById('anime-content');
   const commentsSection = document.getElementById('comments-section');
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
+  const urlParams = new URLSearchParams(window.location.search);
+  const categoryFilter = urlParams.get('category');
 
   // Esconde a seção de comentários ao mostrar todos os animes
-  commentsSection.style.display = 'none';
+  if (commentsSection) {
+      commentsSection.style.display = 'none';
+  }
+
+  if (!container) return;
+
+  // Filtra os animes se houver uma categoria selecionada
+  const filteredAnimes = categoryFilter 
+      ? animes.filter(anime => 
+          anime.genres.some(genre => 
+              normalizeCategory(genre) === normalizeCategory(categoryFilter)
+          )
+      )
+      : animes;
+
+  if (filteredAnimes.length === 0) {
+      container.innerHTML = `
+          <div class="no-anime-found">
+              <h2>Nenhum anime encontrado</h2>
+              <p>Não encontramos animes na categoria: ${categoryFilter}</p>
+          </div>
+      `;
+      return;
+  }
 
   container.innerHTML = `
-        <h1 class="text-3xl font-bold mb-6">Animes</h1>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            ${animes.map(anime => `
-                <div class="anime-card rounded-lg shadow-md overflow-hidden">
-                    <img src="${anime.coverImage}" alt="${anime.primaryTitle}" class="w-full h-64 object-cover">
-                    <div class="p-4">
-                        <h2 class="text-xl font-semibold mb-2">${anime.primaryTitle}</h2>
-                        <div class="genres mb-2">
-                            ${anime.genres.map(genre =>
-    `<span class="genre-tag">${genre}</span>`
-  ).join('')}
-                        </div>
-                        <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
-                           class="text-blue-600 dark:text-blue-400 hover:underline">
-                            Ver detalhes
-                        </a>
-                    </div>
-                </div>
-            `).join('')}
-        </div>
-    `;
+      <h1 class="text-3xl font-bold mb-6">
+          ${categoryFilter ? `Animes da categoria: ${categoryFilter}` : 'Todos os Animes'}
+      </h1>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          ${filteredAnimes.map(anime => `
+              <div class="anime-card rounded-lg shadow-md overflow-hidden">
+                  <img src="${anime.coverImage}" alt="${anime.primaryTitle}" class="w-full h-64 object-cover">
+                  <div class="p-4">
+                      <h2 class="text-xl font-semibold mb-2">${anime.primaryTitle}</h2>
+                      <div class="genres mb-2">
+                          ${anime.genres.map(genre =>
+                              `<span class="genre-tag">${genre}</span>`
+                          ).join('')}
+                      </div>
+                      <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
+                         class="text-blue-600 dark:text-blue-400 hover:underline">
+                          Ver detalhes
+                      </a>
+                  </div>
+              </div>
+          `).join('')}
+      </div>
+  `;
 
   // Atualiza o título da página
-  document.title = 'Lista de Todos os Animes';
+  document.title = categoryFilter 
+      ? `${categoryFilter} - Animes por Categoria` 
+      : 'Lista de Todos os Animes';
 }
 
 // Função para carregar comentários do localStorage

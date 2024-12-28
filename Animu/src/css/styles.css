@@ -79,6 +79,29 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--primary-color);
 }
 
+.tag {
+  background: var(--primary-color);
+  color: white;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.9em;
+}
+
+.tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.tag-remove {
+  cursor: pointer;
+  color: #ff4444;
+}
+
 /* 3. Layout e Containers
    ========================================================================== */
 .container {

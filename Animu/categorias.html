@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorias - Animu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./src/css/styles.css">
+    <link rel="stylesheet" href="./src/css/categories.css">
+    <link rel="icon" href="./src/favicon/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <!-- Navbar existente -->
+    <!-- ...existing code... -->
+
+    <div class="pt-16">
+        <div class="container mx-auto px-4 py-12 max-w-6xl">
+            <header class="text-center mb-16">
+                <h1 class="text-6xl font-bold mb-4 tracking-tight anime-gradient">Categorias</h1>
+                <p class="text-xl max-w-2xl mx-auto font-light leading-relaxed">
+                    Explore os animes por suas categorias favoritas e descubra novas histórias incríveis.
+                </p>
+            </header>
+
+            <div class="category-grid">
+                <!-- Categorias principais -->
+                <div class="category-card" data-category="action" style="background: linear-gradient(45deg, #FF6B6B, #FF8E8E)">
+                    <div class="category-icon">⚔️</div>
+                    <h3>Ação</h3>
+                    <p>Combates épicos e adrenalina pura</p>
+                    <span class="anime-count">Carregando...</span>
+                </div>
+
+                <div class="category-card" data-category="drama" style="background: linear-gradient(45deg, #4ECDC4, #45B7AF)">
+                    <div class="category-icon">🎭</div>
+                    <h3>Drama</h3>
+                    <p>Histórias emocionantes e profundas</p>
+                    <span class="anime-count">Carregando...</span>
+                </div>
+
+                <div class="category-card" data-category="comedy" style="background: linear-gradient(45deg, #FFD93D, #FFE566)">
+                    <div class="category-icon">😄</div>
+                    <h3>Comédia</h3>
+                    <p>Diversão e momentos hilários</p>
+                    <span class="anime-count">Carregando...</span>
+                </div>
+
+                <div class="category-card" data-category="fantasy" style="background: linear-gradient(45deg, #6C5CE7, #8B80F9)">
+                    <div class="category-icon">🔮</div>
+                    <h3>Fantasia</h3>
+                    <p>Mundos mágicos e criaturas místicas</p>
+                    <span class="anime-count">Carregando...</span>
+                </div>
+
+                <div class="category-card" data-category="sci-fi" style="background: linear-gradient(45deg, #a8ff78, #78ffd6)">
+                    <div class="category-icon">🤖</div>
+                    <h3>Sci-Fi</h3>
+                    <p>Tecnologia e futurismo</p>
+                    <span class="anime-count">Carregando...</span>
+                </div>
+
+                <div class="category-card" data-category="romance" style="background: linear-gradient(45deg, #FF9A9E, #FAD0C4)">
+                    <div class="category-icon">💝</div>
+                    <h3>Romance</h3>
+                    <p>Histórias de amor e relacionamentos</p>
+                    <span class="anime-count">Carregando...</span>
+                </div>
+
+                <div class="category-card" data-category="supernatural" style="background: linear-gradient(45deg, #517fa4, #243949)">
+                    <div class="category-icon">👻</div>
+                    <h3>Sobrenatural</h3>
+                    <p>Mistérios e poderes ocultos</p>
+                    <span class="anime-count">Carregando...</span>
+                </div>
+
+                <div class="category-card" data-category="game" style="background: linear-gradient(45deg, #764ba2, #667eea)">
+                    <div class="category-icon">🎮</div>
+                    <h3>Games</h3>
+                    <p>Aventuras no mundo dos jogos</p>
+                    <span class="anime-count">Carregando...</span>
+                </div>
+            </div>
+
+            <!-- Subcategorias populares -->
+            <section class="mt-16">
+                <h2 class="text-3xl font-bold mb-8 text-center">Subcategorias Populares</h2>
+                <div class="subcategory-tags">
+                    <span class="subcategory-tag">Isekai</span>
+                    <span class="subcategory-tag">Shounen</span>
+                    <span class="subcategory-tag">Slice of Life</span>
+                    <span class="subcategory-tag">Mecha</span>
+                    <span class="subcategory-tag">Horror</span>
+                    <span class="subcategory-tag">Esporte</span>
+                    <span class="subcategory-tag">Música</span>
+                    <span class="subcategory-tag">Histórico</span>
+                    <span class="subcategory-tag">Psicológico</span>
+                    <span class="subcategory-tag">Aventura</span>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./src/js/animu.js"></script>
+    <script src="./src/js/login.js"></script>
+    <script src="./src/js/categories.js"></script>
+    <script src="./src/js/animes.js"></script>
+</body>
+</html>
