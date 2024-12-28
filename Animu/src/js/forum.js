@@ -43,18 +43,38 @@ const FORUM_CONFIG = {
   maxTitleLength: 100,
   maxContentLength: 2000,
   moderationRules: {
-    forbiddenWords: ['palavrão1', 'palavrão2'] // Lista de palavras proibidas
+    forbiddenWords: [] // Será preenchido ao carregar
   }
 };
+
+// Função para carregar a lista de palavrões
+async function loadBadWords() {
+  try {
+    const response = await fetch('./src/js/data/badwords.json');
+    const data = await response.json();
+    FORUM_CONFIG.moderationRules.forbiddenWords = data.palavroes;
+  } catch (error) {
+    console.error('Erro ao carregar lista de palavrões:', error);
+  }
+}
 
 // Classe para formatação de texto
 class TextFormatter {
   static format(text) {
-    // Formatação básica
+    text = this.censorText(text);
     text = this.formatMentions(text);
     text = this.formatMarkdown(text);
     text = this.formatEmojis(text);
     return text;
+  }
+
+  static censorText(text) {
+    let censoredText = text;
+    FORUM_CONFIG.moderationRules.forbiddenWords.forEach(word => {
+      const regex = new RegExp(word, 'gi');
+      censoredText = censoredText.replace(regex, match => '•'.repeat(match.length));
+    });
+    return censoredText;
   }
 
   static formatMentions(text) {
@@ -86,16 +106,40 @@ class TextFormatter {
 
 // Classe para gerenciamento de moderação
 class ForumModerator {
-  static validateContent(content) {
-    // Verifica palavras proibidas
-    const hasForbiddenWords = FORUM_CONFIG.moderationRules.forbiddenWords
-      .some(word => content.toLowerCase().includes(word));
+  static validateContent(content, type = 'conteúdo') {
+    if (!content || content.trim() === '') {
+      throw new Error(`O ${type} não pode estar vazio.`);
+    }
 
-    if (hasForbiddenWords) {
-      throw new Error('O conteúdo contém palavras não permitidas.');
+    // Verifica comprimento máximo
+    const maxLengths = {
+      título: FORUM_CONFIG.maxTitleLength,
+      conteúdo: FORUM_CONFIG.maxContentLength,
+      resposta: FORUM_CONFIG.maxContentLength,
+      tag: 30 // Limite máximo para tags
+    };
+
+    if (maxLengths[type] && content.length > maxLengths[type]) {
+      throw new Error(`O ${type} excede o limite máximo de ${maxLengths[type]} caracteres.`);
     }
 
     return true;
+  }
+
+  static validateTags(tags) {
+    if (!Array.isArray(tags)) return [];
+    
+    return tags.map(tag => {
+      try {
+        this.validateContent(tag, 'tag');
+        // Primeiro censura as palavras impróprias, depois limpa caracteres especiais
+        const censoredTag = TextFormatter.censorText(tag);
+        return censoredTag.replace(/[^a-zA-Z0-9\*]/g, '');
+      } catch (error) {
+        console.warn(`Tag "${tag}" inválida: ${error.message}`);
+        return null;
+      }
+    }).filter(Boolean); // Remove tags nulas
   }
 
   static canUserPost() {
@@ -150,7 +194,7 @@ function renderTopics() {
   const categoryFilters = `
     <div class="category-filters mb-6 flex gap-2 overflow-x-auto p-2">
       ${FORUM_CONFIG.categories.map(cat => `
-        <button class="category-filter px-4 py-2 rounded-full border transition-colors hover:bg-purple-100"
+        <button class="category-filter px-4 py-2 rounded-full border transition-colors hover:bg-purple-700"
                 data-category="${cat.id}">
           ${cat.icon} ${cat.name}
         </button>
@@ -409,21 +453,25 @@ function addReply(event, topicId) {
   const input = event.target.querySelector('input');
   const content = input.value.trim();
 
-  if (content) {
+  try {
+    ForumModerator.validateContent(content, 'resposta');
+
     const topic = forumTopics.find(t => t.id === topicId);
     if (topic) {
       topic.replies.push({
         id: Date.now(), // Adiciona ID único
         author: getLoggedUsername(),
-        content,
+        content: TextFormatter.format(content),
         date: new Date().toISOString().split('T')[0],
         likes: 0,
         likedBy: []
       });
       renderTopics();
       saveForumData(); // Adicionar esta linha
+      input.value = '';
     }
-    input.value = '';
+  } catch (error) {
+    alert(error.message);
   }
 }
 
@@ -454,12 +502,17 @@ function saveTopicEdit(event, topicId) {
   const newTitle = form.querySelector('input').value.trim();
   const newContent = form.querySelector('textarea').value.trim();
 
-  if (newTitle !== '' && newContent !== '') {
-    topic.title = newTitle;
-    topic.content = newContent;
+  try {
+    ForumModerator.validateContent(newTitle, 'título');
+    ForumModerator.validateContent(newContent, 'conteúdo');
+
+    topic.title = TextFormatter.format(newTitle);
+    topic.content = TextFormatter.format(newContent);
     topic.editedAt = new Date().toISOString();
     renderTopics();
-    saveForumData(); // Adicionar esta linha
+    saveForumData();
+  } catch (error) {
+    alert(error.message);
   }
 }
 
@@ -480,10 +533,35 @@ function deleteTopic(topicId) {
   const topic = forumTopics.find(t => t.id === topicId);
   if (!topic || (!isAuthor(topic.author) && !isAdmin())) return;
 
-  if (confirm('Tem certeza que deseja excluir esta discussão?')) {
-    forumTopics = forumTopics.filter(t => t.id !== topicId);
-    saveForumData(); // Adicionar esta linha
-    renderTopics();
+  if (confirm('Tem certeza que deseja excluir esta discussão? Todos os comentários serão removidos permanentemente.')) {
+    try {
+      // Log para debug
+      console.log('Deletando tópico:', topic);
+      console.log('Número de respostas antes da exclusão:', topic.replies.length);
+      
+      // Remove o tópico e todos seus dados relacionados
+      forumTopics = forumTopics.filter(t => t.id !== topicId);
+      
+      // Verificação após exclusão
+      const topicStillExists = forumTopics.some(t => t.id === topicId);
+      if (topicStillExists) {
+        throw new Error('Falha ao excluir o tópico');
+      }
+
+      // Salva as alterações e atualiza a visualização
+      saveForumData();
+      renderTopics();
+      
+      // Log de confirmação
+      console.log('Tópico excluído com sucesso');
+      console.log('Número atual de tópicos:', forumTopics.length);
+      
+      // Feedback visual para o usuário
+      alert('Tópico excluído com sucesso!');
+    } catch (error) {
+      console.error('Erro ao excluir tópico:', error);
+      alert('Ocorreu um erro ao tentar excluir o tópico. Por favor, tente novamente.');
+    }
   }
 }
 
@@ -514,11 +592,15 @@ function saveReplyEdit(event, topicId, replyId) {
   const form = event.target;
   const newContent = form.querySelector('textarea').value.trim();
 
-  if (newContent !== '') {
-    reply.content = newContent;
+  try {
+    ForumModerator.validateContent(newContent, 'resposta');
+
+    reply.content = TextFormatter.format(newContent);
     reply.editedAt = new Date().toISOString();
     renderTopics();
-    saveForumData(); // Adicionar esta linha
+    saveForumData();
+  } catch (error) {
+    alert(error.message);
   }
 }
 
@@ -563,7 +645,7 @@ function addTopic(event) {
   const title = document.getElementById('topic-title').value.trim();
   const content = document.getElementById('topic-content').value.trim();
   const category = document.getElementById('topic-category').value;
-  const tags = document.getElementById('topic-tags').value
+  const rawTags = document.getElementById('topic-tags').value
     .split(',')
     .map(tag => tag.trim())
     .filter(Boolean);
@@ -575,14 +657,22 @@ function addTopic(event) {
   }
 
   try {
-    ForumModerator.validateContent(content);
+    ForumModerator.validateContent(title, 'título');
+    ForumModerator.validateContent(content, 'conteúdo');
+    
+    // Validar e filtrar tags impróprias
+    const validatedTags = ForumModerator.validateTags(rawTags);
+    
+    if (rawTags.length !== validatedTags.length) {
+      alert('Algumas tags foram removidas por conterem palavras impróprias.');
+    }
 
     const newTopic = {
       id: Date.now(),
       title: TextFormatter.format(title),
       content: TextFormatter.format(content),
       category,
-      tags,
+      tags: validatedTags,
       author: getLoggedUsername(),
       date: new Date().toISOString(),
       likes: 0,
@@ -662,12 +752,12 @@ function filterTopicsByCategory(categoryId) {
   if (forumTopicsContainer) {
     const categoryFilters = `
       <div class="category-filters mb-6 flex gap-2 overflow-x-auto p-2">
-        <button class="category-filter px-4 py-2 rounded-full border transition-colors hover:bg-purple-100"
+        <button class="category-filter px-4 py-2 rounded-full border transition-colors hover:bg-purple-1000"
                 onclick="filterTopicsByCategory()">
           🔍 Todas
         </button>
         ${FORUM_CONFIG.categories.map(cat => `
-          <button class="category-filter px-4 py-2 rounded-full border transition-colors hover:bg-purple-100 ${cat.id === categoryId ? 'bg-purple-100 text-purple-600' : ''}"
+          <button class="category-filter px-4 py-2 rounded-full border transition-colors" ${cat.id === categoryId ? 'bg-purple-100 text-purple-600' : ''}"
                   data-category="${cat.id}"
                   onclick="filterTopicsByCategory('${cat.id}')">
             ${cat.icon} ${cat.name}
@@ -697,9 +787,12 @@ function filterTopicsByCategory(categoryId) {
 }
 
 // Modificar a inicialização para incluir a inicialização das categorias
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // Garantir que forumTopics começa como array vazio
   forumTopics = [];
+
+  // Carregar lista de palavrões primeiro
+  await loadBadWords();
 
   // Carregar dados salvos
   loadForumData();

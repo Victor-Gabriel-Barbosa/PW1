@@ -21,43 +21,25 @@ function showNoAnimeMessage(container, message) {
 // Recebe um objeto "anime" e retorna uma string de HTML com os detalhes do anime
 function createAnimeCardHTML(anime) {
   return `
-    <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" style="width: 300px; height: 100px;">
+    <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="flex items-center gap-4 p-4 rounded-lg transition-colors hover:bg-gray-500" style="width: 300px; height: 100px;">
       <img src="${anime.coverImage}" alt="${anime.primaryTitle}" class="w-16 h-16 object-cover rounded-lg">
       <div class="flex-1 overflow-hidden">
         <h3 class="font-semibold truncate">${anime.primaryTitle}</h3>
         <div class="flex gap-2 mt-1">
-          <span class="text-sm bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded">
+          <span class="rating-tag">
             ⭐ ${anime.score || 'N/A'}
           </span>
-          <span class="text-sm text-gray-500 dark:text-gray-400">${anime.status}</span>
+          <span class="text-sm">${anime.status}</span>
         </div>
       </div>
     </a>
   `;
 }
 
-// Função para exibir a lista de animes salvos no Local Storage
-function displayAnimes() {
-  const animeList = document.getElementById('anime-list'); // Elemento onde os animes serão exibidos
-  const savedData = getSavedData(); // Recupera os dados do Local Storage
-
-  // Caso o array esteja vazio, exibe uma mensagem padrão
-  if (savedData.length === 0) {
-    showNoAnimeMessage(animeList, 'Nenhum anime salvo ainda.');
-    return;
-  }
-
-  // Renderiza os animes chamando a função de criação do HTML
-  animeList.innerHTML = savedData.map(anime => createAnimeCardHTML({ ...anime, listView: true })).join('');
-}
-
 // Função para buscar um anime pelo título
 function searchAnime() {
   applyFilters(); // Usa a mesma lógica de filtros para a busca
 }
-
-// Adiciona um evento ao carregar a página para exibir a lista de animes salvos automaticamente
-window.addEventListener('DOMContentLoaded', displayAnimes);
 
 // Função para obter parâmetros da URL
 function getUrlParameter(name) {
@@ -105,6 +87,12 @@ function getYouTubeEmbedUrl(url) {
 function renderAnimeDetails(anime) {
   const container = document.getElementById('anime-content');
   const commentsSection = document.getElementById('comments-section');
+
+  // Verifica se os elementos necessários existem
+  if (!container || !commentsSection) {
+    console.warn('Elementos necessários não encontrados no DOM');
+    return;
+  }
 
   if (!anime) {
     container.innerHTML = `
@@ -477,7 +465,7 @@ function editComment(animeTitle, commentId, newText, newRating) {
     comment.editedAt = new Date().toISOString();
 
     localStorage.setItem('animeComments', JSON.stringify(comments));
-    
+
     // Atualiza a média de avaliações do anime
     updateAnimeRating(animeTitle);
     return true;
@@ -501,7 +489,7 @@ function toggleEditMode(commentId) {
   } else {
     const currentText = commentText.textContent;
     const currentRating = parseFloat(commentDiv.getAttribute('data-rating')) * 10; // Converte para escala 0-100
-    
+
     commentText.style.display = 'none';
     commentRating.style.display = 'none';
 
@@ -509,7 +497,7 @@ function toggleEditMode(commentId) {
     form.className = 'edit-form mt-2';
     form.innerHTML = `
       <div class="rating-container mb-4">
-        <p class="mb-2 font-semibold">Sua avaliação: <span id="edit-rating-display">${(currentRating/10).toFixed(1)}</span></p>
+        <p class="mb-2 font-semibold">Sua avaliação: <span id="edit-rating-display">${(currentRating / 10).toFixed(1)}</span></p>
         <div class="rating-slider-container">
           <input type="range" 
                  id="edit-rating-slider" 
@@ -534,7 +522,7 @@ function toggleEditMode(commentId) {
 
     // Inicializa o slider de avaliação na edição
     const editSlider = form.querySelector('#edit-rating-slider');
-    editSlider.addEventListener('input', function() {
+    editSlider.addEventListener('input', function () {
       updateEditRatingDisplay(this.value);
     });
     updateEditRatingDisplay(currentRating);
@@ -543,7 +531,7 @@ function toggleEditMode(commentId) {
       e.preventDefault();
       const newText = form.querySelector('textarea').value.trim();
       const newRating = parseFloat(form.querySelector('#edit-rating-slider').value) / 10;
-      
+
       if (newText) {
         const animeTitle = new URLSearchParams(window.location.search).get('anime');
         if (editComment(decodeURIComponent(animeTitle), commentId, newText, newRating)) {
@@ -695,7 +683,7 @@ function calculateHighlightScore(anime, comments) {
 }
 
 // Função para obter os animes em destaque
-function getFeaturedAnimes(limit = 4) {
+function getFeaturedAnimes(limit = 8) {
   try {
     const animes = JSON.parse(localStorage.getItem('animeData')) || [];
     const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
@@ -741,8 +729,8 @@ function renderFeaturedAnimes() {
         <div class="p-4 flex flex-col flex-grow">
           <h3 class="text-lg font-semibold mb-auto line-clamp-2">${anime.primaryTitle}</h3>
           <div class="flex items-center gap-2 mt-2">
-            <span class="text-sm bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded">⭐ ${anime.score || 'N/A'}</span>
-            <span class="text-sm bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded">💬 ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}</span>
+            <span class="rating-tag">⭐ ${anime.score || 'N/A'}</span>
+            <span class="rating-tag">💬 ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}</span>
           </div>
         </div>
       </div>
@@ -984,7 +972,7 @@ function updateRatingEmoji(value) {
   }
 
   // Atualiza o display numérico
-  display.textContent = (value / 10).toFixed(1);
+  display.textContent = (rating).toFixed(1);
 }
 
 // Evento para inicializar o slider de avaliação

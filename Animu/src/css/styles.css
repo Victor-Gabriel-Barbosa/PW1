@@ -1,7 +1,7 @@
 /* ==========================================================================
-  1. Variáveis e Configurações Base
-  ========================================================================== */
-  :root {
+   1. Variáveis e Configurações Base
+   ========================================================================== */
+:root {
   /* Cores */
   --background-light: #c3cfe2;
   --background-dark: #2d2d2d;
@@ -9,9 +9,9 @@
   --text-dark: #ffffff;
   --card-shadow-light: rgba(0, 0, 0, 0.1);
   --card-shadow-dark: rgba(255, 255, 255, 0.1);
-  --primary-gradient: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+  --primary-gradient: linear-gradient(135deg, #8e2de2 0%, #4a00e0 100%);
   --primary-color: blueviolet;
-  --input-border-color:var(--primary-color);
+  --input-border-color: var(--primary-color);
 
   /* Tema padrão */
   --background: var(--background-light);
@@ -523,10 +523,18 @@ input, button, textarea, select {
 }
 
 .genre-tag {
-  background-color: blueviolet;
+  background: var(--primary-gradient);
   color: white;
   padding: 4px 12px;
   border-radius: 16px;
+  font-size: 14px;
+}
+
+.rating-tag {
+  background: var(--primary-gradient);
+  color: white;
+  padding: 3px 9px;
+  border-radius: 6px;
   font-size: 14px;
 }
 
