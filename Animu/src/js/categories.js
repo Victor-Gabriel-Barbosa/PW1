@@ -8,7 +8,17 @@ function normalizeCategory(category) {
     'sci-fi': ['ficção científica', 'sci-fi', 'sci fi', 'ficcao cientifica'],
     'romance': ['romance', 'romântico', 'romantico'],
     'supernatural': ['sobrenatural', 'supernatural'],
-    'game': ['game', 'games', 'jogos']
+    'game': ['game', 'games', 'jogos'],
+    'isekai': ['isekai'],
+    'shounen': ['shounen', 'shonen'],
+    'slice of life': ['slice of life', 'slice-of-life'],
+    'mecha': ['mecha', 'robot', 'robô'],
+    'horror': ['horror', 'terror'],
+    'sports': ['sports', 'esporte', 'esportes'],
+    'music': ['music', 'música', 'musica'],
+    'historical': ['historical', 'histórico', 'historico'],
+    'psychological': ['psychological', 'psicológico', 'psicologico'],
+    'adventure': ['adventure', 'aventura']
   };
 
   category = category.toLowerCase().trim();
@@ -89,12 +99,23 @@ function filterByCategory(category) {
 
 // Função para inicializar os event listeners
 function initializeCategories() {
+  // Handler para todas as categorias (principais e subcategorias)
   const categoryCards = document.querySelectorAll('.category-card');
-  categoryCards.forEach(card => {
-    card.addEventListener('click', () => {
-      const category = card.dataset.category;
+  const subcategoryTags = document.querySelectorAll('.subcategory-tag');
+
+  // Adiciona handlers para todas as categorias
+  [...categoryCards, ...subcategoryTags].forEach(element => {
+    element.addEventListener('click', () => {
+      const category = element.dataset.category || element.dataset.subcategory;
       filterByCategory(category);
     });
+
+    // Adiciona o contador de animes como tooltip
+    const category = element.dataset.category || element.dataset.subcategory;
+    if (category) {
+      const count = countAnimesByCategory(category);
+      element.title = `${count} ${count === 1 ? 'anime' : 'animes'}`;
+    }
   });
 
   // Atualiza os contadores iniciais

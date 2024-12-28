@@ -1,110 +1,249 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Categorias - Animu</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./src/css/styles.css">
-    <link rel="stylesheet" href="./src/css/categories.css">
-    <link rel="icon" href="./src/favicon/favicon.ico" type="image/x-icon">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Categorias - Animu</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./src/css/styles.css">
+  <link rel="stylesheet" href="./src/css/categories.css">
+  <link rel="icon" href="./src/favicon/favicon.ico" type="image/x-icon">
 </head>
+
 <body>
-    <!-- Navbar existente -->
-    <!-- ...existing code... -->
-
-    <div class="pt-16">
-        <div class="container mx-auto px-4 py-12 max-w-6xl">
-            <header class="text-center mb-16">
-                <h1 class="text-6xl font-bold mb-4 tracking-tight anime-gradient">Categorias</h1>
-                <p class="text-xl max-w-2xl mx-auto font-light leading-relaxed">
-                    Explore os animes por suas categorias favoritas e descubra novas histórias incríveis.
-                </p>
-            </header>
-
-            <div class="category-grid">
-                <!-- Categorias principais -->
-                <div class="category-card" data-category="action" style="background: linear-gradient(45deg, #FF6B6B, #FF8E8E)">
-                    <div class="category-icon">⚔️</div>
-                    <h3>Ação</h3>
-                    <p>Combates épicos e adrenalina pura</p>
-                    <span class="anime-count">Carregando...</span>
-                </div>
-
-                <div class="category-card" data-category="drama" style="background: linear-gradient(45deg, #4ECDC4, #45B7AF)">
-                    <div class="category-icon">🎭</div>
-                    <h3>Drama</h3>
-                    <p>Histórias emocionantes e profundas</p>
-                    <span class="anime-count">Carregando...</span>
-                </div>
-
-                <div class="category-card" data-category="comedy" style="background: linear-gradient(45deg, #FFD93D, #FFE566)">
-                    <div class="category-icon">😄</div>
-                    <h3>Comédia</h3>
-                    <p>Diversão e momentos hilários</p>
-                    <span class="anime-count">Carregando...</span>
-                </div>
-
-                <div class="category-card" data-category="fantasy" style="background: linear-gradient(45deg, #6C5CE7, #8B80F9)">
-                    <div class="category-icon">🔮</div>
-                    <h3>Fantasia</h3>
-                    <p>Mundos mágicos e criaturas místicas</p>
-                    <span class="anime-count">Carregando...</span>
-                </div>
-
-                <div class="category-card" data-category="sci-fi" style="background: linear-gradient(45deg, #a8ff78, #78ffd6)">
-                    <div class="category-icon">🤖</div>
-                    <h3>Sci-Fi</h3>
-                    <p>Tecnologia e futurismo</p>
-                    <span class="anime-count">Carregando...</span>
-                </div>
-
-                <div class="category-card" data-category="romance" style="background: linear-gradient(45deg, #FF9A9E, #FAD0C4)">
-                    <div class="category-icon">💝</div>
-                    <h3>Romance</h3>
-                    <p>Histórias de amor e relacionamentos</p>
-                    <span class="anime-count">Carregando...</span>
-                </div>
-
-                <div class="category-card" data-category="supernatural" style="background: linear-gradient(45deg, #517fa4, #243949)">
-                    <div class="category-icon">👻</div>
-                    <h3>Sobrenatural</h3>
-                    <p>Mistérios e poderes ocultos</p>
-                    <span class="anime-count">Carregando...</span>
-                </div>
-
-                <div class="category-card" data-category="game" style="background: linear-gradient(45deg, #764ba2, #667eea)">
-                    <div class="category-icon">🎮</div>
-                    <h3>Games</h3>
-                    <p>Aventuras no mundo dos jogos</p>
-                    <span class="anime-count">Carregando...</span>
-                </div>
-            </div>
-
-            <!-- Subcategorias populares -->
-            <section class="mt-16">
-                <h2 class="text-3xl font-bold mb-8 text-center">Subcategorias Populares</h2>
-                <div class="subcategory-tags">
-                    <span class="subcategory-tag">Isekai</span>
-                    <span class="subcategory-tag">Shounen</span>
-                    <span class="subcategory-tag">Slice of Life</span>
-                    <span class="subcategory-tag">Mecha</span>
-                    <span class="subcategory-tag">Horror</span>
-                    <span class="subcategory-tag">Esporte</span>
-                    <span class="subcategory-tag">Música</span>
-                    <span class="subcategory-tag">Histórico</span>
-                    <span class="subcategory-tag">Psicológico</span>
-                    <span class="subcategory-tag">Aventura</span>
-                </div>
-            </section>
+  <!-- Barra de navegação fixa -->
+  <nav class="fixed top-0 left-0 right-0 backdrop-blur-md shadow-sm z-50">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <div class="flex-shrink-0">
+          <a href="/" class="text-2xl font-bold text-purple-600">Animu</a>
         </div>
-    </div>
 
-    <!-- Scripts -->
-    <script src="./src/js/animu.js"></script>
-    <script src="./src/js/login.js"></script>
-    <script src="./src/js/categories.js"></script>
-    <script src="./src/js/animes.js"></script>
+        <!-- Links de navegação principais -->
+        <div class="hidden md:block">
+          <div class="ml-10 flex items-center space-x-4">
+            <a href="#" class="hover:text-purple-600 transition-colors font-medium">Início</a>
+            <a href="animes.html?anime=all" class="hover:text-purple-600 transition-colors font-medium">Animes</a>
+            <a href="categorias.html" class="hover:text-purple-600 transition-colors font-medium">Categorias</a>
+            <a href="sobre.html" class="hover:text-purple-600 transition-colors font-medium">Sobre</a>
+          </div>
+        </div>
+
+        <!-- Barra de pesquisa -->
+        <div class="flex-1 max-w-2xl mx-4" id="search-area">
+          <div class="search-container">
+            <div class="search-input-wrapper">
+              <input type="text" id="search-title" class="search-input" placeholder="Pesquisar anime..."
+                onkeydown="if(event.key === 'Enter') searchAnime()">
+              <div class="search-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                  <path
+                    d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                </svg>
+              </div>
+            </div>
+            <!-- Botão de filtro -->
+            <div class="filter-dropdown">
+              <button class="filter-btn" onclick="toggleFilterMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                  <path
+                    d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z" />
+                </svg>
+              </button>
+              <div id="filter-menu" class="filter-menu">
+                <div class="filter-group">
+                  <label>Gênero</label>
+                  <select id="genre-filter">
+                    <option value="">Todos</option>
+                    <option value="action">Ação</option>
+                    <option value="adventure">Aventura</option>
+                    <option value="comedy">Comédia</option>
+                    <option value="drama">Drama</option>
+                    <option value="fantasy">Fantasia</option>
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label>Ano</label>
+                  <select id="year-filter">
+                    <option value="">Todos</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label>Classificação</label>
+                  <select id="rating-filter">
+                    <option value="">Todas</option>
+                    <option value="9">9+ ⭐</option>
+                    <option value="8">8+ ⭐</option>
+                    <option value="7">7+ ⭐</option>
+                    <option value="6">6+ ⭐</option>
+                  </select>
+                </div>
+                <button onclick="applyFilters()" class="apply-filters-btn">Aplicar Filtros</button>
+              </div>
+            </div>
+            <button onclick="searchAnime()" class="search-button">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path
+                  d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+              </svg>
+            </button>
+          </div>
+          <div id="anime-result" class="anime-search"></div>
+        </div>
+
+        <!-- Área do usuário/admin -->
+        <div class="flex items-center space-x-4">
+          <!-- Painel do administrador -->
+          <div id="admin-panel" class="hidden relative">
+            <button id="admin-menu-button" class="p-2 rounded-lg transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </button>
+
+            <!-- Menu de administrador -->
+            <div id="admin-menu-items" style="z-index: 3;"
+              class="hidden absolute mt-2 w-48 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+              <div class="py-1" style="background: var(--background)" role="menu">
+                <a href="./admin/usuarios.html" class="block px-4 py-2 text-sm hover:bg-purple-600"
+                  role="menuitem">Usuários</a>
+                <a href="#" class="block px-4 py-2 text-sm hover:bg-purple-600" role="menuitem">Categorias</a>
+                <a href="./admin/add-anime.html" class="block px-4 py-2 text-sm hover:bg-purple-600"
+                  role="menuitem">Adicionar anime</a>
+                <a href="./admin/edit-anime.html" class="block px-4 py-2 text-sm hover:bg-purple-600"
+                  role="menuitem">Editar Animes</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Painel do usuário -->
+          <div id="user-panel" class="flex items-center top-0 left-0 p-2 rounded" style="width: fit-content;">
+            <!-- Avatar do usuário -->
+            <img class="h-10 w-10 rounded-full object-cover" src="https://via.placeholder.com/100"
+              alt="Avatar do Usuário" />
+            <!-- Nome do usuário -->
+            <div class="flex flex-col ml-2">
+              <span class="font-medium" id="user-name"><a href="./login/signin.html">Login</a></span>
+              <a href="#" id="logout-link" class="text-sm text-gray-500 hover:text-gray-700  hidden">Sair</a>
+            </div>
+          </div>
+
+          <!-- Botão para alternância de tema claro/escuro -->
+          <div class="theme-toggle-container">
+            <button class="toggle-theme">
+              <div class="clouds"></div>
+              <div class="stars"><span><span></span></span></div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="pt-16">
+    <div class="container mx-auto px-4 py-12 max-w-6xl">
+      <header class="text-center mb-16">
+        <h1 class="text-6xl font-bold mb-4 tracking-tight anime-gradient">Categorias</h1>
+        <p class="text-xl max-w-2xl mx-auto font-light leading-relaxed">
+          Explore os animes por suas categorias favoritas e descubra novas histórias incríveis.
+        </p>
+      </header>
+
+      <div class="category-grid">
+        <!-- Categorias principais -->
+        <div class="category-card" data-category="action" style="background: linear-gradient(45deg, #FF6B6B, #FF8E8E)">
+          <div class="category-icon">⚔️</div>
+          <h3>Ação</h3>
+          <p>Combates épicos e adrenalina pura</p>
+          <span class="anime-count">Carregando...</span>
+        </div>
+
+        <div class="category-card" data-category="drama" style="background: linear-gradient(45deg, #4ECDC4, #45B7AF)">
+          <div class="category-icon">🎭</div>
+          <h3>Drama</h3>
+          <p>Histórias emocionantes e profundas</p>
+          <span class="anime-count">Carregando...</span>
+        </div>
+
+        <div class="category-card" data-category="comedy" style="background: linear-gradient(45deg, #FFD93D, #FFE566)">
+          <div class="category-icon">😄</div>
+          <h3>Comédia</h3>
+          <p>Diversão e momentos hilários</p>
+          <span class="anime-count">Carregando...</span>
+        </div>
+
+        <div class="category-card" data-category="fantasy" style="background: linear-gradient(45deg, #6C5CE7, #8B80F9)">
+          <div class="category-icon">🔮</div>
+          <h3>Fantasia</h3>
+          <p>Mundos mágicos e criaturas místicas</p>
+          <span class="anime-count">Carregando...</span>
+        </div>
+
+        <div class="category-card" data-category="sci-fi" style="background: linear-gradient(45deg, #a8ff78, #78ffd6)">
+          <div class="category-icon">🤖</div>
+          <h3>Sci-Fi</h3>
+          <p>Tecnologia e futurismo</p>
+          <span class="anime-count">Carregando...</span>
+        </div>
+
+        <div class="category-card" data-category="romance" style="background: linear-gradient(45deg, #FF9A9E, #FAD0C4)">
+          <div class="category-icon">💝</div>
+          <h3>Romance</h3>
+          <p>Histórias de amor e relacionamentos</p>
+          <span class="anime-count">Carregando...</span>
+        </div>
+
+        <div class="category-card" data-category="supernatural"
+          style="background: linear-gradient(45deg, #517fa4, #243949)">
+          <div class="category-icon">👻</div>
+          <h3>Sobrenatural</h3>
+          <p>Mistérios e poderes ocultos</p>
+          <span class="anime-count">Carregando...</span>
+        </div>
+
+        <div class="category-card" data-category="game" style="background: linear-gradient(45deg, #764ba2, #667eea)">
+          <div class="category-icon">🎮</div>
+          <h3>Games</h3>
+          <p>Aventuras no mundo dos jogos</p>
+          <span class="anime-count">Carregando...</span>
+        </div>
+      </div>
+
+      <!-- Subcategorias populares -->
+      <section class="mt-16">
+        <h2 class="text-3xl font-bold mb-8 text-center">Subcategorias Populares</h2>
+        <div class="subcategory-tags">
+          <span class="subcategory-tag" data-subcategory="isekai">Isekai</span>
+          <span class="subcategory-tag" data-subcategory="shounen">Shounen</span>
+          <span class="subcategory-tag" data-subcategory="slice of life">Slice of Life</span>
+          <span class="subcategory-tag" data-subcategory="mecha">Mecha</span>
+          <span class="subcategory-tag" data-subcategory="horror">Horror</span>
+          <span class="subcategory-tag" data-subcategory="sports">Esporte</span>
+          <span class="subcategory-tag" data-subcategory="music">Música</span>
+          <span class="subcategory-tag" data-subcategory="historical">Histórico</span>
+          <span class="subcategory-tag" data-subcategory="psychological">Psicológico</span>
+          <span class="subcategory-tag" data-subcategory="adventure">Aventura</span>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="./src/js/animu.js"></script>
+  <script src="./src/js/login.js"></script>
+  <script src="./src/js/categories.js"></script>
+  <script src="./src/js/animes.js"></script>
 </body>
+
 </html>

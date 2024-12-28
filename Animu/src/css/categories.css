@@ -69,6 +69,7 @@
 }
 
 .subcategory-tag {
+  position: relative;
   padding: 0.5rem 1rem;
   background: var(--primary-gradient);
   color: white;
@@ -81,6 +82,23 @@
 .subcategory-tag:hover {
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Adiciona estilo para o tooltip */
+.subcategory-tag[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  margin-bottom: 5px;
+  z-index: 1;
 }
 
 /* Estilo para categorias vazias */
