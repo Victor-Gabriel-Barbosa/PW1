@@ -149,6 +149,17 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 4px;
 }
 
+.detail-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-label {
+  font-weight: bold;
+  color: #666;
+  font-size: 14px;
+}
+
 .synopsis {
   margin: 20px 0;
   line-height: 1.8;
