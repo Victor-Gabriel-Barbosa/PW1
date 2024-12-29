@@ -172,16 +172,17 @@ class AnimeSearchBar {
     let timeout = null;
     this.input.addEventListener('input', () => {
       clearTimeout(timeout);
-      timeout = setTimeout(() => this.handleSearch(), this.options.debounceTime);
+      timeout = setTimeout(() => this.handleSearch(false), this.options.debounceTime);
     });
 
     this.input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
-        this.handleSearch();
+        e.preventDefault();
+        this.handleSearch(true);
       }
     });
 
-    this.searchButton.addEventListener('click', () => this.handleSearch());
+    this.searchButton.addEventListener('click', () => this.handleSearch(true));
 
     // Fechar resultados ao clicar fora
     document.addEventListener('click', (e) => {
@@ -216,7 +217,7 @@ class AnimeSearchBar {
     });
   }
 
-  async handleSearch() {
+  async handleSearch(redirect = false) {
     const query = this.input.value.trim();
 
     if (query.length < this.options.minChars) {
@@ -226,7 +227,15 @@ class AnimeSearchBar {
 
     try {
       const results = await this.searchAnimes(query);
-      this.displayResults(results);
+      
+      if (redirect) {
+        // Salvar resultados no localStorage
+        localStorage.setItem('searchResults', JSON.stringify(results));
+        // Redirecionar para a página de animes com a query
+        window.location.href = `animes.html?search=${encodeURIComponent(query)}`;
+      } else {
+        this.displayResults(results);
+      }
     } catch (error) {
       console.error('Erro na busca:', error);
       this.displayError();

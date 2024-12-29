@@ -232,7 +232,8 @@ function renderAllAnimes() {
       </h1>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           ${filteredAnimes.map(anime => `
-              <div class="anime-card rounded-lg shadow-md overflow-hidden">
+              <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
+                 class="anime-card rounded-lg shadow-md overflow-hidden block hover:shadow-lg transition-shadow">
                   <img src="${anime.coverImage}" alt="${anime.primaryTitle}" class="w-full h-64 object-cover">
                   <div class="p-4">
                       <h2 class="text-xl font-semibold mb-2">${anime.primaryTitle}</h2>
@@ -241,12 +242,8 @@ function renderAllAnimes() {
     `<span class="genre-tag">${genre}</span>`
   ).join('')}
                       </div>
-                      <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
-                         class="text-blue-600 dark:text-blue-400 hover:underline">
-                          Ver detalhes
-                      </a>
                   </div>
-              </div>
+              </a>
           `).join('')}
       </div>
   `;
@@ -766,10 +763,53 @@ function renderFeaturedAnimes() {
   `).join('');
 }
 
-// Modifica o evento DOMContentLoaded
+// Adicione esta função para renderizar resultados da busca
+function renderSearchResults(query) {
+  const container = document.getElementById('anime-content');
+  const results = JSON.parse(localStorage.getItem('searchResults')) || [];
+
+  if (!container) return;
+
+  container.innerHTML = `
+    <h1 class="text-3xl font-bold mb-6">
+      Resultados da busca: "${query}"
+    </h1>
+    ${results.length === 0 ? `
+      <div class="no-results">
+        <p>Nenhum anime encontrado para sua busca.</p>
+      </div>
+    ` : `
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        ${results.map(anime => `
+          <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
+             class="anime-card rounded-lg shadow-md overflow-hidden block hover:shadow-lg transition-shadow">
+            <img src="${anime.coverImage}" alt="${anime.primaryTitle}" class="w-full h-64 object-cover">
+            <div class="p-4">
+              <h2 class="text-xl font-semibold mb-2">${anime.primaryTitle}</h2>
+              <div class="genres mb-2">
+                ${anime.genres.map(genre =>
+    `<span class="genre-tag">${genre}</span>`
+  ).join('')}
+              </div>
+            </div>
+          </a>
+        `).join('')}
+      </div>
+    `}
+  `;
+}
+
+// Modifique o evento DOMContentLoaded para incluir o tratamento da busca
 window.addEventListener('DOMContentLoaded', () => {
   const animeTitle = getUrlParameter('anime');
-  if (!animeTitle) {
+  const searchQuery = getUrlParameter('search');
+
+  if (searchQuery) {
+    // Se houver uma query de busca, renderiza os resultados
+    renderSearchResults(decodeURIComponent(searchQuery));
+    // Limpa os resultados do localStorage após renderizar
+    localStorage.removeItem('searchResults');
+  } else if (!animeTitle) {
     renderAnimeDetails(null);
   } else if (animeTitle.toLowerCase() === 'all') {
     renderAllAnimes();
