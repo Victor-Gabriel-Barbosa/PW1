@@ -1,46 +1,3 @@
-// Função para recuperar os dados do Local Storage com tratamento de erros
-function getSavedData() {
-  try {
-    return JSON.parse(localStorage.getItem('animeData')) || []; // Retorna os dados salvos ou um array vazio
-  } catch (e) {
-    console.warn('Local Storage não disponível ou corrompido:', e); // Loga um aviso caso haja erro
-    return []; // Retorna um array vazio em caso de falha
-  }
-}
-
-// Função para exibir mensagens padrão, como "Nenhum anime salvo ainda"
-function showNoAnimeMessage(container, message) {
-  container.innerHTML = `
-    <div class="no-anime">
-      <p>${message}</p>
-    </div>
-  `;
-}
-
-// Função para criar o HTML de um cartão de anime
-// Recebe um objeto "anime" e retorna uma string de HTML com os detalhes do anime
-function createAnimeCardHTML(anime) {
-  return `
-    <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="flex items-center gap-4 p-4 rounded-lg transition-colors hover:bg-gray-500" style="width: 300px; height: 100px;">
-      <img src="${anime.coverImage}" alt="${anime.primaryTitle}" class="w-16 h-16 object-cover rounded-lg">
-      <div class="flex-1 overflow-hidden">
-        <h3 class="font-semibold truncate">${anime.primaryTitle}</h3>
-        <div class="flex gap-2 mt-1">
-          <span class="rating-tag">
-            ⭐ ${anime.score || 'N/A'}
-          </span>
-          <span class="text-sm">${anime.status}</span>
-        </div>
-      </div>
-    </a>
-  `;
-}
-
-// Função para buscar um anime pelo título
-function searchAnime() {
-  applyFilters(); // Usa a mesma lógica de filtros para a busca
-}
-
 // Função para obter parâmetros da URL
 function getUrlParameter(name) {
   const urlParams = new URLSearchParams(window.location.search);
@@ -212,26 +169,26 @@ function renderAnimeDetails(anime) {
 // Nova função para normalizar categorias
 function normalizeCategory(category) {
   const normalizations = {
-      'action': ['ação', 'action', 'acao'],
-      'drama': ['drama'],
-      'comedy': ['comédia', 'comedy', 'comedia'],
-      'fantasy': ['fantasia', 'fantasy'],
-      'sci-fi': ['ficção científica', 'sci-fi', 'sci fi', 'ficcao cientifica'],
-      'romance': ['romance', 'romântico', 'romantico'],
-      'supernatural': ['sobrenatural', 'supernatural'],
-      'game': ['game', 'games', 'jogos']
+    'action': ['ação', 'action', 'acao'],
+    'drama': ['drama'],
+    'comedy': ['comédia', 'comedy', 'comedia'],
+    'fantasy': ['fantasia', 'fantasy'],
+    'sci-fi': ['ficção científica', 'sci-fi', 'sci fi', 'ficcao cientifica'],
+    'romance': ['romance', 'romântico', 'romantico'],
+    'supernatural': ['sobrenatural', 'supernatural'],
+    'game': ['game', 'games', 'jogos']
   };
 
   if (!category) return '';
-  
+
   category = category.toLowerCase().trim();
-  
+
   for (const [key, variants] of Object.entries(normalizations)) {
-      if (variants.includes(category)) {
-          return key;
-      }
+    if (variants.includes(category)) {
+      return key;
+    }
   }
-  
+
   return category;
 }
 
@@ -245,28 +202,28 @@ function renderAllAnimes() {
 
   // Esconde a seção de comentários ao mostrar todos os animes
   if (commentsSection) {
-      commentsSection.style.display = 'none';
+    commentsSection.style.display = 'none';
   }
 
   if (!container) return;
 
   // Filtra os animes se houver uma categoria selecionada
-  const filteredAnimes = categoryFilter 
-      ? animes.filter(anime => 
-          anime.genres.some(genre => 
-              normalizeCategory(genre) === normalizeCategory(categoryFilter)
-          )
+  const filteredAnimes = categoryFilter
+    ? animes.filter(anime =>
+      anime.genres.some(genre =>
+        normalizeCategory(genre) === normalizeCategory(categoryFilter)
       )
-      : animes;
+    )
+    : animes;
 
   if (filteredAnimes.length === 0) {
-      container.innerHTML = `
+    container.innerHTML = `
           <div class="no-anime-found">
               <h2>Nenhum anime encontrado</h2>
               <p>Não encontramos animes na categoria: ${categoryFilter}</p>
           </div>
       `;
-      return;
+    return;
   }
 
   container.innerHTML = `
@@ -281,8 +238,8 @@ function renderAllAnimes() {
                       <h2 class="text-xl font-semibold mb-2">${anime.primaryTitle}</h2>
                       <div class="genres mb-2">
                           ${anime.genres.map(genre =>
-                              `<span class="genre-tag">${genre}</span>`
-                          ).join('')}
+    `<span class="genre-tag">${genre}</span>`
+  ).join('')}
                       </div>
                       <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
                          class="text-blue-600 dark:text-blue-400 hover:underline">
@@ -295,9 +252,9 @@ function renderAllAnimes() {
   `;
 
   // Atualiza o título da página
-  document.title = categoryFilter 
-      ? `${categoryFilter} - Animes por Categoria` 
-      : 'Lista de Todos os Animes';
+  document.title = categoryFilter
+    ? `${categoryFilter} - Animes por Categoria`
+    : 'Lista de Todos os Animes';
 }
 
 // Função para carregar comentários do localStorage
@@ -861,159 +818,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // Renderiza animes em destaque
   renderFeaturedAnimes();
-});
-
-// Adicionar listener para fechar resultados quando clicar fora
-document.addEventListener('click', function (event) {
-  const searchArea = document.getElementById('search-area');
-
-  // Verifica se o clique foi fora da área de busca
-  if (!searchArea.contains(event.target)) {
-    toggleAnimeResults(false); // Apenas esconde os resultados
-  }
-});
-
-// Quando exibir resultados, garanta que o container esteja visível
-function showAnimeResults(results) {
-  const animeResult = document.getElementById('anime-result');
-
-  if (results.length === 0) {
-    animeResult.innerHTML = `
-      <div class="search-empty-state">
-        <div class="search-empty-icon">🔍</div>
-        <p class="search-empty-text">Nenhum anime encontrado</p>
-        <p class="search-empty-subtext">Tente buscar com outros termos ou filtros</p>
-      </div>
-    `;
-    return;
-  }
-
-  const resultsHTML = `
-    <div class="search-results-container">
-      <div class="search-results-header">
-        <span class="results-count">${results.length} ${results.length === 1 ? 'resultado' : 'resultados'}</span>
-        <button onclick="toggleViewMode()" class="view-toggle-btn">
-          <svg class="view-icon grid" viewBox="0 0 24 24" width="24" height="24">
-            <path d="M3 3h7v7H3zm11 0h7v7h-7zm0 11h7v7h-7zM3 14h7v7H3z"/>
-          </svg>
-          <svg class="view-icon list" viewBox="0 0 24 24" width="24" height="24">
-            <path d="M3 13h18v-2H3zm0 5h18v-2H3zm0-10h18V6H3z"/>
-          </svg>
-        </button>
-      </div>
-      <div class="search-results-grid" id="results-container">
-        ${results.map(anime => `
-          <div class="search-result-item" data-rating="${anime.score || 0}">
-            <div class="result-card">
-              <div class="result-image-container">
-                <img src="${anime.coverImage}" 
-                     alt="${anime.primaryTitle}"
-                     class="result-image"
-                     loading="lazy"
-                     onerror="this.src='https://via.placeholder.com/300x450?text=Sem+Imagem'">
-                <div class="result-overlay">
-                  <div class="result-quick-info">
-                    ${anime.episodes ? `<span class="quick-info-item">📺 ${anime.episodes} eps</span>` : ''}
-                    ${anime.score ? `<span class="quick-info-item">⭐ ${anime.score}</span>` : ''}
-                    ${anime.releaseYear ? `<span class="quick-info-item">📅 ${anime.releaseYear}</span>` : ''}
-                  </div>
-                  <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
-                     class="view-details-btn">Ver Detalhes</a>
-                </div>
-              </div>
-              <div class="result-info">
-                <h3 class="result-title">${anime.primaryTitle}</h3>
-                <div class="result-genres">
-                  ${anime.genres?.slice(0, 3).map(genre =>
-    `<span class="result-genre">${genre}</span>`
-  ).join('') || ''}
-                </div>
-                <p class="result-synopsis">${anime.synopsis?.slice(0, 150)}...</p>
-              </div>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `;
-
-  animeResult.innerHTML = resultsHTML;
-  animeResult.style.display = 'block';
-
-  // Inicializa o modo de visualização
-  const viewMode = localStorage.getItem('animeSearchViewMode') || 'grid';
-  document.getElementById('results-container').className = `search-results-${viewMode}`;
-}
-
-// Nova função para alternar entre modos de visualização
-function toggleViewMode() {
-  const container = document.getElementById('results-container');
-  const currentMode = container.className.includes('grid') ? 'grid' : 'list';
-  const newMode = currentMode === 'grid' ? 'list' : 'grid';
-
-  container.className = `search-results-${newMode}`;
-  localStorage.setItem('animeSearchViewMode', newMode);
-}
-
-// Função para mostrar/esconder resultados
-function toggleAnimeResults(show) {
-  const animeResult = document.getElementById('anime-result');
-  animeResult.style.display = show ? 'flex' : 'none';
-}
-
-// Função para mostrar/esconder o menu de filtros
-function toggleFilterMenu() {
-  const filterMenu = document.getElementById('filter-menu');
-  filterMenu.classList.toggle('show');
-}
-
-// Função para aplicar os filtros
-function applyFilters() {
-  const genreFilter = document.getElementById('genre-filter').value;
-  const yearFilter = document.getElementById('year-filter').value;
-  const ratingFilter = document.getElementById('rating-filter').value;
-  const searchInput = document.getElementById('search-title').value.trim();
-
-  const animeResultContainer = document.getElementById('anime-result');
-  const savedData = getSavedData();
-
-  // Filtra os animes baseado nos critérios selecionados
-  const filteredResults = savedData.filter(anime => {
-    const matchesSearch = !searchInput ||
-      anime.primaryTitle.toLowerCase().includes(searchInput.toLowerCase());
-
-    const matchesGenre = !genreFilter ||
-      anime.genres.some(g => g.toLowerCase() === genreFilter.toLowerCase());
-
-    const matchesYear = !yearFilter ||
-      anime.releaseYear.toString() === yearFilter;
-
-    const matchesRating = !ratingFilter ||
-      (anime.score && parseFloat(anime.score) >= parseFloat(ratingFilter));
-
-    return matchesSearch && matchesGenre && matchesYear && matchesRating;
-  });
-
-  // Exibe os resultados
-  if (filteredResults.length > 0) {
-    const resultsWithListView = filteredResults.map(anime => ({ ...anime, listView: true }));
-    animeResultContainer.innerHTML = resultsWithListView.map(createAnimeCardHTML).join('');
-  } else {
-    showNoAnimeMessage(animeResultContainer, 'Nenhum anime encontrado com os filtros selecionados.');
-  }
-
-  toggleAnimeResults(true);
-  toggleFilterMenu(); // Fecha o menu de filtros após aplicar
-}
-
-// Fechar o menu de filtros quando clicar fora
-document.addEventListener('click', function (event) {
-  const filterDropdown = document.querySelector('.filter-dropdown');
-  const filterMenu = document.getElementById('filter-menu');
-
-  if (!filterDropdown.contains(event.target)) {
-    filterMenu.classList.remove('show');
-  }
 });
 
 // Função para atualizar o emoji baseado no valor do slider

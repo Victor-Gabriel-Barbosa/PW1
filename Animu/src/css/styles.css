@@ -362,29 +362,6 @@ h1, h2, h3, h4, h5, h6 {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.anime-card {
-  display: block;
-  overflow: hidden;
-  border-radius: 8px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  height: 100%;
-}
-
-.anime-card:hover {
-  transform: scale(1.03);
-  box-shadow: 0 10px 20px var(--card-shadow);
-}
-
-.featured-animes {
-  display: grid;
-  grid-auto-rows: 1fr;
-}
-
-.anime-card img {
-  object-fit: cover;
-  border-radius: 4px;
-}
-
 .comment {
   padding: 15px;
   border: 1px solid var(--input-border-color);
@@ -709,91 +686,6 @@ input, button, textarea, select {
 .back-button svg {
   width: 30px;
   height: 30px;
-}
-
-.search-container {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  max-width: 640px;
-  margin: 0 auto;
-}
-
-.search-input-wrapper {
-  position: relative;
-  flex: 1;
-  display: flex;
-  align-items: center;
-}
-
-.search-input {
-  width: 100%;
-  height: 40px;
-  padding: 0 40px;
-  border: 1px solid #ccc;
-  border-radius: 20px 0 0 20px;
-  font-size: 16px;
-  background: var(--background);
-  transition: all 0.3s ease;
-}
-
-.search-icon {
-  position: absolute;
-  left: 12px;
-  color: #666;
-  pointer-events: none;
-}
-
-.search-icon svg {
-  fill: #666;
-}
-
-.search-button {
-  height: 40px;
-  padding: 0 20px;
-  background: var(--background);
-  border: 1px solid #ccc;
-  border-left: none;
-  border-radius: 0 20px 20px 0;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.search-button:hover {
-  background: var(--card-shadow);
-}
-
-.search-button svg {
-  fill: var(--primary-color);
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 1px var(--primary-color);
-}
-
-.search-input:focus + .search-button {
-  border-color: var(--primary-color);
-  box-shadow: 1px 0 0 1px var(--primary-color);
-}
-
-.anime-search {
-  position: absolute;
-  background: var(--background);
-  border-radius: 8px;
-  margin-top: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 2;
-  display: none;
-  flex-wrap: wrap;
-  margin-top: 5px;
-  max-height: 300px;
-  max-width: 600px;
-  overflow: auto; 
-  scrollbar-width: none; 
-  -ms-overflow-style: none;
-  transition: opacity 0.3s ease;
 }
 
 /* 4.5. Tema */
@@ -1250,67 +1142,6 @@ body.dark-mode {
   font-size: 0.9em;
   color: var(--text-color);
   opacity: 0.8;
-}
-
-.filter-dropdown {
-  position: relative;
-}
-
-.filter-btn {
-  height: 40px;
-  padding: 0 10px;
-  background: var(--background);
-  border: 1px solid #ccc;
-  border-left: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  transition: background-color 0.3s ease;
-}
-
-.filter-btn svg {
-  fill: var(--primary-color);
-}
-
-.filter-btn:hover {
-  background: var(--card-shadow);
-}
-
-.filter-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 4px;
-  background: var(--background);
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 12px;
-  min-width: 200px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 3;
-}
-
-.filter-menu.show {
-  display: block;
-}
-
-.filter-group {
-  margin-bottom: 12px;
-}
-
-.filter-group label {
-  display: block;
-  margin-bottom: 4px;
-  font-size: 0.9em;
-  color: var(--text-color);
-}
-
-.filter-group select {
-  width: 100%;
-  padding: 6px;
-  background: var(--background);
-  color: var(--text-color);
 }
 
 /* 5.4. Sistema de Avaliação */
