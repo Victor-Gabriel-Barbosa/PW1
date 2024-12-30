@@ -663,6 +663,278 @@ input, button, textarea, select {
   }
 }
 
+/* Estilos para as previsualizações */
+.preview-container {
+  border: 2px dashed var(--input-border-color);
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 8px;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card-shadow);
+}
+
+.preview-container.hidden {
+  display: none;
+}
+
+.preview-container img {
+  max-height: 300px;
+  object-fit: contain;
+}
+
+/* Estilos para as abas */
+.tabs-header {
+  border-bottom: 2px solid var(--card-shadow);
+}
+
+.tab-btn {
+  padding: 8px 16px;
+  border-radius: 8px 8px 0 0;
+  border: none;
+  background: transparent;
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.tab-content {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.btn-preview {
+  padding: 8px 12px;
+  background: var(--background);
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  color: var(--primary-color);
+  transition: all 0.3s ease;
+}
+
+.btn-preview:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Estilos para o progresso do formulário */
+.tabs-header {
+  position: relative;
+  border-bottom: 2px solid var(--card-shadow);
+  margin-bottom: 2rem;
+}
+
+.tab-btn {
+  position: relative;
+  padding: 12px 20px;
+  border-radius: 8px 8px 0 0;
+  border: none;
+  background: transparent;
+  color: var(--text-color);
+  transition: all 0.3s ease;
+  opacity: 0.7;
+}
+
+.tab-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+  opacity: 1;
+  background: var(--primary-color);
+  color: white;
+}
+
+.tab-btn.completed::after {
+  background-color: #10B981;
+  box-shadow: 0 0 8px #10B981;
+}
+
+.tab-btn.incomplete::after {
+  background-color: #F59E0B;
+  box-shadow: 0 0 8px #F59E0B;
+}
+
+.tab-btn.error::after {
+  background-color: #EF4444;
+  box-shadow: 0 0 8px #EF4444;
+}
+
+.form-group.required label::after {
+  content: '*';
+  color: #EF4444;
+  margin-left: 4px;
+}
+
+.form-group.error input,
+.form-group.error textarea,
+.form-group.error select {
+  border-color: #EF4444;
+  animation: shake 0.5s ease;
+}
+
+.form-group.success input,
+.form-group.success textarea,
+.form-group.success select {
+  border-color: #10B981;
+}
+
+.progress-bar {
+  height: 4px;
+  background: #E5E7EB;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--primary-gradient);
+  transition: width 0.3s ease;
+}
+
+.section-status {
+  font-size: 0.875rem;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+
+.status-icon.complete {
+  background-color: #10B981;
+}
+
+.status-icon.incomplete {
+  background-color: #F59E0B;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* Estilos para os tooltips de status */
+.section-status {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: var(--background);
+  margin-top: 4px;
+}
+
+.status-tooltip {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 250px;
+  padding: 12px;
+  background: var(--background);
+  border: 1px solid var(--primary-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px var(--card-shadow);
+  z-index: 10;
+  margin-top: 8px;
+}
+
+.section-status:hover .status-tooltip {
+  display: block;
+}
+
+.status-tooltip strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--primary-color);
+}
+
+.status-tooltip ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.status-tooltip li {
+  margin: 4px 0;
+  color: var(--text-color);
+}
+
+.status-icon {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-text {
+  white-space: nowrap;
+}
+
+/* Estilos para mensagens de sucesso/erro */
+.success-message {
+  background: #10B981;
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  text-align: center;
+  animation: slideDown 0.3s ease;
+}
+
+.error-message {
+  background: #EF4444;
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  text-align: center;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Estilos para botão desabilitado */
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* 4.4. Navegação */
 .back-button {
   position: fixed;
@@ -1307,6 +1579,11 @@ body.dark-mode {
   animation: spin 0.6s ease-in-out;
 }
 
+@keyframes slideDown {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 /* 8. Media Queries
    ========================================================================== */
 @media (max-width: 768px) {
@@ -1346,4 +1623,20 @@ body.dark-mode {
 
 .category-badge .icon {
   font-size: 1.25em;
+}
+
+/* Estilos para campos inválidos */
+.form-group.error input,
+.form-group.error textarea,
+.form-group.error select {
+  border-color: #EF4444;
+  animation: shake 0.5s ease;
+}
+
+.form-group.error::after {
+  content: attr(data-error);
+  color: #EF4444;
+  font-size: 0.875rem;
+  margin-top: 4px;
+  display: block;
 }

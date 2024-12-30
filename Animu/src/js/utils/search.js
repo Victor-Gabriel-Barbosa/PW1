@@ -229,9 +229,8 @@ class AnimeSearchBar {
       const results = await this.searchAnimes(query);
       
       if (redirect) {
-        // Salvar resultados no localStorage
+        // Salvar resultados no localStorage e redirecionar
         localStorage.setItem('searchResults', JSON.stringify(results));
-        // Redirecionar para a página de animes com a query
         window.location.href = `animes.html?search=${encodeURIComponent(query)}`;
       } else {
         this.displayResults(results);

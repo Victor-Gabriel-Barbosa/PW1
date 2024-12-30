@@ -312,68 +312,374 @@ function loadDataFromLocalStorage() {
 }
 
 /**
+ * Manipula a previsualização da imagem de capa
+ */
+function previewImage() {
+  const imageUrl = document.getElementById('image-url').value;
+  const previewContainer = document.getElementById('image-preview');
+  const previewImg = previewContainer.querySelector('img');
+
+  if (!imageUrl) {
+    alert('Por favor, insira uma URL de imagem válida.');
+    return;
+  }
+
+  previewImg.onerror = () => {
+    alert('Não foi possível carregar a imagem. Verifique a URL.');
+    previewContainer.classList.add('hidden');
+  };
+
+  previewImg.onload = () => {
+    previewContainer.classList.remove('hidden');
+  };
+
+  previewImg.src = imageUrl;
+}
+
+/**
+ * Manipula a previsualização do trailer
+ */
+function previewTrailer() {
+  const trailerUrl = document.getElementById('trailer-url').value;
+  const previewContainer = document.getElementById('trailer-preview');
+  const previewFrame = previewContainer.querySelector('iframe');
+
+  if (!trailerUrl) {
+    alert('Por favor, insira uma URL de vídeo válida.');
+    return;
+  }
+
+  // Extrai o ID do vídeo do YouTube ou Vimeo
+  let videoId = '';
+  
+  if (trailerUrl.includes('youtube.com') || trailerUrl.includes('youtu.be')) {
+    videoId = trailerUrl.match(/(?:\/|v=)([a-zA-Z0-9_-]{11})/)?.[1];
+    if (videoId) {
+      previewFrame.src = `https://www.youtube.com/embed/${videoId}`;
+    }
+  } else if (trailerUrl.includes('vimeo.com')) {
+    videoId = trailerUrl.match(/vimeo\.com\/(\d+)/)?.[1];
+    if (videoId) {
+      previewFrame.src = `https://player.vimeo.com/video/${videoId}`;
+    }
+  }
+
+  if (!videoId) {
+    alert('URL de vídeo inválida. Use URLs do YouTube ou Vimeo.');
+    return;
+  }
+
+  previewContainer.classList.remove('hidden');
+}
+
+/**
+ * Verifica o progresso de preenchimento de cada seção e retorna os campos que faltam
+ */
+function checkSectionProgress(section) {
+  const requiredFields = {
+    basic: {
+      'primary-title': 'Título Principal',
+      'synopsis': 'Sinopse',
+      'image-url': 'Imagem de Capa',
+      'titles': 'Pelo menos um título alternativo'
+    },
+    details: {
+      'score': 'Score',
+      'popularity': 'Popularidade',
+      'genres': 'Pelo menos um gênero'
+    },
+    production: {
+      'studio': 'Estúdio',
+      'episodes': 'Número de Episódios',
+      'episode-duration': 'Duração dos Episódios',
+      'season-year': 'Ano',
+      'producers': 'Pelo menos um produtor'
+    }
+  };
+
+  const missingFields = [];
+  const fields = Object.keys(requiredFields[section]);
+  
+  fields.forEach(field => {
+    if (field === 'titles' && titles.length === 0) {
+      missingFields.push(requiredFields[section][field]);
+    } else if (field === 'genres' && genres.length === 0) {
+      missingFields.push(requiredFields[section][field]);
+    } else if (field === 'producers' && producers.length === 0) {
+      missingFields.push(requiredFields[section][field]);
+    } else if (field !== 'titles' && field !== 'genres' && field !== 'producers') {
+      const element = document.getElementById(field);
+      if (!element || !element.value.trim()) {
+        missingFields.push(requiredFields[section][field]);
+      }
+    }
+  });
+
+  const progress = Math.round(((fields.length - missingFields.length) / fields.length) * 100);
+  const isComplete = missingFields.length === 0;
+
+  updateSectionStatus(section, isComplete, progress, missingFields);
+  return { isComplete, progress, missingFields };
+}
+
+/**
+ * Atualiza o status visual de uma seção com detalhes dos campos faltantes
+ */
+function updateSectionStatus(section, isComplete, progress, missingFields) {
+  const tab = document.querySelector(`[data-section="${section}"]`);
+  const status = document.getElementById(`${section}-status`);
+  
+  tab.classList.remove('completed', 'incomplete', 'error');
+  tab.classList.add(isComplete ? 'completed' : 'incomplete');
+
+  if (missingFields.length > 0) {
+    const tooltip = document.createElement('div');
+    tooltip.className = 'status-tooltip';
+    tooltip.innerHTML = `
+      <strong>Campos pendentes:</strong>
+      <ul>
+        ${missingFields.map(field => `<li>• ${field}</li>`).join('')}
+      </ul>
+    `;
+    
+    status.innerHTML = `
+      <span class="status-text">${progress}% completo</span>
+      <div class="status-icon ${isComplete ? 'complete' : 'incomplete'}"></div>
+      ${tooltip.outerHTML}
+    `;
+  } else {
+    status.innerHTML = `
+      <span class="status-text">Completo!</span>
+      <div class="status-icon complete"></div>
+    `;
+  }
+
+  updateFormProgress();
+}
+
+/**
+ * Atualiza a barra de progresso geral do formulário
+ */
+function updateFormProgress() {
+  const sections = ['basic', 'details', 'production'];
+  const totalProgress = sections.reduce((acc, section) => {
+    const { progress } = checkSectionProgress(section);
+    return acc + progress;
+  }, 0) / sections.length;
+
+  const progressBar = document.getElementById('form-progress');
+  progressBar.style.width = `${totalProgress}%`;
+}
+
+/**
+ * Marca campos obrigatórios não preenchidos
+ */
+function highlightRequiredFields(section) {
+  const form = document.getElementById('anime-admin-form');
+  const currentTab = document.getElementById(section);
+  const requiredFields = currentTab.querySelectorAll('[required]');
+
+  requiredFields.forEach(field => {
+    const formGroup = field.closest('.form-group');
+    if (!field.value.trim()) {
+      formGroup.classList.add('error');
+      field.addEventListener('input', () => {
+        formGroup.classList.remove('error');
+        if (field.value.trim()) {
+          formGroup.classList.add('success');
+        }
+      }, { once: true });
+    } else {
+      formGroup.classList.add('success');
+    }
+  });
+}
+
+// Modifique a função setupTabs existente
+function setupTabs() {
+  const tabs = document.querySelectorAll('.tab-btn');
+  const contents = document.querySelectorAll('.tab-content');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const currentSection = document.querySelector('.tab-content.active').id;
+      highlightRequiredFields(currentSection);
+      
+      tabs.forEach(t => t.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+    });
+  });
+}
+
+// Adicione listeners para monitorar mudanças
+document.getElementById('anime-admin-form').addEventListener('input', (e) => {
+  const section = e.target.closest('.tab-content').id;
+  checkSectionProgress(section);
+});
+
+/**
+ * Manipula a navegação entre abas
+ */
+document.addEventListener('DOMContentLoaded', () => {
+  setupTabs();
+  setupSynopsisCounter();
+  loadDataFromLocalStorage();
+  
+  // Verificação inicial do progresso
+  ['basic', 'details', 'production'].forEach(section => {
+    checkSectionProgress(section);
+  });
+});
+
+/**
+ * Contador de caracteres para a sinopse
+ */
+function setupSynopsisCounter() {
+  const synopsis = document.getElementById('synopsis');
+  const counter = document.getElementById('synopsis-count');
+  const maxLength = 500;
+
+  synopsis.addEventListener('input', () => {
+    const length = synopsis.value.length;
+    counter.textContent = length;
+
+    if (length > maxLength) {
+      synopsis.value = synopsis.value.substring(0, maxLength);
+      counter.textContent = maxLength;
+    }
+  });
+}
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', () => {
+  setupTabs();
+  setupSynopsisCounter();
+  loadDataFromLocalStorage();
+});
+
+/**
  * Manipula o evento de envio do formulário.
  * Valida os dados do formulário, salva-os no Local Storage e reseta o formulário.
  */
-document.getElementById('anime-admin-form').addEventListener('submit', function (e) {
-  e.preventDefault(); // Impede o envio padrão do formulário
+document.getElementById('anime-admin-form').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  
+  // Previne submissão duplicada
+  const submitBtn = this.querySelector('#submit-btn');
+  if (submitBtn.disabled) return;
+  submitBtn.disabled = true;
+  
+  try {
+    // Validações básicas
+    const requiredFields = {
+      'primary-title': 'Título Principal',
+      'synopsis': 'Sinopse',
+      'episodes': 'Número de Episódios',
+      'season-year': 'Ano',
+      'studio': 'Estúdio',
+      'image-url': 'URL da Imagem',
+      'episode-duration': 'Duração dos Episódios',
+      'score': 'Score',
+      'popularity': 'Popularidade'
+    };
 
-  // Obtém os valores dos campos do formulário
-  const primaryTitle = document.getElementById('primary-title').value.trim();
-  const synopsis = document.getElementById('synopsis').value.trim();
-  const episodes = document.getElementById('episodes').value.trim();
-  const seasonYear = document.getElementById('season-year').value.trim(); // Atualizado
-  const studio = document.getElementById('studio').value.trim();
-  const coverImage = document.getElementById('image-url').value.trim();
-  const trailerUrl = document.getElementById('trailer-url').value.trim();
+    const errors = [];
+    
+    // Verifica campos obrigatórios
+    Object.entries(requiredFields).forEach(([id, label]) => {
+      const field = document.getElementById(id);
+      if (!field.value.trim()) {
+        errors.push(`${label} é obrigatório`);
+        field.closest('.form-group').classList.add('error');
+      }
+    });
 
-  // Valida os campos obrigatórios
-  if (!primaryTitle || !synopsis || !episodes || !seasonYear || !studio || !coverImage) {
-    alert('Por favor, preencha todos os campos obrigatórios.');
-    return;
+    // Validações específicas
+    const imageUrl = document.getElementById('image-url').value;
+    const trailerUrl = document.getElementById('trailer-url').value;
+    const episodes = parseInt(document.getElementById('episodes').value);
+    const seasonYear = document.getElementById('season-year').value;
+    const score = parseFloat(document.getElementById('score').value);
+
+    if (!isValidUrl(imageUrl, 'image')) {
+      errors.push('URL da imagem inválida');
+    }
+
+    if (trailerUrl && !isValidUrl(trailerUrl, 'video')) {
+      errors.push('URL do trailer inválida');
+    }
+
+    if (isNaN(episodes) || episodes <= 0) {
+      errors.push('Número de episódios deve ser positivo');
+    }
+
+    if (seasonYear.length !== 4 || seasonYear < 1900 || seasonYear > new Date().getFullYear() + 1) {
+      errors.push('Ano inválido');
+    }
+
+    if (score < 0 || score > 10) {
+      errors.push('Score deve estar entre 0 e 10');
+    }
+
+    // Validações das listas
+    if (titles.length === 0) errors.push('Adicione pelo menos um título alternativo');
+    if (genres.length === 0) errors.push('Adicione pelo menos um gênero');
+    if (producers.length === 0) errors.push('Adicione pelo menos um produtor');
+
+    if (errors.length > 0) {
+      throw new Error(errors.join('\n'));
+    }
+
+    // Cria o objeto com os dados do formulário
+    const formData = {
+      primaryTitle: escapeHTML(document.getElementById('primary-title').value),
+      alternativeTitles: titles,
+      genres: genres,
+      synopsis: escapeHTML(document.getElementById('synopsis').value),
+      episodes: episodes,
+      releaseYear: parseInt(seasonYear),
+      studio: escapeHTML(document.getElementById('studio').value),
+      coverImage: imageUrl,
+      trailerUrl: trailerUrl,
+      status: document.getElementById('status').value,
+      ageRating: document.getElementById('age-rating').value,
+      season: {
+        period: document.getElementById('season-period').value,
+        year: parseInt(seasonYear)
+      },
+      episodeDuration: parseInt(document.getElementById('episode-duration').value),
+      producers: producers,
+      licensors: licensors,
+      source: document.getElementById('source').value,
+      score: score,
+      popularity: parseInt(document.getElementById('popularity').value)
+    };
+
+    // Salva no localStorage
+    saveToLocalStorage(formData);
+    
+    // Reseta o formulário após sucesso
+    resetForm();
+    
+    // Mostra mensagem de sucesso
+    const successMessage = document.createElement('div');
+    successMessage.className = 'success-message';
+    successMessage.textContent = 'Anime cadastrado com sucesso!';
+    document.querySelector('.admin-form').insertAdjacentElement('afterbegin', successMessage);
+    
+    // Remove a mensagem após 3 segundos
+    setTimeout(() => successMessage.remove(), 3000);
+
+  } catch (error) {
+    // Mostra erros
+    alert(error.message);
+  } finally {
+    // Reabilita o botão
+    submitBtn.disabled = false;
   }
-
-  // Valida se o número de episódios é positivo
-  if (isNaN(episodes) || episodes <= 0) {
-    alert('O número de episódios deve ser um número positivo.');
-    return;
-  }
-
-  // Valida se o ano tem 4 dígitos
-  if (isNaN(seasonYear) || seasonYear.length !== 4) {
-    alert('O ano deve ser um número válido de 4 dígitos.');
-    return;
-  }
-
-  // Cria o objeto com os dados do formulário
-  const formData = {
-    primaryTitle: escapeHTML(primaryTitle),
-    alternativeTitles: titles,
-    genres: genres,
-    synopsis: escapeHTML(synopsis),
-    episodes: parseInt(episodes, 10),
-    releaseYear: parseInt(seasonYear, 10), // Atualizado
-    studio: escapeHTML(studio),
-    coverImage: coverImage,
-    trailerUrl: trailerUrl,
-    status: document.getElementById('status').value,
-    ageRating: document.getElementById('age-rating').value,
-    season: {
-      period: document.getElementById('season-period').value,
-      year: parseInt(seasonYear)
-    },
-    episodeDuration: parseInt(document.getElementById('episode-duration').value),
-    producers: producers,
-    licensors: licensors,
-    source: document.getElementById('source').value,
-    score: parseFloat(document.getElementById('score').value),
-    popularity: parseInt(document.getElementById('popularity').value)
-  };
-
-  console.log('Dados do Anime:', formData); // Exibe os dados no console
-
-  saveToLocalStorage(formData); // Salva os dados no Local Storage
-  resetForm(); // Reseta o formulário
 });
 
 /**
@@ -381,17 +687,28 @@ document.getElementById('anime-admin-form').addEventListener('submit', function 
  * Solicita confirmação do usuário antes de limpar.
  */
 function resetForm() {
-  if (confirm('Tem certeza que deseja limpar todos os campos do formulário?')) {
-    document.getElementById('anime-admin-form').reset(); // Reseta os campos do formulário
-    titles = []; // Limpa a lista de títulos
-    genres = []; // Limpa a lista de gêneros
-    producers = []; // Limpa a lista de produtores
-    licensors = []; // Limpa a lista de licenciadores
-    renderTitles(); // Atualiza a interface com os títulos
-    renderGenres(); // Atualiza a interface com os gêneros
-    renderProducers(); // Atualiza a interface com os produtores
-    renderLicensors(); // Atualiza a interface com os licenciadores
-    localStorage.removeItem('animeFormState'); // Remove os dados salvos temporariamente
+  if (confirm('Tem certeza que deseja limpar todos os campos do formulário? Esta ação não pode ser desfeita.')) {
+    document.getElementById('anime-admin-form').reset();
+    titles = [];
+    genres = [];
+    producers = [];
+    licensors = [];
+    
+    renderTitles();
+    renderGenres();
+    renderProducers();
+    renderLicensors();
+    
+    clearPreviews();
+    localStorage.removeItem('animeFormState');
+    
+    // Reseta os estados visuais
+    document.querySelectorAll('.form-group').forEach(group => {
+      group.classList.remove('error', 'success');
+    });
+    
+    // Atualiza o progresso
+    updateFormProgress();
   }
 }
 
@@ -424,3 +741,46 @@ function saveFormState() {
 
 // Adicione um event listener para salvar o estado do formulário quando houver mudanças
 document.getElementById('anime-admin-form').addEventListener('input', saveFormState);
+
+/**
+ * Valida URLs para imagens e vídeos
+ */
+function isValidUrl(url, type = 'image') {
+  try {
+    const urlObj = new URL(url);
+    if (type === 'image') {
+      return /\.(jpg|jpeg|png|webp|gif)$/i.test(urlObj.pathname);
+    } else if (type === 'video') {
+      return /(youtube\.com|youtu\.be|vimeo\.com)/i.test(urlObj.hostname);
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Limpa as previsualizações
+ */
+function clearPreviews() {
+  const imagePreview = document.getElementById('image-preview');
+  const trailerPreview = document.getElementById('trailer-preview');
+  
+  imagePreview.classList.add('hidden');
+  trailerPreview.classList.add('hidden');
+  imagePreview.querySelector('img').src = '';
+  trailerPreview.querySelector('iframe').src = '';
+}
+
+// Adiciona validação em tempo real para URLs
+document.getElementById('image-url').addEventListener('input', function() {
+  const isValid = isValidUrl(this.value, 'image');
+  this.closest('.form-group').classList.toggle('error', !isValid && this.value);
+});
+
+document.getElementById('trailer-url').addEventListener('input', function() {
+  if (this.value) {
+    const isValid = isValidUrl(this.value, 'video');
+    this.closest('.form-group').classList.toggle('error', !isValid);
+  }
+});

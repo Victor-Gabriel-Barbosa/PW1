@@ -763,12 +763,15 @@ function renderFeaturedAnimes() {
   `).join('');
 }
 
-// Adicione esta função para renderizar resultados da busca
+// Modifique a função renderSearchResults para não limpar os resultados
 function renderSearchResults(query) {
   const container = document.getElementById('anime-content');
   const results = JSON.parse(localStorage.getItem('searchResults')) || [];
 
   if (!container) return;
+
+  // Atualiza o título da página
+  document.title = `Resultados da busca: ${query}`;
 
   container.innerHTML = `
     <h1 class="text-3xl font-bold mb-6">
@@ -788,8 +791,8 @@ function renderSearchResults(query) {
               <h2 class="text-xl font-semibold mb-2">${anime.primaryTitle}</h2>
               <div class="genres mb-2">
                 ${anime.genres.map(genre =>
-    `<span class="genre-tag">${genre}</span>`
-  ).join('')}
+                  `<span class="genre-tag">${genre}</span>`
+                ).join('')}
               </div>
             </div>
           </a>
@@ -799,7 +802,7 @@ function renderSearchResults(query) {
   `;
 }
 
-// Modifique o evento DOMContentLoaded para incluir o tratamento da busca
+// Modifique o evento DOMContentLoaded para manter os resultados
 window.addEventListener('DOMContentLoaded', () => {
   const animeTitle = getUrlParameter('anime');
   const searchQuery = getUrlParameter('search');
@@ -807,8 +810,6 @@ window.addEventListener('DOMContentLoaded', () => {
   if (searchQuery) {
     // Se houver uma query de busca, renderiza os resultados
     renderSearchResults(decodeURIComponent(searchQuery));
-    // Limpa os resultados do localStorage após renderizar
-    localStorage.removeItem('searchResults');
   } else if (!animeTitle) {
     renderAnimeDetails(null);
   } else if (animeTitle.toLowerCase() === 'all') {

@@ -8,67 +8,139 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../src/css/styles.css">
+  <link rel="stylesheet" href="../src/css/search.css">
   <link rel="icon" href="../src/favicon/favicon.ico" type="image/x-icon">
 </head>
 
 <body>
-  <!-- Botão para voltar à página anterior -->
-  <button class="back-button" onclick="window.history.back()" title="Voltar">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-      stroke-linecap="round" stroke-linejoin="round">
-      <path d="M15 18l-6-6 6-6" />
-    </svg>
-  </button>
+  <!-- Barra de navegação fixa -->
+  <nav class="fixed top-0 left-0 right-0 backdrop-blur-md shadow-sm z-50">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <!-- Botão para voltar à página anterior -->
+        <button class="back-button" onclick="window.history.back()" title="Voltar">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
 
-  <!-- Botão para alternância de tema claro/escuro -->
-  <div class="theme-toggle-container">
-    <button class="toggle-theme">
-      <div class="clouds"></div>
-      <div class="stars"><span><span></span></span></div>
-    </button>
-  </div>
+        <!-- Logo -->
+        <div class="flex-shrink-0">
+          <a href="/" class="text-2xl font-bold text-purple-600">Animu</a>
+        </div>
 
-  <!-- O conteúdo será inserido dinamicamente via JavaScript -->
-  <div class="anime-container" id="anime-content"></div>
-
-  <!-- Seção de comentários (agora oculta por padrão) -->
-  <div id="comments-section" class="comments-section container mx-auto px-4 mt-8 mb-12" style="display: none;">
-    <h2 class="text-2xl font-bold mb-6">Avaliações e Comentários</h2>
-
-    <!-- Formulário de comentário -->
-    <form id="comment-form" class="mb-8">
-      <div class="flex flex-col gap-4">
-        <!-- Sistema de avaliação por estrelas -->
-        <div class="rating-container mb-2">
-          <p class="mb-2 font-semibold">Sua avaliação: <span id="rating-display" class="text-purple-600 ml-2">0.0</span>
-          </p>
-          <div class="rating-slider-container">
-            <input type="range" id="rating-slider" min="0" max="100" value="0" class="rating-slider" step="5">
-            <div class="rating-emoji-container">
-              <span id="rating-emoji" class="rating-emoji">😶</span>
-            </div>
-          </div>
-          <div class="rating-labels">
-            <span>Péssimo</span>
-            <span>Ruim</span>
-            <span>Médio</span>
-            <span>Bom</span>
-            <span>Excelente</span>
+        <!-- Links de navegação principais -->
+        <div class="hidden md:block">
+          <div class="ml-10 flex items-center space-x-4">
+            <a href="inicio.html" class="hover:text-purple-600 transition-colors font-medium">Início</a>
+            <a href="animes.html?anime=all" class="hover:text-purple-600 transition-colors font-medium">Animes</a>
+            <a href="categorias.html" class="hover:text-purple-600 transition-colors font-medium">Categorias</a>
+            <a href="sobre.html" class="hover:text-purple-600 transition-colors font-medium">Sobre</a>
           </div>
         </div>
 
-        <textarea id="comment-text" class="w-full p-3 border rounded-lg resize-none dark:bg-gray-800" rows="4"
-          placeholder="Digite seu comentário..." required></textarea>
-        <button type="submit"
-          class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors w-fit">
-          Enviar avaliação
-        </button>
-      </div>
-    </form>
+        <!-- Barra de pesquisa -->
+        <div class="flex-1 max-w-2xl mx-4" id="search-area"></div>
 
-    <!-- Lista de comentários -->
-    <div id="comments-list" class="space-y-6">
-      <!-- Os comentários serão inseridos aqui dinamicamente -->
+        <!-- Área do usuário/admin -->
+        <div class="flex items-center space-x-4">
+          <!-- Painel do administrador -->
+          <div id="admin-panel" class="hidden relative">
+            <button id="admin-menu-button" class="p-2 rounded-lg transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </button>
+
+            <!-- Menu de administrador -->
+            <div id="admin-menu-items" style="z-index: 3;"
+              class="hidden absolute mt-2 w-48 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+              <div class="py-1" style="background: var(--background)" role="menu">
+                <a href="./admins/usuarios.html" class="block px-4 py-2 text-sm hover:bg-purple-600"
+                  role="menuitem">Usuários</a>
+                <a href="#" class="block px-4 py-2 text-sm hover:bg-purple-600" role="menuitem">Categorias</a>
+                <a href="./admins/add-anime.html" class="block px-4 py-2 text-sm hover:bg-purple-600"
+                  role="menuitem">Adicionar anime</a>
+                <a href="./admins/edit-anime.html" class="block px-4 py-2 text-sm hover:bg-purple-600"
+                  role="menuitem">Editar Animes</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Painel do usuário -->
+          <div id="user-panel" class="flex items-center top-0 left-0 p-2 rounded" style="width: fit-content;">
+            <!-- Avatar do usuário -->
+            <img class="h-10 w-10 rounded-full object-cover" src="https://via.placeholder.com/100"
+              alt="Avatar do Usuário" />
+            <!-- Nome do usuário -->
+            <div class="flex flex-col ml-2">
+              <span class="font-medium" id="user-name"><a href="./login/signin.html">Login</a></span>
+              <a href="#" id="logout-link" class="text-sm text-gray-500 hover:text-gray-700  hidden">Sair</a>
+            </div>
+          </div>
+
+          <!-- Botão para alternância de tema claro/escuro -->
+          <div class="theme-toggle-container">
+            <button class="toggle-theme">
+              <div class="clouds"></div>
+              <div class="stars"><span><span></span></span></div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Adicionar padding-top para compensar a navbar fixa -->
+  <div class="pt-16">
+    <!-- O conteúdo será inserido dinamicamente via JavaScript -->
+    <div class="anime-container" id="anime-content"></div>
+
+    <!-- Seção de comentários (agora oculta por padrão) -->
+    <div id="comments-section" class="comments-section container mx-auto px-4 mt-8 mb-12" style="display: none;">
+      <h2 class="text-2xl font-bold mb-6">Avaliações e Comentários</h2>
+
+      <!-- Formulário de comentário -->
+      <form id="comment-form" class="mb-8">
+        <div class="flex flex-col gap-4">
+          <!-- Sistema de avaliação por estrelas -->
+          <div class="rating-container mb-2">
+            <p class="mb-2 font-semibold">Sua avaliação: <span id="rating-display"
+                class="text-purple-600 ml-2">0.0</span>
+            </p>
+            <div class="rating-slider-container">
+              <input type="range" id="rating-slider" min="0" max="100" value="0" class="rating-slider" step="5">
+              <div class="rating-emoji-container">
+                <span id="rating-emoji" class="rating-emoji">😶</span>
+              </div>
+            </div>
+            <div class="rating-labels">
+              <span>Péssimo</span>
+              <span>Ruim</span>
+              <span>Médio</span>
+              <span>Bom</span>
+              <span>Excelente</span>
+            </div>
+          </div>
+
+          <textarea id="comment-text" class="w-full p-3 border rounded-lg resize-none dark:bg-gray-800" rows="4"
+            placeholder="Digite seu comentário..." required></textarea>
+          <button type="submit"
+            class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors w-fit">
+            Enviar avaliação
+          </button>
+        </div>
+      </form>
+
+      <!-- Lista de comentários -->
+      <div id="comments-list" class="space-y-6">
+        <!-- Os comentários serão inseridos aqui dinamicamente -->
+      </div>
     </div>
   </div>
 
@@ -76,6 +148,7 @@
   <script src="../src/js/pages/animu.js"></script>
   <script src="../src/js/pages/forum.js"></script>
   <script src="../src/js/pages/animes.js"></script>
+  <script src="../src/js/utils/search.js"></script>
 </body>
 
 </html>
