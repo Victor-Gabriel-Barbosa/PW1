@@ -102,171 +102,221 @@ function editAnime(index) {
   currentProducers = anime.producers || [];
   currentLicensors = anime.licensors || [];
 
-  // Template do formulário de edição atualizado com as listas
+  // Template do formulário de edição atualizado
   formContainer.innerHTML = `
     <form class="space-y-4" onsubmit="event.preventDefault(); saveChanges(${index})">
-      <!-- Informações Básicas -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Seção de Mídia com Preview -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div class="form-group">
-          <label for="primaryTitle">Título Principal*</label>
-          <input type="text" id="primaryTitle" name="primaryTitle" required class="form-input w-full">
-        </div>
-
-        <!-- Títulos Alternativos -->
-        <div class="form-group">
-          <label>Títulos Alternativos</label>
-          <div class="flex gap-2">
-            <input type="text" id="alternative-title" class="form-input flex-grow">
-            <select id="title-type" class="form-select w-24">
-              <option value="Japonês">Japonês</option>
-              <option value="Inglês">Inglês</option>
-              <option value="Romaji">Romaji</option>
-            </select>
-            <button type="button" class="btn-add px-2" onclick="addEditTitle()">+</button>
+          <label for="coverImage">Imagem de Capa</label>
+          <div class="flex gap-2 mb-2">
+            <input type="url" id="coverImage" required>
+            <button type="button" class="btn-preview" onclick="previewImage()">Visualizar</button>
           </div>
-          <div id="edit-titles-container" class="tag-container mt-2"></div>
+          <div id="image-preview" class="preview-container">
+            <img src="${anime.coverImage}" alt="Preview da capa" class="max-w-full h-auto rounded-lg shadow-lg">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="trailerUrl">Trailer (YouTube/Vimeo)</label>
+          <div class="flex gap-2 mb-2">
+            <input type="url" id="trailerUrl" placeholder="Cole a URL do vídeo">
+            <button type="button" class="btn-preview" onclick="previewTrailer()">Visualizar</button>
+          </div>
+          <div id="trailer-preview" class="preview-container ${anime.trailerUrl ? '' : 'hidden'}">
+            <iframe width="100%" height="200" frameborder="0" allowfullscreen src="${anime.trailerUrl || ''}"></iframe>
+          </div>
         </div>
       </div>
 
-      <!-- Sinopse -->
-      <div class="form-group">
-        <label for="synopsis">Sinopse*</label>
-        <textarea id="synopsis" name="synopsis" required class="form-input w-full h-24"></textarea>
-      </div>
+      <!-- Abas de navegação -->
+      <div class="tabs-container mb-6">
+        <div class="progress-bar">
+          <div class="progress-fill" id="form-progress"></div>
+        </div>
+        <div class="tabs-header flex gap-2 mb-4">
+          <button type="button" class="tab-btn active" data-tab="basic" data-section="basic">
+            1. Informações Básicas
+            <div class="section-status" id="basic-status"></div>
+          </button>
+          <button type="button" class="tab-btn" data-tab="details" data-section="details">
+            2. Detalhes
+            <div class="section-status" id="details-status"></div>
+          </button>
+          <button type="button" class="tab-btn" data-tab="production" data-section="production">
+            3. Produção
+            <div class="section-status" id="production-status"></div>
+          </button>
+        </div>
 
-      <!-- Gêneros -->
-      <div class="form-group">
-        <label>Gêneros</label>
-        <div class="flex gap-2">
-          <input type="text" id="edit-genre-input" class="form-input flex-grow">
-          <button type="button" class="btn-add px-2" onclick="addEditGenre()">+</button>
-        </div>
-        <div id="edit-genres-container" class="tag-container mt-2"></div>
-      </div>
+        <!-- Conteúdo das abas -->
+        <div id="basic" class="tab-content active">
+          <!-- Informações Básicas e Títulos -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-group">
+              <label for="primaryTitle">Título Principal</label>
+              <input type="text" id="primaryTitle" required>
+            </div>
 
-      <!-- Status e Classificação -->
-      <div class="grid grid-cols-2 gap-4">
-        <div class="form-group">
-          <label for="status">Status</label>
-          <select id="status" name="status" class="form-select w-full">
-            <option value="Em andamento">Em Andamento</option>
-            <option value="Finalizado">Finalizado</option>
-            <option value="Anunciado">Anunciado</option>
-          </select>
+            <!-- Títulos Alternativos -->
+            <div class="form-group">
+              <label>Títulos Alternativos</label>
+              <div class="flex gap-2">
+                <input type="text" id="alternative-title" class="flex-grow">
+                <select id="title-type" class="w-24">
+                  <option value="Japonês">Japonês</option>
+                  <option value="Inglês">Inglês</option>
+                  <option value="Romaji">Romaji</option>
+                </select>
+                <button type="button" class="btn-add px-2" onclick="addEditTitle()">+</button>
+              </div>
+              <div id="edit-titles-container" class="tag-container mt-2"></div>
+            </div>
+          </div>
+          
+          <!-- Sinopse -->
+          <div class="form-group mt-4">
+            <label for="synopsis">Sinopse</label>
+            <textarea id="synopsis" rows="4" required></textarea>
+            <div class="text-right text-sm text-gray-500">
+              <span id="synopsis-count">0</span>/500 caracteres
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="ageRating">Classificação</label>
-          <select id="ageRating" name="ageRating" class="form-select w-full">
-            <option value="livre">Livre</option>
-            <option value="10">10</option>
-            <option value="12">12</option>
-            <option value="14">14</option>
-            <option value="16">16</option>
-            <option value="18">18</option>
-          </select>
-        </div>
-      </div>
 
-      <!-- Informações de Produção -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="form-group">
-          <label for="studio">Estúdio*</label>
-          <input type="text" id="studio" name="studio" required class="form-input w-full">
-        </div>
-        <div class="form-group">
-          <label for="episodes">Episódios*</label>
-          <input type="number" id="episodes" name="episodes" min="1" required class="form-input w-full">
-        </div>
-        <div class="form-group">
-          <label for="episodeDuration">Duração (min)*</label>
-          <input type="number" id="episodeDuration" name="episodeDuration" required class="form-input w-full">
-        </div>
-      </div>
+        <div id="details" class="tab-content hidden">
+          <!-- Gêneros e Status -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-group">
+              <label>Gêneros</label>
+              <div class="flex gap-2">
+                <input type="text" id="edit-genre-input" class="flex-grow">
+                <button type="button" class="btn-add px-2" onclick="addEditGenre()">+</button>
+              </div>
+              <div id="edit-genres-container" class="tag-container mt-2"></div>
+            </div>
 
-      <!-- Temporada e Fonte -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="form-group">
-          <label for="seasonPeriod">Temporada</label>
-          <select id="seasonPeriod" name="seasonPeriod" class="form-select w-full">
-            <option value="Inverno">Inverno</option>
-            <option value="Primavera">Primavera</option>
-            <option value="Verão">Verão</option>
-            <option value="Outono">Outono</option>
-          </select>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="form-group">
+                <label for="status">Status</label>
+                <select id="status" class="w-full">
+                  <option value="Em andamento">Em Andamento</option>
+                  <option value="Finalizado">Finalizado</option>
+                  <option value="Anunciado">Anunciado</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="ageRating">Classificação</label>
+                <select id="ageRating" class="w-full">
+                  <option value="livre">Livre</option>
+                  <option value="10">10</option>
+                  <option value="12">12</option>
+                  <option value="14">14</option>
+                  <option value="16">16</option>
+                  <option value="18">18</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Score e Popularidade -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div class="form-group">
+              <label for="score">Score (0-10)</label>
+              <input type="number" id="score" min="0" max="10" step="0.1" required>
+            </div>
+            <div class="form-group">
+              <label for="popularity">Popularidade</label>
+              <input type="number" id="popularity" min="1" required>
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="seasonYear">Ano*</label>
-          <input type="number" id="seasonYear" name="seasonYear" required class="form-input w-full">
-        </div>
-        <div class="form-group">
-          <label for="source">Fonte</label>
-          <select id="source" name="source" class="form-select w-full">
-            <option value="Mangá">Mangá</option>
-            <option value="Light Novel">Light Novel</option>
-            <option value="Original">Original</option>
-            <option value="Game">Game</option>
-            <option value="Visual Novel">Visual Novel</option>
-            <option value="Outro">Outro</option>
-          </select>
-        </div>
-      </div>
 
-      <!-- URLs -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="form-group">
-          <label for="coverImage">URL da Imagem*</label>
-          <input type="url" id="coverImage" name="coverImage" required class="form-input w-full">
-        </div>
-        <div class="form-group">
-          <label for="trailerUrl">URL do Trailer</label>
-          <input type="url" id="trailerUrl" name="trailerUrl" class="form-input w-full">
-        </div>
-      </div>
+        <div id="production" class="tab-content hidden">
+          <!-- Informações de Produção -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="form-group">
+              <label for="studio">Estúdio</label>
+              <input type="text" id="studio" required>
+            </div>
+            <div class="form-group">
+              <label for="episodes">Episódios</label>
+              <input type="number" id="episodes" min="1" required>
+            </div>
+            <div class="form-group">
+              <label for="episodeDuration">Duração (min)</label>
+              <input type="number" id="episodeDuration" required>
+            </div>
+          </div>
 
-      <!-- Score e Popularidade -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="form-group">
-          <label for="score">Score (0-10)</label>
-          <input type="number" id="score" name="score" min="0" max="10" step="0.1" required class="form-input w-full">
-        </div>
-        <div class="form-group">
-          <label for="popularity">Popularidade</label>
-          <input type="number" id="popularity" name="popularity" min="1" required class="form-input w-full">
-        </div>
-      </div>
+          <!-- Temporada e Fonte -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="form-group">
+              <label for="seasonPeriod">Temporada</label>
+              <select id="seasonPeriod" class="w-full">
+                <option value="Inverno">Inverno</option>
+                <option value="Primavera">Primavera</option>
+                <option value="Verão">Verão</option>
+                <option value="Outono">Outono</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="seasonYear">Ano</label>
+              <input type="number" id="seasonYear" required>
+            </div>
+            <div class="form-group">
+              <label for="source">Fonte</label>
+              <select id="source" class="w-full">
+                <option value="Mangá">Mangá</option>
+                <option value="Light Novel">Light Novel</option>
+                <option value="Original">Original</option>
+                <option value="Game">Game</option>
+                <option value="Visual Novel">Visual Novel</option>
+                <option value="Outro">Outro</option>
+              </select>
+            </div>
+          </div>
 
-      <!-- Produtores -->
-      <div class="form-group">
-        <label>Produtores</label>
-        <div class="flex gap-2">
-          <input type="text" id="edit-producer-input" class="form-input flex-grow">
-          <button type="button" class="btn-add px-2" onclick="addEditProducer()">+</button>
+          <!-- Produtores e Licenciadores -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-group">
+              <label>Produtores</label>
+              <div class="flex gap-2">
+                <input type="text" id="edit-producer-input" class="flex-grow">
+                <button type="button" class="btn-add px-2" onclick="addEditProducer()">+</button>
+              </div>
+              <div id="edit-producers-container" class="tag-container mt-2"></div>
+            </div>
+            <div class="form-group">
+              <label>Licenciadores</label>
+              <div class="flex gap-2">
+                <input type="text" id="edit-licensor-input" class="flex-grow">
+                <button type="button" class="btn-add px-2" onclick="addEditLicensor()">+</button>
+              </div>
+              <div id="edit-licensors-container" class="tag-container mt-2"></div>
+            </div>
+          </div>
         </div>
-        <div id="edit-producers-container" class="tag-container mt-2"></div>
-      </div>
-
-      <!-- Licenciadores -->
-      <div class="form-group">
-        <label>Licenciadores</label>
-        <div class="flex gap-2">
-          <input type="text" id="edit-licensor-input" class="form-input flex-grow">
-          <button type="button" class="btn-add px-2" onclick="addEditLicensor()">+</button>
-        </div>
-        <div id="edit-licensors-container" class="tag-container mt-2"></div>
       </div>
 
       <!-- Botões -->
-      <div class="flex gap-4">
-        <button type="submit" class="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 flex-1">
+      <div class="grid grid-cols-2 gap-4">
+        <button type="submit" class="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
           Salvar Alterações
         </button>
-        <button type="button" onclick="document.getElementById('edit-modal').classList.add('hidden')" 
-                class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 flex-1">
+        <button type="button" 
+                onclick="document.getElementById('edit-modal').classList.add('hidden')" 
+                class="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
           Cancelar
         </button>
       </div>
     </form>
   `;
+
+  // Adicionar configuração das abas
+  setupTabs();
+  setupSynopsisCounter();
 
   // Preencher os campos com os dados do anime
   const fields = {
@@ -276,7 +326,7 @@ function editAnime(index) {
     seasonYear: anime.season?.year || anime.releaseYear,
     studio: anime.studio,
     coverImage: anime.coverImage,
-    trailerUrl: anime.trailerUrl,
+    trailerUrl: anime.trailerUrl || '',
     status: anime.status,
     ageRating: anime.ageRating,
     seasonPeriod: anime.season?.period,
@@ -286,13 +336,47 @@ function editAnime(index) {
     popularity: anime.popularity
   };
 
-  // Preencher cada campo do formulário
+  // Preencher cada campo do formulário usando getElementById
   Object.entries(fields).forEach(([id, value]) => {
-    const element = formContainer.querySelector(`[name="${id}"]`);
+    const element = document.getElementById(id);
     if (element) {
-      element.value = value;
+      // Para campos select, primeiro verificamos se a opção existe
+      if (element.tagName === 'SELECT') {
+        const option = Array.from(element.options).find(opt => opt.value === value);
+        if (option) {
+          element.value = value;
+        }
+      } else {
+        element.value = value || '';
+      }
     }
   });
+
+  // Configurar preview do trailer se existir
+  if (anime.trailerUrl) {
+    const trailerUrl = anime.trailerUrl;
+    let embedUrl = '';
+    
+    if (trailerUrl.includes('youtube.com') || trailerUrl.includes('youtu.be')) {
+      const videoId = trailerUrl.match(/(?:\/|v=)([a-zA-Z0-9_-]{11})/)?.[1];
+      if (videoId) {
+        embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?rel=0`;
+      }
+    } else if (trailerUrl.includes('vimeo.com')) {
+      const videoId = trailerUrl.match(/vimeo\.com\/(\d+)/)?.[1];
+      if (videoId) {
+        embedUrl = `https://player.vimeo.com/video/${videoId}`;
+      }
+    }
+
+    if (embedUrl) {
+      const previewFrame = document.querySelector('#trailer-preview iframe');
+      previewFrame.src = embedUrl;
+      previewFrame.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+      previewFrame.setAttribute('allowfullscreen', 'true');
+      document.getElementById('trailer-preview').classList.remove('hidden');
+    }
+  }
 
   // Renderizar as listas
   renderEditTitles();
@@ -476,6 +560,22 @@ function saveChanges(index) {
   // Salvar no localStorage
   localStorage.setItem('animeData', JSON.stringify(animes));
 
+  // Adicionar validações antes de salvar
+  const sections = ['basic', 'details', 'production'];
+  const incompleteFields = [];
+
+  sections.forEach(section => {
+    const { isComplete, missingFields } = checkSectionProgress(section);
+    if (!isComplete) {
+      incompleteFields.push(...missingFields);
+    }
+  });
+
+  if (incompleteFields.length > 0) {
+    alert('Por favor, preencha todos os campos obrigatórios:\n' + incompleteFields.join('\n'));
+    return;
+  }
+
   // Fechar modal e recarregar lista
   document.getElementById('edit-modal').classList.add('hidden');
   alert('Anime atualizado com sucesso!');
@@ -509,3 +609,252 @@ function escapeHTML(str) {
   div.appendChild(document.createTextNode(str));
   return div.innerHTML;
 }
+
+// Adicionar as funções setupTabs e setupSynopsisCounter se ainda não existirem
+function setupTabs() {
+  const tabs = document.querySelectorAll('.tab-btn');
+  const contents = document.querySelectorAll('.tab-content');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+    });
+  });
+}
+
+function setupSynopsisCounter() {
+  const synopsis = document.getElementById('synopsis');
+  const counter = document.getElementById('synopsis-count');
+  const maxLength = 500;
+
+  synopsis.addEventListener('input', () => {
+    const length = synopsis.value.length;
+    counter.textContent = length;
+
+    if (length > maxLength) {
+      synopsis.value = synopsis.value.substring(0, maxLength);
+      counter.textContent = maxLength;
+    }
+  });
+}
+
+// Adicionar funções de preview
+function previewImage() {
+  const imageUrl = document.getElementById('coverImage').value;
+  const previewContainer = document.getElementById('image-preview');
+  const previewImg = previewContainer.querySelector('img');
+
+  if (!imageUrl) {
+    alert('Por favor, insira uma URL de imagem válida.');
+    return;
+  }
+
+  previewImg.onerror = () => {
+    alert('Não foi possível carregar a imagem. Verifique a URL.');
+    previewContainer.classList.add('hidden');
+  };
+
+  previewImg.onload = () => {
+    previewContainer.classList.remove('hidden');
+  };
+
+  previewImg.src = imageUrl;
+}
+
+function previewTrailer() {
+  const trailerUrl = document.getElementById('trailerUrl').value;
+  const previewContainer = document.getElementById('trailer-preview');
+  const previewFrame = previewContainer.querySelector('iframe');
+
+  if (!trailerUrl) {
+    alert('Por favor, insira uma URL de vídeo válida.');
+    return;
+  }
+
+  let embedUrl = '';
+  
+  if (trailerUrl.includes('youtube.com') || trailerUrl.includes('youtu.be')) {
+    const videoId = trailerUrl.match(/(?:\/|v=)([a-zA-Z0-9_-]{11})/)?.[1];
+    if (videoId) {
+      embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?rel=0`;
+    }
+  } else if (trailerUrl.includes('vimeo.com')) {
+    const videoId = trailerUrl.match(/vimeo\.com\/(\d+)/)?.[1];
+    if (videoId) {
+      embedUrl = `https://player.vimeo.com/video/${videoId}`;
+    }
+  }
+
+  if (!embedUrl) {
+    alert('URL de vídeo inválida. Use URLs do YouTube ou Vimeo.');
+    return;
+  }
+
+  // Adicionar atributos necessários ao iframe
+  previewFrame.src = embedUrl;
+  previewFrame.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+  previewFrame.setAttribute('allowfullscreen', 'true');
+
+  previewContainer.classList.remove('hidden');
+}
+
+// Adicionar funções de verificação de progresso
+function checkSectionProgress(section) {
+  const requiredFields = {
+    basic: {
+      'primaryTitle': 'Título Principal',
+      'synopsis': 'Sinopse',
+      'coverImage': 'Imagem de Capa',
+      'titles': 'Pelo menos um título alternativo'
+    },
+    details: {
+      'score': 'Score',
+      'popularity': 'Popularidade',
+      'genres': 'Pelo menos um gênero'
+    },
+    production: {
+      'studio': 'Estúdio',
+      'episodes': 'Número de Episódios',
+      'episodeDuration': 'Duração dos Episódios',
+      'seasonYear': 'Ano',
+      'producers': 'Pelo menos um produtor'
+    }
+  };
+
+  const missingFields = [];
+  const fields = Object.keys(requiredFields[section]);
+  
+  fields.forEach(field => {
+    if (field === 'titles' && currentTitles.length === 0) {
+      missingFields.push(requiredFields[section][field]);
+    } else if (field === 'genres' && currentGenres.length === 0) {
+      missingFields.push(requiredFields[section][field]);
+    } else if (field === 'producers' && currentProducers.length === 0) {
+      missingFields.push(requiredFields[section][field]);
+    } else if (field !== 'titles' && field !== 'genres' && field !== 'producers') {
+      const element = document.getElementById(field);
+      if (!element || !element.value.trim()) {
+        missingFields.push(requiredFields[section][field]);
+      }
+    }
+  });
+
+  const progress = Math.round(((fields.length - missingFields.length) / fields.length) * 100);
+  const isComplete = missingFields.length === 0;
+
+  updateSectionStatus(section, isComplete, progress, missingFields);
+  return { isComplete, progress, missingFields };
+}
+
+function updateSectionStatus(section, isComplete, progress, missingFields) {
+  const tab = document.querySelector(`[data-section="${section}"]`);
+  const status = document.getElementById(`${section}-status}`);
+  
+  tab.classList.remove('completed', 'incomplete', 'error');
+  tab.classList.add(isComplete ? 'completed' : 'incomplete');
+
+  if (missingFields.length > 0) {
+    const tooltip = document.createElement('div');
+    tooltip.className = 'status-tooltip';
+    tooltip.innerHTML = `
+      <strong>Campos pendentes:</strong>
+      <ul>
+        ${missingFields.map(field => `<li>• ${field}</li>`).join('')}
+      </ul>
+    `;
+    
+    status.innerHTML = `
+      <span class="status-text">${progress}% completo</span>
+      <div class="status-icon ${isComplete ? 'complete' : 'incomplete'}"></div>
+      ${tooltip.outerHTML}
+    `;
+  } else {
+    status.innerHTML = `
+      <span class="status-text">Completo!</span>
+      <div class="status-icon complete"></div>
+    `;
+  }
+
+  updateFormProgress();
+}
+
+function updateFormProgress() {
+  const sections = ['basic', 'details', 'production'];
+  const totalProgress = sections.reduce((acc, section) => {
+    const { progress } = checkSectionProgress(section);
+    return acc + progress;
+  }, 0) / sections.length;
+
+  const progressBar = document.getElementById('form-progress');
+  progressBar.style.width = `${totalProgress}%`;
+}
+
+// Atualizar a função saveChanges para incluir validações
+function saveChanges(index) {
+  const animes = JSON.parse(localStorage.getItem('animeData')) || [];
+  const form = document.querySelector('#edit-form-container form');
+  const formData = new FormData(form);
+
+  const updatedAnime = {
+    ...animes[index], // Mantém os dados existentes que não estão no formulário
+    primaryTitle: formData.get('primaryTitle'),
+    alternativeTitles: currentTitles,
+    genres: currentGenres,
+    producers: currentProducers,
+    licensors: currentLicensors,
+    synopsis: formData.get('synopsis'),
+    episodes: parseInt(formData.get('episodes')),
+    studio: formData.get('studio'),
+    coverImage: formData.get('coverImage'),
+    trailerUrl: formData.get('trailerUrl'),
+    status: formData.get('status'),
+    ageRating: formData.get('ageRating'),
+    season: {
+      period: formData.get('seasonPeriod'),
+      year: parseInt(formData.get('seasonYear'))
+    },
+    episodeDuration: parseInt(formData.get('episodeDuration')),
+    source: formData.get('source'),
+    score: parseFloat(formData.get('score')),
+    popularity: parseInt(formData.get('popularity'))
+  };
+
+  // Atualizar o anime no array
+  animes[index] = updatedAnime;
+
+  // Salvar no localStorage
+  localStorage.setItem('animeData', JSON.stringify(animes));
+
+  // Adicionar validações antes de salvar
+  const sections = ['basic', 'details', 'production'];
+  const incompleteFields = [];
+
+  sections.forEach(section => {
+    const { isComplete, missingFields } = checkSectionProgress(section);
+    if (!isComplete) {
+      incompleteFields.push(...missingFields);
+    }
+  });
+
+  if (incompleteFields.length > 0) {
+    alert('Por favor, preencha todos os campos obrigatórios:\n' + incompleteFields.join('\n'));
+    return;
+  }
+
+  // Fechar modal e recarregar lista
+  document.getElementById('edit-modal').classList.add('hidden');
+  alert('Anime atualizado com sucesso!');
+  loadAnimes();
+}
+
+// Adicionar event listeners quando o modal de edição é aberto
+document.querySelector('#edit-form-container').addEventListener('input', (e) => {
+  const section = e.target.closest('.tab-content')?.id;
+  if (section) {
+    checkSectionProgress(section);
+  }
+});
