@@ -351,7 +351,7 @@ function previewTrailer() {
 
   // Extrai o ID do vídeo do YouTube ou Vimeo
   let videoId = '';
-  
+
   if (trailerUrl.includes('youtube.com') || trailerUrl.includes('youtu.be')) {
     videoId = trailerUrl.match(/(?:\/|v=)([a-zA-Z0-9_-]{11})/)?.[1];
     if (videoId) {
@@ -399,7 +399,7 @@ function checkSectionProgress(section) {
 
   const missingFields = [];
   const fields = Object.keys(requiredFields[section]);
-  
+
   fields.forEach(field => {
     if (field === 'titles' && titles.length === 0) {
       missingFields.push(requiredFields[section][field]);
@@ -428,7 +428,7 @@ function checkSectionProgress(section) {
 function updateSectionStatus(section, isComplete, progress, missingFields) {
   const tab = document.querySelector(`[data-section="${section}"]`);
   const status = document.getElementById(`${section}-status`);
-  
+
   tab.classList.remove('completed', 'incomplete', 'error');
   tab.classList.add(isComplete ? 'completed' : 'incomplete');
 
@@ -441,7 +441,7 @@ function updateSectionStatus(section, isComplete, progress, missingFields) {
         ${missingFields.map(field => `<li>• ${field}</li>`).join('')}
       </ul>
     `;
-    
+
     status.innerHTML = `
       <span class="status-text">${progress}% completo</span>
       <div class="status-icon ${isComplete ? 'complete' : 'incomplete'}"></div>
@@ -504,7 +504,7 @@ function setupTabs() {
     tab.addEventListener('click', () => {
       const currentSection = document.querySelector('.tab-content.active').id;
       highlightRequiredFields(currentSection);
-      
+
       tabs.forEach(t => t.classList.remove('active'));
       contents.forEach(c => c.classList.remove('active'));
 
@@ -527,7 +527,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupTabs();
   setupSynopsisCounter();
   loadDataFromLocalStorage();
-  
+
   // Verificação inicial do progresso
   ['basic', 'details', 'production'].forEach(section => {
     checkSectionProgress(section);
@@ -566,12 +566,12 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 document.getElementById('anime-admin-form').addEventListener('submit', async function (e) {
   e.preventDefault();
-  
+
   // Previne submissão duplicada
   const submitBtn = this.querySelector('#submit-btn');
   if (submitBtn.disabled) return;
   submitBtn.disabled = true;
-  
+
   try {
     // Validações básicas
     const requiredFields = {
@@ -587,7 +587,7 @@ document.getElementById('anime-admin-form').addEventListener('submit', async fun
     };
 
     const errors = [];
-    
+
     // Verifica campos obrigatórios
     Object.entries(requiredFields).forEach(([id, label]) => {
       const field = document.getElementById(id);
@@ -660,16 +660,16 @@ document.getElementById('anime-admin-form').addEventListener('submit', async fun
 
     // Salva no localStorage
     saveToLocalStorage(formData);
-    
+
     // Reseta o formulário após sucesso
     resetForm();
-    
+
     // Mostra mensagem de sucesso
     const successMessage = document.createElement('div');
     successMessage.className = 'success-message';
     successMessage.textContent = 'Anime cadastrado com sucesso!';
     document.querySelector('.admin-form').insertAdjacentElement('afterbegin', successMessage);
-    
+
     // Remove a mensagem após 3 segundos
     setTimeout(() => successMessage.remove(), 3000);
 
@@ -693,20 +693,20 @@ function resetForm() {
     genres = [];
     producers = [];
     licensors = [];
-    
+
     renderTitles();
     renderGenres();
     renderProducers();
     renderLicensors();
-    
+
     clearPreviews();
     localStorage.removeItem('animeFormState');
-    
+
     // Reseta os estados visuais
     document.querySelectorAll('.form-group').forEach(group => {
       group.classList.remove('error', 'success');
     });
-    
+
     // Atualiza o progresso
     updateFormProgress();
   }
@@ -734,7 +734,7 @@ function saveFormState() {
     producers: producers,
     licensors: licensors
   };
-  
+
   localStorage.setItem('animeFormState', JSON.stringify(formState));
   console.log('Estado do formulário salvo');
 }
@@ -765,7 +765,7 @@ function isValidUrl(url, type = 'image') {
 function clearPreviews() {
   const imagePreview = document.getElementById('image-preview');
   const trailerPreview = document.getElementById('trailer-preview');
-  
+
   imagePreview.classList.add('hidden');
   trailerPreview.classList.add('hidden');
   imagePreview.querySelector('img').src = '';
@@ -773,12 +773,12 @@ function clearPreviews() {
 }
 
 // Adiciona validação em tempo real para URLs
-document.getElementById('image-url').addEventListener('input', function() {
+document.getElementById('image-url').addEventListener('input', function () {
   const isValid = isValidUrl(this.value, 'image');
   this.closest('.form-group').classList.toggle('error', !isValid && this.value);
 });
 
-document.getElementById('trailer-url').addEventListener('input', function() {
+document.getElementById('trailer-url').addEventListener('input', function () {
   if (this.value) {
     const isValid = isValidUrl(this.value, 'video');
     this.closest('.form-group').classList.toggle('error', !isValid);

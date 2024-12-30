@@ -120,14 +120,18 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         // Hash da senha
         const hashedPassword = await this.hashPassword(password);
+        
+        // Gerar avatar
+        const avatar = this.generateAvatar(username);
 
         // Criar novo usuário
         const newUser = {
-          id: Date.now().toString(), // ID único
+          id: Date.now().toString(),
           username,
           email,
-          password: hashedPassword, // Em produção, use hash de senha
-          isAdmin: false, // Por padrão, usuários não são admin
+          password: hashedPassword,
+          avatar: avatar, // Armazenar avatar no objeto do usuário
+          isAdmin: true,
           createdAt: new Date().toISOString()
         };
 
@@ -193,19 +197,18 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
 
         this.recordLoginAttempt(username, true);
-        const avatar = this.generateAvatar(user.username);
-        // Criar sessão
+
+        // Criar sessão usando o avatar armazenado no objeto do usuário
         const sessionData = {
           userId: user.id,
           username: user.username,
-          isAdmin: user.isAdmin, // Adiciona status de admin à sessão
-          avatar: avatar, // Salva o avatar na sessão
+          isAdmin: user.isAdmin,
+          avatar: user.avatar, // Usar avatar do usuário
           loginTime: new Date().toISOString()
         };
 
         localStorage.setItem('userSession', JSON.stringify(sessionData));
 
-        // Gerenciar credenciais salvas
         if (remember) {
           this.saveCredentials(username, password);
         } else {
@@ -215,7 +218,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         return true;
       } catch (error) {
         console.error('Erro no login:', error);
-        throw error; // Propaga o erro para ser tratado pelo manipulador do formulário
+        throw error;
       }
     }
 
@@ -226,36 +229,29 @@ document.addEventListener('DOMContentLoaded', async function () {
       const userAvatar = userPanel ? userPanel.querySelector('img') : null;
       const logoutLink = document.getElementById('logout-link');
 
-      // Verificar se há uma sessão ativa
       const sessionData = JSON.parse(localStorage.getItem('userSession'));
 
       if (sessionData && userPanel) {
-        // Encontrar usuário na lista de usuários
-        const user = this.users.find(u => u.id === sessionData.userId);
+        // Mostrar painel de usuário
+        userPanel.classList.remove('hidden');
 
-        if (user) {
-          // Mostrar painel de usuário
-          userPanel.classList.remove('hidden');
+        // Atualizar nome de usuário com link para o perfil
+        userNameSpan.innerHTML = `<a href="profile.html" class="hover:text-purple-600 transition-colors">${sessionData.username}</a>`;
 
-          // Atualizar nome de usuário com link para o perfil
-          userNameSpan.innerHTML = `<a href="profile.html" class="hover:text-purple-600 transition-colors">${user.username}</a>`;
+        // Mostrar link de logout
+        logoutLink.classList.remove('hidden');
 
-          // Mostrar link de logout
-          logoutLink.classList.remove('hidden');
-
-          // Usar o avatar da sessão e adicionar link para o perfil
-          if (userAvatar) {
-            userAvatar.src = sessionData.avatar;
-            userAvatar.style.cursor = 'pointer';
-            userAvatar.onclick = () => window.location.href = 'profile.html';
-            userAvatar.title = 'Ver perfil';
-          }
-
-          return true;
+        // Usar o avatar salvo no objeto de sessão
+        if (userAvatar && sessionData.avatar) {
+          userAvatar.src = sessionData.avatar;
+          userAvatar.style.cursor = 'pointer';
+          userAvatar.onclick = () => window.location.href = 'profile.html';
+          userAvatar.title = 'Ver perfil';
         }
+
+        return true;
       } else if (userNameSpan) {
-        // Se não houver sessão, mostrar link de login e esconder logout
-        userNameSpan.innerHTML = '<a href="./login/signin.html">Login</a>';
+        userNameSpan.innerHTML = '<a href="signin.html">Login</a>';
         if (logoutLink) {
           logoutLink.classList.add('hidden');
         }
@@ -436,7 +432,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         await authManager.loginUser(username, password, remember);
         authManager.updateUserPanel();
-        window.location.href = '../inicio.html';
+        window.location.href = 'inicio.html';
       } catch (error) {
         authManager.showError(error.message);
       } finally {

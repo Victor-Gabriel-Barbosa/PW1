@@ -599,7 +599,14 @@ function updateEditRatingDisplay(value) {
   }
 }
 
-// Atualiza a função renderComment para incluir o rating como atributo data
+// Função para obter o avatar do usuário
+function getUserAvatar(username) {
+  const users = JSON.parse(localStorage.getItem('animuUsers') || '[]');
+  const user = users.find(u => u.username === username);
+  return user ? user.avatar : `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=8B5CF6&color=ffffff&size=100`;
+}
+
+// Função atualizada para renderizar comentários com avatares
 function renderComment(comment, animeTitle) {
   const currentUser = JSON.parse(localStorage.getItem('userSession'))?.username;
   const isCommentOwner = currentUser === comment.username;
@@ -609,51 +616,60 @@ function renderComment(comment, animeTitle) {
 
   return `
     <div class="comment p-4 rounded-lg" data-comment-id="${comment.id}" data-rating="${comment.rating}">
-      <div class="flex items-center gap-2 mb-2">
-        <strong class="text-purple-600">${comment.username}</strong>
-        <span class="comment-rating">${renderStars(comment.rating)}</span>
-        <span class="text-sm">${formatDate(comment.timestamp)}</span>
-        <div class="ml-auto flex gap-2">
-          ${isCommentOwner ? `
-            <button 
-              class="edit-btn px-2 py-1 rounded text-sm bg-blue-500 text-white hover:bg-blue-600"
-              onclick="toggleEditMode(${comment.id})"
-            >
-              Editar
-            </button>
+      <div class="flex items-start gap-3">
+        <img class="h-10 w-10 rounded-full object-cover"
+             src="${getUserAvatar(comment.username)}"
+             alt="${comment.username}">
+        <div class="flex-1">
+          <div class="flex items-start justify-between">
+            <div>
+              <strong class="text-purple-600">${comment.username}</strong>
+              <div class="comment-rating">${renderStars(comment.rating)}</div>
+              <span class="text-sm text-gray-500">${formatDate(comment.timestamp)}</span>
+            </div>
+            <div class="flex gap-2">
+              ${isCommentOwner ? `
+                <button 
+                  class="edit-btn px-2 py-1 rounded text-sm bg-blue-500 text-white hover:bg-blue-600"
+                  onclick="toggleEditMode(${comment.id})"
+                >
+                  Editar
+                </button>
+              ` : ''}
+              ${canDelete ? `
+                <button 
+                  class="delete-btn px-2 py-1 rounded text-sm"
+                  onclick="if(confirm('Deseja realmente excluir este comentário?')) { 
+                    deleteComment('${animeTitle}', ${comment.id}); 
+                    updateCommentsList('${animeTitle}');
+                  }"
+                >
+                  ${isAdmin && !isCommentOwner ? '🛡️ Excluir' : 'Excluir'}
+                </button>
+              ` : ''}
+            </div>
+          </div>
+          <p class="comment-text mt-2">${comment.text}</p>
+          ${comment.edited ? `
+            <small class="text-gray-500 italic">
+              (editado em ${formatDate(comment.editedAt)})
+            </small>
           ` : ''}
-          ${canDelete ? `
+          <div class="vote-buttons mt-2">
             <button 
-              class="delete-btn px-2 py-1 rounded text-sm"
-              onclick="if(confirm('Deseja realmente excluir este comentário?')) { 
-                deleteComment('${animeTitle}', ${comment.id}); 
-                updateCommentsList('${animeTitle}');
-              }"
+              class="vote-btn ${userVote === 'like' ? 'active' : ''}"
+              onclick="voteComment('${animeTitle}', ${comment.id}, 'like') && updateCommentsList('${animeTitle}')"
             >
-              ${isAdmin && !isCommentOwner ? '🛡️ Excluir' : 'Excluir'}
+              👍 <span class="vote-count">${comment.likes?.length || 0}</span>
             </button>
-          ` : ''}
+            <button 
+              class="vote-btn ${userVote === 'dislike' ? 'active' : ''}"
+              onclick="voteComment('${animeTitle}', ${comment.id}, 'dislike') && updateCommentsList('${animeTitle}')"
+            >
+              👎 <span class="vote-count">${comment.dislikes?.length || 0}</span>
+            </button>
+          </div>
         </div>
-      </div>
-      <p class="comment-text">${comment.text}</p>
-      ${comment.edited ? `
-        <small class="text-gray-500 italic">
-          (editado em ${formatDate(comment.editedAt)})
-        </small>
-      ` : ''}
-      <div class="vote-buttons">
-        <button 
-          class="vote-btn ${userVote === 'like' ? 'active' : ''}"
-          onclick="voteComment('${animeTitle}', ${comment.id}, 'like') && updateCommentsList('${animeTitle}')"
-        >
-          👍 <span class="vote-count">${comment.likes?.length || 0}</span>
-        </button>
-        <button 
-          class="vote-btn ${userVote === 'dislike' ? 'active' : ''}"
-          onclick="voteComment('${animeTitle}', ${comment.id}, 'dislike') && updateCommentsList('${animeTitle}')"
-        >
-          👎 <span class="vote-count">${comment.dislikes?.length || 0}</span>
-        </button>
       </div>
     </div>
   `;
@@ -828,7 +844,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const session = localStorage.getItem('userSession');
         if (!session) {
           alert('Você precisa estar logado para comentar!');
-          window.location.href = './login/signin.html';
+          window.location.href = 'signin.html';
           return;
         }
 
@@ -917,7 +933,7 @@ function toggleFavorite(animeTitle) {
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
   if (!sessionData) {
     alert('Você precisa estar logado para favoritar animes!');
-    window.location.href = './login/signin.html';
+    window.location.href = 'signin.html';
     return;
   }
 

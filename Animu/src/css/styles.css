@@ -208,6 +208,7 @@ h1, h2, h3, h4, h5, h6 {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  overflow-x: hidden;
 }
 
 /* 4. Componentes
@@ -393,6 +394,9 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 20px;
   transition: all 0.3s ease;
   border: 1px solid transparent;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 
 .forum-topic:hover {
@@ -1302,6 +1306,8 @@ body.dark-mode {
 .topic-content {
   padding: 20px;
   line-height: 1.6;
+  overflow: hidden;
+  max-width: 100%;
 }
 
 .topic-footer {
@@ -1337,6 +1343,19 @@ body.dark-mode {
   margin-left: 40px;
   padding-left: 20px;
   border-left: 2px solid var(--primary-color);
+}
+
+.topic-content p,
+.reply-content p {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  max-width: 100%;
+}
+
+.reply-content {
+  overflow: hidden;
+  max-width: 100%;
 }
 
 /* 5.3. Comentários */

@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Verifica se o usuário atual é admin
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
   if (!sessionData?.isAdmin) {
-    window.location.href = '../inicio.html';
+    window.location.href = 'inicio.html';
     return;
   }
 
@@ -58,17 +58,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const tr = document.createElement('tr');
     tr.className = 'border-b border-gray-200 hover:bg-gray-500';
 
-    // Buscar a sessão do usuário para obter o avatar
-    const sessionData = JSON.parse(localStorage.getItem('userSession'));
-    const avatar = sessionData && sessionData.userId === user.id 
-        ? sessionData.avatar 
-        : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=8B5CF6&color=ffffff&size=100`;
-
     tr.innerHTML = `
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
                     <img class="h-10 w-10 rounded-full object-cover"
-                         src="${avatar}"
+                         src="${user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=8B5CF6&color=ffffff&size=100`}"
                          alt="${user.username}">
                     <div class="ml-4">
                         <div class="font-medium">${user.username}</div>

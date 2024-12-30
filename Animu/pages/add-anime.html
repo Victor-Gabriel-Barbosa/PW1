@@ -5,16 +5,16 @@
   <meta charset="UTF-8"> 
   <title>Animu - Inserir Anime</title> 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../src/css/styles.css">
+  <link rel="stylesheet" href="../src/css/styles.css">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="icon" href="../../src/favicon/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="../src/favicon/favicon.ico" type="image/x-icon">
   <script>
     // Verificação imediata antes de carregar o resto da página
     (function () {
       const session = JSON.parse(localStorage.getItem('userSession'));
       if (!session || !session.isAdmin) {
         alert('Acesso negado. Esta página é restrita a administradores.');
-        window.location.href = '../inicio.html';
+        window.location.href = 'inicio.html';
       }
     })();
   </script>
@@ -58,7 +58,7 @@
         </div>
         
         <div class="form-group">
-          <label for="trailer-url">Trailer (YouTube/Vimeo)</label>
+          <label for="trailer-url">Trailer (YouTube/Video)</label>
           <div class="flex gap-2 mb-2">
             <input type="url" id="trailer-url" placeholder="Cole a URL do vídeo">
             <button type="button" class="btn-preview" onclick="previewTrailer()">Visualizar</button>
@@ -248,9 +248,9 @@
   </div>
 
   <!-- Inclusão de scripts JavaScript para funcionalidades adicionais -->
-  <script src="../../src/js/pages/animu.js"></script>
-  <script src="../../src/js/pages/admin/admin.js"></script>
-  <script src="../../src/js/pages/admin/add-anime.js"></script>
+  <script src="../src/js/pages/animu.js"></script>
+  <script src="../src/js/pages/admin.js"></script>
+  <script src="../src/js/pages/add-anime.js"></script>
 </body>
 
 </html>

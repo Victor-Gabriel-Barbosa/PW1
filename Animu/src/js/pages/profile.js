@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Verificar se o usuário está logado
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
   if (!sessionData) {
-    window.location.href = 'login/signin.html';
+    window.location.href = 'signin.html';
     return;
   }
 

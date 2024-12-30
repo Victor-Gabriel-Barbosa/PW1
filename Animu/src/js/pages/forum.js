@@ -42,6 +42,8 @@ const FORUM_CONFIG = {
   ],
   maxTitleLength: 100,
   maxContentLength: 2000,
+  maxReplyLength: 500, // Novo limite para respostas
+  maxTopicsPerUser: 5, // Novo limite de tópicos por usuário
   moderationRules: {
     forbiddenWords: [] // Será preenchido ao carregar
   }
@@ -50,7 +52,7 @@ const FORUM_CONFIG = {
 // Função para carregar a lista de palavrões
 async function loadBadWords() {
   try {
-    const response = await fetch('./src/js/data/badwords.json');
+    const response = await fetch('../src/js/data/badwords.json'); 
     const data = await response.json();
     FORUM_CONFIG.moderationRules.forbiddenWords = data.palavroes;
   } catch (error) {
@@ -160,7 +162,7 @@ function closeModal() {
 newTopicBtn?.addEventListener('click', () => {
   if (!isUserLoggedIn()) {
     alert('Você precisa estar logado para criar uma discussão!');
-    window.location.href = './login/signin.html';
+    window.location.href = 'signin.html';
     return;
   }
   newTopicModal.classList.remove('hidden');
@@ -228,52 +230,122 @@ function renderTopics() {
   });
 }
 
-// Nova função para renderizar card de tópico
+// Função para obter o avatar do usuário
+function getUserAvatar(username) {
+  const users = JSON.parse(localStorage.getItem('animuUsers') || '[]');
+  const user = users.find(u => u.username === username);
+  return user ? user.avatar : `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=8B5CF6&color=ffffff&size=100`;
+}
+
+// Atualizar a função renderReplies para incluir avatares
+function renderReplies(replies, topicId, userId) {
+  return replies.map(reply => `
+    <div class="mb-3 overflow-hidden" id="reply-${reply.id}">
+        <div class="flex items-start gap-3">
+            <img class="h-8 w-8 rounded-full object-cover"
+                 src="${getUserAvatar(reply.author)}"
+                 alt="${reply.author}">
+            <div class="flex-1">
+                <div class="flex justify-between items-start">
+                    <p class="text-sm">
+                        <span class="font-semibold">${reply.author}</span>
+                        em ${formatDate(reply.date)}
+                        ${reply.editedAt ? `<span class="text-xs">(editado)</span>` : ''}
+                    </p>
+                    <div class="flex items-center gap-2">
+                        ${(isAuthor(reply.author) || isAdmin()) ? `
+                            <button onclick="editReply(${topicId}, ${reply.id})" class="text-blue-600 hover:text-blue-800">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                                </svg>
+                            </button>
+                            <button onclick="deleteReply(${topicId}, ${reply.id})" class="text-red-600 hover:text-red-800">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                            </button>
+                        ` : ''}
+                        <button onclick="likeReply(${topicId}, ${reply.id})" 
+                                class="text-sm ${reply.likedBy && reply.likedBy.includes(userId) ? 'text-purple-600' : 'text-gray-400'} transition-colors">
+                            ${reply.likes || 0} ❤️
+                        </button>
+                    </div>
+                </div>
+                <div class="reply-content overflow-hidden mt-1">
+                    <p class="break-words">${reply.content}</p>
+                </div>
+                <div class="reply-edit-form hidden">
+                    <form onsubmit="saveReplyEdit(event, ${topicId}, ${reply.id})" class="flex gap-2 mt-2">
+                        <div class="flex-1">
+                            <textarea class="w-full p-2 border rounded-lg" 
+                                     maxlength="${FORUM_CONFIG.maxReplyLength}"
+                                     oninput="updateCharCount(this, 'reply-edit-count-${reply.id}')">${reply.content}</textarea>
+                            <small id="reply-edit-count-${reply.id}" class="text-right block mt-1">0/${FORUM_CONFIG.maxReplyLength}</small>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg">Salvar</button>
+                            <button type="button" onclick="cancelReplyEdit(${reply.id})" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+  `).join('');
+}
+
+// Atualizar a função renderTopicCard para incluir o avatar do autor do tópico
 function renderTopicCard(topic, userId) {
-  const category = FORUM_CONFIG.categories.find(c => c.id === topic.category) ||
+  const category = FORUM_CONFIG.categories.find(c => c.id === topic.category) || 
     { icon: '💬', name: 'Geral' };
 
-  // Adicione um wrapper div com evento de clique
   return `
-    <div class="card p-6 mb-4 transform transition-all hover:-translate-y-1 hover:shadow-lg cursor-pointer" 
+    <div class="card p-6 mb-4 transform transition-all hover:-translate-y-1 hover:shadow-lg cursor-pointer overflow-hidden" 
          id="topic-${topic.id}"
          onclick="incrementTopicViews(${topic.id})">
-      <div class="topic-content">
-        <div class="flex justify-between items-start mb-4">
-          <div>
-            <div class="flex items-center gap-2 mb-2">
-              <span class="text-lg">${category.icon}</span>
-              <h3 class="text-xl font-bold">${topic.title}</h3>
+      <div class="topic-content overflow-hidden">
+        <div class="flex items-start gap-4">
+          <img class="h-10 w-10 rounded-full object-cover"
+               src="${getUserAvatar(topic.author)}"
+               alt="${topic.author}">
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between items-start gap-4 mb-4">
+              <div class="flex-1 min-w-0"> <!-- Adiciona min-w-0 para permitir que o flex-child encolha -->
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-lg flex-shrink-0">${category.icon}</span>
+                  <h3 class="text-xl font-bold truncate">${topic.title}</h3> <!-- Adiciona truncate para títulos muito longos -->
+                </div>
+                <p class="text-sm">
+                  Por <span class="font-semibold">${topic.author}</span> 
+                  em ${formatDate(topic.date)}
+                  ${topic.editedAt ? `<span class="text-xs">(editado)</span>` : ''}
+                </p>
+              </div>
+              <div class="flex items-center gap-2 flex-shrink-0"> <!-- Adiciona flex-shrink-0 para impedir que os botões encolham -->
+                ${(isAuthor(topic.author) || isAdmin()) ? `
+                  <button onclick="editTopic(${topic.id})" class="edit-topic-btn text-blue-600 hover:text-blue-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                    </svg>
+                  </button>
+                  <button onclick="deleteTopic(${topic.id})" class="text-red-600 hover:text-red-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                  </button>
+                ` : ''}
+                <button onclick="likeTopic(${topic.id})" 
+                        class="flex items-center gap-2 ${topic.likedBy && topic.likedBy.includes(userId) ? 'text-purple-600' : 'text-gray-400'} transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"/>
+                  </svg>
+                  ${topic.likes}
+                </button>
+              </div>
             </div>
-            <p class="text-sm">
-              Por <span class="font-semibold">${topic.author}</span> 
-              em ${formatDate(topic.date)}
-              ${topic.editedAt ? `<span class="text-xs">(editado)</span>` : ''}
-            </p>
-          </div>
-          <div class="flex items-center gap-2">
-            ${(isAuthor(topic.author) || isAdmin()) ? `
-              <button onclick="editTopic(${topic.id})" class="edit-topic-btn text-blue-600 hover:text-blue-800">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
-                </svg>
-              </button>
-              <button onclick="deleteTopic(${topic.id})" class="text-red-600 hover:text-red-800">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                </svg>
-              </button>
-            ` : ''}
-            <button onclick="likeTopic(${topic.id})" 
-                    class="flex items-center gap-2 ${topic.likedBy && topic.likedBy.includes(userId) ? 'text-purple-600' : 'text-gray-400'} transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"/>
-              </svg>
-              ${topic.likes}
-            </button>
+            <p class="mb-4 break-words">${topic.content}</p>
           </div>
         </div>
-        <p class="mb-4">${topic.content}</p>
       </div>
 
       <!-- Formulário de edição do tópico -->
@@ -302,9 +374,15 @@ function renderTopicCard(topic, userId) {
       
       ${isUserLoggedIn() ? `
         <div class="mt-4">
-          <form onsubmit="addReply(event, ${topic.id})" class="flex gap-2">
-            <input type="text" placeholder="Adicione uma resposta..." 
-                   class="flex-1 p-2 border rounded-lg">
+          <form onsubmit="addReply(event, ${topic.id})" class="space-y-2">
+            <div class="flex-1">
+              <input type="text" 
+                     placeholder="Adicione uma resposta..." 
+                     maxlength="${FORUM_CONFIG.maxReplyLength}"
+                     oninput="updateCharCount(this, 'reply-count-${topic.id}')"
+                     class="w-full p-2 border rounded-lg">
+              <small id="reply-count-${topic.id}" class="text-right block mt-1">0/${FORUM_CONFIG.maxReplyLength}</small>
+            </div>
             <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg">
               Responder
             </button>
@@ -312,7 +390,7 @@ function renderTopicCard(topic, userId) {
         </div>
       ` : `
         <div class="mt-4 text-center">
-          <a href="./login/signin.html" class="text-purple-600 hover:text-purple-700">
+          <a href="signin.html" class="text-purple-600 hover:text-purple-700">
             Faça login para participar da discussão
           </a>
         </div>
@@ -340,43 +418,55 @@ function renderTopicCard(topic, userId) {
 // Renderiza a lista de tópicos
 function renderReplies(replies, topicId, userId) {
   return replies.map(reply => `
-    <div class="mb-3" id="reply-${reply.id}">
-        <div class="flex justify-between items-start">
-            <p class="text-sm">
-                <span class="font-semibold">${reply.author}</span>
-                em ${formatDate(reply.date)}
-                ${reply.editedAt ? `<span class="text-xs">(editado)</span>` : ''}
-            </p>
-            <div class="flex items-center gap-2">
-                ${(isAuthor(reply.author) || isAdmin()) ? `
-                    <button onclick="editReply(${topicId}, ${reply.id})" class="text-blue-600 hover:text-blue-800">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
-                        </svg>
-                    </button>
-                    <button onclick="deleteReply(${topicId}, ${reply.id})" class="text-red-600 hover:text-red-800">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                            </svg>
-                    </button>
-                ` : ''}
-                <button onclick="likeReply(${topicId}, ${reply.id})" 
-                        class="text-sm ${reply.likedBy && reply.likedBy.includes(userId) ? 'text-purple-600' : 'text-gray-400'} transition-colors">
-                    ${reply.likes || 0} ❤️
-                </button>
-            </div>
-        </div>
-        <div class="reply-content">
-            <p>${reply.content}</p>
-        </div>
-        <div class="reply-edit-form hidden">
-            <form onsubmit="saveReplyEdit(event, ${topicId}, ${reply.id})" class="flex gap-2 mt-2">
-                <textarea class="flex-1 p-2 border rounded-lg">${reply.content}</textarea>
-                <div class="flex flex-col gap-2">
-                    <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg">Salvar</button>
-                    <button type="button" onclick="cancelReplyEdit(${reply.id})" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg">Cancelar</button>
+    <div class="mb-3 overflow-hidden" id="reply-${reply.id}">
+        <div class="flex items-start gap-3">
+            <img class="h-8 w-8 rounded-full object-cover"
+                 src="${getUserAvatar(reply.author)}"
+                 alt="${reply.author}">
+            <div class="flex-1">
+                <div class="flex justify-between items-start">
+                    <p class="text-sm">
+                        <span class="font-semibold">${reply.author}</span>
+                        em ${formatDate(reply.date)}
+                        ${reply.editedAt ? `<span class="text-xs">(editado)</span>` : ''}
+                    </p>
+                    <div class="flex items-center gap-2">
+                        ${(isAuthor(reply.author) || isAdmin()) ? `
+                            <button onclick="editReply(${topicId}, ${reply.id})" class="text-blue-600 hover:text-blue-800">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                                </svg>
+                            </button>
+                            <button onclick="deleteReply(${topicId}, ${reply.id})" class="text-red-600 hover:text-red-800">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                            </button>
+                        ` : ''}
+                        <button onclick="likeReply(${topicId}, ${reply.id})" 
+                                class="text-sm ${reply.likedBy && reply.likedBy.includes(userId) ? 'text-purple-600' : 'text-gray-400'} transition-colors">
+                            ${reply.likes || 0} ❤️
+                        </button>
+                    </div>
                 </div>
-            </form>
+                <div class="reply-content overflow-hidden mt-1">
+                    <p class="break-words">${reply.content}</p>
+                </div>
+                <div class="reply-edit-form hidden">
+                    <form onsubmit="saveReplyEdit(event, ${topicId}, ${reply.id})" class="flex gap-2 mt-2">
+                        <div class="flex-1">
+                            <textarea class="w-full p-2 border rounded-lg" 
+                                     maxlength="${FORUM_CONFIG.maxReplyLength}"
+                                     oninput="updateCharCount(this, 'reply-edit-count-${reply.id}')">${reply.content}</textarea>
+                            <small id="reply-edit-count-${reply.id}" class="text-right block mt-1">0/${FORUM_CONFIG.maxReplyLength}</small>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg">Salvar</button>
+                            <button type="button" onclick="cancelReplyEdit(${reply.id})" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
   `).join('');
@@ -391,7 +481,7 @@ function formatDate(dateStr) {
 function likeTopic(topicId) {
   if (!isUserLoggedIn()) {
     alert('Você precisa estar logado para curtir!');
-    window.location.href = './login/signin.html';
+    window.location.href = 'signin.html';
     return;
   }
 
@@ -419,7 +509,7 @@ function likeTopic(topicId) {
 function likeReply(topicId, replyId) {
   if (!isUserLoggedIn()) {
     alert('Você precisa estar logado para curtir!');
-    window.location.href = './login/signin.html';
+    window.location.href = 'signin.html';
     return;
   }
 
@@ -452,12 +542,17 @@ function addReply(event, topicId) {
 
   if (!isUserLoggedIn()) {
     alert('Você precisa estar logado para responder!');
-    window.location.href = './login/signin.html';
+    window.location.href = 'signin.html';
     return;
   }
 
   const input = event.target.querySelector('input');
   const content = input.value.trim();
+
+  if (content.length > FORUM_CONFIG.maxReplyLength) {
+    alert(`A resposta deve ter no máximo ${FORUM_CONFIG.maxReplyLength} caracteres.`);
+    return;
+  }
 
   try {
     ForumModerator.validateContent(content, 'resposta');
@@ -590,6 +685,11 @@ function saveReplyEdit(event, topicId, replyId) {
   const form = event.target;
   const newContent = form.querySelector('textarea').value.trim();
 
+  if (newContent.length > FORUM_CONFIG.maxReplyLength) {
+    alert(`A resposta deve ter no máximo ${FORUM_CONFIG.maxReplyLength} caracteres.`);
+    return;
+  }
+
   try {
     ForumModerator.validateContent(newContent, 'resposta');
 
@@ -636,7 +736,7 @@ function addTopic(event) {
 
   if (!isUserLoggedIn()) {
     alert('Você precisa estar logado para criar tópicos.');
-    window.location.href = './login/signin.html';
+    window.location.href = 'signin.html';
     return;
   }
 
@@ -651,6 +751,25 @@ function addTopic(event) {
   // Adicionar validação de categoria
   if (!category) {
     alert('Por favor, selecione uma categoria.');
+    return;
+  }
+
+  // Verificar limites de caracteres
+  if (title.length > FORUM_CONFIG.maxTitleLength) {
+    alert(`O título deve ter no máximo ${FORUM_CONFIG.maxTitleLength} caracteres.`);
+    return;
+  }
+
+  if (content.length > FORUM_CONFIG.maxContentLength) {
+    alert(`O conteúdo deve ter no máximo ${FORUM_CONFIG.maxContentLength} caracteres.`);
+    return;
+  }
+
+  // Verificar limite de tópicos por usuário
+  const username = getLoggedUsername();
+  const userTopics = forumTopics.filter(topic => topic.author === username);
+  if (userTopics.length >= FORUM_CONFIG.maxTopicsPerUser) {
+    alert(`Você atingiu o limite de ${FORUM_CONFIG.maxTopicsPerUser} tópicos.`);
     return;
   }
 

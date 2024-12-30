@@ -53,12 +53,12 @@
             <div id="admin-menu-items" style="z-index: 3;"
               class="hidden absolute mt-2 w-48 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
               <div class="py-1" style="background: var(--background)" role="menu">
-                <a href="./admins/usuarios.html" class="block px-4 py-2 text-sm hover:bg-purple-600"
+                <a href="./usuarios.html" class="block px-4 py-2 text-sm hover:bg-purple-600"
                   role="menuitem">Usuários</a>
                 <a href="#" class="block px-4 py-2 text-sm hover:bg-purple-600" role="menuitem">Categorias</a>
-                <a href="./admins/add-anime.html" class="block px-4 py-2 text-sm hover:bg-purple-600"
+                <a href="./add-anime.html" class="block px-4 py-2 text-sm hover:bg-purple-600"
                   role="menuitem">Adicionar anime</a>
-                <a href="./admins/edit-anime.html" class="block px-4 py-2 text-sm hover:bg-purple-600"
+                <a href="./edit-anime.html" class="block px-4 py-2 text-sm hover:bg-purple-600"
                   role="menuitem">Editar Animes</a>
               </div>
             </div>
@@ -71,7 +71,7 @@
               alt="Avatar do Usuário" />
             <!-- Nome do usuário -->
             <div class="flex flex-col ml-2">
-              <span class="font-medium" id="user-name"><a href="./login/signin.html">Login</a></span>
+              <span class="font-medium" id="user-name"><a href="./signin.html">Login</a></span>
               <a href="#" id="logout-link" class="text-sm text-gray-500 hover:text-gray-700  hidden">Sair</a>
             </div>
           </div>
@@ -260,12 +260,15 @@
                   </div>
                 </div>
 
-                <!-- Título -->
+                <!-- Título com contador -->
                 <div class="form-group col-span-2">
                   <label class="form-label">Título</label>
                   <div class="input-wrapper">
-                    <input type="text" id="topic-title" class="form-input" placeholder="Digite um título interessante"
-                      required>
+                    <input type="text" id="topic-title" class="form-input" 
+                           placeholder="Digite um título interessante" 
+                           maxlength="100"
+                           oninput="updateCharCount(this, 'title-char-count')" 
+                           required>
                     <span class="input-icon">
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -274,15 +277,20 @@
                       </svg>
                     </span>
                   </div>
+                  <small id="title-char-count" class="text-right block mt-1">0/100</small>
                 </div>
 
-                <!-- Conteúdo -->
+                <!-- Conteúdo com contador -->
                 <div class="form-group col-span-2">
                   <label class="form-label">Conteúdo</label>
                   <div class="input-wrapper">
-                    <textarea id="topic-content" class="form-textarea" placeholder="Compartilhe seus pensamentos..."
-                      required></textarea>
+                    <textarea id="topic-content" class="form-textarea" 
+                              placeholder="Compartilhe seus pensamentos..."
+                              maxlength="2000"
+                              oninput="updateCharCount(this, 'content-char-count')" 
+                              required></textarea>
                   </div>
+                  <small id="content-char-count" class="text-right block mt-1">0/2000</small>
                 </div>
               </div>
 
@@ -323,6 +331,13 @@
   <script src="../src/js/pages/animes.js"></script>
   <script src="../src/js/pages/forum.js"></script>
   <script src="../src/js/utils/search.js"></script>
+  <script>
+    function updateCharCount(input, counterId) {
+      const counter = document.getElementById(counterId);
+      const max = input.getAttribute('maxlength');
+      counter.textContent = `${input.value.length}/${max}`;
+    }
+  </script>
 </body>
 
 </html>
