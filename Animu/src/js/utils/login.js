@@ -377,8 +377,11 @@ document.addEventListener('DOMContentLoaded', async function () {
   const authManager = new AuthManager();
   await authManager.migrateOldPasswords(); // Migra senhas antigas
 
-  // Atualizar painel de usuário ao carregar página
-  authManager.updateUserPanel();
+  // Aguarda o DOM estar completamente carregado antes de atualizar o painel
+  document.addEventListener('DOMContentLoaded', () => {
+    // Atualizar painel de usuário ao carregar página
+    authManager.updateUserPanel();
+  });
 
   // Registro de usuário
   const registerForm = document.getElementById('register-form');

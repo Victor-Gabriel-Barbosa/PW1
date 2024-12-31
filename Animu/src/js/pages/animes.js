@@ -818,8 +818,30 @@ function renderSearchResults(query) {
   `;
 }
 
-// Modifique o evento DOMContentLoaded para manter os resultados
+// Modifique o evento DOMContentLoaded para não depender diretamente da classe AuthManager
 window.addEventListener('DOMContentLoaded', () => {
+  // Verifica se o usuário está logado e atualiza a interface
+  const sessionData = JSON.parse(localStorage.getItem('userSession'));
+  if (sessionData) {
+    const userPanel = document.getElementById('user-panel');
+    const userNameSpan = document.getElementById('user-name');
+    const userAvatar = userPanel?.querySelector('img');
+    const logoutLink = document.getElementById('logout-link');
+
+    if (userPanel && userNameSpan) {
+      userNameSpan.innerHTML = `<a href="profile.html" class="hover:text-purple-600 transition-colors">${sessionData.username}</a>`;
+      if (userAvatar && sessionData.avatar) {
+        userAvatar.src = sessionData.avatar;
+        userAvatar.style.cursor = 'pointer';
+        userAvatar.onclick = () => window.location.href = 'profile.html';
+        userAvatar.title = 'Ver perfil';
+      }
+      if (logoutLink) {
+        logoutLink.classList.remove('hidden');
+      }
+    }
+  }
+
   const animeTitle = getUrlParameter('anime');
   const searchQuery = getUrlParameter('search');
 
