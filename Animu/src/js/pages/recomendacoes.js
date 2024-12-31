@@ -1,3 +1,4 @@
+// Redireciona para login se não houver sessão ativa
 document.addEventListener('DOMContentLoaded', function() {
   // Verificar se o usuário está logado
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
@@ -10,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initializeRecommendations();
 });
 
+// Inicializa sistema de recomendações e configurações da página
 function initializeRecommendations() {
   const user = getCurrentUser();
   if (!user) {
@@ -39,12 +41,14 @@ function initializeRecommendations() {
   setupFilters();
 }
 
+// Retorna dados do usuário atual baseado na sessão
 function getCurrentUser() {
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
   const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
   return users.find(user => user.id === sessionData.userId);
 }
 
+// Gera recomendações baseadas nos gêneros favoritos do usuário
 function loadGenreBasedRecommendations(user) {
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
   const favoriteGenres = user.favoriteGenres || [];
@@ -62,6 +66,7 @@ function loadGenreBasedRecommendations(user) {
   renderRecommendations(recommendations, 'genres-recommendations');
 }
 
+// Recomenda animes similares aos já assistidos pelo usuário
 function loadSimilarAnimeRecommendations(user) {
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
   const watchedAnimes = user.watchedAnimes || [];
@@ -79,6 +84,7 @@ function loadSimilarAnimeRecommendations(user) {
   renderRecommendations(recommendations, 'similar-recommendations');
 }
 
+// Lista animes em tendência baseado em comentários e avaliações
 function loadTrendingRecommendations() {
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
   const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
@@ -99,6 +105,7 @@ function loadTrendingRecommendations() {
   renderRecommendations(recommendations, 'trending-recommendations');
 }
 
+// Calcula porcentagem de compatibilidade entre gêneros do anime e preferências do usuário
 function calculateGenreMatchScore(animeGenres, userGenres) {
   if (!userGenres?.length || !animeGenres?.length) return 0;
   
@@ -110,6 +117,7 @@ function calculateGenreMatchScore(animeGenres, userGenres) {
   return Math.min(matchScore, 100); // Limita o score a 100%
 }
 
+// Determina similaridade entre um anime e histórico do usuário
 function calculateSimilarityScore(anime, watchedAnimes, allAnimes) {
   if (!watchedAnimes.length) return 0;
 
@@ -127,6 +135,7 @@ function calculateSimilarityScore(anime, watchedAnimes, allAnimes) {
   return totalScore / watchedAnimes.length;
 }
 
+// Calcula score de popularidade baseado em comentários, notas e visualizações
 function calculatePopularityScore(anime, comments) {
   const animeComments = comments[anime.primaryTitle] || [];
   const commentScore = animeComments.length * 10;
@@ -136,6 +145,7 @@ function calculatePopularityScore(anime, comments) {
   return commentScore + ratingScore + watchCount;
 }
 
+// Renderiza cards de recomendação com lazy loading de imagens
 function renderRecommendations(recommendations, containerId) {
   const container = document.querySelector(`#${containerId} .grid-recommendations`);
   if (!container) {
@@ -204,6 +214,7 @@ function renderRecommendations(recommendations, containerId) {
   });
 }
 
+// Configura filtros de visualização das recomendações
 function setupFilters() {
   const filterButtons = document.querySelectorAll('.filter-btn');
   const sections = document.querySelectorAll('.recommendation-section');
@@ -232,7 +243,7 @@ function setupFilters() {
   });
 }
 
-// Adicionar evento para atualizar recomendações quando mudar o tema
+// Atualiza recomendações quando o tema é alterado
 document.addEventListener('themeChanged', function() {
   const user = getCurrentUser();
   if (user) {
@@ -242,7 +253,7 @@ document.addEventListener('themeChanged', function() {
   }
 });
 
-// Função para recarregar recomendações periodicamente
+// Atualiza recomendações em tendência a cada 5 minutos
 function setupAutoRefresh() {
   setInterval(() => {
     const user = getCurrentUser();
@@ -252,15 +263,15 @@ function setupAutoRefresh() {
   }, 300000); // Atualiza a cada 5 minutos
 }
 
-// Iniciar auto-refresh
+// Inicia atualização automática
 setupAutoRefresh();
 
-// Adiciona tratamento de erros global
+// Captura erros globais da página
 window.addEventListener('error', function(e) {
   console.error('Erro na página de recomendações:', e.error);
 });
 
-// Função para atualizar estatísticas
+// Atualiza métricas de uso: precisão das recomendações, animes assistidos e média de avaliações
 function updateStats(user) {
   const watchedCount = user.watchedAnimes?.length || 0;
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];

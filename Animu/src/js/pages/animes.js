@@ -1,10 +1,10 @@
-// Função para obter parâmetros da URL
+// Extrai parâmetros da URL de forma segura
 function getUrlParameter(name) {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(name);
 }
 
-// Função para encontrar o anime pelo título
+// Busca anime por título principal ou alternativos
 function findAnimeByTitle(title) {
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
   return animes.find(anime =>
@@ -15,7 +15,7 @@ function findAnimeByTitle(title) {
   );
 }
 
-// Função para converter URL do YouTube para formato embed
+// Converte URLs do YouTube para formato embed, suportando múltiplos formatos
 function getYouTubeEmbedUrl(url) {
   if (!url) return '';
 
@@ -40,7 +40,7 @@ function getYouTubeEmbedUrl(url) {
   return videoId ? `https://www.youtube.com/embed/${videoId}` : '';
 }
 
-// Função para renderizar os detalhes do anime
+// Renderiza detalhes completos do anime na página
 function renderAnimeDetails(anime) {
   const container = document.getElementById('anime-content');
   const commentsSection = document.getElementById('comments-section');
@@ -166,7 +166,7 @@ function renderAnimeDetails(anime) {
   updateFavoriteButton(anime.primaryTitle);
 }
 
-// Nova função para normalizar categorias
+// Padroniza categorias para busca e filtragem
 function normalizeCategory(category) {
   const normalizations = {
     'action': ['ação', 'action', 'acao'],
@@ -192,7 +192,7 @@ function normalizeCategory(category) {
   return category;
 }
 
-// Modificar a função renderAllAnimes para usar a normalização
+// Exibe lista de animes com filtro opcional por categoria
 function renderAllAnimes() {
   const container = document.getElementById('anime-content');
   const commentsSection = document.getElementById('comments-section');
@@ -254,7 +254,7 @@ function renderAllAnimes() {
     : 'Lista de Todos os Animes';
 }
 
-// Função para carregar comentários do localStorage
+// Gerencia sistema de comentários
 function loadComments(animeTitle) {
   try {
     const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
@@ -265,7 +265,7 @@ function loadComments(animeTitle) {
   }
 }
 
-// Nova função para verificar se usuário já comentou
+// Verifica limite de um comentário por usuário (exceto admin)
 function hasUserAlreadyCommented(animeTitle, username) {
   try {
     const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
@@ -277,7 +277,7 @@ function hasUserAlreadyCommented(animeTitle, username) {
   }
 }
 
-// Função saveComment modificada para usar o sistema de moderação
+// Salva comentário com validação e moderação
 function saveComment(animeTitle, comment, rating) {
   try {
     const currentUser = JSON.parse(localStorage.getItem('userSession'));
@@ -330,7 +330,7 @@ function saveComment(animeTitle, comment, rating) {
   }
 }
 
-// Função para calcular e atualizar a média de avaliações do anime
+// Atualiza score médio do anime baseado nos comentários
 function updateAnimeRating(animeTitle) {
   try {
     const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
@@ -354,7 +354,7 @@ function updateAnimeRating(animeTitle) {
   }
 }
 
-// Função para formatar data
+// Formata data para exibição no padrão brasileiro
 function formatDate(dateString) {
   const date = new Date(dateString);
   return date.toLocaleDateString('pt-BR', {
@@ -366,7 +366,7 @@ function formatDate(dateString) {
   });
 }
 
-// Função para renderizar estrelas (incluindo meias estrelas)
+// Gera HTML para exibição visual da avaliação em estrelas
 function renderStars(rating) {
   let stars = '';
   const fullStars = Math.floor(rating);
@@ -391,7 +391,7 @@ function renderStars(rating) {
   return stars;
 }
 
-// Função para deletar comentário
+// Sistema de moderação de comentários
 function deleteComment(animeTitle, commentId) {
   try {
     const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
@@ -410,7 +410,7 @@ function deleteComment(animeTitle, commentId) {
   }
 }
 
-// Função para votar em um comentário
+// Sistema de votação em comentários
 function voteComment(animeTitle, commentId, voteType) {
   try {
     const currentUser = JSON.parse(localStorage.getItem('userSession'))?.username;
@@ -447,7 +447,7 @@ function voteComment(animeTitle, commentId, voteType) {
   }
 }
 
-// Função para verificar se o usuário já votou
+// Verifica voto existente do usuário em um comentário
 function getUserVote(likes = [], dislikes = []) {
   const currentUser = JSON.parse(localStorage.getItem('userSession'))?.username;
   if (!currentUser) return null;
@@ -457,13 +457,13 @@ function getUserVote(likes = [], dislikes = []) {
   return null;
 }
 
-// Função para verificar se o usuário atual é admin
+// Verifica permissões de administrador
 function isUserAdmin() {
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
   return sessionData?.isAdmin || false;
 }
 
-// Função para editar comentário (modificada para usar o sistema de moderação)
+// Sistema de edição de comentários com validação
 function editComment(animeTitle, commentId, newText, newRating) {
   try {
     const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
@@ -500,7 +500,7 @@ function editComment(animeTitle, commentId, newText, newRating) {
   }
 }
 
-// Função para alternar modo de edição (modificada)
+// Interface de edição de comentários
 function toggleEditMode(commentId) {
   const commentDiv = document.querySelector(`[data-comment-id="${commentId}"]`);
   const commentText = commentDiv.querySelector('.comment-text');
@@ -567,7 +567,7 @@ function toggleEditMode(commentId) {
   }
 }
 
-// Nova função para atualizar o display de avaliação na edição
+// Atualiza interface visual da avaliação durante edição
 function updateEditRatingDisplay(value) {
   const emoji = document.getElementById('edit-rating-emoji');
   const display = document.getElementById('edit-rating-display');
@@ -599,14 +599,14 @@ function updateEditRatingDisplay(value) {
   }
 }
 
-// Função para obter o avatar do usuário
+// Recupera avatar do usuário ou gera placeholder
 function getUserAvatar(username) {
   const users = JSON.parse(localStorage.getItem('animuUsers') || '[]');
   const user = users.find(u => u.username === username);
   return user ? user.avatar : `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=8B5CF6&color=ffffff&size=100`;
 }
 
-// Função atualizada para renderizar comentários com avatares
+// Renderiza comentário individual com controles de moderação
 function renderComment(comment, animeTitle) {
   const currentUser = JSON.parse(localStorage.getItem('userSession'))?.username;
   const isCommentOwner = currentUser === comment.username;
@@ -675,7 +675,7 @@ function renderComment(comment, animeTitle) {
   `;
 }
 
-// Função para atualizar a lista de comentários (atualizada)
+// Atualiza lista completa de comentários
 function updateCommentsList(animeTitle) {
   const commentsList = document.getElementById('comments-list');
   const comments = loadComments(animeTitle);
@@ -690,7 +690,7 @@ function updateCommentsList(animeTitle) {
   commentsList.innerHTML = comments.map(comment => renderComment(comment, animeTitle)).join('');
 }
 
-// Funções para gerenciar a exibição da nota
+// Gerenciamento de exibição de avaliações
 function updateRatingDisplay(value) {
   const display = document.getElementById('rating-display');
   if (display) {
@@ -698,24 +698,7 @@ function updateRatingDisplay(value) {
   }
 }
 
-function showTemporaryRating(value) {
-  const display = document.getElementById('rating-display');
-  if (display) {
-    display.textContent = parseFloat(value).toFixed(1);
-    display.style.opacity = '0.7';
-  }
-}
-
-function showSelectedRating() {
-  const display = document.getElementById('rating-display');
-  const selectedRating = document.querySelector('input[name="rating"]:checked');
-  if (display) {
-    display.style.opacity = '1';
-    display.textContent = selectedRating ? parseFloat(selectedRating.value).toFixed(1) : '0.0';
-  }
-}
-
-// Função para calcular a pontuação de destaque de um anime
+// Calcula pontuação para destaque do anime
 function calculateHighlightScore(anime, comments) {
   const commentCount = comments[anime.primaryTitle]?.length || 0;
   const score = parseFloat(anime.score) || 0;
@@ -723,7 +706,7 @@ function calculateHighlightScore(anime, comments) {
   return (score * 0.7) + (commentCount * 0.3);
 }
 
-// Função para obter os animes em destaque
+// Seleciona animes em destaque baseado em popularidade
 function getFeaturedAnimes(limit = 8) {
   try {
     const animes = JSON.parse(localStorage.getItem('animeData')) || [];
@@ -745,7 +728,7 @@ function getFeaturedAnimes(limit = 8) {
   }
 }
 
-// Função para renderizar os animes em destaque
+// Renderiza seção de animes em destaque
 function renderFeaturedAnimes() {
   const featuredContainer = document.querySelector('.featured-animes');
   if (!featuredContainer) return;
@@ -779,7 +762,7 @@ function renderFeaturedAnimes() {
   `).join('');
 }
 
-// Modifique a função renderSearchResults para não limpar os resultados
+// Exibe resultados de busca de animes
 function renderSearchResults(query) {
   const container = document.getElementById('anime-content');
   const results = JSON.parse(localStorage.getItem('searchResults')) || [];
@@ -818,7 +801,99 @@ function renderSearchResults(query) {
   `;
 }
 
-// Modifique o evento DOMContentLoaded para não depender diretamente da classe AuthManager
+// Atualiza emoji da avaliação baseado no valor do slider
+function updateRatingEmoji(value) {
+  const emoji = document.getElementById('rating-emoji');
+  const display = document.getElementById('rating-display');
+  const rating = value / 10;
+
+  // Adiciona classe de animação
+  emoji.classList.remove('animate');
+  void emoji.offsetWidth; // Força reflow
+  emoji.classList.add('animate');
+
+  // Define o emoji baseado no valor
+  if (value === 0) {
+    emoji.textContent = '😶';
+  } else if (value <= 20) {
+    emoji.textContent = '😭';
+  } else if (value <= 40) {
+    emoji.textContent = '☹️';
+  } else if (value <= 60) {
+    emoji.textContent = '😐';
+  } else if (value <= 80) {
+    emoji.textContent = '😊';
+  } else {
+    emoji.textContent = '🤩';
+  }
+
+  // Atualiza o display numérico
+  display.textContent = (rating).toFixed(1);
+}
+
+// Sistema de favoritos
+function isAnimeFavorited(animeTitle) {
+  const sessionData = JSON.parse(localStorage.getItem('userSession'));
+  if (!sessionData) return false;
+
+  const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+  const currentUser = users.find(user => user.id === sessionData.userId);
+
+  return currentUser?.favoriteAnimes?.includes(animeTitle) || false;
+}
+
+// Alterna estado de favorito do anime
+function toggleFavorite(animeTitle) {
+  const sessionData = JSON.parse(localStorage.getItem('userSession'));
+  if (!sessionData) {
+    alert('Você precisa estar logado para favoritar animes!');
+    window.location.href = 'signin.html';
+    return;
+  }
+
+  const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+  const userIndex = users.findIndex(user => user.id === sessionData.userId);
+
+  if (userIndex === -1) return;
+
+  // Inicializa o array de favoritos se não existir
+  if (!users[userIndex].favoriteAnimes) {
+    users[userIndex].favoriteAnimes = [];
+  }
+
+  const isFavorited = users[userIndex].favoriteAnimes.includes(animeTitle);
+
+  if (isFavorited) {
+    // Remove dos favoritos
+    users[userIndex].favoriteAnimes = users[userIndex].favoriteAnimes.filter(
+      title => title !== animeTitle
+    );
+  } else {
+    // Adiciona aos favoritos
+    users[userIndex].favoriteAnimes.push(animeTitle);
+  }
+
+  // Atualiza o localStorage
+  localStorage.setItem('animuUsers', JSON.stringify(users));
+
+  // Atualiza o botão
+  updateFavoriteButton(animeTitle);
+}
+
+// Atualiza interface do botão de favoritos
+function updateFavoriteButton(animeTitle) {
+  const favoriteButton = document.getElementById('favorite-button');
+  const isFavorited = isAnimeFavorited(animeTitle);
+
+  if (favoriteButton) {
+    favoriteButton.innerHTML = isFavorited ?
+      '❤️ Remover dos Favoritos' :
+      '🤍 Adicionar aos Favoritos';
+    favoriteButton.classList.toggle('favorited', isFavorited);
+  }
+}
+
+// Inicialização da página
 window.addEventListener('DOMContentLoaded', () => {
   // Verifica se o usuário está logado e atualiza a interface
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
@@ -899,36 +974,6 @@ window.addEventListener('DOMContentLoaded', () => {
   renderFeaturedAnimes();
 });
 
-// Função para atualizar o emoji baseado no valor do slider
-function updateRatingEmoji(value) {
-  const emoji = document.getElementById('rating-emoji');
-  const display = document.getElementById('rating-display');
-  const rating = value / 10;
-
-  // Adiciona classe de animação
-  emoji.classList.remove('animate');
-  void emoji.offsetWidth; // Força reflow
-  emoji.classList.add('animate');
-
-  // Define o emoji baseado no valor
-  if (value === 0) {
-    emoji.textContent = '😶';
-  } else if (value <= 20) {
-    emoji.textContent = '😭';
-  } else if (value <= 40) {
-    emoji.textContent = '☹️';
-  } else if (value <= 60) {
-    emoji.textContent = '😐';
-  } else if (value <= 80) {
-    emoji.textContent = '😊';
-  } else {
-    emoji.textContent = '🤩';
-  }
-
-  // Atualiza o display numérico
-  display.textContent = (rating).toFixed(1);
-}
-
 // Evento para inicializar o slider de avaliação
 document.addEventListener('DOMContentLoaded', function () {
   const slider = document.getElementById('rating-slider');
@@ -938,65 +983,3 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 });
-
-// Função para verificar se um anime está favoritado
-function isAnimeFavorited(animeTitle) {
-  const sessionData = JSON.parse(localStorage.getItem('userSession'));
-  if (!sessionData) return false;
-
-  const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
-  const currentUser = users.find(user => user.id === sessionData.userId);
-
-  return currentUser?.favoriteAnimes?.includes(animeTitle) || false;
-}
-
-// Função para alternar favorito
-function toggleFavorite(animeTitle) {
-  const sessionData = JSON.parse(localStorage.getItem('userSession'));
-  if (!sessionData) {
-    alert('Você precisa estar logado para favoritar animes!');
-    window.location.href = 'signin.html';
-    return;
-  }
-
-  const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
-  const userIndex = users.findIndex(user => user.id === sessionData.userId);
-
-  if (userIndex === -1) return;
-
-  // Inicializa o array de favoritos se não existir
-  if (!users[userIndex].favoriteAnimes) {
-    users[userIndex].favoriteAnimes = [];
-  }
-
-  const isFavorited = users[userIndex].favoriteAnimes.includes(animeTitle);
-
-  if (isFavorited) {
-    // Remove dos favoritos
-    users[userIndex].favoriteAnimes = users[userIndex].favoriteAnimes.filter(
-      title => title !== animeTitle
-    );
-  } else {
-    // Adiciona aos favoritos
-    users[userIndex].favoriteAnimes.push(animeTitle);
-  }
-
-  // Atualiza o localStorage
-  localStorage.setItem('animuUsers', JSON.stringify(users));
-
-  // Atualiza o botão
-  updateFavoriteButton(animeTitle);
-}
-
-// Função para atualizar o botão de favorito
-function updateFavoriteButton(animeTitle) {
-  const favoriteButton = document.getElementById('favorite-button');
-  const isFavorited = isAnimeFavorited(animeTitle);
-
-  if (favoriteButton) {
-    favoriteButton.innerHTML = isFavorited ?
-      '❤️ Remover dos Favoritos' :
-      '🤍 Adicionar aos Favoritos';
-    favoriteButton.classList.toggle('favorited', isFavorited);
-  }
-}

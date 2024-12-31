@@ -1,67 +1,50 @@
 // Aguarda o carregamento completo do DOM antes de executar o código
 document.addEventListener('DOMContentLoaded', () => {
-  // Atualizar a seleção do botão de tema
+  // Elementos do tema
   const themeToggle = document.querySelector('.toggle-theme');
-  const body = document.body; // Referência ao elemento <body>
+  const body = document.body;
 
-  // Verifica no localStorage se existe um tema salvo anteriormente
+  // Restaura tema salvo ou usa padrão
   const savedTheme = localStorage.getItem('theme');
-
-  // Aplica o tema salvo ou o tema padrão do sistema
   if (savedTheme === 'dark') {
-    body.classList.add('dark-mode'); // Adiciona a classe para o modo escuro no <body>
-    themeToggle.classList.add('dark'); // Adiciona a classe "dark" ao botão de alternância
+    body.classList.add('dark-mode');
+    themeToggle.classList.add('dark');
   }
 
-  // Adiciona um ouvinte de evento ao botão de alternância de tema
+  // Gerencia alternância de tema e persiste escolha
   themeToggle.addEventListener('click', () => {
-    // Alterna entre os temas adicionando ou removendo a classe "dark-mode" no <body>
     body.classList.toggle('dark-mode');
-
-    // Alterna a aparência do botão adicionando ou removendo a classe "dark"
     themeToggle.classList.toggle('dark');
-
-    // Salva a preferência de tema no localStorage
-    if (body.classList.contains('dark-mode')) {
-      localStorage.setItem('theme', 'dark'); // Armazena "dark" como tema escolhido
-    } else {
-      localStorage.setItem('theme', 'light'); // Armazena "light" como tema escolhido
-    }
+    
+    const theme = body.classList.contains('dark-mode') ? 'dark' : 'light';
+    localStorage.setItem('theme', theme);
   });
 
-  // Seleciona os elementos do painel de administração e de usuário pelo ID
+  // Controle de visibilidade dos painéis baseado em permissões
   const adminPanel = document.getElementById("admin-panel");
   const userPanel = document.getElementById("user-panel");
-
-  // Obtém os dados da sessão
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
 
-  // Verifica se o usuário está logado e é admin
-  if (sessionData && sessionData.isAdmin && adminPanel) {
-    // Remove a classe "hidden" do painel de administração
+  if (sessionData?.isAdmin && adminPanel) {
     adminPanel.classList.remove("hidden");
   }
 
+  // Gerenciamento do menu administrativo
   const adminButton = document.getElementById('admin-menu-button');
   const adminMenu = document.getElementById('admin-menu-items');
 
   if (adminButton && adminMenu) {
-    // Toggle do menu ao clicar no botão
+    // Controle do menu admin e animação do ícone
     adminButton.addEventListener('click', (e) => {
       e.stopPropagation();
       adminMenu.classList.toggle('hidden');
 
-      // Adiciona a classe de animação
       const gearIcon = adminButton.querySelector('svg');
       gearIcon.classList.add('gear-spin');
-
-      // Remove a classe após a animação terminar
-      setTimeout(() => {
-        gearIcon.classList.remove('gear-spin');
-      }, 600); // 600ms = duração da animação
+      setTimeout(() => gearIcon.classList.remove('gear-spin'), 600);
     });
 
-    // Fechar o menu ao clicar fora dele
+    // Fecha menu ao clicar fora
     document.addEventListener('click', (e) => {
       if (!adminMenu.contains(e.target) && !adminButton.contains(e.target)) {
         adminMenu.classList.add('hidden');
@@ -69,6 +52,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Renderiza os animes em destaque
   renderFeaturedAnimes();
 });

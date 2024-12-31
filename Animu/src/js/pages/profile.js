@@ -1,5 +1,6 @@
+// Inicializa a página de perfil após carregamento do DOM
 document.addEventListener('DOMContentLoaded', function () {
-  // Verificar se o usuário está logado
+  // Redireciona para login se não houver sessão ativa
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
   if (!sessionData) {
     window.location.href = 'signin.html';
@@ -24,7 +25,10 @@ document.addEventListener('DOMContentLoaded', function () {
   setupEventListeners(currentUser);
 });
 
-// Função para inicializar o perfil
+/**
+ * Exibe informações básicas do perfil do usuário
+ * @param {Object} user - Dados do usuário
+ */
 function initializeProfile(user) {
   // Atualizar informações básicas
   document.getElementById('profile-username').textContent = user.username;
@@ -43,8 +47,12 @@ function initializeProfile(user) {
   favoriteGenres.innerHTML = user.favoriteGenres?.map(genre => `<span class="genre">${genre}</span>`).join('') || 'Nenhum gênero favorito';
 }
 
-// Função para carregar estatísticas
+/**
+ * Calcula e exibe métricas de engajamento do usuário
+ * @param {Object} user - Dados do usuário
+ */
 function loadStatistics(user) {
+  // Obtém dados de interações do usuário
   const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
   const forumTopics = JSON.parse(localStorage.getItem('forumTopics')) || [];
   const userComments = Object.values(comments).flat().filter(c => c.username === user.username);
@@ -64,8 +72,12 @@ function loadStatistics(user) {
   document.getElementById('stats-favorites').textContent = user.favoriteAnimes?.length || 0;
 }
 
-// Função para carregar conquistas
+/**
+ * Gerencia sistema de conquistas baseado nas atividades do usuário
+ * @param {Object} user - Dados do usuário
+ */
 function loadAchievements(user) {
+  // Coleta métricas para cálculo de conquistas
   const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
   const forumTopics = JSON.parse(localStorage.getItem('forumTopics')) || [];
   const userComments = Object.values(comments).flat().filter(c => c.username === user.username);
@@ -126,7 +138,10 @@ function loadAchievements(user) {
   `).join('');
 }
 
-// Função para carregar animes favoritos
+/**
+ * Exibe lista de animes favoritos com informações resumidas
+ * @param {Object} user - Dados do usuário
+ */
 function loadFavoriteAnimes(user) {
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
   const favoriteAnimes = user.favoriteAnimes || [];
@@ -160,8 +175,12 @@ function loadFavoriteAnimes(user) {
   }).join('');
 }
 
-// Função para carregar histórico de atividades
+/**
+ * Gera linha do tempo com atividades recentes do usuário
+ * @param {Object} user - Dados do usuário
+ */
 function loadActivityTimeline(user) {
+  // Agrupa diferentes tipos de atividades
   const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
   const forumTopics = JSON.parse(localStorage.getItem('forumTopics')) || [];
   const activities = [];
@@ -231,7 +250,11 @@ function loadActivityTimeline(user) {
   `).join('');
 }
 
-// Função auxiliar para formatar o conteúdo da atividade
+/**
+ * Formata o texto da atividade baseado no seu tipo
+ * @param {Object} activity - Dados da atividade
+ * @returns {string} HTML formatado da atividade
+ */
 function getActivityContent(activity) {
   switch (activity.type) {
     case 'comment':
@@ -256,7 +279,11 @@ function getActivityContent(activity) {
   }
 }
 
-// Função para mudar o avatar
+/**
+ * Atualiza avatar do usuário em todas as camadas de armazenamento
+ * @param {string} avatar - URL/Base64 da imagem
+ * @param {string} userId - ID do usuário
+ */
 function changeAvatar(avatar, userId) {
   // Atualizar no localStorage
   const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
@@ -276,8 +303,11 @@ function changeAvatar(avatar, userId) {
   document.getElementById('profile-avatar').src = avatar;
 }
 
-// Adicionar esta função após a função initializeProfile
+/**
+ * Inicializa seletor de gêneros para edição do perfil
+ */
 function setupGenreSelection() {
+  // Lista predefinida de gêneros disponíveis
   const genres = [
     "Ação", "Aventura", "Comédia", "Drama", "Fantasia",
     "Ficção Científica", "Horror", "Mistério", "Romance",
@@ -293,8 +323,12 @@ function setupGenreSelection() {
   `).join('');
 }
 
-// Configurar event listeners
+/**
+ * Configura interações do usuário com elementos da página
+ * @param {Object} user - Dados do usuário
+ */
 function setupEventListeners(user) {
+  // Referências elementos UI
   const editButton = document.getElementById('edit-profile');
   const editModal = document.getElementById('edit-modal');
   const editForm = document.getElementById('edit-profile-form');

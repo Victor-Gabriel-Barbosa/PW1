@@ -1,10 +1,10 @@
-// Carregar animes quando a página carregar
+// Inicializa a página carregando animes e configurando busca
 document.addEventListener('DOMContentLoaded', function () {
   loadAnimes();
   setupSearch();
 });
 
-// Carregar animes do localStorage
+// Renderiza lista de animes do localStorage
 function loadAnimes() {
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
   const container = document.getElementById('anime-list');
@@ -35,7 +35,7 @@ function loadAnimes() {
   `).join('');
 }
 
-// Configurar busca
+// Implementa busca em tempo real por título e sinopse
 function setupSearch() {
   const searchInput = document.getElementById('search-anime');
   searchInput.addEventListener('input', function (e) {
@@ -51,7 +51,7 @@ function setupSearch() {
   });
 }
 
-// Renderizar animes filtrados
+// Renderiza animes filtrados na interface
 function renderFilteredAnimes(animes) {
   const container = document.getElementById('anime-list');
 
@@ -83,13 +83,13 @@ function renderFilteredAnimes(animes) {
   `).join('');
 }
 
-// Variáveis globais para armazenar os dados das listas
+// Arrays para gerenciar dados temporários durante edição
 let currentTitles = [];
 let currentGenres = [];
 let currentProducers = [];
 let currentLicensors = [];
 
-// Editar anime
+// Configura formulário de edição e preenche dados do anime selecionado
 function editAnime(index) {
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
   const anime = animes[index];
@@ -360,7 +360,7 @@ function editAnime(index) {
     if (trailerUrl.includes('youtube.com') || trailerUrl.includes('youtu.be')) {
       const videoId = trailerUrl.match(/(?:\/|v=)([a-zA-Z0-9_-]{11})/)?.[1];
       if (videoId) {
-        embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?rel=0`;
+        embedUrl = `https://www.youtube.com/embed/${videoId}`;
       }
     } else if (trailerUrl.includes('vimeo.com')) {
       const videoId = trailerUrl.match(/vimeo\.com\/(\d+)/)?.[1];
@@ -389,7 +389,7 @@ function editAnime(index) {
   modal.classList.add('flex');
 }
 
-// Funções auxiliares para gerenciar as listas no modo de edição
+// Gerenciamento de títulos alternativos
 function addEditTitle() {
   const titleInput = document.getElementById('alternative-title');
   const titleTypeSelect = document.getElementById('title-type');
@@ -408,6 +408,7 @@ function addEditTitle() {
   titleInput.value = '';
 }
 
+// Atualiza visualização dos títulos alternativos
 function renderEditTitles() {
   const container = document.getElementById('edit-titles-container');
   container.innerHTML = currentTitles
@@ -422,12 +423,14 @@ function renderEditTitles() {
     .join('');
 }
 
+// Remove título alternativo pelo índice
 function removeEditTitle(index) {
   currentTitles.splice(index, 1);
   renderEditTitles();
 }
 
-// Funções similares para gêneros, produtores e licenciadores
+// Funções CRUD para gêneros, produtores e licenciadores
+// Seguem o mesmo padrão das funções de título
 function addEditGenre() {
   const genreInput = document.getElementById('edit-genre-input');
 
@@ -524,43 +527,9 @@ function removeEditLicensor(index) {
   renderEditLicensors();
 }
 
-// Salvar alterações
+// Valida e salva alterações do anime
 function saveChanges(index) {
-  const animes = JSON.parse(localStorage.getItem('animeData')) || [];
-  const form = document.querySelector('#edit-form-container form');
-  const formData = new FormData(form);
-
-  const updatedAnime = {
-    ...animes[index], // Mantém os dados existentes que não estão no formulário
-    primaryTitle: formData.get('primaryTitle'),
-    alternativeTitles: currentTitles,
-    genres: currentGenres,
-    producers: currentProducers,
-    licensors: currentLicensors,
-    synopsis: formData.get('synopsis'),
-    episodes: parseInt(formData.get('episodes')),
-    studio: formData.get('studio'),
-    coverImage: formData.get('coverImage'),
-    trailerUrl: formData.get('trailerUrl'),
-    status: formData.get('status'),
-    ageRating: formData.get('ageRating'),
-    season: {
-      period: formData.get('seasonPeriod'),
-      year: parseInt(formData.get('seasonYear'))
-    },
-    episodeDuration: parseInt(formData.get('episodeDuration')),
-    source: formData.get('source'),
-    score: parseFloat(formData.get('score')),
-    popularity: parseInt(formData.get('popularity'))
-  };
-
-  // Atualizar o anime no array
-  animes[index] = updatedAnime;
-
-  // Salvar no localStorage
-  localStorage.setItem('animeData', JSON.stringify(animes));
-
-  // Adicionar validações antes de salvar
+  // Primeiro, validar todos os campos obrigatórios
   const sections = ['basic', 'details', 'production'];
   const incompleteFields = [];
 
@@ -576,13 +545,46 @@ function saveChanges(index) {
     return;
   }
 
+  // Se passou pela validação, pegar os valores dos campos individualmente
+  const animes = JSON.parse(localStorage.getItem('animeData')) || [];
+  
+  const updatedAnime = {
+    ...animes[index], // Mantém os dados existentes
+    primaryTitle: document.getElementById('primaryTitle').value,
+    alternativeTitles: currentTitles,
+    genres: currentGenres,
+    producers: currentProducers,
+    licensors: currentLicensors,
+    synopsis: document.getElementById('synopsis').value,
+    episodes: parseInt(document.getElementById('episodes').value),
+    studio: document.getElementById('studio').value,
+    coverImage: document.getElementById('coverImage').value,
+    trailerUrl: document.getElementById('trailerUrl').value,
+    status: document.getElementById('status').value,
+    ageRating: document.getElementById('ageRating').value,
+    season: {
+      period: document.getElementById('seasonPeriod').value,
+      year: parseInt(document.getElementById('seasonYear').value)
+    },
+    episodeDuration: parseInt(document.getElementById('episodeDuration').value),
+    source: document.getElementById('source').value,
+    score: parseFloat(document.getElementById('score').value),
+    popularity: parseInt(document.getElementById('popularity').value)
+  };
+
+  // Atualizar o anime no array
+  animes[index] = updatedAnime;
+
+  // Salvar no localStorage
+  localStorage.setItem('animeData', JSON.stringify(animes));
+
   // Fechar modal e recarregar lista
   document.getElementById('edit-modal').classList.add('hidden');
   alert('Anime atualizado com sucesso!');
   loadAnimes();
 }
 
-// Excluir anime
+// Remove anime e seus comentários associados
 function deleteAnime(index) {
   if (!confirm('Tem certeza que deseja excluir este anime?')) return;
 
@@ -603,14 +605,14 @@ function deleteAnime(index) {
   loadAnimes();
 }
 
-// Função auxiliar para escapar HTML
+// Sanitiza strings para prevenir XSS
 function escapeHTML(str) {
   const div = document.createElement('div');
   div.appendChild(document.createTextNode(str));
   return div.innerHTML;
 }
 
-// Adicionar as funções setupTabs e setupSynopsisCounter se ainda não existirem
+// Configura navegação entre abas do formulário
 function setupTabs() {
   const tabs = document.querySelectorAll('.tab-btn');
   const contents = document.querySelectorAll('.tab-content');
@@ -626,6 +628,7 @@ function setupTabs() {
   });
 }
 
+// Implementa contador de caracteres para sinopse
 function setupSynopsisCounter() {
   const synopsis = document.getElementById('synopsis');
   const counter = document.getElementById('synopsis-count');
@@ -642,7 +645,8 @@ function setupSynopsisCounter() {
   });
 }
 
-// Adicionar funções de preview
+// Funções de preview de mídia
+// Valida e exibe preview de imagem de capa
 function previewImage() {
   const imageUrl = document.getElementById('coverImage').value;
   const previewContainer = document.getElementById('image-preview');
@@ -665,6 +669,7 @@ function previewImage() {
   previewImg.src = imageUrl;
 }
 
+// Valida e incorpora preview de trailer (YouTube/Vimeo)
 function previewTrailer() {
   const trailerUrl = document.getElementById('trailerUrl').value;
   const previewContainer = document.getElementById('trailer-preview');
@@ -677,10 +682,11 @@ function previewTrailer() {
 
   let embedUrl = '';
   
+  // Modificado para usar youtube.com em vez de youtube-nocookie.com
   if (trailerUrl.includes('youtube.com') || trailerUrl.includes('youtu.be')) {
     const videoId = trailerUrl.match(/(?:\/|v=)([a-zA-Z0-9_-]{11})/)?.[1];
     if (videoId) {
-      embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?rel=0`;
+      embedUrl = `https://www.youtube.com/embed/${videoId}`;
     }
   } else if (trailerUrl.includes('vimeo.com')) {
     const videoId = trailerUrl.match(/vimeo\.com\/(\d+)/)?.[1];
@@ -694,16 +700,12 @@ function previewTrailer() {
     return;
   }
 
-  // Adicionar atributos necessários ao iframe
   previewFrame.src = embedUrl;
-  previewFrame.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
-  previewFrame.setAttribute('allowfullscreen', 'true');
-
   previewContainer.classList.remove('hidden');
 }
 
-// Adicionar funções de verificação de progresso
-function checkSectionProgress(section) {
+// Sistema de validação e progresso do formulário
+function checkSectionProgress(section, updateProgress = true) {
   const requiredFields = {
     basic: {
       'primaryTitle': 'Título Principal',
@@ -746,14 +748,21 @@ function checkSectionProgress(section) {
   const progress = Math.round(((fields.length - missingFields.length) / fields.length) * 100);
   const isComplete = missingFields.length === 0;
 
-  updateSectionStatus(section, isComplete, progress, missingFields);
+  // Só atualiza o status visual se updateProgress for true
+  if (updateProgress) {
+    updateSectionStatus(section, isComplete, progress, missingFields);
+  }
+
   return { isComplete, progress, missingFields };
 }
 
+// Atualiza indicadores visuais de progresso da seção
 function updateSectionStatus(section, isComplete, progress, missingFields) {
   const tab = document.querySelector(`[data-section="${section}"]`);
-  const status = document.getElementById(`${section}-status}`);
+  const status = document.getElementById(`${section}-status`);
   
+  if (!tab || !status) return;
+
   tab.classList.remove('completed', 'incomplete', 'error');
   tab.classList.add(isComplete ? 'completed' : 'incomplete');
 
@@ -778,80 +787,26 @@ function updateSectionStatus(section, isComplete, progress, missingFields) {
       <div class="status-icon complete"></div>
     `;
   }
-
-  updateFormProgress();
 }
 
+// Calcula e atualiza barra de progresso geral
 function updateFormProgress() {
   const sections = ['basic', 'details', 'production'];
-  const totalProgress = sections.reduce((acc, section) => {
-    const { progress } = checkSectionProgress(section);
-    return acc + progress;
-  }, 0) / sections.length;
-
-  const progressBar = document.getElementById('form-progress');
-  progressBar.style.width = `${totalProgress}%`;
-}
-
-// Atualizar a função saveChanges para incluir validações
-function saveChanges(index) {
-  const animes = JSON.parse(localStorage.getItem('animeData')) || [];
-  const form = document.querySelector('#edit-form-container form');
-  const formData = new FormData(form);
-
-  const updatedAnime = {
-    ...animes[index], // Mantém os dados existentes que não estão no formulário
-    primaryTitle: formData.get('primaryTitle'),
-    alternativeTitles: currentTitles,
-    genres: currentGenres,
-    producers: currentProducers,
-    licensors: currentLicensors,
-    synopsis: formData.get('synopsis'),
-    episodes: parseInt(formData.get('episodes')),
-    studio: formData.get('studio'),
-    coverImage: formData.get('coverImage'),
-    trailerUrl: formData.get('trailerUrl'),
-    status: formData.get('status'),
-    ageRating: formData.get('ageRating'),
-    season: {
-      period: formData.get('seasonPeriod'),
-      year: parseInt(formData.get('seasonYear'))
-    },
-    episodeDuration: parseInt(formData.get('episodeDuration')),
-    source: formData.get('source'),
-    score: parseFloat(formData.get('score')),
-    popularity: parseInt(formData.get('popularity'))
-  };
-
-  // Atualizar o anime no array
-  animes[index] = updatedAnime;
-
-  // Salvar no localStorage
-  localStorage.setItem('animeData', JSON.stringify(animes));
-
-  // Adicionar validações antes de salvar
-  const sections = ['basic', 'details', 'production'];
-  const incompleteFields = [];
-
+  let totalProgress = 0;
+  
   sections.forEach(section => {
-    const { isComplete, missingFields } = checkSectionProgress(section);
-    if (!isComplete) {
-      incompleteFields.push(...missingFields);
-    }
+    const { progress } = checkSectionProgress(section, false); // Adiciona flag para evitar recursão
+    totalProgress += progress;
   });
 
-  if (incompleteFields.length > 0) {
-    alert('Por favor, preencha todos os campos obrigatórios:\n' + incompleteFields.join('\n'));
-    return;
+  const averageProgress = totalProgress / sections.length;
+  const progressBar = document.getElementById('form-progress');
+  if (progressBar) {
+    progressBar.style.width = `${averageProgress}%`;
   }
-
-  // Fechar modal e recarregar lista
-  document.getElementById('edit-modal').classList.add('hidden');
-  alert('Anime atualizado com sucesso!');
-  loadAnimes();
 }
 
-// Adicionar event listeners quando o modal de edição é aberto
+// Monitora mudanças nos campos e atualiza progresso
 document.querySelector('#edit-form-container').addEventListener('input', (e) => {
   const section = e.target.closest('.tab-content')?.id;
   if (section) {

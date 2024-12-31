@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // Verifica se o usuário atual é admin
+  // Redireciona usuários não-admin para a página inicial
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
   if (!sessionData?.isAdmin) {
     window.location.href = 'inicio.html';
     return;
   }
 
-  // Elementos DOM
+  // Referências DOM para elementos da interface
   const searchInput = document.getElementById('search-user');
   const filterType = document.getElementById('filter-type');
   const tableBody = document.getElementById('users-table-body');
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const totalAdmins = document.getElementById('total-admins');
   const novosUsuarios = document.getElementById('novos-usuarios');
 
-  // Carregar usuários do localStorage
+  // Gerenciamento de dados dos usuários no localStorage
   function loadUsers() {
     try {
       return JSON.parse(localStorage.getItem('animuUsers')) || [];
@@ -24,23 +24,22 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Salvar usuários no localStorage
   function saveUsers(users) {
     try {
       localStorage.setItem('animuUsers', JSON.stringify(users));
-      updateTable(); // Atualiza a tabela após salvar
-      updateStats(); // Atualiza as estatísticas
+      updateTable();
+      updateStats();
     } catch (e) {
       console.error('Erro ao salvar usuários:', e);
     }
   }
 
-  // Formatar data
+  // Converte data para formato brasileiro (dd/mm/aaaa)
   function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString('pt-BR');
   }
 
-  // Atualizar estatísticas
+  // Atualiza contadores de usuários totais, admins e novos (últimos 7 dias)
   function updateStats() {
     const users = loadUsers();
     const admins = users.filter(user => user.isAdmin);
@@ -53,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
     novosUsuarios.textContent = newUsers.length;
   }
 
-  // Criar linha da tabela para um usuário (função atualizada)
+  // Gera linha da tabela com dados e ações do usuário
   function createUserRow(user) {
     const tr = document.createElement('tr');
     tr.className = 'border-b border-gray-200 hover:bg-gray-500';
@@ -93,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return tr;
   }
 
-  // Atualizar tabela de usuários
+  // Filtra e exibe usuários com base na busca e tipo selecionado
   function updateTable(filterValue = '', userType = 'all') {
     const users = loadUsers();
     tableBody.innerHTML = '';
@@ -112,27 +111,24 @@ document.addEventListener('DOMContentLoaded', function () {
       });
   }
 
-  // Alternar status de administrador
+  // Funções globais para ações na interface
   window.toggleAdminStatus = function (userId) {
     const users = loadUsers();
     const user = users.find(u => u.id === userId);
-
     if (user) {
       user.isAdmin = !user.isAdmin;
       saveUsers(users);
     }
   };
 
-  // Excluir usuário
   window.deleteUser = function (userId) {
     if (!confirm('Tem certeza que deseja excluir este usuário?')) return;
-
     const users = loadUsers();
     const updatedUsers = users.filter(u => u.id !== userId);
     saveUsers(updatedUsers);
   };
 
-  // Event Listeners
+  // Event listeners para filtros e busca
   searchInput.addEventListener('input', () => {
     updateTable(searchInput.value, filterType.value);
   });
@@ -141,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
     updateTable(searchInput.value, filterType.value);
   });
 
-  // Inicialização
+  // Inicializa a interface
   updateTable();
   updateStats();
 });

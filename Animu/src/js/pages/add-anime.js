@@ -1,32 +1,27 @@
-// Arrays globais para armazenar títulos alternativos e gêneros
+// Arrays para armazenar dados do anime
 let titles = [];
 let genres = [];
 let producers = [];
 let licensors = [];
 
-/**
- * Adiciona um título alternativo à lista `titles`.
- * Valida o campo de entrada, impede valores vazios e escapa caracteres perigosos.
- */
+// Funções de gerenciamento de títulos alternativos
 function addTitle() {
-  const titleInput = document.getElementById('alternative-title'); // Campo de entrada para título alternativo
-  const titleTypeSelect = document.getElementById('title-type'); // Campo de seleção do tipo de título
+  const titleInput = document.getElementById('alternative-title');
+  const titleTypeSelect = document.getElementById('title-type');
 
-  // Verifica se o campo de título está vazio
   if (titleInput.value.trim() === '') {
     alert('Por favor, insira um título válido.');
     return;
   }
 
-  // Adiciona o título e seu tipo à lista de títulos
   titles.push({
-    title: escapeHTML(titleInput.value), // Escapa caracteres perigosos
-    type: escapeHTML(titleTypeSelect.value), // Escapa caracteres perigosos
+    title: escapeHTML(titleInput.value),
+    type: escapeHTML(titleTypeSelect.value),
   });
 
-  renderTitles(); // Atualiza a interface com os títulos
-  titleInput.value = ''; // Limpa o campo de entrada
-  saveFormState(); // Adicionar esta linha
+  renderTitles();
+  titleInput.value = '';
+  saveFormState();
 }
 
 /**
@@ -213,22 +208,14 @@ function removeLicensor(index) {
   saveFormState(); // Adicionar esta linha
 }
 
-/**
- * Escapa caracteres HTML perigosos para evitar ataques de XSS.
- * @param {string} str - Texto a ser escapado.
- * @returns {string} - Texto seguro para exibição em HTML.
- */
+// Sanitiza strings para prevenir XSS
 function escapeHTML(str) {
-  const div = document.createElement('div'); // Cria um elemento div temporário
-  div.appendChild(document.createTextNode(str)); // Adiciona o texto como nó
-  return div.innerHTML; // Retorna o HTML seguro
+  const div = document.createElement('div');
+  div.appendChild(document.createTextNode(str));
+  return div.innerHTML;
 }
 
-/**
- * Salva os dados do formulário no Local Storage.
- * Adiciona o novo anime ao array de animes existente ou cria um novo array.
- * @param {object} formData - Dados do formulário a serem salvos.
- */
+// Persiste dados do formulário no localStorage
 function saveToLocalStorage(formData) {
   const existingAnimes = JSON.parse(localStorage.getItem('animeData')) || [];
   existingAnimes.push(formData);
@@ -237,10 +224,7 @@ function saveToLocalStorage(formData) {
   localStorage.removeItem('animeFormState');
 }
 
-/**
- * Carrega os dados salvos no Local Storage e atualiza os campos do formulário e a interface.
- * Antes de carregar, solicita a confirmação do usuário.
- */
+// Restaura estado do formulário do localStorage
 function loadDataFromLocalStorage() {
   const savedState = localStorage.getItem('animeFormState');
   if (!savedState) {
@@ -311,9 +295,7 @@ function loadDataFromLocalStorage() {
   }
 }
 
-/**
- * Manipula a previsualização da imagem de capa
- */
+// Preview e validação de mídia
 function previewImage() {
   const imageUrl = document.getElementById('image-url').value;
   const previewContainer = document.getElementById('image-preview');
@@ -336,9 +318,6 @@ function previewImage() {
   previewImg.src = imageUrl;
 }
 
-/**
- * Manipula a previsualização do trailer
- */
 function previewTrailer() {
   const trailerUrl = document.getElementById('trailer-url').value;
   const previewContainer = document.getElementById('trailer-preview');
@@ -372,9 +351,7 @@ function previewTrailer() {
   previewContainer.classList.remove('hidden');
 }
 
-/**
- * Verifica o progresso de preenchimento de cada seção e retorna os campos que faltam
- */
+// Monitoramento de progresso do formulário
 function checkSectionProgress(section) {
   const requiredFields = {
     basic: {
@@ -418,13 +395,9 @@ function checkSectionProgress(section) {
   const progress = Math.round(((fields.length - missingFields.length) / fields.length) * 100);
   const isComplete = missingFields.length === 0;
 
-  updateSectionStatus(section, isComplete, progress, missingFields);
   return { isComplete, progress, missingFields };
 }
 
-/**
- * Atualiza o status visual de uma seção com detalhes dos campos faltantes
- */
 function updateSectionStatus(section, isComplete, progress, missingFields) {
   const tab = document.querySelector(`[data-section="${section}"]`);
   const status = document.getElementById(`${section}-status`);
@@ -453,27 +426,31 @@ function updateSectionStatus(section, isComplete, progress, missingFields) {
       <div class="status-icon complete"></div>
     `;
   }
+}
 
+function updateFormProgress() {
+  const sections = ['basic', 'details', 'production'];
+  let totalProgress = 0;
+
+  sections.forEach(section => {
+    const { progress } = checkSectionProgress(section);
+    totalProgress += progress;
+  });
+
+  const averageProgress = totalProgress / sections.length;
+  const progressBar = document.getElementById('form-progress');
+  if (progressBar) {
+    progressBar.style.width = `${averageProgress}%`;
+  }
+}
+
+function validateSection(section) {
+  const result = checkSectionProgress(section);
+  updateSectionStatus(section, result.isComplete, result.progress, result.missingFields);
   updateFormProgress();
 }
 
-/**
- * Atualiza a barra de progresso geral do formulário
- */
-function updateFormProgress() {
-  const sections = ['basic', 'details', 'production'];
-  const totalProgress = sections.reduce((acc, section) => {
-    const { progress } = checkSectionProgress(section);
-    return acc + progress;
-  }, 0) / sections.length;
-
-  const progressBar = document.getElementById('form-progress');
-  progressBar.style.width = `${totalProgress}%`;
-}
-
-/**
- * Marca campos obrigatórios não preenchidos
- */
+// Validação e UI
 function highlightRequiredFields(section) {
   const form = document.getElementById('anime-admin-form');
   const currentTab = document.getElementById(section);
@@ -514,15 +491,7 @@ function setupTabs() {
   });
 }
 
-// Adicione listeners para monitorar mudanças
-document.getElementById('anime-admin-form').addEventListener('input', (e) => {
-  const section = e.target.closest('.tab-content').id;
-  checkSectionProgress(section);
-});
-
-/**
- * Manipula a navegação entre abas
- */
+// Inicialização e event listeners
 document.addEventListener('DOMContentLoaded', () => {
   setupTabs();
   setupSynopsisCounter();
@@ -530,13 +499,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Verificação inicial do progresso
   ['basic', 'details', 'production'].forEach(section => {
-    checkSectionProgress(section);
+    validateSection(section);
   });
 });
 
-/**
- * Contador de caracteres para a sinopse
- */
+// Contador de caracteres da sinopse
 function setupSynopsisCounter() {
   const synopsis = document.getElementById('synopsis');
   const counter = document.getElementById('synopsis-count');
@@ -553,18 +520,8 @@ function setupSynopsisCounter() {
   });
 }
 
-// Inicialização
-document.addEventListener('DOMContentLoaded', () => {
-  setupTabs();
-  setupSynopsisCounter();
-  loadDataFromLocalStorage();
-});
-
-/**
- * Manipula o evento de envio do formulário.
- * Valida os dados do formulário, salva-os no Local Storage e reseta o formulário.
- */
-document.getElementById('anime-admin-form').addEventListener('submit', async function (e) {
+// Manipulação do formulário
+document.getElementById('anime-admin-form').addEventListener('submit', async function(e) {
   e.preventDefault();
 
   // Previne submissão duplicada
@@ -682,10 +639,7 @@ document.getElementById('anime-admin-form').addEventListener('submit', async fun
   }
 });
 
-/**
- * Reseta o formulário e limpa as listas `titles`, `genres`, `producers` e `licensors`.
- * Solicita confirmação do usuário antes de limpar.
- */
+// Reset do formulário com confirmação
 function resetForm() {
   if (confirm('Tem certeza que deseja limpar todos os campos do formulário? Esta ação não pode ser desfeita.')) {
     document.getElementById('anime-admin-form').reset();
@@ -712,7 +666,7 @@ function resetForm() {
   }
 }
 
-// Adicione esta função após as outras funções existentes
+// Auto-save do estado do formulário
 function saveFormState() {
   const formState = {
     primaryTitle: document.getElementById('primary-title').value,
@@ -742,9 +696,7 @@ function saveFormState() {
 // Adicione um event listener para salvar o estado do formulário quando houver mudanças
 document.getElementById('anime-admin-form').addEventListener('input', saveFormState);
 
-/**
- * Valida URLs para imagens e vídeos
- */
+// Validadores de URL para imagens e vídeos
 function isValidUrl(url, type = 'image') {
   try {
     const urlObj = new URL(url);
@@ -759,9 +711,7 @@ function isValidUrl(url, type = 'image') {
   }
 }
 
-/**
- * Limpa as previsualizações
- */
+// Limpa previews de mídia
 function clearPreviews() {
   const imagePreview = document.getElementById('image-preview');
   const trailerPreview = document.getElementById('trailer-preview');
@@ -772,13 +722,13 @@ function clearPreviews() {
   trailerPreview.querySelector('iframe').src = '';
 }
 
-// Adiciona validação em tempo real para URLs
-document.getElementById('image-url').addEventListener('input', function () {
+// Validação em tempo real de URLs
+document.getElementById('image-url').addEventListener('input', function() {
   const isValid = isValidUrl(this.value, 'image');
   this.closest('.form-group').classList.toggle('error', !isValid && this.value);
 });
 
-document.getElementById('trailer-url').addEventListener('input', function () {
+document.getElementById('trailer-url').addEventListener('input', function() {
   if (this.value) {
     const isValid = isValidUrl(this.value, 'video');
     this.closest('.form-group').classList.toggle('error', !isValid);
