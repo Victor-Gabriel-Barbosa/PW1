@@ -17,14 +17,6 @@
   <nav class="fixed top-0 left-0 right-0 backdrop-blur-md shadow-sm z-50">
     <div class="container mx-auto px-4">
       <div class="flex items-center justify-between h-16">
-        <!-- Botão para voltar à página anterior -->
-        <button class="back-button" onclick="window.history.back()" title="Voltar">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M15 18l-6-6 6-6" />
-          </svg>
-        </button>
-
         <!-- Logo -->
         <div class="flex-shrink-0">
           <a href="/" class="text-2xl font-bold text-purple-600">Animu</a>
@@ -128,8 +120,17 @@
             </div>
           </div>
 
-          <textarea id="comment-text" class="w-full p-3 border rounded-lg resize-none dark:bg-gray-800" rows="4"
-            placeholder="Digite seu comentário..." required></textarea>
+          <div class="relative">
+            <textarea 
+              id="comment-text" 
+              class="w-full p-3 border rounded-lg resize-none dark:bg-gray-800" 
+              rows="4"
+              placeholder="Digite seu comentário..." 
+              required
+            ></textarea>
+            <!-- O contador será inserido aqui via JavaScript -->
+          </div>
+
           <button type="submit"
             class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors w-fit">
             Enviar avaliação
@@ -145,7 +146,7 @@
   </div>
 
   <!-- Inclusão de scripts para funcionalidades do site -->
-  <script src="../src/js/utils/login.js"></script>  <!-- Adicionar esta linha primeiro -->
+  <script src="../src/js/utils/login.js"></script> 
   <script src="../src/js/pages/animu.js"></script>
   <script src="../src/js/pages/forum.js"></script>
   <script src="../src/js/pages/animes.js"></script>

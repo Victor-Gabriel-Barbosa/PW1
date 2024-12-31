@@ -205,10 +205,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .forum-container {
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
-  overflow-x: hidden;
 }
 
 /* 4. Componentes
@@ -393,10 +392,11 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 12px;
   margin-bottom: 20px;
   transition: all 0.3s ease;
-  border: 1px solid transparent;
+  border: 1px solid var(--card-shadow);
   word-wrap: break-word;
   overflow-wrap: break-word;
   max-width: 100%;
+  overflow: hidden;
 }
 
 .forum-topic:hover {
@@ -1263,6 +1263,18 @@ body.dark-mode {
   top: 80px;
   z-index: 10;
   backdrop-filter: blur(10px);
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding: 12px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.category-filters::-webkit-scrollbar {
+  display: none;
 }
 
 .category-filter {
@@ -1271,32 +1283,68 @@ body.dark-mode {
   border: 2px solid var(--primary-color);
   font-weight: 500;
   transition: all 0.3s ease;
+  white-space: nowrap;
+  padding: 8px 16px;
+  border-radius: 20px;
+  flex-shrink: 0;
 }
 
-.category-filter:hover,
-.category-filter.active {
-  background: var(--card-shadow);
+.category-filter:hover {
+  background: var(--primary-color);
   color: white;
   transform: translateY(-2px);
 }
 
+.category-filter.active {
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.forum-topic {
+  background: var(--background);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+  border: 1px solid var(--card-shadow);
+  overflow: hidden;
+}
+
 .topic-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 20px;
+  padding: 16px 20px;
   border-bottom: 1px solid var(--card-shadow);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px;
+  align-items: center;
+}
+
+.topic-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.topic-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
 }
 
 .topic-title {
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--primary-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .topic-metadata {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   align-items: center;
   font-size: 0.9rem;
   color: var(--text-color);
@@ -1306,8 +1354,7 @@ body.dark-mode {
 .topic-content {
   padding: 20px;
   line-height: 1.6;
-  overflow: hidden;
-  max-width: 100%;
+  word-break: break-word;
 }
 
 .topic-footer {
@@ -1315,47 +1362,61 @@ body.dark-mode {
   justify-content: space-between;
   align-items: center;
   padding: 12px 20px;
-  background: rgba(var(--primary-color), 0.05);
-  border-radius: 0 0 12px 12px;
+  background: rgba(var(--primary-color-rgb), 0.05);
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .topic-actions {
   display: flex;
   gap: 12px;
+  align-items: center;
 }
 
-.topic-tags {
+.topic-stats {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  padding: 0 20px 20px;
+  gap: 16px;
+  align-items: center;
+  font-size: 0.9rem;
 }
 
-.topic-tag {
-  background: var(--primary-color);
-  color: white;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.85rem;
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .replies-section {
-  margin-left: 40px;
-  padding-left: 20px;
+  margin-left: 48px;
+  padding: 16px 20px 20px;
   border-left: 2px solid var(--primary-color);
+  background: linear-gradient(to right, rgba(var(--primary-color-rgb), 0.05), transparent);
 }
 
-.topic-content p,
-.reply-content p {
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: pre-wrap;
-  max-width: 100%;
+.reply {
+  margin-bottom: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--background);
+  box-shadow: 0 2px 4px var(--card-shadow);
 }
 
-.reply-content {
-  overflow: hidden;
-  max-width: 100%;
+.reply-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.reply-author {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reply-actions {
+  display: flex;
+  gap: 8px;
 }
 
 /* 5.3. Comentários */
@@ -1494,7 +1555,7 @@ body.dark-mode {
 
 .half-star {
   position: relative;
-  width: 0.42em;
+  width: 0.412em;
   overflow: hidden;
 }
 

@@ -317,6 +317,12 @@ function editAnime(index) {
   // Adicionar configuração das abas
   setupTabs();
   setupSynopsisCounter();
+  setupEditRealTimeValidation(); // Adicione esta linha
+  
+  // Verificação inicial do progresso
+  ['basic', 'details', 'production'].forEach(section => {
+    validateEditSection(section);
+  });
 
   // Preencher os campos com os dados do anime
   const fields = {
@@ -406,6 +412,7 @@ function addEditTitle() {
 
   renderEditTitles();
   titleInput.value = '';
+  validateEditSection('basic'); // Adicione esta linha
 }
 
 // Atualiza visualização dos títulos alternativos
@@ -427,6 +434,7 @@ function renderEditTitles() {
 function removeEditTitle(index) {
   currentTitles.splice(index, 1);
   renderEditTitles();
+  validateEditSection('basic'); // Adicione esta linha
 }
 
 // Funções CRUD para gêneros, produtores e licenciadores
@@ -442,6 +450,7 @@ function addEditGenre() {
   currentGenres.push(escapeHTML(genreInput.value));
   renderEditGenres();
   genreInput.value = '';
+  validateEditSection('details'); // Adicione esta linha
 }
 
 function renderEditGenres() {
@@ -461,6 +470,7 @@ function renderEditGenres() {
 function removeEditGenre(index) {
   currentGenres.splice(index, 1);
   renderEditGenres();
+  validateEditSection('details'); // Adicione esta linha
 }
 
 function addEditProducer() {
@@ -474,6 +484,7 @@ function addEditProducer() {
   currentProducers.push(escapeHTML(producerInput.value));
   renderEditProducers();
   producerInput.value = '';
+  validateEditSection('production'); // Adicione esta linha
 }
 
 function renderEditProducers() {
@@ -493,6 +504,7 @@ function renderEditProducers() {
 function removeEditProducer(index) {
   currentProducers.splice(index, 1);
   renderEditProducers();
+  validateEditSection('production'); // Adicione esta linha
 }
 
 function addEditLicensor() {
@@ -506,6 +518,7 @@ function addEditLicensor() {
   currentLicensors.push(escapeHTML(licensorInput.value));
   renderEditLicensors();
   licensorInput.value = '';
+  validateEditSection('production'); // Adicione esta linha
 }
 
 function renderEditLicensors() {
@@ -525,6 +538,7 @@ function renderEditLicensors() {
 function removeEditLicensor(index) {
   currentLicensors.splice(index, 1);
   renderEditLicensors();
+  validateEditSection('production'); // Adicione esta linha
 }
 
 // Valida e salva alterações do anime
@@ -813,3 +827,146 @@ document.querySelector('#edit-form-container').addEventListener('input', (e) => 
     checkSectionProgress(section);
   }
 });
+
+// Adicione após a função setupTabs()
+function setupEditRealTimeValidation() {
+  // Campos da seção básica
+  const basicFields = ['primaryTitle', 'synopsis', 'coverImage'];
+  // Campos da seção detalhes
+  const detailFields = ['score', 'popularity'];
+  // Campos da seção produção
+  const productionFields = ['studio', 'episodes', 'episodeDuration', 'seasonYear'];
+
+  // Adiciona listeners para campos de input
+  [...basicFields, ...detailFields, ...productionFields].forEach(fieldId => {
+    const element = document.getElementById(fieldId);
+    if (element) {
+      element.addEventListener('input', () => {
+        const section = getEditFieldSection(fieldId);
+        validateEditSection(section);
+      });
+    }
+  });
+
+  // Adiciona listeners para selects
+  ['status', 'ageRating', 'seasonPeriod', 'source'].forEach(selectId => {
+    const element = document.getElementById(selectId);
+    if (element) {
+      element.addEventListener('change', () => {
+        const section = getEditFieldSection(selectId);
+        validateEditSection(section);
+      });
+    }
+  });
+}
+
+function getEditFieldSection(fieldId) {
+  const basicFields = ['primaryTitle', 'synopsis', 'coverImage'];
+  const detailFields = ['score', 'popularity', 'status', 'ageRating'];
+  const productionFields = ['studio', 'episodes', 'episodeDuration', 'seasonYear', 'seasonPeriod', 'source'];
+
+  if (basicFields.includes(fieldId)) return 'basic';
+  if (detailFields.includes(fieldId)) return 'details';
+  if (productionFields.includes(fieldId)) return 'production';
+  return 'basic';
+}
+
+function validateEditSection(section) {
+  const result = checkEditSectionProgress(section);
+  updateEditSectionStatus(section, result.isComplete, result.progress, result.missingFields);
+  updateEditFormProgress();
+}
+
+function checkEditSectionProgress(section) {
+  const requiredFields = {
+    basic: {
+      'primaryTitle': 'Título Principal',
+      'synopsis': 'Sinopse',
+      'coverImage': 'Imagem de Capa',
+      'titles': 'Pelo menos um título alternativo'
+    },
+    details: {
+      'score': 'Score',
+      'popularity': 'Popularidade',
+      'genres': 'Pelo menos um gênero'
+    },
+    production: {
+      'studio': 'Estúdio',
+      'episodes': 'Número de Episódios',
+      'episodeDuration': 'Duração dos Episódios',
+      'seasonYear': 'Ano',
+      'producers': 'Pelo menos um produtor'
+    }
+  };
+
+  const missingFields = [];
+  const fields = Object.keys(requiredFields[section]);
+
+  fields.forEach(field => {
+    if (field === 'titles' && currentTitles.length === 0) {
+      missingFields.push(requiredFields[section][field]);
+    } else if (field === 'genres' && currentGenres.length === 0) {
+      missingFields.push(requiredFields[section][field]);
+    } else if (field === 'producers' && currentProducers.length === 0) {
+      missingFields.push(requiredFields[section][field]);
+    } else if (field !== 'titles' && field !== 'genres' && field !== 'producers') {
+      const element = document.getElementById(field);
+      if (!element || !element.value.trim()) {
+        missingFields.push(requiredFields[section][field]);
+      }
+    }
+  });
+
+  const progress = Math.round(((fields.length - missingFields.length) / fields.length) * 100);
+  const isComplete = missingFields.length === 0;
+
+  return { isComplete, progress, missingFields };
+}
+
+function updateEditSectionStatus(section, isComplete, progress, missingFields) {
+  const tab = document.querySelector(`[data-section="${section}"]`);
+  const status = document.getElementById(`${section}-status`);
+  
+  if (!tab || !status) return;
+
+  tab.classList.remove('completed', 'incomplete', 'error');
+  tab.classList.add(isComplete ? 'completed' : 'incomplete');
+
+  if (missingFields.length > 0) {
+    const tooltip = document.createElement('div');
+    tooltip.className = 'status-tooltip';
+    tooltip.innerHTML = `
+      <strong>Campos pendentes:</strong>
+      <ul>
+        ${missingFields.map(field => `<li>• ${field}</li>`).join('')}
+      </ul>
+    `;
+    
+    status.innerHTML = `
+      <span class="status-text">${progress}% completo</span>
+      <div class="status-icon ${isComplete ? 'complete' : 'incomplete'}"></div>
+      ${tooltip.outerHTML}
+    `;
+  } else {
+    status.innerHTML = `
+      <span class="status-text">Completo!</span>
+      <div class="status-icon complete"></div>
+    `;
+  }
+}
+
+function updateEditFormProgress() {
+  const sections = ['basic', 'details', 'production'];
+  let totalProgress = 0;
+  
+  sections.forEach(section => {
+    const { progress } = checkEditSectionProgress(section);
+    totalProgress += progress;
+  });
+
+  const averageProgress = totalProgress / sections.length;
+  const progressBar = document.getElementById('form-progress');
+  if (progressBar) {
+    progressBar.style.width = `${averageProgress}%`;
+  }
+}

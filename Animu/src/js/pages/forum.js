@@ -325,48 +325,46 @@ function renderTopicCard(topic, userId) {
          id="topic-${topic.id}"
          onclick="incrementTopicViews(${topic.id})">
       <div class="topic-content overflow-hidden">
-        <div class="flex items-start gap-4">
-          <img class="h-10 w-10 rounded-full object-cover"
+        <div class="flex items-center gap-4">
+          <img class="h-12 w-12 rounded-full object-cover flex-shrink-0"
                src="${getUserAvatar(topic.author)}"
                alt="${topic.author}">
           <div class="flex-1 min-w-0">
-            <div class="flex justify-between items-start gap-4 mb-4">
-              <div class="flex-1 min-w-0"> <!-- Adiciona min-w-0 para permitir que o flex-child encolha -->
-                <div class="flex items-center gap-2 mb-2">
-                  <span class="text-lg flex-shrink-0">${category.icon}</span>
-                  <h3 class="text-xl font-bold truncate">${topic.title}</h3> <!-- Adiciona truncate para títulos muito longos -->
-                </div>
-                <p class="text-sm">
-                  Por <span class="font-semibold">${topic.author}</span> 
-                  em ${formatDate(topic.date)}
-                  ${topic.editedAt ? `<span class="text-xs">(editado)</span>` : ''}
-                </p>
+            <div class="flex flex-col gap-2">
+              <div class="flex items-center gap-2">
+                <span class="text-lg flex-shrink-0">${category.icon}</span>
+                <h3 class="text-xl font-bold truncate">${topic.title}</h3>
               </div>
-              <div class="flex items-center gap-2 flex-shrink-0"> <!-- Adiciona flex-shrink-0 para impedir que os botões encolham -->
-                ${(isAuthor(topic.author) || isAdmin()) ? `
-                  <button onclick="editTopic(${topic.id})" class="edit-topic-btn text-blue-600 hover:text-blue-800">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
-                    </svg>
-                  </button>
-                  <button onclick="deleteTopic(${topic.id})" class="text-red-600 hover:text-red-800">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                    </svg>
-                  </button>
-                ` : ''}
-                <button onclick="likeTopic(${topic.id})" 
-                        class="flex items-center gap-2 ${topic.likedBy && topic.likedBy.includes(userId) ? 'text-purple-600' : 'text-gray-400'} transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"/>
-                  </svg>
-                  ${topic.likes}
-                </button>
-              </div>
+              <p class="text-sm">
+                Por <span class="font-semibold">${topic.author}</span> 
+                em ${formatDate(topic.date)}
+                ${topic.editedAt ? `<span class="text-xs">(editado)</span>` : ''}
+              </p>
             </div>
-            <p class="mb-4 break-words">${topic.content}</p>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            ${(isAuthor(topic.author) || isAdmin()) ? `
+              <button onclick="editTopic(${topic.id})" class="edit-topic-btn text-blue-600 hover:text-blue-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                </svg>
+              </button>
+              <button onclick="deleteTopic(${topic.id})" class="text-red-600 hover:text-red-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                </svg>
+              </button>
+            ` : ''}
+            <button onclick="likeTopic(${topic.id})" 
+                    class="flex items-center gap-2 ${topic.likedBy && topic.likedBy.includes(userId) ? 'text-purple-600' : 'text-gray-400'} transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"/>
+              </svg>
+              ${topic.likes}
+            </button>
           </div>
         </div>
+        <p class="mt-4 mb-4 break-words">${topic.content}</p>
       </div>
 
       <!-- Formulário de edição do tópico -->
@@ -374,10 +372,20 @@ function renderTopicCard(topic, userId) {
         <form onsubmit="saveTopicEdit(event, ${topic.id})" class="space-y-4">
           <div>
             <input type="text" value="${topic.title}" 
-                   class="w-full p-2 border rounded-lg text-xl font-bold mb-2">
+                   class="w-full p-2 border rounded-lg text-xl font-bold mb-2"
+                   maxlength="${FORUM_CONFIG.maxTitleLength}"
+                   oninput="updateCharCount(this, 'edit-title-count-${topic.id}')">
+            <small id="edit-title-count-${topic.id}" class="text-right block mt-1">
+              ${topic.title.length}/${FORUM_CONFIG.maxTitleLength}
+            </small>
           </div>
           <div>
-            <textarea class="w-full p-2 border rounded-lg min-h-[100px]">${topic.content}</textarea>
+            <textarea class="w-full p-2 border rounded-lg min-h-[100px]"
+                      maxlength="${FORUM_CONFIG.maxContentLength}"
+                      oninput="updateCharCount(this, 'edit-content-count-${topic.id}')">${topic.content}</textarea>
+            <small id="edit-content-count-${topic.id}" class="text-right block mt-1">
+              ${topic.content.length}/${FORUM_CONFIG.maxContentLength}
+            </small>
           </div>
           <div class="flex justify-end gap-2">
             <button type="button" onclick="cancelTopicEdit(${topic.id})" 
@@ -885,13 +893,15 @@ function loadForumData() {
 function filterTopicsByCategory(categoryId) {
   // Remove a classe ativa de todos os botões
   document.querySelectorAll('.category-filter').forEach(btn => {
-    btn.classList.remove('bg-purple-100', 'text-purple-600');
+    btn.classList.remove('active');
   });
 
   // Adiciona classe ativa ao botão selecionado
-  const selectedButton = document.querySelector(`[data-category="${categoryId}"]`);
-  if (selectedButton) {
-    selectedButton.classList.add('bg-purple-100', 'text-purple-600');
+  if (categoryId) {
+    const selectedButton = document.querySelector(`[data-category="${categoryId}"]`);
+    if (selectedButton) {
+      selectedButton.classList.add('active');
+    }
   }
 
   // Se não houver categoria selecionada, mostra todos os tópicos
@@ -907,12 +917,12 @@ function filterTopicsByCategory(categoryId) {
   if (forumTopicsContainer) {
     const categoryFilters = `
       <div class="category-filters mb-6 flex gap-2 overflow-x-auto p-2">
-        <button class="category-filter px-4 py-2 rounded-full border transition-colors hover:bg-purple-1000"
+        <button class="category-filter px-4 py-2 rounded-full border"
                 onclick="filterTopicsByCategory()">
           🔍 Todas
         </button>
         ${FORUM_CONFIG.categories.map(cat => `
-          <button class="category-filter px-4 py-2 rounded-full border transition-colors" ${cat.id === categoryId ? 'bg-purple-100 text-purple-600' : ''}"
+          <button class="category-filter px-4 py-2 rounded-full border ${cat.id === categoryId ? 'active' : ''}"
                   data-category="${cat.id}"
                   onclick="filterTopicsByCategory('${cat.id}')">
             ${cat.icon} ${cat.name}
@@ -930,14 +940,6 @@ function filterTopicsByCategory(categoryId) {
     )).join('')}
       </div>
     `;
-
-    // Reativar os event listeners para os botões de filtro
-    document.querySelectorAll('.category-filter').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        filterTopicsByCategory(btn.dataset.category);
-      });
-    });
   }
 }
 

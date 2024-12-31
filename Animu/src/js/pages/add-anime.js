@@ -22,6 +22,7 @@ function addTitle() {
   renderTitles();
   titleInput.value = '';
   saveFormState();
+  validateSection('basic'); // Adicione esta linha
 }
 
 /**
@@ -51,6 +52,7 @@ function removeTitle(index) {
   titles.splice(index, 1); // Remove o título da lista
   renderTitles(); // Atualiza a interface
   saveFormState(); // Adicionar esta linha
+  validateSection('basic'); // Adicione esta linha
 }
 
 /**
@@ -77,6 +79,7 @@ function addGenre() {
   renderGenres(); // Atualiza a interface com os gêneros
   genreInput.value = ''; // Limpa o campo de entrada
   saveFormState(); // Adicionar esta linha
+  validateSection('details'); // Adicione esta linha
 }
 
 /**
@@ -106,6 +109,7 @@ function removeGenre(index) {
   genres.splice(index, 1); // Remove o gênero da lista
   renderGenres(); // Atualiza a interface
   saveFormState(); // Adicionar esta linha
+  validateSection('details'); // Adicione esta linha
 }
 
 /**
@@ -127,6 +131,7 @@ function addProducer() {
   renderProducers(); // Atualiza a interface com os produtores
   producerInput.value = ''; // Limpa o campo de entrada
   saveFormState(); // Adicionar esta linha
+  validateSection('production'); // Adicione esta linha
 }
 
 /**
@@ -156,6 +161,7 @@ function removeProducer(index) {
   producers.splice(index, 1); // Remove o produtor da lista
   renderProducers(); // Atualiza a interface
   saveFormState(); // Adicionar esta linha
+  validateSection('production'); // Adicione esta linha
 }
 
 /**
@@ -491,10 +497,55 @@ function setupTabs() {
   });
 }
 
+// Adicione esta função após setupTabs()
+function setupRealTimeValidation() {
+  // Campos da seção básica
+  const basicFields = ['primary-title', 'synopsis', 'image-url'];
+  // Campos da seção detalhes
+  const detailFields = ['score', 'popularity'];
+  // Campos da seção produção
+  const productionFields = ['studio', 'episodes', 'episode-duration', 'season-year'];
+
+  // Adiciona listeners para campos de input
+  [...basicFields, ...detailFields, ...productionFields].forEach(fieldId => {
+    const element = document.getElementById(fieldId);
+    if (element) {
+      element.addEventListener('input', () => {
+        const section = getFieldSection(fieldId);
+        validateSection(section);
+      });
+    }
+  });
+
+  // Adiciona listeners para selects
+  ['status', 'age-rating', 'season-period', 'source'].forEach(selectId => {
+    const element = document.getElementById(selectId);
+    if (element) {
+      element.addEventListener('change', () => {
+        const section = getFieldSection(selectId);
+        validateSection(section);
+      });
+    }
+  });
+}
+
+// Função auxiliar para determinar a seção de um campo
+function getFieldSection(fieldId) {
+  const basicFields = ['primary-title', 'synopsis', 'image-url'];
+  const detailFields = ['score', 'popularity', 'status', 'age-rating'];
+  const productionFields = ['studio', 'episodes', 'episode-duration', 'season-year', 'season-period', 'source'];
+
+  if (basicFields.includes(fieldId)) return 'basic';
+  if (detailFields.includes(fieldId)) return 'details';
+  if (productionFields.includes(fieldId)) return 'production';
+  return 'basic'; // default
+}
+
 // Inicialização e event listeners
 document.addEventListener('DOMContentLoaded', () => {
   setupTabs();
   setupSynopsisCounter();
+  setupRealTimeValidation(); // Adicione esta linha
   loadDataFromLocalStorage();
 
   // Verificação inicial do progresso

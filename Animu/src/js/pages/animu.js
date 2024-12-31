@@ -52,5 +52,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  renderFeaturedAnimes();
+  // Tratamento de erro para renderFeaturedAnimes
+  try {
+    if (typeof renderFeaturedAnimes === 'function') {
+      renderFeaturedAnimes();
+    } else {
+      console.warn('A função renderFeaturedAnimes não está definida. Verifique se o arquivo correspondente está carregado corretamente.');
+    }
+  } catch (error) {
+    console.error('Erro ao renderizar animes em destaque:', error.message);
+  }
 });

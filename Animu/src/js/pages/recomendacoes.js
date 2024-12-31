@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Inicializar recomendações
   initializeRecommendations();
+
+  // Atualizar avatar e nome do usuário
+  updateUserInfo();
 });
 
 // Inicializa sistema de recomendações e configurações da página
@@ -216,29 +219,46 @@ function renderRecommendations(recommendations, containerId) {
 
 // Configura filtros de visualização das recomendações
 function setupFilters() {
-  const filterButtons = document.querySelectorAll('.filter-btn');
+  const filterButtons = document.querySelectorAll('.filter-tab');
   const sections = document.querySelectorAll('.recommendation-section');
 
   filterButtons.forEach(button => {
     button.addEventListener('click', () => {
-      // Remove classe ativa de todos os botões
+      // Remove active de todos os botões
       filterButtons.forEach(btn => btn.classList.remove('active'));
       button.classList.add('active');
 
       const filter = button.dataset.filter;
 
-      // Mostra/esconde seções baseado no filtro
+      // Atualiza visibilidade das seções
       sections.forEach(section => {
         if (filter === 'all') {
           section.style.display = 'block';
+          section.classList.add('active');
         } else {
           if (section.id.includes(filter)) {
             section.style.display = 'block';
+            section.classList.add('active');
           } else {
             section.style.display = 'none';
+            section.classList.remove('active');
           }
         }
       });
+
+      // Recarrega as recomendações da seção ativa
+      const user = getCurrentUser();
+      if (user) {
+        if (filter === 'all' || filter === 'genres') {
+          loadGenreBasedRecommendations(user);
+        }
+        if (filter === 'all' || filter === 'similar') {
+          loadSimilarAnimeRecommendations(user);
+        }
+        if (filter === 'all' || filter === 'trending') {
+          loadTrendingRecommendations();
+        }
+      }
     });
   });
 }
@@ -307,4 +327,43 @@ function updateStats(user) {
   document.getElementById('match-accuracy').textContent = `${averageMatch}%`;
   document.getElementById('watched-count').textContent = watchedCount;
   document.getElementById('avg-rating').textContent = averageRating;
+
+  // Atualizar barras de gêneros favoritos
+  const genres = user.favoriteGenres || [];
+  const genrePreferences = document.querySelector('.insight-content');
+  
+  if (genrePreferences && genres.length > 0) {
+    const genreHTML = genres.slice(0, 3).map((genre, index) => {
+      const percent = 100 - (index * 15); // Diminui 15% para cada posição
+      return `
+        <div class="genre-preference">
+          <span class="genre-label">${genre}</span>
+          <div class="genre-bar" style="--percent: ${percent}%"></div>
+        </div>
+      `;
+    }).join('');
+    
+    genrePreferences.innerHTML = `<div class="insight-stat">${genreHTML}</div>`;
+  }
+}
+
+// Função para atualizar informações do usuário na interface
+function updateUserInfo() {
+  const user = getCurrentUser();
+  if (!user) return;
+
+  const avatarImg = document.querySelector('#user-panel img');
+  const userName = document.getElementById('user-name');
+  const logoutLink = document.getElementById('logout-link');
+
+  if (avatarImg && userName) {
+    avatarImg.src = user.avatar || 'https://via.placeholder.com/100';
+    userName.textContent = user.username;
+    logoutLink.classList.remove('hidden');
+  }
+
+  // Verificar se é admin
+  if (user.isAdmin) {
+    document.getElementById('admin-panel')?.classList.remove('hidden');
+  }
 }

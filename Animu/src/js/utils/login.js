@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           email,
           password: hashedPassword,
           avatar: avatar, // Armazenar avatar no objeto do usuário
-          isAdmin: true,
+          isAdmin: false,
           createdAt: new Date().toISOString()
         };
 

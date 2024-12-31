@@ -277,6 +277,8 @@ function hasUserAlreadyCommented(animeTitle, username) {
   }
 }
 
+const MAX_COMMENT_LENGTH = 500; // Limite de 500 caracteres para comentários
+
 // Salva comentário com validação e moderação
 function saveComment(animeTitle, comment, rating) {
   try {
@@ -292,6 +294,12 @@ function saveComment(animeTitle, comment, rating) {
     // Se não for admin, verifica se já comentou
     if (!isAdmin && hasUserAlreadyCommented(animeTitle, currentUser.username)) {
       alert('Você já fez um comentário neste anime. Apenas administradores podem fazer múltiplos comentários.');
+      return null;
+    }
+
+    // Verifica o tamanho do comentário
+    if (comment.length > MAX_COMMENT_LENGTH) {
+      alert(`O comentário deve ter no máximo ${MAX_COMMENT_LENGTH} caracteres.`);
       return null;
     }
 
@@ -536,7 +544,14 @@ function toggleEditMode(commentId) {
           </div>
         </div>
       </div>
-      <textarea class="w-full p-2 border rounded resize-none dark:bg-gray-800">${currentText}</textarea>
+      <div class="relative">
+        <textarea 
+          class="w-full p-2 border rounded resize-none dark:bg-gray-800"
+          maxlength="${MAX_COMMENT_LENGTH}"
+          oninput="updateCharCount(this, 'edit-comment-count-${commentId}')"
+        >${currentText}</textarea>
+        <small id="edit-comment-count-${commentId}" class="text-right block mt-1">0/${MAX_COMMENT_LENGTH}</small>
+      </div>
       <div class="flex gap-2 mt-2">
         <button type="submit" class="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700">Salvar</button>
         <button type="button" onclick="toggleEditMode(${commentId})" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Cancelar</button>
@@ -551,6 +566,11 @@ function toggleEditMode(commentId) {
       updateEditRatingDisplay(this.value);
     });
     updateEditRatingDisplay(currentRating);
+
+    // Atualiza contador inicial
+    const textarea = form.querySelector('textarea');
+    const counter = form.querySelector(`#edit-comment-count-${commentId}`);
+    counter.textContent = `${textarea.value.length}/${MAX_COMMENT_LENGTH}`;
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -980,6 +1000,20 @@ document.addEventListener('DOMContentLoaded', function () {
   if (slider) {
     slider.addEventListener('input', function () {
       updateRatingEmoji(this.value);
+    });
+  }
+
+  // Adicionar o contador de caracteres ao textarea
+  const commentText = document.getElementById('comment-text');
+  if (commentText) {
+    commentText.setAttribute('maxlength', MAX_COMMENT_LENGTH);
+    commentText.insertAdjacentHTML('afterend', 
+      `<small id="comment-char-count" class="text-right block mt-1">0/${MAX_COMMENT_LENGTH}</small>`
+    );
+    
+    commentText.addEventListener('input', function() {
+      const counter = document.getElementById('comment-char-count');
+      counter.textContent = `${this.value.length}/${MAX_COMMENT_LENGTH}`;
     });
   }
 });
