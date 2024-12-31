@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       const attempts = this.loginAttempts[username];
       if (attempts) {
         if (attempts.count >= this.maxAttempts &&
-            Date.now() - attempts.lastAttempt < this.lockoutDuration) {
+          Date.now() - attempts.lastAttempt < this.lockoutDuration) {
           const remainingTime = Math.ceil((this.lockoutDuration - (Date.now() - attempts.lastAttempt)) / 1000 / 60);
           throw new Error(`Conta bloqueada. Tente novamente em ${remainingTime} minutos.`);
         }
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         // Hash da senha
         const hashedPassword = await this.hashPassword(password);
-        
+
         // Gerar avatar
         const avatar = this.generateAvatar(username);
 
@@ -170,12 +170,12 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Método para validar credenciais salvas
     validateSavedCredentials(credentials) {
       if (!credentials || !credentials.savedAt) return false;
-      
+
       // Verifica se as credenciais têm menos de 30 dias
       const savedDate = new Date(credentials.savedAt);
       const now = new Date();
       const diffDays = (now - savedDate) / (1000 * 60 * 60 * 24);
-      
+
       return diffDays <= 30; // Expira após 30 dias
     }
 
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     async loginUser(username, password, remember = false) {
       try {
         this.checkLoginAttempts(username);
-        
+
         const hashedPassword = await this.hashPassword(password);
         const user = this.users.find(u => u.username === username);
 
@@ -303,13 +303,13 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Método atualizado para mostrar erros com feedback visual
     showError(message) {
-        // Remove qualquer mensagem de erro existente
-        this.clearErrors();
+      // Remove qualquer mensagem de erro existente
+      this.clearErrors();
 
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message';
-        errorDiv.textContent = message;
-        errorDiv.style.cssText = `
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'error-message';
+      errorDiv.textContent = message;
+      errorDiv.style.cssText = `
             background-color: #ff5757;
             color: white;
             padding: 12px 20px;
@@ -326,9 +326,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             text-align: center;
         `;
 
-        // Adiciona estilo para a animação
-        const style = document.createElement('style');
-        style.textContent = `
+      // Adiciona estilo para a animação
+      const style = document.createElement('style');
+      style.textContent = `
             @keyframes slideDown {
                 from {
                     transform: translate(-50%, -100%);
@@ -340,21 +340,21 @@ document.addEventListener('DOMContentLoaded', async function () {
                 }
             }
         `;
-        document.head.appendChild(style);
+      document.head.appendChild(style);
 
-        document.body.appendChild(errorDiv);
+      document.body.appendChild(errorDiv);
 
-        // Remove a mensagem após 5 segundos com animação de fade out
-        setTimeout(() => {
-            errorDiv.style.animation = 'fadeOut 0.3s ease-out';
-            setTimeout(() => errorDiv.remove(), 300);
-        }, 5000);
+      // Remove a mensagem após 5 segundos com animação de fade out
+      setTimeout(() => {
+        errorDiv.style.animation = 'fadeOut 0.3s ease-out';
+        setTimeout(() => errorDiv.remove(), 300);
+      }, 5000);
     }
 
     // Método para limpar mensagens de erro existentes
     clearErrors() {
-        const existingErrors = document.querySelectorAll('.error-message');
-        existingErrors.forEach(error => error.remove());
+      const existingErrors = document.querySelectorAll('.error-message');
+      existingErrors.forEach(error => error.remove());
     }
 
     // Migrar senhas antigas para hash

@@ -1,3 +1,4 @@
+// Array global para armazenar todos os tópicos do fórum
 let forumTopics = [];
 
 // Elementos do DOM
@@ -31,7 +32,7 @@ function isAuthor(authorName) {
   return session && session.username === authorName;
 }
 
-// Configurações do fórum
+// Configurações globais do fórum
 const FORUM_CONFIG = {
   categories: [
     { id: 'geral', name: 'Geral', icon: '💭' },
@@ -42,8 +43,8 @@ const FORUM_CONFIG = {
   ],
   maxTitleLength: 100,
   maxContentLength: 2000,
-  maxReplyLength: 500, // Novo limite para respostas
-  maxTopicsPerUser: 5, // Novo limite de tópicos por usuário
+  maxReplyLength: 500, // Limite para respostas
+  maxTopicsPerUser: 5, // Limite de tópicos por usuário
   moderationRules: {
     forbiddenWords: [] // Será preenchido ao carregar
   }
@@ -52,7 +53,7 @@ const FORUM_CONFIG = {
 // Função para carregar a lista de palavrões
 async function loadBadWords() {
   try {
-    const response = await fetch('../src/js/data/badwords.json'); 
+    const response = await fetch('../src/js/data/badwords.json');
     const data = await response.json();
     FORUM_CONFIG.moderationRules.forbiddenWords = data.palavroes;
   } catch (error) {
@@ -60,7 +61,10 @@ async function loadBadWords() {
   }
 }
 
-// Classe para formatação de texto
+/**
+ * Classe responsável por formatar e sanitizar o texto dos posts
+ * Inclui funções para censura, formatação Markdown e emojis
+ */
 class TextFormatter {
   static format(text) {
     text = this.censorText(text);
@@ -70,6 +74,7 @@ class TextFormatter {
     return text;
   }
 
+  // Censura palavras proibidas com '•'
   static censorText(text) {
     let censoredText = text;
     FORUM_CONFIG.moderationRules.forbiddenWords.forEach(word => {
@@ -79,10 +84,12 @@ class TextFormatter {
     return censoredText;
   }
 
+  // Formata links do texto para abrir em uma nova aba
   static formatMentions(text) {
     return text.replace(/@(\w+)/g, '<a href="#user-$1" class="mention">@$1</a>');
   }
 
+  // Formata Markdown em tags HTML para renderizar na interface
   static formatMarkdown(text) {
     // Negrito
     text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -93,8 +100,8 @@ class TextFormatter {
     return text;
   }
 
+  // Substitui códigos de emoji por emojis reais
   static formatEmojis(text) {
-    // Substitui códigos de emoji por emojis reais
     const emojiMap = {
       ':)': '😊',
       ':(': '😢',
@@ -109,7 +116,10 @@ class TextFormatter {
   }
 }
 
-// Classe para gerenciamento de moderação
+/**
+ * Classe que gerencia a moderação do fórum
+ * Valida conteúdo, tags e permissões dos usuários
+ */
 class ForumModerator {
   static validateContent(content, type = 'conteúdo') {
     if (!content || content.trim() === '') {
@@ -131,9 +141,10 @@ class ForumModerator {
     return true;
   }
 
+  // Valida as tags do tópico
   static validateTags(tags) {
     if (!Array.isArray(tags)) return [];
-    
+
     return tags.map(tag => {
       try {
         this.validateContent(tag, 'tag');
@@ -147,6 +158,7 @@ class ForumModerator {
     }).filter(Boolean); // Remove tags nulas
   }
 
+  // Função para verificar se o usuário está logado para postar
   static canUserPost() {
     return !!JSON.parse(localStorage.getItem('userSession'));
   }
@@ -166,7 +178,7 @@ newTopicBtn?.addEventListener('click', () => {
     return;
   }
   newTopicModal.classList.remove('hidden');
-  populateCategories(); // Adicionar esta linha
+  populateCategories();
 });
 
 // Fechar modal com o X
@@ -294,9 +306,18 @@ function renderReplies(replies, topicId, userId) {
   `).join('');
 }
 
-// Atualizar a função renderTopicCard para incluir o avatar do autor do tópico
+/**
+ * Renderiza um card de tópico completo incluindo:
+ * - Informações do autor
+ * - Conteúdo do tópico
+ * - Sistema de likes
+ * - Respostas
+ * - Formulário de edição
+ * @param {Object} topic - Dados do tópico
+ * @param {string} userId - ID do usuário atual
+ */
 function renderTopicCard(topic, userId) {
-  const category = FORUM_CONFIG.categories.find(c => c.id === topic.category) || 
+  const category = FORUM_CONFIG.categories.find(c => c.id === topic.category) ||
     { icon: '💬', name: 'Geral' };
 
   return `
@@ -478,6 +499,10 @@ function formatDate(dateStr) {
   return date.toLocaleDateString('pt-BR');
 }
 
+/**
+ * Gerencia o sistema de likes dos tópicos
+ * Verifica autenticação e atualiza contadores
+ */
 function likeTopic(topicId) {
   if (!isUserLoggedIn()) {
     alert('Você precisa estar logado para curtir!');
@@ -503,7 +528,7 @@ function likeTopic(topicId) {
   }
 
   renderTopics();
-  saveForumData(); // Adicionar esta linha
+  saveForumData();
 }
 
 function likeReply(topicId, replyId) {
@@ -534,9 +559,10 @@ function likeReply(topicId, replyId) {
   }
 
   renderTopics();
-  saveForumData(); // Adicionar esta linha
+  saveForumData(); 
 }
 
+// Função para adicionar uma resposta para um tópico
 function addReply(event, topicId) {
   event.preventDefault();
 
@@ -568,7 +594,7 @@ function addReply(event, topicId) {
         likedBy: []
       });
       renderTopics();
-      saveForumData(); // Adicionar esta linha
+      saveForumData();
       input.value = '';
     }
   } catch (error) {
@@ -576,7 +602,7 @@ function addReply(event, topicId) {
   }
 }
 
-// Funções de edição e remoção
+// Funções para edição e remoção de tópicos
 function editTopic(topicId) {
   const topicElement = document.getElementById(`topic-${topicId}`);
   if (!topicElement) return;
@@ -593,6 +619,7 @@ function editTopic(topicId) {
   editButton.disabled = true;
 }
 
+// Função para salvar a edição de um tópico
 function saveTopicEdit(event, topicId) {
   event.preventDefault();
 
@@ -617,6 +644,7 @@ function saveTopicEdit(event, topicId) {
   }
 }
 
+// Função para cancelar a edição de um tópico
 function cancelTopicEdit(topicId) {
   const topicElement = document.getElementById(`topic-${topicId}`);
   if (!topicElement) return;
@@ -630,15 +658,16 @@ function cancelTopicEdit(topicId) {
   editButton.disabled = false;
 }
 
+// Função para remoção um tópico 
 function deleteTopic(topicId) {
   const topic = forumTopics.find(t => t.id === topicId);
   if (!topic || (!isAuthor(topic.author) && !isAdmin())) return;
 
   if (confirm('Tem certeza que deseja excluir esta discussão? Todos os comentários serão removidos permanentemente.')) {
-    try {   
+    try {
       // Remove o tópico e todos seus dados relacionados
       forumTopics = forumTopics.filter(t => t.id !== topicId);
-      
+
       // Verificação após exclusão
       const topicStillExists = forumTopics.some(t => t.id === topicId);
       if (topicStillExists) {
@@ -648,7 +677,7 @@ function deleteTopic(topicId) {
       // Salva as alterações e atualiza a visualização
       saveForumData();
       renderTopics();
-      
+
       // Feedback visual para o usuário
       alert('Tópico excluído com sucesso!');
     } catch (error) {
@@ -658,7 +687,7 @@ function deleteTopic(topicId) {
   }
 }
 
-// Nova função de edição de reply
+// Função para edição de resposta
 function editReply(topicId, replyId) {
   const replyElement = document.getElementById(`reply-${replyId}`);
   if (!replyElement) return;
@@ -672,7 +701,7 @@ function editReply(topicId, replyId) {
   editButton.disabled = true;
 }
 
-// Nova função para salvar a edição
+// Função para salvar a edição
 function saveReplyEdit(event, topicId, replyId) {
   event.preventDefault();
 
@@ -716,6 +745,7 @@ function cancelReplyEdit(replyId) {
   editButton.disabled = false;
 }
 
+// Função para remoção de uma resposta
 function deleteReply(topicId, replyId) {
   const topic = forumTopics.find(t => t.id === topicId);
   if (!topic) return;
@@ -730,7 +760,7 @@ function deleteReply(topicId, replyId) {
   }
 }
 
-// Novas funções para gerenciamento de tópicos
+// Funções para gerenciamento de tópicos
 function addTopic(event) {
   event.preventDefault();
 
@@ -776,10 +806,10 @@ function addTopic(event) {
   try {
     ForumModerator.validateContent(title, 'título');
     ForumModerator.validateContent(content, 'conteúdo');
-    
+
     // Validar e filtrar tags impróprias
     const validatedTags = ForumModerator.validateTags(rawTags);
-    
+
     if (rawTags.length !== validatedTags.length) {
       alert('Algumas tags foram removidas por conterem palavras impróprias.');
     }
@@ -799,7 +829,7 @@ function addTopic(event) {
     };
 
     forumTopics.unshift(newTopic);
-    saveForumData(); // Adicionar esta linha
+    saveForumData(); 
     renderTopics();
     newTopicModal.classList.add('hidden');
     event.target.reset();
@@ -809,7 +839,7 @@ function addTopic(event) {
   }
 }
 
-// Função para preencher o select de categorias
+// Função para preencher as opções de categorias
 function populateCategories() {
   const categorySelect = document.getElementById('topic-category');
   if (!categorySelect) return;
@@ -822,7 +852,10 @@ function populateCategories() {
   `;
 }
 
-// Funções para persistência de dados
+/**
+ * Funções de persistência de dados
+ * Gerenciam o salvamento e carregamento do estado do fórum
+ */
 function saveForumData() {
   localStorage.setItem('forumTopics', JSON.stringify(forumTopics));
 }
@@ -908,7 +941,10 @@ function filterTopicsByCategory(categoryId) {
   }
 }
 
-// Adicione esta função após as outras funções auxiliares
+/**
+ * Sistema de visualizações único por usuário
+ * Incrementa contador apenas uma vez por hora
+ */
 function incrementTopicViews(topicId) {
   const topic = forumTopics.find(t => t.id === topicId);
   if (!topic) return;
@@ -929,7 +965,16 @@ function incrementTopicViews(topicId) {
   }
 }
 
-// Modificar a inicialização para incluir a inicialização das categorias
+function updateCharCount(input, counterId) {
+  const counter = document.getElementById(counterId);
+  const max = input.getAttribute('maxlength');
+  counter.textContent = `${input.value.length}/${max}`;
+}
+
+/**
+ * Inicialização do fórum
+ * Carrega dados necessários e configura estado inicial
+ */
 document.addEventListener('DOMContentLoaded', async () => {
   // Garantir que forumTopics começa como array vazio
   forumTopics = [];
