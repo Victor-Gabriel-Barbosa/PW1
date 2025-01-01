@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animu - O Portal do Mundo dos Animes</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --neon-pink: #ff2e63;
+            --neon-blue: #00fff5;
+            --neon-purple: #9d4edd;
+            --dark: #0a0047;
+            --darker: #06002a;
+        }
+
+        body {
+            background: var(--darker);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(157, 78, 221, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(0, 255, 245, 0.1) 0%, transparent 40%);
+            z-index: -1;
+            animation: backgroundPulse 10s ease-in-out infinite;
+        }
+
+        @keyframes backgroundPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        header {
+            background: rgba(10, 0, 71, 0.95);
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--neon-purple);
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(255, 46, 99, 0.5);
+            position: relative;
+        }
+
+        .logo::after {
+            content: 'アニム';
+            position: absolute;
+            top: -0.5rem;
+            right: -1rem;
+            font-size: 1rem;
+            opacity: 0.7;
+            color: var(--neon-blue);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            position: relative;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--neon-pink);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .nav-links a:hover::before {
+            transform: scaleX(1);
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 2rem;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('/api/placeholder/1920/1080') center/cover;
+            opacity: 0.3;
+            animation: zoomPulse 20s ease-in-out infinite;
+        }
+
+        @keyframes zoomPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple), var(--neon-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 0 0 20px rgba(255, 46, 99, 0.5); }
+            50% { text-shadow: 0 0 40px rgba(255, 46, 99, 0.8); }
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            margin-bottom: 2.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
+            color: white;
+            padding: 1.2rem 3rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+        }
+
+        .cta-button:hover::before {
+            transform: rotate(45deg) translate(50%, 50%);
+        }
+
+        .featured {
+            max-width: 1400px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            color: white;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--neon-purple), transparent);
+        }
+
+        .anime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            perspective: 1000px;
+        }
+
+        .anime-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.5s;
+            position: relative;
+            transform-style: preserve-3d;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .anime-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, 
+                transparent, 
+                rgba(255, 46, 99, 0.1), 
+                transparent);
+            transform: translateY(100%);
+            transition: transform 0.5s;
+        }
+
+        .anime-card:hover {
+            transform: rotateY(5deg) translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .anime-card:hover::before {
+            transform: translateY(0);
+        }
+
+        .anime-card img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .anime-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .anime-info {
+            padding: 2rem;
+            background: rgba(10, 0, 71, 0.95);
+        }
+
+        .anime-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .rating {
+            display: flex;
+            gap: 0.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .star {
+            color: var(--neon-pink);
+            font-size: 1.2rem;
+            animation: starPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes starPulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        .anime-info p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        .categories {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .category {
+            background: rgba(157, 78, 221, 0.2);
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            color: var(--neon-blue);
+        }
+
+        footer {
+            background: var(--dark);
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent,
+                var(--neon-pink),
+                var(--neon-purple),
+                var(--neon-blue),
+                transparent
+            );
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .anime-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+    
+    <header>
+        <nav>
+            <div class="logo">Animu</div>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#reviews">Reviews</a>
+                <a href="#temporada">Temporada</a>
+                <a href="#rankings">Rankings</a>
+                <a href="#comunidade">Comunidade</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Explore o Universo Anime</h1>
+            <p>Mergulhe em um mundo de histórias extraordinárias, análises profundas e descobertas emocionantes. Sua jornada pelo universo dos animes começa aqui!</p>
+            <a href="#reviews" class="cta-button">Explorar Reviews</a>
+        </div>
+    </section>
+
+    <section class="featured">
+        <h2 class="section-title">Reviews em Destaque</h2>
+        <div class="anime-grid">
+            <div class="anime-card">
+                <img src="/api/placeholder/400/500" alt="Chainsaw Man">
+                <div class="anime-info">
+                    <h3>Chainsaw Man</h3>
+                    <div class="rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p>Uma obra-prima que redefine o gênero com sua narrativa única e animação revolucionária.</p>
+                    <div class="categories">
+                        <span class="category">Ação</span>
+                        <span class="category">Sobrenatural</span>
+                        <span class="category">Horror</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="anime-card">
+                <img src="/api/placeholder/400/500" alt="Spy x Family">
+                <div class="anime-info">
+                    <h3>Spy x Family</h3>
+                    <div class="rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p>Uma mistura perfeita de comédia, ação e família que cativa do início ao fim.</p>
+                    <div class="categories">
+                        <span class="category">Comédia</span>
+                        <span class="category">Ação</span>
+                        <span class="category">Slice of Life</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="anime-card">
+                <img src="/api/placeholder/400/500" alt="Jujutsu Kaisen">
+                <div class="anime-info">
+                    <h3>Jujutsu Kaisen</h3>
+                    <div class="rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p>Animação espetacular e história envolvente que eleva o padrão dos animes modernos.</p>
+                    <div class="categories">
+                        
+                      <span class="category">Ação</span>
+                      <span class="category">Sobrenatural</span>
+                      <span class="category">Fantasia</span>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </section>
+
+  <section class="featured">
+      <h2 class="section-title">Últimas Análises</h2>
+      <div class="anime-grid">
+          <div class="anime-card">
+              <img src="/api/placeholder/400/500" alt="Demon Slayer">
+              <div class="anime-info">
+                  <h3>Demon Slayer</h3>
+                  <div class="rating">
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                  </div>
+                  <p>A saga da Vila dos Ferreiros é uma obra-prima visual que transcende o meio.</p>
+                  <div class="categories">
+                      <span class="category">Ação</span>
+                      <span class="category">Fantasia</span>
+                      <span class="category">Drama</span>
+                  </div>
+              </div>
+          </div>
+
+          <div class="anime-card">
+              <img src="/api/placeholder/400/500" alt="Attack on Titan">
+              <div class="anime-info">
+                  <h3>Attack on Titan</h3>
+                  <div class="rating">
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                  </div>
+                  <p>O grand finale que redefiniu o que um anime pode alcançar em termos de narrativa.</p>
+                  <div class="categories">
+                      <span class="category">Ação</span>
+                      <span class="category">Drama</span>
+                      <span class="category">Mistério</span>
+                  </div>
+              </div>
+          </div>
+
+          <div class="anime-card">
+              <img src="/api/placeholder/400/500" alt="One Piece">
+              <div class="anime-info">
+                  <h3>One Piece</h3>
+                  <div class="rating">
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                  </div>
+                  <p>O arco de Wano prova por que One Piece é uma das maiores histórias já contadas.</p>
+                  <div class="categories">
+                      <span class="category">Aventura</span>
+                      <span class="category">Ação</span>
+                      <span class="category">Fantasia</span>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </section>
+
+  <footer>
+      <p>&copy; 2024 Animu - Seu portal definitivo do mundo dos animes</p>
+  </footer>
+</body>
+</html>

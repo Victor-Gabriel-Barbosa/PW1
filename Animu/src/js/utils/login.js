@@ -179,38 +179,45 @@ document.addEventListener('DOMContentLoaded', async function () {
       return diffDays <= 30; // Expira após 30 dias
     }
 
-    // Login de usuário
-    async loginUser(username, password, remember = false) {
+    // Novo método para encontrar usuário por username ou email
+    findUser(identifier) {
+      return this.users.find(u => 
+        u.username.toLowerCase() === identifier.toLowerCase() || 
+        u.email.toLowerCase() === identifier.toLowerCase()
+      );
+    }
+
+    // Método de login atualizado
+    async loginUser(identifier, password, remember = false) {
       try {
-        this.checkLoginAttempts(username);
+        this.checkLoginAttempts(identifier);
 
         const hashedPassword = await this.hashPassword(password);
-        const user = this.users.find(u => u.username === username);
+        const user = this.findUser(identifier);
 
         if (!user) {
           throw new Error('Usuário não encontrado.');
         }
 
         if (user.password !== hashedPassword) {
-          this.recordLoginAttempt(username, false);
+          this.recordLoginAttempt(identifier, false);
           throw new Error('Senha incorreta.');
         }
 
-        this.recordLoginAttempt(username, true);
+        this.recordLoginAttempt(identifier, true);
 
-        // Criar sessão usando o avatar armazenado no objeto do usuário
         const sessionData = {
           userId: user.id,
           username: user.username,
           isAdmin: user.isAdmin,
-          avatar: user.avatar, // Usar avatar do usuário
+          avatar: user.avatar,
           loginTime: new Date().toISOString()
         };
 
         localStorage.setItem('userSession', JSON.stringify(sessionData));
 
         if (remember) {
-          this.saveCredentials(username, password);
+          this.saveCredentials(user.username, password);
         } else {
           this.clearSavedCredentials();
         }
@@ -450,6 +457,23 @@ document.addEventListener('DOMContentLoaded', async function () {
     logoutLink.addEventListener('click', function (event) {
       event.preventDefault();
       authManager.logout();
+    });
+  }
+
+  // Configurar toggle de visibilidade da senha
+  const passwordInput = document.getElementById('password');
+  const passwordToggle = document.querySelector('.password-toggle');
+  
+  if (passwordToggle) {
+    passwordToggle.addEventListener('click', function() {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      
+      // Toggle ícones
+      const eyeIcon = this.querySelector('.eye-icon');
+      const eyeOffIcon = this.querySelector('.eye-off-icon');
+      eyeIcon.classList.toggle('hidden');
+      eyeOffIcon.classList.toggle('hidden');
     });
   }
 });

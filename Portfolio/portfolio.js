@@ -47,6 +47,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
+    // Atualizar a lista de seções para incluir projetos
+    document.querySelectorAll('section').forEach(section => {
+      const sectionTop = section.offsetTop;
+      if (pageYOffset >= sectionTop - 60) {
+        current = section.getAttribute('id');
+      }
+    });
+
     document.querySelectorAll('nav a').forEach(link => {
       link.classList.remove('active');
       if (link.getAttribute('href').substring(1) === current) {
