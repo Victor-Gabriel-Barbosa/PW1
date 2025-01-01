@@ -412,7 +412,7 @@ function renderTopicCard(topic, userId) {
                      class="w-full p-2 border rounded-lg">
               <small id="reply-count-${topic.id}" class="text-right block mt-1">0/${FORUM_CONFIG.maxReplyLength}</small>
             </div>
-            <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg">
+            <button type="submit" class="btn">
               Responder
             </button>
           </form>
@@ -435,7 +435,7 @@ function renderTopicCard(topic, userId) {
       <!-- Sistema de tags -->
       <div class="flex gap-2 mt-2">
         ${(topic.tags || []).map(tag => `
-          <span class="tag text-xs px-2 py-1 rounded-full bg-purple-100 text-purple-600">
+          <span class="tag">
             #${tag}
           </span>
         `).join('')}

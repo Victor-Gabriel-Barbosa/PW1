@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../src/css/styles.css">
   <link rel="stylesheet" href="../src/css/search.css">
+  <link rel="stylesheet" href="../src/css/inicio.css">
   <link rel="icon" href="../src/favicon/favicon.ico" type="image/x-icon">
 </head>
 
@@ -56,10 +57,10 @@
                 <a href="./usuarios.html" class="block px-4 py-2 text-sm hover:bg-purple-600"
                   role="menuitem">Usuários</a>
                 <a href="#" class="block px-4 py-2 text-sm hover:bg-purple-600" role="menuitem">Categorias</a>
-                <a href="./add-anime.html" class="block px-4 py-2 text-sm hover:bg-purple-600"
-                  role="menuitem">Adicionar anime</a>
-                <a href="./edit-anime.html" class="block px-4 py-2 text-sm hover:bg-purple-600"
-                  role="menuitem">Editar Animes</a>
+                <a href="./add-anime.html" class="block px-4 py-2 text-sm hover:bg-purple-600" role="menuitem">Adicionar
+                  anime</a>
+                <a href="./edit-anime.html" class="block px-4 py-2 text-sm hover:bg-purple-600" role="menuitem">Editar
+                  Animes</a>
               </div>
             </div>
           </div>
@@ -72,7 +73,7 @@
             <!-- Nome do usuário -->
             <div class="flex flex-col ml-2">
               <span class="font-medium" id="user-name"><a href="./signin.html">Login</a></span>
-              <a href="#" id="logout-link" class="text-sm text-gray-500 hover:text-gray-700  hidden">Sair</a>
+              <a href="#" id="logout-link" class="text-sm text-purple-600 hover:text-purple-700 hidden">Sair</a>
             </div>
           </div>
 
@@ -93,93 +94,89 @@
     <!-- Conteúdo principal, container centralizado -->
     <div class="container mx-auto px-4 py-12 max-w-6xl">
       <!-- Cabeçalho com título e descrição -->
-      <header class="text-center mb-16">
-        <h1 class="text-6xl font-bold mb-4 tracking-tight anime-gradient">Animu</h1>
-        <p class="text-xl max-w-2xl mx-auto font-light leading-relaxed">
+      <header class="inicio-header">
+        <h1 class="inicio-title anime-gradient">Animu</h1>
+        <p class="inicio-description">
           Descubra universos infinitos, explore narrativas épicas e mergulhe nas histórias mais fascinantes do mundo dos
           animes.
         </p>
       </header>
 
       <!-- Seções principais da página -->
-      <section class="grid md:grid-cols-3 gap-8 mb-16">
+      <section class="inicio-sections">
         <!-- Card com últimos reviews -->
-        <div class="rounded-2xl p-8 shadow-lg card-hover overflow-hidden relative">
-          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-blue-500"></div>
-          <h2 class="text-2xl font-bold mb-6">Últimos Reviews</h2>
-          <ul class="space-y-4">
-            <!-- Lista de reviews -->
-            <li class="border-b border-gray-100 pb-3">
-              <a href="animes.html?anime=Demon Slayer" class="block hover:text-purple-600 transition-colors">
-                <span class="font-semibold">Demon Slayer</span>
-                <p class="text-sm">Temporada 3: Uma jornada épica</p>
+        <div class="inicio-card">
+          <div class="inicio-card-header gradient-purple"></div>
+          <h2 class="inicio-card-title">Últimos Reviews</h2>
+          <ul class="inicio-card-list">
+            <li class="inicio-card-item">
+              <a href="animes.html?anime=Demon Slayer" class="inicio-card-link">
+                <span class="inicio-card-link-title">Demon Slayer</span>
+                <p class="inicio-card-link-subtitle">Temporada 3: Uma jornada épica</p>
               </a>
             </li>
-            <li class="border-b border-gray-100 pb-3">
-              <a href="animes.html?anime=Jujutsu Kaisen" class="block hover:text-purple-600 transition-colors">
-                <span class="font-semibold">Jujutsu Kaisen</span>
-                <p class="text-sm">Magia e combate supernatural</p>
+            <li class="inicio-card-item">
+              <a href="animes.html?anime=Jujutsu Kaisen" class="inicio-card-link">
+                <span class="inicio-card-link-title">Jujutsu Kaisen</span>
+                <p class="inicio-card-link-subtitle">Magia e combate supernatural</p>
               </a>
             </li>
-            <li>
-              <a href="animes.html?anime=Attack on Titan" class="block hover:text-purple-600 transition-colors">
-                <span class="font-semibold">Attack on Titan</span>
-                <p class="text-sm">O épico final da série</p>
+            <li class="inicio-card-item">
+              <a href="animes.html?anime=Attack on Titan" class="inicio-card-link">
+                <span class="inicio-card-link-title">Attack on Titan</span>
+                <p class="inicio-card-link-subtitle">O épico final da série</p>
               </a>
             </li>
           </ul>
         </div>
 
         <!-- Card com categorias populares -->
-        <div class="rounded-2xl p-8 shadow-lg card-hover overflow-hidden relative">
-          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-blue-500"></div>
-          <h2 class="text-2xl font-bold mb-6">Categorias Populares</h2>
-          <ul class="space-y-4">
-            <!-- Lista de categorias -->
-            <li class="border-b border-gray-100 pb-3">
-              <a href="animes.html?anime=all&category=Shounen" class="block hover:text-green-600 transition-colors">
-                <span class="font-semibold">Shounen</span>
-                <p class="text-sm">Ação e aventura</p>
+        <div class="inicio-card">
+          <div class="inicio-card-header gradient-green"></div>
+          <h2 class="inicio-card-title">Categorias Populares</h2>
+          <ul class="inicio-card-list">
+            <li class="inicio-card-item">
+              <a href="animes.html?anime=all&category=Shounen" class="inicio-card-link">
+                <span class="inicio-card-link-title">Shounen</span>
+                <p class="inicio-card-link-subtitle">Ação e aventura</p>
               </a>
             </li>
-            <li class="border-b border-gray-100 pb-3">
-              <a href="animes.html?anime=all&category=Slice of Life"
-                class="block hover:text-green-600 transition-colors">
-                <span class="font-semibold">Slice of Life</span>
-                <p class="text-sm">Histórias cotidianas</p>
+            <li class="inicio-card-item">
+              <a href="animes.html?anime=all&category=Slice of Life" class="inicio-card-link">
+                <span class="inicio-card-link-title">Slice of Life</span>
+                <p class="inicio-card-link-subtitle">Histórias cotidianas</p>
               </a>
             </li>
-            <li>
-              <a href="animes.html?anime=all&category=Mecha" class="block hover:text-green-600 transition-colors">
-                <span class="font-semibold">Mecha</span>
-                <p class="text-sm">Robôs e tecnologia</p>
+            <li class="inicio-card-item">
+              <a href="animes.html?anime=all&category=Mecha" class="inicio-card-link">
+                <span class="inicio-card-link-title">Mecha</span>
+                <p class="inicio-card-link-subtitle">Robôs e tecnologia</p>
               </a>
             </li>
           </ul>
         </div>
 
         <!-- Card com novidades -->
-        <div class="rounded-2xl p-8 shadow-lg card-hover overflow-hidden relative">
-          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 to-red-500"></div>
-          <h2 class="text-2xl font-bold mb-6">Novidades</h2>
-          <ul class="space-y-4">
-            <!-- Lista de novidades -->
-            <li class="border-b border-gray-100 pb-3">
-              <a href="#" class="block hover:text-pink-600 transition-colors">
-                <span class="font-semibold">Próximos Lançamentos</span>
-                <p class="text-sm">Animes que vão estrear</p>
+        <div class="inicio-card">
+          <div class="inicio-card-header gradient-pink"></div>
+          <h2 class="inicio-card-title">Novidades</h2>
+          <ul class="inicio-card-list">
+            <li class="inicio-card-item">
+              <a href="#" class="inicio-card-link">
+                <span class="inicio-card-link-title">Próximos Lançamentos</span>
+                <p class="inicio-card-link-subtitle">Animes que vão estrear</p>
               </a>
             </li>
-            <li class="border-b border-gray-100 pb-3">
-              <a href="#" class="block hover:text-pink-600 transition-colors">
-                <span class="font-semibold">Melhores da Temporada</span>
-                <p class="text-sm">Top animes do momento</p>
+            <li class="inicio-card-item">
+              <a href="#" class="inicio-card-link">
+                <span class="inicio-card-link-title">Melhores da Temporada</span>
+                <p class="inicio-card-link-subtitle">Top animes do momento</p>
               </a>
             </li>
-            <li>
-              <a href="recomendacoes.html" class="block hover:text-pink-600 transition-colors">
-                <span class="font-semibold">Recomendações</span>
-                <p class="text-sm">Seleção especial</p>
+            <li class="inicio-card-item">
+              <a href="recomendacoes.html" class="inicio-card-link">
+                <span class="inicio-card-link-title">Recomendações</span>
+                <p class="inicio-card-link-subtitle">Seleção especial</p>
               </a>
             </li>
           </ul>
@@ -187,8 +184,8 @@
       </section>
 
       <!-- Seção de animes em destaque -->
-      <section class="mb-16">
-        <h2 class="text-3xl font-bold text-center mb-8">Animes em Destaque</h2>
+      <section class="featured-section">
+        <h2 class="featured-title">Animes em Destaque</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 featured-animes">
           <!-- Os cards serão inseridos dinamicamente aqui -->
         </div>
@@ -198,8 +195,7 @@
       <section class="forum-container">
         <div class="flex justify-between items-center mb-8">
           <h2 class="text-3xl font-bold">Fórum da Comunidade</h2>
-          <button id="new-topic-btn" style="background:var(--primary-gradient)"
-            class="px-6 py-3 text-white rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2">
+          <button id="new-topic-btn" class="btn">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd"
                 d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
@@ -264,11 +260,8 @@
                 <div class="form-group col-span-2">
                   <label class="form-label">Título</label>
                   <div class="input-wrapper">
-                    <input type="text" id="topic-title" class="form-input" 
-                           placeholder="Digite um título interessante" 
-                           maxlength="100"
-                           oninput="updateCharCount(this, 'title-char-count')" 
-                           required>
+                    <input type="text" id="topic-title" class="form-input" placeholder="Digite um título interessante"
+                      maxlength="100" oninput="updateCharCount(this, 'title-char-count')" required>
                     <span class="input-icon">
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -284,11 +277,8 @@
                 <div class="form-group col-span-2">
                   <label class="form-label">Conteúdo</label>
                   <div class="input-wrapper">
-                    <textarea id="topic-content" class="form-textarea" 
-                              placeholder="Compartilhe seus pensamentos..."
-                              maxlength="2000"
-                              oninput="updateCharCount(this, 'content-char-count')" 
-                              required></textarea>
+                    <textarea id="topic-content" class="form-textarea" placeholder="Compartilhe seus pensamentos..."
+                      maxlength="2000" oninput="updateCharCount(this, 'content-char-count')" required></textarea>
                   </div>
                   <small id="content-char-count" class="text-right block mt-1">0/2000</small>
                 </div>
