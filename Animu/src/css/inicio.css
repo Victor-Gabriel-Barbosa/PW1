@@ -480,17 +480,58 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 8px;
+  /* Garante que o cabeçalho não quebre em múltiplas linhas */
+  flex-wrap: nowrap;
 }
 
 .reply-author {
   display: flex;
   align-items: center;
   gap: 8px;
+  /* Evita que o nome do autor ocupe muito espaço */
+  max-width: 70%;
+}
+
+.reply-content {
+  /* Força quebra de palavras longas */
+  word-break: break-word;
+  overflow-wrap: break-word;
+  /* Adiciona margem à direita para evitar que o texto encoste nos botões */
+  margin-right: 16px;
 }
 
 .reply-actions {
   display: flex;
   gap: 8px;
+  /* Garante que os botões de ação fiquem sempre visíveis */
+  flex-shrink: 0;
+  /* Alinha os botões ao topo */
+  margin-top: 0;
+  /* Fixa a largura mínima para os botões */
+  min-width: 100px;
+}
+
+/* Estilização específica para os botões de ação */
+.reply-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+  /* Garante que os ícones não encolham */
+  flex-shrink: 0;
+}
+
+.reply-actions svg {
+  width: 16px;
+  height: 16px;
+  /* Previne que os ícones sejam redimensionados */
+  flex-shrink: 0;
+}
+
+.reply:hover {
+  transform: translateX(8px);
+  box-shadow: 0 2px 8px var(--card-shadow);
 }
 
 .comments-list {

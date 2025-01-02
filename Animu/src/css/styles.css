@@ -240,7 +240,7 @@ body.dark-mode {
 }
 
 .theme-toggle-container {
-  position: fixed;
+  position: flex;
   display: flex;
   top: var(--spacing-lg);
   right: var(--spacing-lg);

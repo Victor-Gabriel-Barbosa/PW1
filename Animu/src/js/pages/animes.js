@@ -230,21 +230,33 @@ function renderAllAnimes() {
       <h1 class="text-3xl font-bold mb-6">
           ${categoryFilter ? `Animes da categoria: ${categoryFilter}` : 'Todos os Animes'}
       </h1>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          ${filteredAnimes.map(anime => `
-              <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
-                 class="anime-card rounded-lg shadow-md overflow-hidden block hover:shadow-lg transition-shadow">
-                  <img src="${anime.coverImage}" alt="${anime.primaryTitle}" class="w-full h-64 object-cover">
-                  <div class="p-4">
-                      <h2 class="text-xl font-semibold mb-2">${anime.primaryTitle}</h2>
-                      <div class="genres mb-2">
-                          ${anime.genres.map(genre =>
-    `<span class="genre-tag">${genre}</span>`
-  ).join('')}
-                      </div>
-                  </div>
-              </a>
-          `).join('')}
+      <div class="anime-grid">
+        ${filteredAnimes.map(anime => `
+          <div class="anime-card rounded-lg shadow-lg overflow-hidden">
+            ${anime.score >= 8 ? '<div class="featured-badge">⭐ Destaque</div>' : ''}
+            <div class="score-badge ${anime.score >= 8 ? 'pulse-effect' : ''}">${anime.score || 'N/A'}</div>
+            <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
+               class="block relative">
+              <img src="${anime.coverImage}" 
+                   alt="${anime.primaryTitle}" 
+                   class="w-full h-[350px] object-cover">
+              <div class="content-overlay">
+                <h2 class="text-xl font-bold mb-2">${anime.primaryTitle}</h2>
+                <p class="text-sm mb-2 line-clamp-2">${anime.synopsis}</p>
+                <div class="flex flex-wrap gap-2">
+                  ${anime.genres.map(genre =>
+                    `<span class="genre-tag text-xs">${genre}</span>`
+                  ).join('')}
+                </div>
+                <div class="mt-2 flex items-center gap-2">
+                  <span>💬 ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}</span>
+                  <span>📺 ${anime.episodes} eps</span>
+                  <span>📆 ${anime.releaseYear}</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        `).join('')}
       </div>
   `;
 
