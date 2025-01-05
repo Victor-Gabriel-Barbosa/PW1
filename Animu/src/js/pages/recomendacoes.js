@@ -175,6 +175,9 @@ function renderRecommendations(recommendations, containerId) {
     // Debug
     console.log('Anime:', anime);
 
+    // Garante que o score seja um número válido ou use 'N/A'
+    const formattedScore = typeof anime.score === 'number' ? anime.score.toFixed(1) : 'N/A';
+
     return `
       <div class="recommendation-card group">
         <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
@@ -194,7 +197,7 @@ function renderRecommendations(recommendations, containerId) {
                   ${Math.round(anime.matchScore)}% Match
                 </span>
                 <span class="text-sm bg-black/50 px-2 py-1 rounded text-white">
-                  ⭐ ${anime.score ? anime.score.toFixed(1) : 'N/A'}
+                  ⭐ ${formattedScore}
                 </span>
               </div>
             </div>

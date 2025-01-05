@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerenciar Animes - Painel Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../src/css/styles.css">
+  <link rel="stylesheet" href="../src/css/search.css">
+  <link rel="stylesheet" href="../src/css/admin.css">
+  <link rel="icon" href="../src/favicon/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+  <div class="pt-16">
+    <div class="container mx-auto px-4 py-8">
+      <h1 class="text-3xl font-bold mb-6">Gerenciar Animes</h1>
+
+      <!-- Botões de ação -->
+      <div class="flex gap-4 mb-6">
+        <button onclick="showAnimeForm()" class="btn-primary">
+          ➕ Adicionar Novo Anime
+        </button>
+        <button onclick="exportAnimes()" class="btn-secondary">
+          📤 Exportar Dados
+        </button>
+        <button onclick="document.getElementById('importFile').click()" class="btn-secondary">
+          📥 Importar Dados
+        </button>
+        <input type="file" id="importFile" accept=".json" class="hidden" onchange="importAnimes(event)">
+      </div>
+
+      <!-- Lista de animes -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full rounded-lg overflow-hidden shadow-lg">
+          <thead>
+            <tr>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                Imagem
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                Título
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                Episódios
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                Status
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                Ações
+              </th>
+            </tr>
+          </thead>
+          <tbody id="animesList" class="divide-y divide-gray-200 dark:divide-gray-600">
+            <!-- Lista de animes será inserida aqui -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modal do formulário -->
+    <div id="animeModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div
+        class="admin-form-container p-6 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <h2 id="modalTitle" class="text-2xl font-bold mb-4">Adicionar Novo Anime</h2>
+
+        <form id="animeForm" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Informações básicas -->
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium mb-1">Título Principal</label>
+                <input type="text" id="primaryTitle" required class="w-full p-2 border rounded">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-1">URL da Imagem de Capa</label>
+                <input type="url" id="coverImage" required class="w-full p-2 border rounded">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-1">Sinopse</label>
+                <textarea id="synopsis" rows="4" required class="w-full p-2 border rounded"></textarea>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-1">Títulos Alternativos</label>
+                <div class="flex gap-2 mb-2">
+                  <input type="text" id="altTitle" placeholder="Título"
+                    class="flex-1 p-2 border rounded">
+                  <select id="altTitleType" class="p-2 border rounded">
+                    <option value="japanese">Japonês</option>
+                    <option value="english">Inglês</option>
+                    <option value="portuguese">Português</option>
+                  </select>
+                  <button type="button" onclick="addAlternativeTitle()"
+                    class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+                    +
+                  </button>
+                </div>
+                <div id="altTitlesList" class="space-y-2">
+                  <!-- Títulos alternativos serão inseridos aqui -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Detalhes e classificações -->
+            <div class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium mb-1">Episódios</label>
+                  <input type="number" id="episodes" min="1" class="w-full p-2 border rounded">
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium mb-1">Duração (min)</label>
+                  <input type="number" id="episodeDuration" min="1" class="w-full p-2 border rounded">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium mb-1">Status</label>
+                  <select id="status" class="w-full p-2 border rounded">
+                    <option value="Em Exibição">Em Exibição</option>
+                    <option value="Finalizado">Finalizado</option>
+                    <option value="Anunciado">Anunciado</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium mb-1">Classificação</label>
+                  <select id="ageRating" class="w-full p-2 border rounded">
+                    <option value="Livre">Livre</option>
+                    <option value="10+">10+</option>
+                    <option value="12+">12+</option>
+                    <option value="14+">14+</option>
+                    <option value="16+">16+</option>
+                    <option value="18+">18+</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium mb-1">Temporada</label>
+                  <select id="seasonPeriod" class="w-full p-2 border rounded">
+                    <option value="Inverno">Inverno</option>
+                    <option value="Primavera">Primavera</option>
+                    <option value="Verão">Verão</option>
+                    <option value="Outono">Outono</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium mb-1">Ano</label>
+                  <input type="number" id="seasonYear" min="1960" max="2030"
+                    class="w-full p-2 border rounded">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-1">Gêneros</label>
+                <input type="text" id="genreInput" placeholder="Digite um gênero e pressione Enter"
+                  class="w-full p-2 border rounded" onkeypress="handleGenreInput(event)">
+                <div id="genresList" class="tag-container">
+                  <!-- Gêneros serão inseridos aqui -->
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-1">URL do Trailer (YouTube)</label>
+                <input type="url" id="trailerUrl" class="w-full p-2 border rounded">
+              </div>
+
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium mb-1">Estúdio</label>
+                  <input type="text" id="studio" class="w-full p-2 border rounded">
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium mb-1">Fonte Original</label>
+                  <select id="source" class="w-full p-2 border rounded">
+                    <option value="">Selecione...</option>
+                    <option value="Manga">Mangá</option>
+                    <option value="Light Novel">Light Novel</option>
+                    <option value="Original">Original</option>
+                    <option value="Visual Novel">Visual Novel</option>
+                    <option value="Game">Game</option>
+                    <option value="Other">Outro</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium mb-1">Produtores</label>
+                  <div class="flex gap-2 mb-2">
+                    <input type="text" id="producerInput" placeholder="Nome do produtor"
+                      class="flex-1 p-2 border rounded">
+                    <button type="button" onclick="addProducer()"
+                      class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+                      +
+                    </button>
+                  </div>
+                  <div id="producersList" class="space-y-2">
+                    <!-- Lista de produtores será inserida aqui -->
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium mb-1">Licenciadores</label>
+                  <div class="flex gap-2 mb-2">
+                    <input type="text" id="licensorInput" placeholder="Nome do licenciador"
+                      class="flex-1 p-2 border rounded">
+                    <button type="button" onclick="addLicensor()"
+                      class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+                      +
+                    </button>
+                  </div>
+                  <div id="licensorsList" class="space-y-2">
+                    <!-- Lista de licenciadores será inserida aqui -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botões do formulário -->
+          <div class="flex justify-end gap-4 mt-6">
+            <button type="button" onclick="closeAnimeForm()"
+              class="px-4 py-2 border rounded hover:bg-gray-100 dark:hover:bg-gray-700">
+              Cancelar
+            </button>
+            <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+              Salvar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../src/js/pages/navbar.js"></script>
+  <script src="../src/js/pages/animu.js"></script>
+  <script src="../src/js/utils/login.js"></script>
+  <script src="../src/js/pages/animes.js"></script>
+  <script src="../src/js/utils/search.js"></script>
+  <script src="../src/js/pages/admin-animes.js"></script>
+</body>
+
+</html>

@@ -334,3 +334,67 @@
   margin-top: 4px;
   display: block;
 }
+
+.subcategory-preview {
+  transform: scale(0.9);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.subcategory-preview .category-icon {
+  font-size: 1.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.subcategory-preview h3 {
+  font-size: 1.1rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.subcategory-preview p {
+  font-size: 0.8rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.subcategory-preview .anime-count {
+  font-size: 0.75rem !important;
+  padding: 0.15rem 0.5rem !important;
+}
+
+.admin-form-container {
+  background: var(--background);
+  color: var(--text-color);
+  border: 1px solid var(--card-shadow);
+  box-shadow: 0 4px 6px var(--card-shadow);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.admin-form-container input,
+.admin-form-container textarea,
+.admin-form-container select {
+  background: var(--background);
+  color: var(--text-color);
+  border-color: var(--card-shadow);
+}
+
+.admin-form-container input:focus,
+.admin-form-container textarea:focus,
+.admin-form-container select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--primary-color-alpha);
+}
+
+.admin-form-container .category-item {
+  background: var(--background);
+  border: 1px solid var(--card-shadow);
+}
+
+/* Ajuste para o seletor de emojis */
+#emoji-picker {
+  background: var(--background);
+  border-color: var(--card-shadow);
+}
+
+#emoji-picker button:hover {
+  background: var(--card-shadow);
+}

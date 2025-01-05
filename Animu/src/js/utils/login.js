@@ -181,8 +181,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Novo método para encontrar usuário por username ou email
     findUser(identifier) {
-      return this.users.find(u => 
-        u.username.toLowerCase() === identifier.toLowerCase() || 
+      return this.users.find(u =>
+        u.username.toLowerCase() === identifier.toLowerCase() ||
         u.email.toLowerCase() === identifier.toLowerCase()
       );
     }
@@ -463,12 +463,12 @@ document.addEventListener('DOMContentLoaded', async function () {
   // Configurar toggle de visibilidade da senha
   const passwordInput = document.getElementById('password');
   const passwordToggle = document.querySelector('.password-toggle');
-  
+
   if (passwordToggle) {
-    passwordToggle.addEventListener('click', function() {
+    passwordToggle.addEventListener('click', function () {
       const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
       passwordInput.setAttribute('type', type);
-      
+
       // Toggle ícones
       const eyeIcon = this.querySelector('.eye-icon');
       const eyeOffIcon = this.querySelector('.eye-off-icon');

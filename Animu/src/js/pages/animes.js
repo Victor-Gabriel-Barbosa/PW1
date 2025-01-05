@@ -199,71 +199,167 @@ function renderAllAnimes() {
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
   const urlParams = new URLSearchParams(window.location.search);
   const categoryFilter = urlParams.get('category');
+  const statusFilter = urlParams.get('status');
+  const seasonPeriod = urlParams.get('season');
+  const seasonYear = urlParams.get('year');
 
-  // Esconde a seção de comentários ao mostrar todos os animes
   if (commentsSection) {
     commentsSection.style.display = 'none';
   }
 
   if (!container) return;
 
-  // Filtra os animes se houver uma categoria selecionada
-  const filteredAnimes = categoryFilter
-    ? animes.filter(anime =>
+  // Filtra os animes baseado nos parâmetros da URL
+  let filteredAnimes = animes;
+  let pageTitle = 'Todos os Animes';
+  let headerContent = '';
+
+  if (seasonPeriod && seasonYear) {
+    // Filtra por temporada
+    filteredAnimes = getSeasonalAnimes(seasonPeriod, seasonYear);
+    pageTitle = `Melhores Animes - ${formatSeason({period: seasonPeriod, year: seasonYear})}`;
+
+    // Adiciona seletor de temporadas
+    const seasons = getAvailableSeasons();
+    headerContent = `
+      <div class="flex flex-col md:flex-row items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold">${pageTitle}</h1>
+        <div class="season-selector mt-4 md:mt-0">
+          <select 
+            class="px-4 py-2 rounded-lg border bg-white dark:bg-gray-800"
+            onchange="if(this.value) window.location.href='animes.html?season=' + this.value.split('-')[0] + '&year=' + this.value.split('-')[1]"
+          >
+            ${seasons.map(s => `
+              <option value="${s.period}-${s.year}" 
+                ${s.period === seasonPeriod && s.year === parseInt(seasonYear) ? 'selected' : ''}>
+                ${formatSeason(s)}
+              </option>
+            `).join('')}
+          </select>
+        </div>
+      </div>
+    `;
+  } else if (statusFilter?.toLowerCase() === 'anunciado') {
+    // Filtra apenas animes anunciados e ordena por data de lançamento
+    filteredAnimes = animes
+      .filter(anime => anime.status?.toLowerCase() === 'anunciado')
+      .sort((a, b) => {
+        if (a.releaseDate && b.releaseDate) {
+          return new Date(a.releaseDate) - new Date(b.releaseDate);
+        }
+        return a.primaryTitle.localeCompare(b.primaryTitle);
+      });
+  } else if (categoryFilter) {
+    // Filtra por categoria se não estiver filtrando por status
+    filteredAnimes = animes.filter(anime =>
       anime.genres.some(genre =>
         normalizeCategory(genre) === normalizeCategory(categoryFilter)
       )
-    )
-    : animes;
+    );
+  }
 
   if (filteredAnimes.length === 0) {
     container.innerHTML = `
-          <div class="no-anime-found">
-              <h2>Nenhum anime encontrado</h2>
-              <p>Não encontramos animes na categoria: ${categoryFilter}</p>
-          </div>
-      `;
+      <div class="no-anime-found">
+        <h2>Nenhum anime encontrado</h2>
+        <p>Não encontramos animes ${
+          seasonPeriod ? `para a temporada ${formatSeason({period: seasonPeriod, year: seasonYear})}` :
+          statusFilter ? 'com o status: ' + statusFilter :
+          categoryFilter ? 'na categoria: ' + categoryFilter :
+          ''
+        }</p>
+      </div>
+    `;
     return;
   }
 
   container.innerHTML = `
+    ${headerContent || `
       <h1 class="text-3xl font-bold mb-6">
-          ${categoryFilter ? `Animes da categoria: ${categoryFilter}` : 'Todos os Animes'}
+        ${pageTitle}
       </h1>
-      <div class="anime-grid">
-        ${filteredAnimes.map(anime => `
-          <div class="anime-card rounded-lg shadow-lg overflow-hidden">
-            ${anime.score >= 8 ? '<div class="featured-badge">⭐ Destaque</div>' : ''}
-            <div class="score-badge ${anime.score >= 8 ? 'pulse-effect' : ''}">${anime.score || 'N/A'}</div>
-            <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
-               class="block relative">
-              <img src="${anime.coverImage}" 
-                   alt="${anime.primaryTitle}" 
-                   class="w-full h-[350px] object-cover">
-              <div class="content-overlay">
-                <h2 class="text-xl font-bold mb-2">${anime.primaryTitle}</h2>
-                <p class="text-sm mb-2 line-clamp-2">${anime.synopsis}</p>
-                <div class="flex flex-wrap gap-2">
-                  ${anime.genres.map(genre =>
-                    `<span class="genre-tag text-xs">${genre}</span>`
-                  ).join('')}
-                </div>
-                <div class="mt-2 flex items-center gap-2">
-                  <span>💬 ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}</span>
-                  <span>📺 ${anime.episodes} eps</span>
-                  <span>📆 ${anime.releaseYear}</span>
-                </div>
+    `}
+    <div class="anime-grid">
+      ${filteredAnimes.map(anime => `
+        <div class="anime-card rounded-lg shadow-lg overflow-hidden">
+          ${seasonPeriod ? 
+            `<div class="featured-badge">${anime.score >= 8 ? '🏆' : '📺'} #${filteredAnimes.indexOf(anime) + 1}</div>` :
+            statusFilter?.toLowerCase() === 'anunciado' ? 
+              '<div class="featured-badge">🆕 Em breve</div>' :
+              anime.score >= 8 ? '<div class="featured-badge">⭐ Destaque</div>' : ''
+          }
+          <div class="score-badge ${anime.score >= 8 ? 'pulse-effect' : ''}">${anime.score || 'N/A'}</div>
+          <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
+             class="block relative">
+            <img src="${anime.coverImage}" 
+                 alt="${anime.primaryTitle}" 
+                 class="w-full h-[350px] object-cover">
+            <div class="content-overlay">
+              <h2 class="text-xl font-bold mb-2">${anime.primaryTitle}</h2>
+              ${anime.releaseDate && statusFilter?.toLowerCase() === 'anunciado' ? 
+                `<p class="text-sm text-white mb-2">📅 Lançamento: ${new Date(anime.releaseDate).toLocaleDateString('pt-BR')}</p>` : 
+                ''}
+              <p class="text-sm mb-2 line-clamp-2">${anime.synopsis}</p>
+              <div class="flex flex-wrap gap-2">
+                ${anime.genres.map(genre =>
+                  `<span class="genre-tag text-xs">${genre}</span>`
+                ).join('')}
               </div>
-            </a>
-          </div>
-        `).join('')}
-      </div>
+              <div class="mt-2 flex items-center gap-2">
+                <span>💬 ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}</span>
+                <span>📺 ${anime.episodes} eps</span>
+                <span>📆 ${anime.releaseYear}</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      `).join('')}
+    </div>
   `;
 
   // Atualiza o título da página
-  document.title = categoryFilter
-    ? `${categoryFilter} - Animes por Categoria`
-    : 'Lista de Todos os Animes';
+  document.title = pageTitle;
+}
+
+// Formata temporada para exibição
+function formatSeason(season) {
+  if (!season) return '';
+  const period = season.period.charAt(0).toUpperCase() + season.period.slice(1);
+  return `${period} ${season.year}`;
+}
+
+// Filtra animes por temporada e ordena por pontuação
+function getSeasonalAnimes(period, year) {
+  const animes = JSON.parse(localStorage.getItem('animeData')) || [];
+  return animes
+    .filter(anime => 
+      anime.season?.period?.toLowerCase() === period.toLowerCase() && 
+      anime.season?.year === parseInt(year)
+    )
+    .sort((a, b) => (parseFloat(b.score) || 0) - (parseFloat(a.score) || 0));
+}
+
+// Retorna temporadas disponíveis
+function getAvailableSeasons() {
+  const animes = JSON.parse(localStorage.getItem('animeData')) || [];
+  const seasons = new Set();
+  
+  animes.forEach(anime => {
+    if (anime.season?.period && anime.season?.year) {
+      seasons.add(`${anime.season.period}-${anime.season.year}`);
+    }
+  });
+
+  return Array.from(seasons)
+    .map(s => {
+      const [period, year] = s.split('-');
+      return { period, year: parseInt(year) };
+    })
+    .sort((a, b) => {
+      if (a.year !== b.year) return b.year - a.year;
+      const periods = ['inverno', 'primavera', 'verão', 'outono'];
+      return periods.indexOf(b.period.toLowerCase()) - periods.indexOf(a.period.toLowerCase());
+    });
 }
 
 // Gerencia sistema de comentários

@@ -1,130 +1,147 @@
-// Função para normalizar strings de categoria
-function normalizeCategory(category) {
-  const normalizations = {
-    'action': ['ação', 'action', 'acao'],
-    'drama': ['drama'],
-    'comedy': ['comédia', 'comedy', 'comedia'],
-    'fantasy': ['fantasia', 'fantasy'],
-    'sci-fi': ['ficção científica', 'sci-fi', 'sci fi', 'ficcao cientifica'],
-    'romance': ['romance', 'romântico', 'romantico'],
-    'supernatural': ['sobrenatural', 'supernatural'],
-    'game': ['game', 'games', 'jogos'],
-    'isekai': ['isekai'],
-    'shounen': ['shounen', 'shonen'],
-    'slice of life': ['slice of life', 'slice-of-life'],
-    'mecha': ['mecha', 'robot', 'robô'],
-    'horror': ['horror', 'terror'],
-    'sports': ['sports', 'esporte', 'esportes'],
-    'music': ['music', 'música', 'musica'],
-    'historical': ['historical', 'histórico', 'historico'],
-    'psychological': ['psychological', 'psicológico', 'psicologico'],
-    'adventure': ['adventure', 'aventura']
-  };
-
-  category = category.toLowerCase().trim();
-
-  for (const [key, variants] of Object.entries(normalizations)) {
-    if (variants.includes(category)) {
-      return key;
-    }
-  }
-
-  return category;
-}
-
-// Função para obter todos os animes do localStorage
-function getAnimes() {
-  try {
-    return JSON.parse(localStorage.getItem('animeData')) || [];
-  } catch (e) {
-    console.error('Erro ao carregar animes:', e);
-    return [];
-  }
-}
-
-// Função para contar animes por categoria
-function countAnimesByCategory(category) {
-  const animes = getAnimes();
-  return animes.filter(anime =>
-    anime.genres.some(genre =>
-      normalizeCategory(genre) === normalizeCategory(category)
-    )
-  ).length;
-}
-
-// Função para atualizar os contadores de anime
-function updateAnimeCounts() {
-  const categories = {
-    'Ação': 'action',
-    'Drama': 'drama',
-    'Comédia': 'comedy',
-    'Fantasia': 'fantasy',
-    'Sci-Fi': 'sci-fi',
-    'Romance': 'romance',
-    'Sobrenatural': 'supernatural',
-    'Games': 'game'
-  };
-
-  for (const [ptCategory, enCategory] of Object.entries(categories)) {
-    const count = countAnimesByCategory(enCategory);
-    const countElement = document.querySelector(`[data-category="${enCategory}"] .anime-count`);
-    if (countElement) {
-      countElement.textContent = `${count} ${count === 1 ? 'anime' : 'animes'}`;
-
-      // Adiciona uma classe visual se a categoria estiver vazia
-      const categoryCard = document.querySelector(`[data-category="${enCategory}"]`);
-      if (categoryCard) {
-        categoryCard.classList.toggle('empty-category', count === 0);
-      }
-    }
-  }
-}
-
-// Função para filtrar animes por categoria
-function filterByCategory(category) {
-  const animes = getAnimes();
-  const normalized = normalizeCategory(category);
-
-  const filtered = animes.filter(anime =>
-    anime.genres.some(genre => normalizeCategory(genre) === normalized)
-  );
-
-  if (filtered.length > 0) {
-    // Modificado para usar 'all' como parâmetro e adicionar category como query param
-    window.location.href = `animes.html?anime=all&category=${encodeURIComponent(category)}`;
-  } else {
-    alert('Nenhum anime encontrado nesta categoria.');
-  }
-}
-
-// Função para inicializar os event listeners
-function initializeCategories() {
-  // Handler para todas as categorias (principais e subcategorias)
-  const categoryCards = document.querySelectorAll('.category-card');
-  const subcategoryTags = document.querySelectorAll('.subcategory-tag');
-
-  // Adiciona handlers para todas as categorias
-  [...categoryCards, ...subcategoryTags].forEach(element => {
-    element.addEventListener('click', () => {
-      const category = element.dataset.category || element.dataset.subcategory;
-      filterByCategory(category);
+class CategoryDisplay {
+  constructor() {
+    this.mainContainer = document.getElementById('main-categories');
+    this.subContainer = document.getElementById('subcategories');
+    this.initialize();
+    
+    // Adiciona listener para atualização de categorias
+    window.addEventListener('categoriesUpdated', () => {
+      this.renderCategories();
     });
+  }
 
-    // Adiciona o contador de animes como tooltip
-    const category = element.dataset.category || element.dataset.subcategory;
-    if (category) {
-      const count = countAnimesByCategory(category);
-      element.title = `${count} ${count === 1 ? 'anime' : 'animes'}`;
+  initialize() {
+    this.renderCategories();
+    this.setupEventListeners();
+  }
+
+  getCategories() {
+    const savedCategories = JSON.parse(localStorage.getItem('animuCategories')) || [];
+    
+    // Se não houver categorias salvas, retorna as categorias padrão
+    if (savedCategories.length === 0) {
+      const defaultCategories = [
+        {
+          id: 1,
+          name: 'Ação',
+          icon: '⚔️',
+          description: 'Combates épicos e adrenalina pura',
+          isSubcategory: false,
+          gradient: {
+            start: '#FF6B6B',
+            end: '#FF8E8E'
+          }
+        },
+        {
+          id: 2,
+          name: 'Drama',
+          icon: '🎭',
+          description: 'Histórias emocionantes e profundas',
+          isSubcategory: false,
+          gradient: {
+            start: '#4ECDC4',
+            end: '#45B7AF'
+          }
+        }
+        // ... outras categorias padrão se necessário
+      ];
+      
+      // Salva as categorias padrão no localStorage
+      localStorage.setItem('animuCategories', JSON.stringify(defaultCategories));
+      return defaultCategories;
     }
-  });
+    
+    return savedCategories;
+  }
 
-  // Atualiza os contadores iniciais
-  updateAnimeCounts();
+  renderCategories() {
+    const categories = this.getCategories();
+    
+    if (this.mainContainer && categories.length > 0) {
+      this.mainContainer.innerHTML = categories
+        .filter(cat => !cat.isSubcategory) // Filtra apenas categorias principais
+        .map(category => this.createCategoryCard(category))
+        .join('');
+    }
 
-  // Log para debug
-  console.log('Categorias inicializadas');
-  console.log('Animes encontrados:', getAnimes().length);
+    if (this.subContainer && categories.length > 0) {
+      this.subContainer.innerHTML = categories
+        .filter(cat => cat.isSubcategory) // Filtra apenas subcategorias
+        .map(category => this.createSubcategoryTag(category))
+        .join('');
+    }
+
+    // Se não houver categorias, mostra mensagem
+    if (categories.length === 0) {
+      this.mainContainer.innerHTML = `
+        <div class="col-span-full text-center py-8">
+          <p class="text-xl text-gray-500">Nenhuma categoria encontrada.</p>
+        </div>
+      `;
+    }
+  }
+
+  createCategoryCard(category) {
+    const animeCount = this.countAnimesByCategory(category.name);
+    return `
+      <div class="category-card" 
+           data-category="${category.name.toLowerCase()}" 
+           style="background: linear-gradient(45deg, ${category.gradient.start}, ${category.gradient.end})">
+        <div class="category-icon">${category.icon}</div>
+        <h3>${category.name}</h3>
+        <p>${category.description}</p>
+        <span class="anime-count">${animeCount} ${animeCount === 1 ? 'anime' : 'animes'}</span>
+      </div>
+    `;
+  }
+
+  createSubcategoryTag(category) {
+    const animeCount = this.countAnimesByCategory(category.name);
+    return `
+      <span class="subcategory-tag" 
+            data-subcategory="${category.name.toLowerCase()}"
+            title="${animeCount} ${animeCount === 1 ? 'anime' : 'animes'}"
+            style="background: linear-gradient(45deg, ${category.gradient.start}, ${category.gradient.end})">
+        ${category.icon} ${category.name}
+      </span>
+    `;
+  }
+
+  countAnimesByCategory(category) {
+    const animes = JSON.parse(localStorage.getItem('animeData')) || [];
+    return animes.filter(anime =>
+      anime.genres.some(genre =>
+        this.normalizeCategory(genre) === this.normalizeCategory(category)
+      )
+    ).length;
+  }
+
+  normalizeCategory(category) {
+    return category.toLowerCase().trim();
+  }
+
+  setupEventListeners() {
+    // Delegação de eventos para categorias e subcategorias
+    document.addEventListener('click', (e) => {
+      const categoryCard = e.target.closest('.category-card');
+      const subcategoryTag = e.target.closest('.subcategory-tag');
+
+      if (categoryCard) {
+        const category = categoryCard.dataset.category;
+        this.filterByCategory(category);
+      } else if (subcategoryTag) {
+        const category = subcategoryTag.dataset.subcategory;
+        this.filterByCategory(category);
+      }
+    });
+  }
+
+  filterByCategory(category) {
+    window.location.href = `animes.html?anime=all&category=${encodeURIComponent(category)}`;
+  }
 }
 
-// Inicializa quando o DOM estiver carregado
-document.addEventListener('DOMContentLoaded', initializeCategories);
+// Inicialização quando o DOM estiver carregado
+document.addEventListener('DOMContentLoaded', () => {
+  new CategoryDisplay();
+});
