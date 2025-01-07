@@ -270,15 +270,38 @@
   color: #ffa534 !important;
 }
 
+/* Remover os estilos antigos de estrelas */
 .star, .half-star {
-  color: #ffa534 !important;
-  font-size: 1em;
+  display: none;
 }
 
-.half-star {
+/* Novo sistema de estrelas */
+.stars-container {
+  display: inline-flex;
   position: relative;
-  width: 0.412em;
+}
+
+.stars-container .stars-empty,
+.stars-container .stars-filled {
+  display: flex;
+}
+
+.stars-container .stars-filled {
+  position: absolute;
+  top: 0;
+  left: 0;
   overflow: hidden;
+  white-space: nowrap;
+}
+
+.stars-empty i,
+.stars-filled i {
+  color: #ddd;
+  font-style: normal;
+}
+
+.stars-filled i {
+  color: #ffa534;
 }
 
 .rating-slider-container {

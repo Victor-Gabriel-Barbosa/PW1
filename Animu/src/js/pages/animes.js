@@ -482,29 +482,21 @@ function formatDate(dateString) {
   });
 }
 
-// Gera HTML para exibição visual da avaliação em estrelas
+// Substituir a função renderStars
 function renderStars(rating) {
-  let stars = '';
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 >= 0.5;
-
-  // Adiciona estrelas cheias
-  for (let i = 0; i < fullStars; i++) {
-    stars += '<span class="star">★</span>';
-  }
-
-  // Adiciona meia estrela se necessário
-  if (hasHalfStar) {
-    stars += '<span class="half-star">★</span>';
-  }
-
-  // Adiciona estrelas vazias para completar 10
-  const emptyStars = 10 - Math.ceil(rating);
-  for (let i = 0; i < emptyStars; i++) {
-    stars += '<span class="star" style="color: #ddd !important;">☆</span>';
-  }
-
-  return stars;
+  const starsTotal = 10; // Total de estrelas
+  const fillPercentage = (rating / starsTotal) * 100; // Calcula porcentagem de preenchimento
+  
+  return `
+    <div class="stars-container">
+      <div class="stars-empty">
+        ${Array(starsTotal).fill('').map(() => '<i>★</i>').join('')}
+      </div>
+      <div class="stars-filled" style="width: ${fillPercentage}%">
+        ${Array(starsTotal).fill('').map(() => '<i>★</i>').join('')}
+      </div>
+    </div>
+  `;
 }
 
 // Sistema de moderação de comentários
