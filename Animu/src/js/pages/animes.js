@@ -484,17 +484,20 @@ function formatDate(dateString) {
 
 // Substituir a função renderStars
 function renderStars(rating) {
-  const starsTotal = 10; // Total de estrelas
-  const fillPercentage = (rating / starsTotal) * 100; // Calcula porcentagem de preenchimento
+  const starsTotal = 10;
+  const fillPercentage = (rating / starsTotal) * 100;
   
   return `
-    <div class="stars-container">
-      <div class="stars-empty">
-        ${Array(starsTotal).fill('').map(() => '<i>★</i>').join('')}
+    <div class="rating-display">
+      <div class="stars-container">
+        <div class="stars-empty">
+          ${Array(starsTotal).fill('').map(() => '<i>★</i>').join('')}
+        </div>
+        <div class="stars-filled" style="width: ${fillPercentage}%">
+          ${Array(starsTotal).fill('').map(() => '<i>★</i>').join('')}
+        </div>
       </div>
-      <div class="stars-filled" style="width: ${fillPercentage}%">
-        ${Array(starsTotal).fill('').map(() => '<i>★</i>').join('')}
-      </div>
+      <span class="rating-number">${rating.toFixed(1)}</span>
     </div>
   `;
 }
@@ -621,7 +624,7 @@ function toggleEditMode(commentId) {
     editForm.remove();
   } else {
     const currentText = commentText.textContent;
-    const currentRating = parseFloat(commentDiv.getAttribute('data-rating')) * 10; // Converte para escala 0-100
+    const currentRating = parseFloat(commentDiv.getAttribute('data-rating')) * 10;
 
     commentText.style.display = 'none';
     commentRating.style.display = 'none';
@@ -630,7 +633,18 @@ function toggleEditMode(commentId) {
     form.className = 'edit-form mt-2';
     form.innerHTML = `
       <div class="rating-container mb-4">
-        <p class="mb-2 font-semibold">Sua avaliação: <span id="edit-rating-display">${(currentRating / 10).toFixed(1)}</span></p>
+        <p class="mb-2 font-semibold">
+          Sua avaliação: 
+          <span class="rating-number-input">
+            <input type="number" 
+                   id="edit-rating-display"
+                   class="text-purple-600 ml-2 w-16 text-center" 
+                   min="0" 
+                   max="10" 
+                   step="0.1" 
+                   value="${(currentRating / 10).toFixed(1)}">
+          </span>
+        </p>
         <div class="rating-slider-container">
           <input type="range" 
                  id="edit-rating-slider" 
@@ -638,7 +652,7 @@ function toggleEditMode(commentId) {
                  max="100" 
                  value="${currentRating}"
                  class="rating-slider"
-                 step="5">
+                 step="1">
           <div class="rating-emoji-container">
             <span id="edit-rating-emoji" class="rating-emoji">😊</span>
           </div>
@@ -660,11 +674,32 @@ function toggleEditMode(commentId) {
 
     commentText.insertAdjacentElement('afterend', form);
 
-    // Inicializa o slider de avaliação na edição
+    // Inicializa o slider e input de avaliação na edição
     const editSlider = form.querySelector('#edit-rating-slider');
-    editSlider.addEventListener('input', function () {
+    const editInput = form.querySelector('#edit-rating-display');
+
+    editSlider.addEventListener('input', function() {
       updateEditRatingDisplay(this.value);
     });
+
+    editInput.addEventListener('input', function() {
+      let value = parseFloat(this.value);
+      
+      // Validação do valor
+      if (isNaN(value)) value = 0;
+      if (value < 0) value = 0;
+      if (value > 10) value = 10;
+      
+      // Multiplica por 10 para a escala do slider
+      updateEditRatingDisplay(value * 10, false);
+    });
+
+    // Formata o valor quando o input perde o foco
+    editInput.addEventListener('blur', function() {
+      let value = parseFloat(this.value || 0);
+      this.value = (Math.round(value * 10) / 10).toFixed(1);
+    });
+
     updateEditRatingDisplay(currentRating);
 
     // Atualiza contador inicial
@@ -688,9 +723,10 @@ function toggleEditMode(commentId) {
 }
 
 // Atualiza interface visual da avaliação durante edição
-function updateEditRatingDisplay(value) {
+function updateEditRatingDisplay(value, updateInput = true) {
   const emoji = document.getElementById('edit-rating-emoji');
   const display = document.getElementById('edit-rating-display');
+  const slider = document.getElementById('edit-rating-slider');
   const rating = value / 10;
 
   // Adiciona classe de animação
@@ -713,9 +749,12 @@ function updateEditRatingDisplay(value) {
     emoji.textContent = '🤩';
   }
 
-  // Atualiza o display numérico
-  if (display) {
-    display.textContent = rating.toFixed(1);
+  // Atualiza valores
+  if (updateInput && display) {
+    display.value = rating.toFixed(1);
+  }
+  if (!updateInput && slider) {
+    slider.value = Math.round(value);
   }
 }
 
@@ -922,14 +961,15 @@ function renderSearchResults(query) {
 }
 
 // Atualiza emoji da avaliação baseado no valor do slider
-function updateRatingEmoji(value) {
+function updateRatingEmoji(value, updateInput = true) {
   const emoji = document.getElementById('rating-emoji');
   const display = document.getElementById('rating-display');
-  const rating = value / 10;
+  const slider = document.getElementById('rating-slider');
+  const rating = parseFloat(value) / 10;
 
   // Adiciona classe de animação
   emoji.classList.remove('animate');
-  void emoji.offsetWidth; // Força reflow
+  void emoji.offsetWidth;
   emoji.classList.add('animate');
 
   // Define o emoji baseado no valor
@@ -947,8 +987,14 @@ function updateRatingEmoji(value) {
     emoji.textContent = '🤩';
   }
 
-  // Atualiza o display numérico
-  display.textContent = (rating).toFixed(1);
+  // Atualiza valores com precisão de uma casa decimal
+  if (updateInput && display) {
+    display.value = rating.toFixed(1);
+  }
+  if (!updateInput && slider) {
+    // Garante que o valor do slider seja um número inteiro
+    slider.value = Math.round(value);
+  }
 }
 
 // Sistema de favoritos
@@ -1114,6 +1160,39 @@ document.addEventListener('DOMContentLoaded', function () {
     commentText.addEventListener('input', function() {
       const counter = document.getElementById('comment-char-count');
       counter.textContent = `${this.value.length}/${MAX_COMMENT_LENGTH}`;
+    });
+  }
+
+  const ratingInput = document.getElementById('rating-display');
+  if (ratingInput) {
+    ratingInput.addEventListener('input', function() {
+      let value = parseFloat(this.value);
+      
+      // Validação do valor
+      if (isNaN(value)) value = 0;
+      if (value < 0) value = 0;
+      if (value > 10) value = 10;
+      
+      // Multiplica por 10 e arredonda para garantir números com uma casa decimal
+      value = Math.round(value * 10);
+      
+      // Atualiza o slider e emoji
+      updateRatingEmoji(value, false);
+    });
+
+    // Formata o valor quando o input perde o foco
+    ratingInput.addEventListener('blur', function() {
+      let value = parseFloat(this.value || 0);
+      // Garante que o valor tenha apenas uma casa decimal
+      this.value = (Math.round(value * 10) / 10).toFixed(1);
+    });
+  }
+
+  const ratingSlider = document.getElementById('rating-slider');
+  if (ratingSlider) {
+    ratingSlider.addEventListener('input', function() {
+      // O valor do slider agora representa diretamente décimos de ponto
+      updateRatingEmoji(this.value);
     });
   }
 });

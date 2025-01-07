@@ -28,11 +28,20 @@
         <div class="flex flex-col gap-4">
           <!-- Sistema de avaliação por estrelas -->
           <div class="rating-container mb-2">
-            <p class="mb-2 font-semibold">Sua avaliação: <span id="rating-display"
-                class="text-purple-600 ml-2">0.0</span>
+            <p class="mb-2 font-semibold">
+              Sua avaliação: 
+              <span class="rating-number-input">
+                <input type="number" 
+                       id="rating-display"
+                       class="text-purple-600 ml-2 w-16 text-center" 
+                       min="0" 
+                       max="10" 
+                       step="0.1" 
+                       value="0.0">
+              </span>
             </p>
             <div class="rating-slider-container">
-              <input type="range" id="rating-slider" min="0" max="100" value="0" class="rating-slider" step="5">
+              <input type="range" id="rating-slider" min="0" max="100" value="0" class="rating-slider" step="1">  <!-- Mudando step para 1 (representará 0.1 na nota final) -->
               <div class="rating-emoji-container">
                 <span id="rating-emoji" class="rating-emoji">😶</span>
               </div>
