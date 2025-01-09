@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="../src/css/search.css">
   <link rel="stylesheet" href="../src/css/inicio.css">
   <link rel="stylesheet" href="../src/css/animes.css">
+  <link rel="stylesheet" href="../src/css/noticias.css">
   <link rel="icon" href="../src/favicon/favicon.ico" type="image/x-icon">
 </head>
 
@@ -109,6 +110,8 @@
         </div>
       </section>
 
+      <div class="section-divider"></div>
+
       <!-- Seção de animes em destaque -->
       <section class="featured-section">
         <h2 class="featured-title">Animes em Destaque</h2>
@@ -116,6 +119,27 @@
           <!-- Os cards serão inseridos dinamicamente aqui -->
         </div>
       </section>
+
+      <div class="section-divider"></div>
+
+      <!-- Seção de Notícias -->
+      <section class="news-section mt-16">
+        <div class="flex justify-between items-center mb-8">
+          <h2 class="text-3xl font-bold">Últimas Notícias</h2>
+          <a href="noticias.html" class="btn">
+            Ver todas
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+            </svg>
+          </a>
+        </div>
+        
+        <div class="news-grid">
+          <!-- Cards de notícias serão inseridos dinamicamente via JavaScript -->
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
 
       <!-- Seção do Fórum -->
       <section class="forum-container">
@@ -248,6 +272,7 @@
   <script src="../src/js/pages/animes.js"></script>
   <script src="../src/js/pages/forum.js"></script>
   <script src="../src/js/utils/search.js"></script>
+  <script src="../src/js/pages/noticias.js"></script>
 </body>
 
 </html>

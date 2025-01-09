@@ -331,12 +331,19 @@ function formatSeason(season) {
 // Filtra animes por temporada e ordena por pontuação
 function getSeasonalAnimes(period, year) {
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
-  return animes
-    .filter(anime => 
-      anime.season?.period?.toLowerCase() === period.toLowerCase() && 
-      anime.season?.year === parseInt(year)
-    )
-    .sort((a, b) => (parseFloat(b.score) || 0) - (parseFloat(a.score) || 0));
+  
+  const normalizedPeriod = period.toLowerCase().trim();
+  const normalizedYear = parseInt(year);
+
+  const filtered = animes.filter(anime => {
+    // Normaliza a temporada do anime para minúsculo também
+    const animePeriod = anime.season?.period?.toLowerCase().trim();
+    return anime.season &&
+           animePeriod === normalizedPeriod &&
+           anime.season.year === normalizedYear;
+  });
+  
+  return filtered.sort((a, b) => (parseFloat(b.score) || 0) - (parseFloat(a.score) || 0));
 }
 
 // Retorna temporadas disponíveis

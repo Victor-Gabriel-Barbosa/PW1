@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notícias | Animu</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../src/css/styles.css">
+  <link rel="stylesheet" href="../src/css/search.css">
+  <link rel="stylesheet" href="../src/css/inicio.css">
+  <link rel="stylesheet" href="../src/css/animes.css">
+  <link rel="stylesheet" href="../src/css/noticias.css">
+  <link rel="icon" href="../src/favicon/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+  <!-- Botão Voltar -->
+  <button onclick="history.back()" class="back-button z-50">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+
+  <div class="pt-16">
+    <div class="container mx-auto px-4 py-12 max-w-6xl">
+      <header class="mb-12">
+        <h1 class="text-4xl font-bold mb-4">Últimas Notícias</h1>
+        <!-- Filtros -->
+        <div class="flex flex-wrap gap-4 mb-8">
+          <div class="flex-1 min-w-[200px]">
+            <input type="text" id="search-news" placeholder="Buscar notícias..."
+              class="w-full p-2 rounded-lg border border-gray-300">
+          </div>
+          <select id="category-filter" class="p-2 rounded-lg border border-gray-300">
+            <option value="">Todas as categorias</option>
+            <option value="Anúncio">Anúncios</option>
+            <option value="Lançamento">Lançamentos</option>
+            <option value="Evento">Eventos</option>
+            <option value="Notícia">Notícias Gerais</option>
+          </select>
+          <select id="sort-news" class="p-2 rounded-lg border border-gray-300">
+            <option value="recent">Mais recentes</option>
+            <option value="oldest">Mais antigas</option>
+          </select>
+        </div>
+      </header>
+
+      <!-- Grid de Notícias -->
+      <div class="news-grid">
+        <!-- Notícias serão inseridas aqui via JavaScript -->
+      </div>
+
+      <!-- Paginação -->
+      <div class="pagination flex justify-center gap-2 mt-8">
+        <button id="prev-page" class="btn btn-secondary" disabled>Anterior</button>
+        <span id="page-info" class="flex items-center px-4">Página 1</span>
+        <button id="next-page" class="btn btn-secondary">Próxima</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../src/js/pages/navbar.js"></script>
+  <script src="../src/js/pages/animu.js"></script>
+  <script src="../src/js/pages/animes.js"></script>
+  <script src="../src/js/utils/search.js"></script>
+  <script src="../src/js/pages/noticias.js"></script>
+</body>
+
+</html>

@@ -227,7 +227,7 @@ class AnimeSearchBar {
 
     try {
       const results = await this.searchAnimes(query);
-      
+
       if (redirect) {
         // Salvar resultados no localStorage e redirecionar
         localStorage.setItem('searchResults', JSON.stringify(results));

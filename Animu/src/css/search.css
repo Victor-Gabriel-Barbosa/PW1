@@ -152,8 +152,33 @@
   border-radius: 8px;
   padding: 16px;
   min-width: 250px;
+  max-height: 400px;
+  overflow-y: auto;
   box-shadow: 0 4px 12px var(--card-shadow);
   z-index: 2000;
+  
+  /* Estilizar a barra de rolagem */
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) var(--background);
+}
+
+/* Estilização da barra de rolagem para navegadores WebKit (Chrome, Safari, etc) */
+.filter-menu::-webkit-scrollbar {
+  width: 8px;
+}
+
+.filter-menu::-webkit-scrollbar-track {
+  background: var(--background);
+  border-radius: 4px;
+}
+
+.filter-menu::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+.filter-menu::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color-dark, var(--primary-color));
 }
 
 .filter-menu.show {

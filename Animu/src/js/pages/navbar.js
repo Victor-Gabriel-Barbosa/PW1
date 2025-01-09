@@ -63,6 +63,7 @@ class Navbar {
                 <a href="./usuarios.html" class="admin-menu-item">Usuários</a>
                 <a href="./admin-categorias.html" class="admin-menu-item">Categorias</a>
                 <a href="./admin-animes.html" class="admin-menu-item">Animes</a>
+                <a href="./admin-noticias.html" class="admin-menu-item">Notícias</a>
             </div>
         </div>
     `;
