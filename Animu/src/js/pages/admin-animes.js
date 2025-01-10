@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
   loadAnimesList();
+  setupDropZone('coverImageDropzone', 'coverImageInput', 'coverImage', 'coverImagePreview', handleImageDrop);
+  setupDropZone('trailerDropzone', 'trailerInput', 'trailerUrl', 'trailerPreview', handleVideoDrop);
 });
 
 // Carrega lista de animes
@@ -38,14 +40,22 @@ function loadAnimesList() {
                 </span>
             </td>
             <td class="px-6 py-4 text-sm">
-                <button onclick="editAnime(${index})" 
-                        class="text-blue-600 hover:text-blue-800 mr-3">
-                    ✏️ Editar
+              <div class="action-buttons">
+                <button class="btn-action btn-edit" title="Editar" onclick="editAnime(${index})">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
                 </button>
-                <button onclick="deleteAnime(${index})"
-                        class="text-red-600 hover:text-red-800">
-                    🗑️ Excluir
+                <button class="btn-action btn-delete" title="Remover" onclick="deleteAnime(${index})">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 6h18"></path>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                  </svg>
                 </button>
+              </div>
             </td>
         </tr>
     `).join('');
@@ -304,6 +314,48 @@ function editAnime(index) {
     // Força atualização das listas visuais
     updateAlternativeTitlesList();
     updateGenresList();
+
+    // Preview da imagem de capa
+    const coverPreview = document.getElementById('coverImagePreview');
+    const coverPrompt = coverPreview.previousElementSibling;
+    if (anime.coverImage) {
+      coverPreview.src = anime.coverImage;
+      coverPreview.classList.remove('hidden');
+      coverPrompt.classList.add('hidden');
+    } else {
+      coverPreview.classList.add('hidden');
+      coverPrompt.classList.remove('hidden');
+    }
+
+    // Preview do trailer
+    const trailerPreview = document.getElementById('trailerPreview');
+    const trailerPrompt = trailerPreview.previousElementSibling;
+    if (anime.trailerUrl) {
+      if (anime.trailerUrl.includes('data:video')) {
+        trailerPreview.innerHTML = `
+          <video controls class="max-h-48 mx-auto">
+            <source src="${anime.trailerUrl}">
+            Seu navegador não suporta a tag de vídeo.
+          </video>
+        `;
+      } else {
+        // Assume que é uma URL do YouTube
+        const videoId = extractYouTubeId(anime.trailerUrl);
+        if (videoId) {
+          trailerPreview.innerHTML = `
+            <iframe width="280" height="157" 
+                    src="https://www.youtube.com/embed/${videoId}" 
+                    frameborder="0" allowfullscreen>
+            </iframe>
+          `;
+        }
+      }
+      trailerPreview.classList.remove('hidden');
+      trailerPrompt.classList.add('hidden');
+    } else {
+      trailerPreview.classList.add('hidden');
+      trailerPrompt.classList.remove('hidden');
+    }
   }, 100);
 }
 
@@ -440,4 +492,175 @@ function importAnimes(event) {
     };
     reader.readAsText(file);
   }
+}
+
+function setupDropZone(dropzoneId, inputId, urlInputId, previewId, dropHandler) {
+  const dropZone = document.getElementById(dropzoneId);
+  const fileInput = document.getElementById(inputId);
+  const urlInput = document.getElementById(urlInputId);
+
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, preventDefaults, false);
+  });
+
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropZone.addEventListener(eventName, () => {
+      dropZone.classList.add('drag-over');
+    });
+  });
+
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, () => {
+      dropZone.classList.remove('drag-over');
+    });
+  });
+
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dropZone.classList.add('drag-over');
+  });
+
+  // Adicione suporte para drag and drop de texto (URLs)
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dropZone.classList.remove('drag-over');
+
+    const dt = e.dataTransfer;
+    const file = dt.files[0];
+
+    // Verifica se é um arquivo ou texto (URL)
+    if (file) {
+      dropHandler(file, urlInput, document.getElementById(previewId));
+    } else {
+      // Tenta pegar o texto arrastado (URL)
+      const text = dt.getData('text');
+      if (text) {
+        dropHandler(text, urlInput, document.getElementById(previewId));
+      }
+    }
+  });
+
+  // Adicione suporte para colar URLs
+  dropZone.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const text = e.clipboardData.getData('text');
+    if (text) {
+      dropHandler(text, urlInput, document.getElementById(previewId));
+    }
+  });
+
+  dropZone.addEventListener('click', () => {
+    fileInput.click();
+  });
+
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      dropHandler(file, urlInput, document.getElementById(previewId));
+    }
+  });
+}
+
+async function handleImageDrop(file, urlInput, previewElement) {
+  if (!file.type.startsWith('image/')) {
+    alert('Por favor, selecione apenas arquivos de imagem.');
+    return;
+  }
+
+  try {
+    // Converte a imagem para base64
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      previewElement.src = reader.result;
+      previewElement.classList.remove('hidden');
+      previewElement.previousElementSibling.classList.add('hidden'); // Esconde o texto de prompt
+      urlInput.value = reader.result;
+    };
+    reader.readAsDataURL(file);
+  } catch (error) {
+    console.error('Erro ao processar imagem:', error);
+    alert('Erro ao processar a imagem. Tente novamente.');
+  }
+}
+
+function handleVideoDrop(file, urlInput, previewElement) {
+  // Se for um arquivo de vídeo
+  if (file instanceof File && file.type.startsWith('video/')) {
+    try {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        previewElement.innerHTML = `
+          <video controls class="max-h-48 mx-auto">
+            <source src="${reader.result}" type="${file.type}">
+            Seu navegador não suporta a tag de vídeo.
+          </video>
+        `;
+        previewElement.classList.remove('hidden');
+        previewElement.previousElementSibling.classList.add('hidden');
+        urlInput.value = reader.result;
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Erro ao processar vídeo:', error);
+      alert('Erro ao processar o vídeo. Tente novamente.');
+    }
+    return;
+  }
+
+  // Se for uma URL do YouTube (do drag and drop)
+  let url = '';
+  if (file instanceof File) {
+    // Tenta ler o conteúdo do arquivo como texto (caso seja um arquivo de texto com a URL)
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      url = e.target.result.trim();
+      handleYoutubeUrl(url, urlInput, previewElement);
+    };
+    reader.readAsText(file);
+  } else {
+    // Se for uma URL arrastada diretamente
+    url = file.toString().trim();
+    handleYoutubeUrl(url, urlInput, previewElement);
+  }
+}
+
+function handleYoutubeUrl(url, urlInput, previewElement) {
+  const videoId = extractYouTubeId(url);
+  if (videoId) {
+    previewElement.innerHTML = `
+      <iframe width="280" height="157" 
+              src="https://www.youtube.com/embed/${videoId}" 
+              frameborder="0" allowfullscreen>
+      </iframe>
+    `;
+    previewElement.classList.remove('hidden');
+    previewElement.previousElementSibling.classList.add('hidden');
+    urlInput.value = url;
+  } else {
+    alert('URL do YouTube inválida. Por favor, verifique a URL e tente novamente.');
+  }
+}
+
+// Melhore a função extractYouTubeId para suportar mais formatos de URL
+function extractYouTubeId(url) {
+  const patterns = [
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)/i,
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([^/?]+)/i,
+    /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([^/?]+)/i,
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/v\/([^/?]+)/i,
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/shorts\/([^/?]+)/i
+  ];
+
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+  return null;
 }

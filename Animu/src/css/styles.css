@@ -123,6 +123,51 @@ h1, h2, h3, h4, h5, h6 {
   transform: scale(1.05);
 }
 
+/* Botões de Ação */
+.btn-action {
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.btn-action svg {
+  width: 20px;
+  height: 20px;
+}
+
+.btn-edit {
+  background-color: var(--primary-color-alpha);
+  color: var(--primary-color);
+}
+
+.btn-edit:hover {
+  background-color: var(--primary-color);
+  color: white;
+  transform: scale(1.05);
+}
+
+.btn-delete {
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #ff4444;
+}
+
+.btn-delete:hover {
+  background-color: #ff4444;
+  color: white;
+  transform: scale(1.05);
+}
+
+.action-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: center;
+}
+
 /* 4.2. Formulários */
 input, button, textarea, select {
   background: var(--background);

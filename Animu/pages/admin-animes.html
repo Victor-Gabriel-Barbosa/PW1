@@ -37,24 +37,19 @@
         <table class="min-w-full rounded-lg overflow-hidden shadow-lg">
           <thead>
             <tr>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                 Imagem
               </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                 Título
               </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                 Episódios
               </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                 Status
               </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                 Ações
               </th>
             </tr>
@@ -67,9 +62,9 @@
     </div>
 
     <!-- Modal do formulário -->
-    <div id="animeModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div
-        class="admin-form-container p-6 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+    <div id="animeModal"
+      class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="admin-form-container p-6 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <h2 id="modalTitle" class="text-2xl font-bold mb-4">Adicionar Novo Anime</h2>
 
         <form id="animeForm" class="space-y-4">
@@ -82,8 +77,17 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium mb-1">URL da Imagem de Capa</label>
-                <input type="url" id="coverImage" required class="w-full p-2 border rounded">
+                <label class="block text-sm font-medium mb-1">Imagem de Capa</label>
+                <div id="coverImageDropzone"
+                  class="drop-zone border-2 border-dashed rounded-lg p-4 text-center cursor-pointer">
+                  <div class="drop-zone-prompt">
+                    <p>Arraste uma imagem ou clique para selecionar</p>
+                    <p class="text-sm text-gray-500">Formatos suportados: JPG, PNG, WebP</p>
+                  </div>
+                  <img id="coverImagePreview" class="hidden max-h-48 mx-auto">
+                  <input type="url" id="coverImage" class="hidden">
+                  <input type="file" id="coverImageInput" class="hidden" accept="image/*">
+                </div>
               </div>
 
               <div>
@@ -94,8 +98,7 @@
               <div>
                 <label class="block text-sm font-medium mb-1">Títulos Alternativos</label>
                 <div class="flex gap-2 mb-2">
-                  <input type="text" id="altTitle" placeholder="Título"
-                    class="flex-1 p-2 border rounded">
+                  <input type="text" id="altTitle" placeholder="Título" class="flex-1 p-2 border rounded">
                   <select id="altTitleType" class="p-2 border rounded">
                     <option value="japanese">Japonês</option>
                     <option value="english">Inglês</option>
@@ -162,8 +165,7 @@
 
                 <div>
                   <label class="block text-sm font-medium mb-1">Ano</label>
-                  <input type="number" id="seasonYear" min="1960" max="2030"
-                    class="w-full p-2 border rounded">
+                  <input type="number" id="seasonYear" min="1960" max="2030" class="w-full p-2 border rounded">
                 </div>
               </div>
 
@@ -177,8 +179,17 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium mb-1">URL do Trailer (YouTube)</label>
-                <input type="url" id="trailerUrl" class="w-full p-2 border rounded">
+                <label class="block text-sm font-medium mb-1">Trailer do Anime</label>
+                <div id="trailerDropzone"
+                  class="drop-zone border-2 border-dashed rounded-lg p-4 text-center cursor-pointer">
+                  <div class="drop-zone-prompt">
+                    <p>Arraste um vídeo ou cole a URL do YouTube</p>
+                    <p class="text-sm text-gray-500">Formatos suportados: MP4 ou URL do YouTube</p>
+                  </div>
+                  <div id="trailerPreview" class="hidden max-w-full"></div>
+                  <input type="url" id="trailerUrl" class="hidden">
+                  <input type="file" id="trailerInput" class="hidden" accept="video/*">
+                </div>
               </div>
 
               <div class="space-y-4">

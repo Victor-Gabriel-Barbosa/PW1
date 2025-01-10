@@ -546,15 +546,23 @@ function voteComment(animeTitle, commentId, voteType) {
     comment.likes = comment.likes || [];
     comment.dislikes = comment.dislikes || [];
 
-    // Remover voto existente do usuário
+    // Verifica se o usuário já votou desta forma
+    const hasVotedThisWay = voteType === 'like' ? 
+      comment.likes.includes(currentUser) : 
+      comment.dislikes.includes(currentUser);
+
+    // Remove todos os votos existentes do usuário
     comment.likes = comment.likes.filter(user => user !== currentUser);
     comment.dislikes = comment.dislikes.filter(user => user !== currentUser);
 
-    // Adicionar novo voto
-    if (voteType === 'like') {
-      comment.likes.push(currentUser);
-    } else if (voteType === 'dislike') {
-      comment.dislikes.push(currentUser);
+    // Se não tinha votado desta forma antes, adiciona o voto
+    // Se já tinha votado desta forma, o voto é apenas removido (toggle)
+    if (!hasVotedThisWay) {
+      if (voteType === 'like') {
+        comment.likes.push(currentUser);
+      } else if (voteType === 'dislike') {
+        comment.dislikes.push(currentUser);
+      }
     }
 
     localStorage.setItem('animeComments', JSON.stringify(comments));
@@ -793,24 +801,30 @@ function renderComment(comment, animeTitle) {
               <div class="comment-rating">${renderStars(comment.rating)}</div>
               <span class="text-sm text-gray-500">${formatDate(comment.timestamp)}</span>
             </div>
-            <div class="flex gap-2">
+            <div class="action-buttons">
               ${isCommentOwner ? `
                 <button 
-                  class="edit-btn px-2 py-1 rounded text-sm bg-blue-500 text-white hover:bg-blue-600"
+                  class="btn-action btn-edit" 
                   onclick="toggleEditMode(${comment.id})"
+                  title="Editar comentário"
                 >
-                  Editar
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
                 </button>
               ` : ''}
               ${canDelete ? `
                 <button 
-                  class="delete-btn px-2 py-1 rounded text-sm"
+                  class="btn-action btn-delete"
                   onclick="if(confirm('Deseja realmente excluir este comentário?')) { 
                     deleteComment('${animeTitle}', ${comment.id}); 
                     updateCommentsList('${animeTitle}');
                   }"
+                  title="${isAdmin && !isCommentOwner ? 'Excluir como administrador' : 'Excluir comentário'}"
                 >
-                  ${isAdmin && !isCommentOwner ? '🛡️ Excluir' : 'Excluir'}
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
                 </button>
               ` : ''}
             </div>
@@ -826,13 +840,19 @@ function renderComment(comment, animeTitle) {
               class="vote-btn ${userVote === 'like' ? 'active' : ''}"
               onclick="voteComment('${animeTitle}', ${comment.id}, 'like') && updateCommentsList('${animeTitle}')"
             >
-              👍 <span class="vote-count">${comment.likes?.length || 0}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+              </svg>
+              <span class="vote-count">${comment.likes?.length || 0}</span>
             </button>
             <button 
               class="vote-btn ${userVote === 'dislike' ? 'active' : ''}"
               onclick="voteComment('${animeTitle}', ${comment.id}, 'dislike') && updateCommentsList('${animeTitle}')"
             >
-              👎 <span class="vote-count">${comment.dislikes?.length || 0}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.095c.5 0 .905-.405.905-.905 0-.714.211-1.412.608-2.006L17 13V4m-7 10h2m5 0v2a2 2 0 01-2 2h-2.5" />
+              </svg>
+              <span class="vote-count">${comment.dislikes?.length || 0}</span>
             </button>
           </div>
         </div>
