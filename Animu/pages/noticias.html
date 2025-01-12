@@ -24,41 +24,39 @@
     </svg>
   </button>
 
-  <div class="pt-16">
-    <div class="container mx-auto px-4 py-12 max-w-6xl">
-      <header class="mb-12">
-        <h1 class="text-4xl font-bold mb-4">Últimas Notícias</h1>
-        <!-- Filtros -->
-        <div class="flex flex-wrap gap-4 mb-8">
-          <div class="flex-1 min-w-[200px]">
-            <input type="text" id="search-news" placeholder="Buscar notícias..."
-              class="w-full p-2 rounded-lg border border-gray-300">
-          </div>
-          <select id="category-filter" class="p-2 rounded-lg border border-gray-300">
-            <option value="">Todas as categorias</option>
-            <option value="Anúncio">Anúncios</option>
-            <option value="Lançamento">Lançamentos</option>
-            <option value="Evento">Eventos</option>
-            <option value="Notícia">Notícias Gerais</option>
-          </select>
-          <select id="sort-news" class="p-2 rounded-lg border border-gray-300">
-            <option value="recent">Mais recentes</option>
-            <option value="oldest">Mais antigas</option>
-          </select>
+  <div class="container mx-auto px-4 py-12 max-w-6xl">
+    <header class="mb-12">
+      <h1 class="text-4xl font-bold mb-4">Últimas Notícias</h1>
+      <!-- Filtros -->
+      <div class="flex flex-wrap gap-4 mb-8">
+        <div class="flex-1 min-w-[200px]">
+          <input type="text" id="search-news" placeholder="Buscar notícias..."
+            class="w-full p-2 rounded-lg border border-gray-300">
         </div>
-      </header>
-
-      <!-- Grid de Notícias -->
-      <div class="news-grid">
-        <!-- Notícias serão inseridas aqui via JavaScript -->
+        <select id="category-filter" class="p-2 rounded-lg border border-gray-300">
+          <option value="">Todas as categorias</option>
+          <option value="Anúncio">Anúncios</option>
+          <option value="Lançamento">Lançamentos</option>
+          <option value="Evento">Eventos</option>
+          <option value="Notícia">Notícias Gerais</option>
+        </select>
+        <select id="sort-news" class="p-2 rounded-lg border border-gray-300">
+          <option value="recent">Mais recentes</option>
+          <option value="oldest">Mais antigas</option>
+        </select>
       </div>
+    </header>
 
-      <!-- Paginação -->
-      <div class="pagination flex justify-center gap-2 mt-8">
-        <button id="prev-page" class="btn btn-secondary" disabled>Anterior</button>
-        <span id="page-info" class="flex items-center px-4">Página 1</span>
-        <button id="next-page" class="btn btn-secondary">Próxima</button>
-      </div>
+    <!-- Grid de Notícias -->
+    <div class="news-grid">
+      <!-- Notícias serão inseridas aqui via JavaScript -->
+    </div>
+
+    <!-- Paginação -->
+    <div class="pagination flex justify-center gap-2 mt-8">
+      <button id="prev-page" class="btn btn-secondary" disabled>Anterior</button>
+      <span id="page-info" class="flex items-center px-4">Página 1</span>
+      <button id="next-page" class="btn btn-secondary">Próxima</button>
     </div>
   </div>
 

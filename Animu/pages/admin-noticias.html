@@ -23,126 +23,125 @@
     </svg>
   </button>
 
-  <div class="pt-16">
-    <div class="container mx-auto px-4 py-12 max-w-6xl">
-      <header class="mb-12">
-        <h1 class="text-4xl font-bold mb-4">Gerenciar Notícias</h1>
-        <button id="add-news-btn" class="btn btn-primary">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-          </svg>
-          Nova Notícia
-        </button>
-      </header>
+  <div class="container mx-auto px-4 py-12 max-w-6xl">
+    <header class="mb-12">
+      <h1 class="text-4xl font-bold mb-4">Gerenciar Notícias</h1>
+      <button id="add-news-btn" class="btn btn-primary">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        Nova Notícia
+      </button>
+    </header>
 
-      <!-- Lista de Notícias -->
-      <div class="admin-news-list">
-        <!-- Template que será usado pelo JavaScript -->
-        <template id="news-item-template">
-          <div class="admin-news-item">
-            <div class="news-content">
-              <h3 class="news-title"></h3>
-              <p class="news-summary"></p>
-              <div class="news-metadata">
-                <span class="news-category"></span>
-                <span class="news-date"></span>
-              </div>
-            </div>
-            <div class="action-buttons">
-              <button class="btn-action btn-edit" title="Editar">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                </svg>
-              </button>
-              <button class="btn-action btn-delete" title="Remover">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M3 6h18"></path>
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                  <line x1="10" y1="11" x2="10" y2="17"></line>
-                  <line x1="14" y1="11" x2="14" y2="17"></line>
-                </svg>
-              </button>
+    <!-- Lista de Notícias -->
+    <div class="admin-news-list">
+      <!-- Template que será usado pelo JavaScript -->
+      <template id="news-item-template">
+        <div class="admin-news-item">
+          <div class="news-content">
+            <h3 class="news-title"></h3>
+            <p class="news-summary"></p>
+            <div class="news-metadata">
+              <span class="news-category"></span>
+              <span class="news-date"></span>
             </div>
           </div>
-        </template>
-      </div>
-
-      <!-- Modal de Notícia -->
-      <div id="news-modal" class="modal hidden">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h2 id="modal-title" class="text-2xl font-bold">Nova Notícia</h2>
-            <button class="modal-close">&times;</button>
+          <div class="action-buttons">
+            <button class="btn-action btn-edit" title="Editar">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+            </button>
+            <button class="btn-action btn-delete" title="Remover">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M3 6h18"></path>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+              </svg>
+            </button>
           </div>
+        </div>
+      </template>
+    </div>
 
-          <form id="news-form" class="admin-form">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="form-group md:col-span-2">
-                <label for="title">Título</label>
-                <input type="text" id="title" name="title" required>
-              </div>
+    <!-- Modal de Notícia -->
+    <div id="news-modal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modal-title" class="text-2xl font-bold">Nova Notícia</h2>
+          <button class="modal-close">&times;</button>
+        </div>
 
-              <div class="form-group">
-                <label for="category">Categoria</label>
-                <select id="category" name="category" required>
-                  <option value="">Selecione...</option>
-                  <option value="Anúncio">Anúncio</option>
-                  <option value="Lançamento">Lançamento</option>
-                  <option value="Evento">Evento</option>
-                  <option value="Notícia">Notícia Geral</option>
-                </select>
-              </div>
+        <form id="news-form" class="admin-form">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="form-group md:col-span-2">
+              <label for="title">Título</label>
+              <input type="text" id="title" name="title" required>
+            </div>
 
-              <div class="form-group">
-                <label for="tags">Tags (separadas por vírgula)</label>
-                <input type="text" id="tags" name="tags" placeholder="anime, evento, lançamento">
-              </div>
+            <div class="form-group">
+              <label for="category">Categoria</label>
+              <select id="category" name="category" required>
+                <option value="">Selecione...</option>
+                <option value="Anúncio">Anúncio</option>
+                <option value="Lançamento">Lançamento</option>
+                <option value="Evento">Evento</option>
+                <option value="Notícia">Notícia Geral</option>
+              </select>
+            </div>
 
-              <div class="form-group md:col-span-2">
-                <label for="image">Imagem</label>
-                <div class="image-upload-container" id="image-drop-zone">
-                  <input type="file" id="image-file" accept="image/*" class="hidden">
-                  <input type="hidden" id="image" name="image">
-                  <div class="upload-area">
-                    <div class="upload-prompt">
-                      <svg class="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <p>Arraste uma imagem ou clique para selecionar</p>
-                      <p class="text-sm opacity-75">PNG, JPG ou GIF (max. 2MB)</p>
-                    </div>
-                  </div>
-                  <div class="image-preview hidden">
-                    <img id="preview-image" src="" alt="Preview">
-                    <button type="button" class="remove-image" id="remove-image">
-                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
+            <div class="form-group">
+              <label for="tags">Tags (separadas por vírgula)</label>
+              <input type="text" id="tags" name="tags" placeholder="anime, evento, lançamento">
+            </div>
+
+            <div class="form-group md:col-span-2">
+              <label for="image">Imagem</label>
+              <div class="image-upload-container" id="image-drop-zone">
+                <input type="file" id="image-file" accept="image/*" class="hidden">
+                <input type="hidden" id="image" name="image">
+                <div class="upload-area">
+                  <div class="upload-prompt">
+                    <svg class="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <p>Arraste uma imagem ou clique para selecionar</p>
+                    <p class="text-sm opacity-75">PNG, JPG ou GIF (max. 2MB)</p>
                   </div>
                 </div>
-              </div>
-
-              <div class="form-group md:col-span-2">
-                <label for="summary">Resumo</label>
-                <textarea id="summary" name="summary" maxlength="200" rows="2" required></textarea>
-              </div>
-
-              <div class="form-group md:col-span-2">
-                <label for="content">Conteúdo</label>
-                <textarea id="content" name="content" class="form-textarea" rows="6" required></textarea>
+                <div class="image-preview hidden">
+                  <img id="preview-image" src="" alt="Preview">
+                  <button type="button" class="remove-image" id="remove-image">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" id="cancel-btn">Cancelar</button>
-              <button type="submit" class="btn btn-primary" id="save-btn">Salvar</button>
+            <div class="form-group md:col-span-2">
+              <label for="summary">Resumo</label>
+              <textarea id="summary" name="summary" maxlength="200" rows="2" required></textarea>
             </div>
-          </form>
-        </div>
+
+            <div class="form-group md:col-span-2">
+              <label for="content">Conteúdo</label>
+              <textarea id="content" name="content" class="form-textarea" rows="6" required></textarea>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancel-btn">Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="save-btn">Salvar</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>

@@ -217,7 +217,7 @@ function renderAllAnimes() {
   if (seasonPeriod && seasonYear) {
     // Filtra por temporada
     filteredAnimes = getSeasonalAnimes(seasonPeriod, seasonYear);
-    pageTitle = `Melhores Animes - ${formatSeason({period: seasonPeriod, year: seasonYear})}`;
+    pageTitle = `Melhores Animes - ${formatSeason({ period: seasonPeriod, year: seasonYear })}`;
 
     // Adiciona seletor de temporadas
     const seasons = getAvailableSeasons();
@@ -262,12 +262,11 @@ function renderAllAnimes() {
     container.innerHTML = `
       <div class="no-anime-found">
         <h2>Nenhum anime encontrado</h2>
-        <p>Não encontramos animes ${
-          seasonPeriod ? `para a temporada ${formatSeason({period: seasonPeriod, year: seasonYear})}` :
-          statusFilter ? 'com o status: ' + statusFilter :
+        <p>Não encontramos animes ${seasonPeriod ? `para a temporada ${formatSeason({ period: seasonPeriod, year: seasonYear })}` :
+        statusFilter ? 'com o status: ' + statusFilter :
           categoryFilter ? 'na categoria: ' + categoryFilter :
-          ''
-        }</p>
+            ''
+      }</p>
       </div>
     `;
     return;
@@ -282,12 +281,12 @@ function renderAllAnimes() {
     <div class="anime-grid">
       ${filteredAnimes.map(anime => `
         <div class="anime-card rounded-lg shadow-lg overflow-hidden">
-          ${seasonPeriod ? 
-            `<div class="featured-badge">${anime.score >= 8 ? '🏆' : '📺'} #${filteredAnimes.indexOf(anime) + 1}</div>` :
-            statusFilter?.toLowerCase() === 'anunciado' ? 
-              '<div class="featured-badge">🆕 Em breve</div>' :
-              anime.score >= 8 ? '<div class="featured-badge">⭐ Destaque</div>' : ''
-          }
+          ${seasonPeriod ?
+      `<div class="featured-badge">${anime.score >= 8 ? '🏆' : '📺'} #${filteredAnimes.indexOf(anime) + 1}</div>` :
+      statusFilter?.toLowerCase() === 'anunciado' ?
+        '<div class="featured-badge">🆕 Em breve</div>' :
+        anime.score >= 8 ? '<div class="featured-badge">⭐ Destaque</div>' : ''
+    }
           <div class="score-badge ${anime.score >= 8 ? 'pulse-effect' : ''}">${anime.score || 'N/A'}</div>
           <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
              class="block relative">
@@ -296,14 +295,14 @@ function renderAllAnimes() {
                  class="w-full h-[350px] object-cover">
             <div class="content-overlay">
               <h2 class="text-xl font-bold mb-2">${anime.primaryTitle}</h2>
-              ${anime.releaseDate && statusFilter?.toLowerCase() === 'anunciado' ? 
-                `<p class="text-sm text-white mb-2">📅 Lançamento: ${new Date(anime.releaseDate).toLocaleDateString('pt-BR')}</p>` : 
-                ''}
+              ${anime.releaseDate && statusFilter?.toLowerCase() === 'anunciado' ?
+      `<p class="text-sm text-white mb-2">📅 Lançamento: ${new Date(anime.releaseDate).toLocaleDateString('pt-BR')}</p>` :
+      ''}
               <p class="text-sm mb-2 line-clamp-2">${anime.synopsis}</p>
               <div class="flex flex-wrap gap-2">
                 ${anime.genres.map(genre =>
-                  `<span class="genre-tag text-xs">${genre}</span>`
-                ).join('')}
+        `<span class="genre-tag text-xs">${genre}</span>`
+      ).join('')}
               </div>
               <div class="mt-2 flex items-center gap-2">
                 <span>💬 ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}</span>
@@ -331,7 +330,7 @@ function formatSeason(season) {
 // Filtra animes por temporada e ordena por pontuação
 function getSeasonalAnimes(period, year) {
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
-  
+
   const normalizedPeriod = period.toLowerCase().trim();
   const normalizedYear = parseInt(year);
 
@@ -339,10 +338,10 @@ function getSeasonalAnimes(period, year) {
     // Normaliza a temporada do anime para minúsculo também
     const animePeriod = anime.season?.period?.toLowerCase().trim();
     return anime.season &&
-           animePeriod === normalizedPeriod &&
-           anime.season.year === normalizedYear;
+      animePeriod === normalizedPeriod &&
+      anime.season.year === normalizedYear;
   });
-  
+
   return filtered.sort((a, b) => (parseFloat(b.score) || 0) - (parseFloat(a.score) || 0));
 }
 
@@ -350,7 +349,7 @@ function getSeasonalAnimes(period, year) {
 function getAvailableSeasons() {
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
   const seasons = new Set();
-  
+
   animes.forEach(anime => {
     if (anime.season?.period && anime.season?.year) {
       seasons.add(`${anime.season.period}-${anime.season.year}`);
@@ -493,7 +492,7 @@ function formatDate(dateString) {
 function renderStars(rating) {
   const starsTotal = 10;
   const fillPercentage = (rating / starsTotal) * 100;
-  
+
   return `
     <div class="rating-display">
       <div class="stars-container">
@@ -547,8 +546,8 @@ function voteComment(animeTitle, commentId, voteType) {
     comment.dislikes = comment.dislikes || [];
 
     // Verifica se o usuário já votou desta forma
-    const hasVotedThisWay = voteType === 'like' ? 
-      comment.likes.includes(currentUser) : 
+    const hasVotedThisWay = voteType === 'like' ?
+      comment.likes.includes(currentUser) :
       comment.dislikes.includes(currentUser);
 
     // Remove todos os votos existentes do usuário
@@ -693,24 +692,24 @@ function toggleEditMode(commentId) {
     const editSlider = form.querySelector('#edit-rating-slider');
     const editInput = form.querySelector('#edit-rating-display');
 
-    editSlider.addEventListener('input', function() {
+    editSlider.addEventListener('input', function () {
       updateEditRatingDisplay(this.value);
     });
 
-    editInput.addEventListener('input', function() {
+    editInput.addEventListener('input', function () {
       let value = parseFloat(this.value);
-      
+
       // Validação do valor
       if (isNaN(value)) value = 0;
       if (value < 0) value = 0;
       if (value > 10) value = 10;
-      
+
       // Multiplica por 10 para a escala do slider
       updateEditRatingDisplay(value * 10, false);
     });
 
     // Formata o valor quando o input perde o foco
-    editInput.addEventListener('blur', function() {
+    editInput.addEventListener('blur', function () {
       let value = parseFloat(this.value || 0);
       this.value = (Math.round(value * 10) / 10).toFixed(1);
     });
@@ -840,8 +839,9 @@ function renderComment(comment, animeTitle) {
               class="vote-btn ${userVote === 'like' ? 'active' : ''}"
               onclick="voteComment('${animeTitle}', ${comment.id}, 'like') && updateCommentsList('${animeTitle}')"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 10v12" />
+                <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z" />
               </svg>
               <span class="vote-count">${comment.likes?.length || 0}</span>
             </button>
@@ -849,8 +849,9 @@ function renderComment(comment, animeTitle) {
               class="vote-btn ${userVote === 'dislike' ? 'active' : ''}"
               onclick="voteComment('${animeTitle}', ${comment.id}, 'dislike') && updateCommentsList('${animeTitle}')"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.095c.5 0 .905-.405.905-.905 0-.714.211-1.412.608-2.006L17 13V4m-7 10h2m5 0v2a2 2 0 01-2 2h-2.5" />
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 14V2" />
+                <path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22h0a3.13 3.13 0 0 1-3-3.88Z" />
               </svg>
               <span class="vote-count">${comment.dislikes?.length || 0}</span>
             </button>
@@ -976,8 +977,8 @@ function renderSearchResults(query) {
               <h2 class="text-xl font-semibold mb-2">${anime.primaryTitle}</h2>
               <div class="genres mb-2">
                 ${anime.genres.map(genre =>
-                  `<span class="genre-tag">${genre}</span>`
-                ).join('')}
+    `<span class="genre-tag">${genre}</span>`
+  ).join('')}
               </div>
             </div>
           </a>
@@ -1180,11 +1181,11 @@ document.addEventListener('DOMContentLoaded', function () {
   const commentText = document.getElementById('comment-text');
   if (commentText) {
     commentText.setAttribute('maxlength', MAX_COMMENT_LENGTH);
-    commentText.insertAdjacentHTML('afterend', 
+    commentText.insertAdjacentHTML('afterend',
       `<small id="comment-char-count" class="text-right block mt-1">0/${MAX_COMMENT_LENGTH}</small>`
     );
-    
-    commentText.addEventListener('input', function() {
+
+    commentText.addEventListener('input', function () {
       const counter = document.getElementById('comment-char-count');
       counter.textContent = `${this.value.length}/${MAX_COMMENT_LENGTH}`;
     });
@@ -1192,23 +1193,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const ratingInput = document.getElementById('rating-display');
   if (ratingInput) {
-    ratingInput.addEventListener('input', function() {
+    ratingInput.addEventListener('input', function () {
       let value = parseFloat(this.value);
-      
+
       // Validação do valor
       if (isNaN(value)) value = 0;
       if (value < 0) value = 0;
       if (value > 10) value = 10;
-      
+
       // Multiplica por 10 e arredonda para garantir números com uma casa decimal
       value = Math.round(value * 10);
-      
+
       // Atualiza o slider e emoji
       updateRatingEmoji(value, false);
     });
 
     // Formata o valor quando o input perde o foco
-    ratingInput.addEventListener('blur', function() {
+    ratingInput.addEventListener('blur', function () {
       let value = parseFloat(this.value || 0);
       // Garante que o valor tenha apenas uma casa decimal
       this.value = (Math.round(value * 10) / 10).toFixed(1);
@@ -1217,7 +1218,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const ratingSlider = document.getElementById('rating-slider');
   if (ratingSlider) {
-    ratingSlider.addEventListener('input', function() {
+    ratingSlider.addEventListener('input', function () {
       // O valor do slider agora representa diretamente décimos de ponto
       updateRatingEmoji(this.value);
     });

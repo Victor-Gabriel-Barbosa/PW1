@@ -60,6 +60,16 @@ body {
   transition: background 0.3s ease, color 0.3s ease;
 }
 
+body.has-navbar {
+  padding-top: 64px; /* Altura da navbar */
+}
+
+nav {
+  background-color: var(--background);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
 a {
   text-decoration: none;
   color: inherit;
@@ -338,6 +348,36 @@ button:disabled {
 .admin-menu-item:hover {
   background-color: var(--primary-color);
   color: white;
+}
+
+/* Estilo para links de navegação com sublinhado animado */
+nav .ml-10 a {
+  position: relative;
+  text-decoration: none;
+}
+
+nav .ml-10 a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 50%;
+  background: var(--primary-gradient);
+  transition: width 0.3s ease-in-out, left 0.3s ease-in-out;
+  transform-origin: center;
+}
+
+/* Estilo para link ativo e hover */
+nav .ml-10 a:hover::after,
+nav .ml-10 a.active::after {
+  width: 100%;
+  left: 0;
+}
+
+/* Cor do texto para link ativo */
+nav .ml-10 a.active {
+  color: var(--primary-color);
 }
 
 /* 4.4. Tema */

@@ -1,11 +1,155 @@
 class CategoryManager {
   constructor() {
-    this.initializeForm();
+    this.setupFormVisibility();
     this.loadCategories();
-    this.setupPreviewUpdates();
-    this.setupEmojiPicker();
-    this.setupColorInputs();
-    this.setupCharacterCounters();
+  }
+
+  generateForm() {
+    return `
+      <h2 class="text-xl font-semibold mb-4">Adicionar Nova Categoria</h2>
+      <form id="category-form" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Nome da categoria com contador -->
+          <div class="form-group col-span-full md:col-span-1">
+            <label for="category-name" class="block mb-2 font-medium">Nome da Categoria *</label>
+            <div class="relative">
+              <input type="text" id="category-name" required maxlength="30"
+                class="w-full p-3 border rounded-lg dark:bg-gray-700 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                placeholder="Ex: Ação, Comédia, etc">
+              <small class="text-right block mt-1 text-gray-500">
+                <span id="name-count">0</span>/30
+              </small>
+            </div>
+          </div>
+
+          <!-- Tipo de categoria -->
+          <div class="form-group col-span-full md:col-span-1">
+            <label class="block mb-2 font-medium">Tipo de Categoria *</label>
+            <div class="flex gap-4">
+              <label class="inline-flex items-center">
+                <input type="radio" name="category-type" value="main" checked class="text-purple-600">
+                <span class="ml-2">Principal</span>
+              </label>
+              <label class="inline-flex items-center">
+                <input type="radio" name="category-type" value="sub" class="text-purple-600">
+                <span class="ml-2">Subcategoria</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Ícone com seletor de emojis -->
+          <div class="form-group col-span-full md:col-span-1">
+            <label for="category-icon" class="block mb-2 font-medium">Ícone (emoji) *</label>
+            <div class="relative">
+              <input type="text" id="category-icon" required
+                class="w-full p-3 border rounded-lg dark:bg-gray-700 focus:ring-2 focus:ring-purple-500"
+                placeholder="Clique para escolher">
+              <button type="button" id="emoji-picker-btn"
+                class="absolute right-2 top-2 p-1 hover:bg-gray-100 rounded-lg dark:hover:bg-gray-600">
+                😊
+              </button>
+            </div>
+            <div id="emoji-picker" class="hidden mt-2 p-2 border rounded-lg bg-white dark:bg-gray-700 shadow-lg">
+              <!-- Emojis serão inseridos via JavaScript -->
+            </div>
+          </div>
+
+          <!-- Descrição com contador -->
+          <div class="form-group col-span-full">
+            <label for="category-description" class="block mb-2 font-medium">Descrição *</label>
+            <div class="relative">
+              <textarea id="category-description" required maxlength="100" rows="3"
+                class="w-full p-3 border rounded-lg dark:bg-gray-700 focus:ring-2 focus:ring-purple-500 resize-none"
+                placeholder="Descreva brevemente o tipo de conteúdo desta categoria"></textarea>
+              <small class="text-right block mt-1 text-gray-500">
+                <span id="desc-count">0</span>/100
+              </small>
+            </div>
+          </div>
+
+          <!-- Cores do gradiente -->
+          <div class="form-group">
+            <label for="gradient-start" class="block mb-2 font-medium">Cor Inicial *</label>
+            <div class="flex items-center gap-2">
+              <input type="color" id="gradient-start" required value="#6366F1" class="w-16 h-10 rounded cursor-pointer">
+              <input type="text" id="gradient-start-hex" class="w-28 p-2 border rounded-lg" value="#6366F1">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="gradient-end" class="block mb-2 font-medium">Cor Final *</label>
+            <div class="flex items-center gap-2">
+              <input type="color" id="gradient-end" required value="#8B5CF6" class="w-16 h-10 rounded cursor-pointer">
+              <input type="text" id="gradient-end-hex" class="w-28 p-2 border rounded-lg" value="#8B5CF6">
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview aprimorado -->
+        <div class="mt-6">
+          <label class="block mb-4 font-medium">Preview da Categoria:</label>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <p class="mb-2 text-sm text-gray-500">Modo Claro</p>
+              <div id="category-preview-light" class="category-card bg-white">
+                <div class="category-icon"></div>
+                <h3></h3>
+                <p></p>
+                <span class="anime-count">0 animes</span>
+              </div>
+            </div>
+            <div>
+              <p class="mb-2 text-sm text-gray-500">Modo Escuro</p>
+              <div id="category-preview-dark" class="category-card bg-gray-800">
+                <div class="category-icon"></div>
+                <h3></h3>
+                <p></p>
+                <span class="anime-count">0 animes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botões -->
+        <div class="flex justify-end gap-4 pt-4 border-t">
+          <button type="button" id="btn-cancel" 
+            class="px-6 py-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+            Cancelar
+          </button>
+          <button type="submit" 
+            class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+            Adicionar Categoria
+          </button>
+        </div>
+      </form>
+    `;
+  }
+
+  setupFormVisibility() {
+    const formContainer = document.getElementById('category-form-container');
+    const showFormButton = document.getElementById('btn-show-form');
+
+    // Mostra o formulário ao clicar no botão
+    showFormButton.addEventListener('click', () => {
+      formContainer.innerHTML = this.generateForm();
+      formContainer.classList.remove('hidden');
+      showFormButton.classList.add('hidden');
+
+      // Inicializa todos os componentes do formulário
+      this.initializeForm();
+      this.setupPreviewUpdates();
+      this.setupEmojiPicker();
+      this.setupColorInputs();
+      this.setupCharacterCounters();
+
+      // Configura o botão cancelar
+      const cancelButton = document.getElementById('btn-cancel');
+      cancelButton.addEventListener('click', () => {
+        formContainer.classList.add('hidden');
+        showFormButton.classList.remove('hidden');
+        formContainer.innerHTML = ''; // Limpa o formulário do DOM
+      });
+    });
   }
 
   initializeForm() {
@@ -174,6 +318,12 @@ class CategoryManager {
         alert('Categoria adicionada com sucesso!');
       }
 
+      // Esconde o formulário após salvar
+      const formContainer = document.getElementById('category-form-container');
+      const showFormButton = document.getElementById('btn-show-form');
+      formContainer.classList.add('hidden');
+      showFormButton.classList.remove('hidden');
+
       // Limpa o formulário e reseta o estado
       form.reset();
       delete form.dataset.editingId;
@@ -303,6 +453,12 @@ class CategoryManager {
     const category = categories.find(cat => cat.id === categoryId);
     
     if (!category) return;
+
+    // Mostra o formulário
+    const formContainer = document.getElementById('category-form-container');
+    const showFormButton = document.getElementById('btn-show-form');
+    formContainer.classList.remove('hidden');
+    showFormButton.classList.add('hidden');
 
     // Preenche o formulário com os dados da categoria
     document.getElementById('category-name').value = category.name;

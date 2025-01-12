@@ -664,3 +664,36 @@
 .drop-zone-prompt {
   pointer-events: none;
 }
+
+/* Estilos para o botão de adicionar categoria */
+#btn-show-form {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+#btn-show-form svg {
+  transition: transform 0.3s ease;
+}
+
+#btn-show-form:hover svg {
+  transform: rotate(90deg);
+}
+
+/* Animação para o container do formulário */
+#category-form-container {
+  transition: all 0.3s ease;
+  transform-origin: top;
+}
+
+#category-form-container.hidden {
+  display: none;
+  transform: scaleY(0);
+  opacity: 0;
+}
+
+#category-form-container:not(.hidden) {
+  transform: scaleY(1);
+  opacity: 1;
+}

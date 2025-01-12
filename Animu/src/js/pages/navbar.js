@@ -40,7 +40,7 @@ class Navbar {
                             <div class="theme-toggle-container">
                                 <button class="toggle-theme">
                                     <div class="clouds"></div>
-                                    <div class="stars"><span><span></span></span></div>
+                                    <div class="stars"><span><span></span></div>
                                 </button>
                             </div>
                         </div>
@@ -82,12 +82,28 @@ class Navbar {
   init() {
     // Inserir a navbar no início do body
     document.body.insertAdjacentHTML('afterbegin', this.navHTML);
+    document.body.classList.add('has-navbar');
+    
+    // Destacar o link da página atual
+    this.highlightCurrentPage();
 
-    // Primeiro verificar o status de login para garantir que o painel admin seja mostrado se necessário
     this.checkLoginStatus();
-
-    // Depois inicializar os eventos
     this.initializeEvents();
+  }
+
+  highlightCurrentPage() {
+    // Pega apenas o nome do arquivo da URL atual
+    const currentPath = window.location.pathname;
+    const currentPage = currentPath.split('/').pop().split('?')[0];
+    
+    const navLinks = document.querySelectorAll('nav .ml-10 a');
+    
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href').split('?')[0]; // Remove parâmetros do href
+      if (currentPage === href) {
+        link.classList.add('active');
+      }
+    });
   }
 
   initializeEvents() {

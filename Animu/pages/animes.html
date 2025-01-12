@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Anime</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
@@ -14,75 +14,62 @@
 </head>
 
 <body>
-  <!-- Adicionar padding-top para compensar a navbar fixa -->
-  <div class="pt-16">
-    <!-- O conteúdo será inserido dinamicamente via JavaScript -->
-    <div class="anime-container" id="anime-content"></div>
+  <!-- O conteúdo será inserido dinamicamente via JavaScript -->
+  <div class="anime-container" id="anime-content"></div>
 
-    <!-- Seção de comentários (agora oculta por padrão) -->
-    <div id="comments-section" class="comments-section container mx-auto px-4 mt-8 mb-12" style="display: none;">
-      <h2 class="text-2xl font-bold mb-6">Avaliações e Comentários</h2>
+  <!-- Seção de comentários (agora oculta por padrão) -->
+  <div id="comments-section" class="comments-section mx-auto px-4 mt-8 mb-12" style="display: none;">
+    <h2 class="text-2xl font-bold mb-6">Avaliações e Comentários</h2>
 
-      <!-- Formulário de comentário -->
-      <form id="comment-form" class="mb-8">
-        <div class="flex flex-col gap-4">
-          <!-- Sistema de avaliação por estrelas -->
-          <div class="rating-container mb-2">
-            <p class="mb-2 font-semibold">
-              Sua avaliação: 
-              <span class="rating-number-input">
-                <input type="number" 
-                       id="rating-display"
-                       class="text-purple-600 ml-2 w-16 text-center" 
-                       min="0" 
-                       max="10" 
-                       step="0.1" 
-                       value="0.0">
-              </span>
-            </p>
-            <div class="rating-slider-container">
-              <input type="range" id="rating-slider" min="0" max="100" value="0" class="rating-slider" step="1">  <!-- Mudando step para 1 (representará 0.1 na nota final) -->
-              <div class="rating-emoji-container">
-                <span id="rating-emoji" class="rating-emoji">😶</span>
-              </div>
-            </div>
-            <div class="rating-labels">
-              <span>Péssimo</span>
-              <span>Ruim</span>
-              <span>Médio</span>
-              <span>Bom</span>
-              <span>Excelente</span>
+    <!-- Formulário de comentário -->
+    <form id="comment-form" class="mb-8">
+      <div class="flex flex-col gap-4">
+        <!-- Sistema de avaliação por estrelas -->
+        <div class="rating-container mb-2">
+          <p class="mb-2 font-semibold flex flex-wrap items-center gap-2">
+            Sua avaliação:
+            <span class="rating-number-input">
+              <input type="number" id="rating-display" class="text-purple-600 w-16 text-center" min="0" max="10"
+                step="0.1" value="0.0">
+            </span>
+          </p>
+          <div class="rating-slider-container">
+            <input type="range" id="rating-slider" min="0" max="100" value="0" class="rating-slider" step="1">
+            <!-- Mudando step para 1 (representará 0.1 na nota final) -->
+            <div class="rating-emoji-container">
+              <span id="rating-emoji" class="rating-emoji">😶</span>
             </div>
           </div>
-
-          <div class="relative">
-            <textarea 
-              id="comment-text" 
-              class="w-full p-3 border rounded-lg resize-none dark:bg-gray-800" 
-              rows="4"
-              placeholder="Digite seu comentário..." 
-              required
-            ></textarea>
-            <!-- O contador será inserido aqui via JavaScript -->
+          <div class="rating-labels">
+            <span>Péssimo</span>
+            <span>Ruim</span>
+            <span>Médio</span>
+            <span>Bom</span>
+            <span>Excelente</span>
           </div>
-
-          <button type="submit"
-            class="btn">
-            Enviar avaliação
-          </button>
         </div>
-      </form>
 
-      <!-- Lista de comentários -->
-      <div id="comments-list" class="space-y-6">
-        <!-- Os comentários serão inseridos aqui dinamicamente -->
+        <div class="relative">
+          <textarea id="comment-text" class="w-full p-3 border rounded-lg resize-none dark:bg-gray-800" rows="4"
+            placeholder="Digite seu comentário..." required></textarea>
+          <!-- O contador será inserido aqui via JavaScript -->
+        </div>
+
+        <button type="submit" class="btn">
+          Enviar avaliação
+        </button>
       </div>
+    </form>
+
+    <!-- Lista de comentários -->
+    <div id="comments-list" class="space-y-6">
+      <!-- Os comentários serão inseridos aqui dinamicamente -->
     </div>
   </div>
 
   <!-- Inclusão de scripts para funcionalidades do site -->
   <script src="../src/js/pages/navbar.js"></script>
-  <script src="../src/js/utils/login.js"></script> 
+  <script src="../src/js/utils/login.js"></script>
   <script src="../src/js/pages/animu.js"></script>
   <script src="../src/js/pages/forum.js"></script>
   <script src="../src/js/pages/animes.js"></script>
