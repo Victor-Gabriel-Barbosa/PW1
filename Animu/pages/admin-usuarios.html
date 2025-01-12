@@ -8,6 +8,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../src/css/styles.css">
+  <link rel="stylesheet" href="../src/css/search.css">
+  <link rel="stylesheet" href="../src/css/animes.css">
   <link rel="icon" href="../src/favicon/favicon.ico" type="image/x-icon">
   <script>
     // Verificação imediata antes de carregar o resto da página
@@ -22,22 +24,6 @@
 </head>
 
 <body>
-  <!-- Botão para voltar à página anterior -->
-  <button class="back-button" onclick="window.history.back()" title="Voltar">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-      stroke-linecap="round" stroke-linejoin="round">
-      <path d="M15 18l-6-6 6-6" />
-    </svg>
-  </button>
-
-  <!-- Botão para alternância de tema claro/escuro -->
-  <div class="theme-toggle-container"></div>
-    <button class="toggle-theme" style="position: fixed; top: 20px; right: 20px;">
-      <div class="clouds"></div>
-      <div class="stars"><span><span></span></span></div>
-    </button>
-  </div>
-
   <!-- Container principal -->
   <div class="container mx-auto px-4 py-8">
     <h1 class="text-3xl font-bold mb-8 text-center text-purple-600">Gerenciamento de Usuários</h1>
@@ -91,8 +77,11 @@
   </div>
 
   <!-- Scripts -->
+  <script src="../src/js/pages/navbar.js"></script>
   <script src="../src/js/pages/animu.js"></script>
-  <script src="../src/js/pages/usuarios.js"></script>
+  <script src="../src/js/pages/animes.js"></script>
+  <script src="../src/js/utils/search.js"></script>
+  <script src="../src/js/pages/admin-usuarios.js"></script>
 </body>
 
 </html>
