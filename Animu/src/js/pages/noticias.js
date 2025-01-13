@@ -1,48 +1,56 @@
 class NoticiasManager {
   constructor() {
+    // Carrega dados do localStorage e configura listeners globais
     this.newsData = JSON.parse(localStorage.getItem('news') || '[]');
-    // Adicionar listeners para atualizações
+    
+    // Listeners para sincronização de dados entre abas
     window.addEventListener('newsUpdated', () => this.refreshData());
     window.addEventListener('storage', (e) => {
       if (e.key === 'news') this.refreshData();
     });
 
-    // Identificar página atual
+    // Identifica contexto da página atual
     this.currentPage = this.getCurrentPage();
-
-    // Inicializar baseado na página
-    if (this.currentPage === 'noticia') {
-      this.initSingleNews();
-    } else {
-      this.initNewsGrid();
-    }
-
     this.gridView = document.getElementById('news-grid-view');
     this.detailView = document.getElementById('news-detail-view');
-    
-    this.init();
+
+    // Inicializa grid com base no contexto da página
+    const newsGrid = document.querySelector('.news-grid');
+    if (newsGrid) {
+      this.currentPage === 'noticias' 
+        ? this.initializeFilters()
+        : this.currentPage === 'inicio' && this.renderNewsGrid(newsGrid, 4);
+    }
+
+    // Inicializa visualização detalhada na página de notícias
+    this.currentPage === 'noticias' && this.init();
   }
 
   init() {
-    this.newsData = JSON.parse(localStorage.getItem('news') || '[]');
     const urlParams = new URLSearchParams(window.location.search);
     const noticiaId = urlParams.get('id');
 
-    if (noticiaId) {
-        this.showDetailView(noticiaId);
+    if (noticiaId && this.detailView) {
+      this.showDetailView(noticiaId);
+    } else if (this.gridView) {
+      this.showGridView();
     } else {
-        this.showGridView();
+      // Se não houver view específica, apenas renderizar o grid
+      const newsGrid = document.querySelector('.news-grid');
+      if (newsGrid) {
+        this.renderNewsGrid(newsGrid);
+      }
     }
 
     // Atualizar o histórico quando navegar
     window.addEventListener('popstate', (event) => {
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get('id');
-        if (id) {
-            this.showDetailView(id, false);
-        } else {
-            this.showGridView(false);
-        }
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      if (id && this.detailView) {
+        this.showDetailView(id, false);
+      } else if (this.gridView) {
+        this.showGridView(false);
+      }
     });
   }
 
@@ -82,29 +90,29 @@ class NoticiasManager {
 
   createNewsCard(noticia) {
     return `
-            <article class="news-card">
-                <div class="news-image-container">
-                    <img src="${noticia.image}" alt="${noticia.title}" class="news-image">
-                    <span class="news-category">${noticia.category}</span>
-                </div>
-                <div class="news-content">
-                    <div class="news-metadata">
-                        <span class="news-date">${this.formatDate(noticia.date)}</span>
-                        <div class="news-tags">
-                            ${noticia.tags.map(tag => `<span class="news-tag">#${tag}</span>`).join('')}
-                        </div>
-                    </div>
-                    <h3 class="news-title">${noticia.title}</h3>
-                    <p class="news-summary">${noticia.summary}</p>
-                    <a href="noticias.html?id=${noticia.id}" class="news-read-more">
-                        Ler mais
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                        </svg>
-                    </a>
-                </div>
-            </article>
-        `;
+      <article class="news-card">
+        <div class="news-image-container">
+          <img src="${noticia.image}" alt="${noticia.title}" class="news-image">
+          <span class="news-category">${noticia.category}</span>
+        </div>
+        <div class="news-content">
+          <div class="news-metadata">
+            <span class="news-date">${this.formatDate(noticia.date)}</span>
+            <div class="news-tags">
+              ${noticia.tags.map(tag => `<span class="news-tag">#${tag}</span>`).join('')}
+            </div>
+          </div>
+          <h3 class="news-title">${noticia.title}</h3>
+          <p class="news-summary">${noticia.summary}</p>
+          <a href="noticias.html?id=${noticia.id}" class="news-read-more">
+            Ler mais
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+            </svg>
+          </a>
+        </div>
+      </article>
+    `;
   }
 
   formatDate(dateStr) {
@@ -117,6 +125,8 @@ class NoticiasManager {
   }
 
   renderNewsGrid(container, limit = null, newsData = null) {
+    if (!container) return;
+    
     // Ordena as notícias por data, mais recentes primeiro
     const sortedNews = newsData || [...this.newsData].sort((a, b) =>
       new Date(b.date) - new Date(a.date)
@@ -140,10 +150,11 @@ class NoticiasManager {
 
   // Adicionar novos métodos para gerenciar filtros e paginação
   initializeFilters() {
+    // Configuração inicial dos filtros e paginação
     this.currentPage = 1;
     this.itemsPerPage = 12;
 
-    // Elementos do DOM
+    // Cache dos elementos DOM para filtros
     this.searchInput = document.getElementById('search-news');
     this.categoryFilter = document.getElementById('category-filter');
     this.sortSelect = document.getElementById('sort-news');
@@ -152,10 +163,9 @@ class NoticiasManager {
     this.nextButton = document.getElementById('next-page');
     this.pageInfo = document.getElementById('page-info');
 
-    if (this.searchInput) {
-      this.setupEventListeners();
-      this.updateNews();
-    }
+    // Inicializa listeners dos filtros se existirem
+    this.searchInput && this.setupEventListeners();
+    this.updateNews();
   }
 
   setupEventListeners() {
@@ -180,7 +190,7 @@ class NoticiasManager {
     const selectedCategory = this.categoryFilter.value;
     const sortOrder = this.sortSelect.value;
 
-    // Filtrar
+    // Aplica filtros de busca e categoria
     let filteredNews = this.newsData.filter(news => {
       const matchesSearch = news.title.toLowerCase().includes(searchTerm) ||
         news.summary.toLowerCase().includes(searchTerm);
@@ -188,14 +198,12 @@ class NoticiasManager {
       return matchesSearch && matchesCategory;
     });
 
-    // Ordenar
-    filteredNews.sort((a, b) => {
+    // Ordena por data (crescente/decrescente)
+    return filteredNews.sort((a, b) => {
       const dateA = new Date(a.date);
       const dateB = new Date(b.date);
       return sortOrder === 'recent' ? dateB - dateA : dateA - dateB;
     });
-
-    return filteredNews;
   }
 
   updateNews() {
@@ -222,16 +230,17 @@ class NoticiasManager {
   }
 
   loadNoticia(noticia) {
+    // Redireciona para grid se notícia não existir
     if (!noticia) {
       this.showGridView();
       return;
     }
 
-    // Atualizar página
+    // Atualiza metadata da página
     document.title = `${noticia.title} | Animu`;
     this.updateMetaTags(noticia);
 
-    // Preencher conteúdo
+    // Cache dos elementos DOM da notícia
     const elements = {
       date: document.getElementById('news-date'),
       category: document.getElementById('news-category'),
@@ -242,28 +251,25 @@ class NoticiasManager {
       tags: document.getElementById('news-tags')
     };
 
-    if (elements.date) elements.date.textContent = this.formatDate(noticia.date);
-    if (elements.category) elements.category.textContent = noticia.category;
-    if (elements.title) elements.title.textContent = noticia.title;
+    // Preenche conteúdo nos elementos existentes
+    elements.date && (elements.date.textContent = this.formatDate(noticia.date));
+    elements.category && (elements.category.textContent = noticia.category);
+    elements.title && (elements.title.textContent = noticia.title);
     if (elements.image) {
       elements.image.src = noticia.image;
       elements.image.alt = noticia.title;
     }
-    if (elements.summary) elements.summary.textContent = noticia.summary;
-    if (elements.content) elements.content.innerHTML = this.formatContent(noticia.content);
-    if (elements.tags) {
-      elements.tags.innerHTML = noticia.tags
-        .map(tag => `<span class="news-tag">#${tag}</span>`)
-        .join('');
-    }
+    elements.summary && (elements.summary.textContent = noticia.summary);
+    elements.content && (elements.content.innerHTML = this.formatContent(noticia.content));
+    elements.tags && (elements.tags.innerHTML = noticia.tags
+      .map(tag => `<span class="news-tag">#${tag}</span>`)
+      .join(''));
 
-    // Setup botões de compartilhamento
+    // Configura compartilhamento e notícias relacionadas
     this.setupShareButtons();
-    
-    // Carregar notícias relacionadas
     this.loadRelatedNews(noticia);
     
-    // Mostrar a visualização detalhada
+    // Alterna para visualização detalhada
     this.gridView.style.display = 'none';
     this.detailView.style.display = 'block';
   }
@@ -358,48 +364,57 @@ class NoticiasManager {
   }
 
   setupShareButtons() {
+    // Dados para compartilhamento
     const shareData = {
       url: window.location.href,
       title: document.title,
       text: document.getElementById('news-summary')?.textContent
     };
 
-    // Twitter
-    document.querySelector('.share-btn.twitter').addEventListener('click', () => {
-      const text = encodeURIComponent(shareData.title);
-      const url = encodeURIComponent(shareData.url);
-      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
-    });
+    // Configura handlers para cada rede social
+    const shareHandlers = {
+      twitter: () => {
+        const text = encodeURIComponent(shareData.title);
+        const url = encodeURIComponent(shareData.url);
+        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+      },
+      facebook: () => {
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareData.url)}`, '_blank');
+      },
+      whatsapp: () => {
+        const text = encodeURIComponent(`${shareData.title}\n\n${shareData.url}`);
+        window.open(`https://wa.me/?text=${text}`, '_blank');
+      }
+    };
 
-    // Facebook
-    document.querySelector('.share-btn.facebook').addEventListener('click', () => {
-      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareData.url)}`, '_blank');
-    });
-
-    // WhatsApp
-    document.querySelector('.share-btn.whatsapp').addEventListener('click', () => {
-      const text = encodeURIComponent(`${shareData.title}\n\n${shareData.url}`);
-      window.open(`https://wa.me/?text=${text}`, '_blank');
+    // Adiciona listeners aos botões
+    Object.entries(shareHandlers).forEach(([network, handler]) => {
+      document.querySelector(`.share-btn.${network}`).addEventListener('click', handler);
     });
   }
 
   showGridView(updateHistory = true) {
+    if (!this.gridView || !this.detailView) return;
+
     this.gridView.style.display = 'block';
     this.detailView.style.display = 'none';
     document.title = 'Notícias | Animu';
-    this.initializeFilters();
+    
+    if (this.currentPage === 'noticias') {
+      this.initializeFilters();
+    }
     
     if (updateHistory) {
-        history.pushState({}, '', 'noticias.html');
-        this.updateMetaTags({
-            title: 'Notícias | Animu',
-            description: 'Notícias sobre anime e mangá',
-            image: '', // imagem padrão
-            url: window.location.href
-        });
+      history.pushState({}, '', 'noticias.html');
+      this.updateMetaTags({
+        title: 'Notícias | Animu',
+        description: 'Notícias sobre anime e mangá',
+        image: '', // imagem padrão
+        url: window.location.href
+      });
     }
   }
 }
 
-// Inicializar apenas uma vez
+// Inicializa gerenciador de notícias
 const noticiasManager = new NoticiasManager();

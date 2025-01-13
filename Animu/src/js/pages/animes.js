@@ -335,7 +335,7 @@ function getSeasonalAnimes(period, year) {
   const normalizedYear = parseInt(year);
 
   const filtered = animes.filter(anime => {
-    // Normaliza a temporada do anime para minúsculo também
+    // Normaliza a temporada do anime para minúsculo
     const animePeriod = anime.season?.period?.toLowerCase().trim();
     return anime.season &&
       animePeriod === normalizedPeriod &&
@@ -463,7 +463,7 @@ function updateAnimeRating(animeTitle) {
     const totalRating = animeComments.reduce((sum, comment) => sum + (comment.rating || 0), 0);
     const averageRating = totalRating / animeComments.length;
 
-    // Atualizar a avaliação no objeto do anime
+    // Atualiza a avaliação no objeto do anime
     const animes = JSON.parse(localStorage.getItem('animeData')) || [];
     const animeIndex = animes.findIndex(a => a.primaryTitle === animeTitle);
 
@@ -885,70 +885,6 @@ function updateRatingDisplay(value) {
   }
 }
 
-// Calcula pontuação para destaque do anime
-function calculateHighlightScore(anime, comments) {
-  const commentCount = comments[anime.primaryTitle]?.length || 0;
-  const score = parseFloat(anime.score) || 0;
-  // Fórmula: (nota * 0.7) + (número de comentários * 0.3)
-  return (score * 0.7) + (commentCount * 0.3);
-}
-
-// Seleciona animes em destaque baseado em popularidade
-function getFeaturedAnimes(limit = 8) {
-  try {
-    const animes = JSON.parse(localStorage.getItem('animeData')) || [];
-    const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
-
-    // Calcula a pontuação de destaque para cada anime
-    const scoredAnimes = animes.map(anime => ({
-      ...anime,
-      highlightScore: calculateHighlightScore(anime, comments)
-    }));
-
-    // Ordena os animes pela pontuação de destaque
-    return scoredAnimes
-      .sort((a, b) => b.highlightScore - a.highlightScore)
-      .slice(0, limit);
-  } catch (e) {
-    console.error('Erro ao obter animes em destaque:', e);
-    return [];
-  }
-}
-
-// Renderiza seção de animes em destaque
-function renderFeaturedAnimes() {
-  const featuredContainer = document.querySelector('.featured-animes');
-  if (!featuredContainer) return;
-
-  const featuredAnimes = getFeaturedAnimes();
-
-  if (featuredAnimes.length === 0) {
-    featuredContainer.innerHTML = '<p class="text-center">Nenhum anime em destaque disponível.</p>';
-    return;
-  }
-
-  featuredContainer.innerHTML = featuredAnimes.map(anime => `
-    <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="anime-card">
-      <div class="rounded-2xl shadow-lg overflow-hidden h-full flex flex-col">
-        <div class="relative w-full aspect-[3/4]">
-          <img 
-            src="${anime.coverImage}" 
-            alt="${anime.primaryTitle}" 
-            class="absolute w-full h-full object-cover"
-            onerror="this.src='https://via.placeholder.com/480x720?text=Sem+Imagem'">
-        </div>
-        <div class="p-4 flex flex-col flex-grow">
-          <h3 class="text-lg font-semibold mb-auto line-clamp-2">${anime.primaryTitle}</h3>
-          <div class="flex items-center gap-2 mt-2">
-            <span class="rating-tag">⭐ ${anime.score || 'N/A'}</span>
-            <span class="rating-tag">💬 ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}</span>
-          </div>
-        </div>
-      </div>
-    </a>
-  `).join('');
-}
-
 // Exibe resultados de busca de animes
 function renderSearchResults(query) {
   const container = document.getElementById('anime-content');
@@ -1139,9 +1075,6 @@ window.addEventListener('DOMContentLoaded', () => {
     // Se não houver parâmetros, mostra lista de todos os animes
     renderAllAnimes();
   }
-
-  // Renderiza animes em destaque
-  renderFeaturedAnimes();
 });
 
 // Evento para inicializar o slider de avaliação
@@ -1195,7 +1128,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const ratingSlider = document.getElementById('rating-slider');
   if (ratingSlider) {
     ratingSlider.addEventListener('input', function () {
-      // O valor do slider agora representa diretamente décimos de ponto
       updateRatingEmoji(this.value);
     });
   }

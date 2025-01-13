@@ -51,12 +51,6 @@
   <script src="../src/js/utils/search.js"></script>
   <script src="../src/js/pages/admin.js"></script>
   <script src="../src/js/pages/admin-categorias.js"></script>
-  <script>
-    // Força atualização da página de categorias quando uma categoria é adicionada
-    document.getElementById('category-form').addEventListener('submit', () => {
-      window.dispatchEvent(new Event('categoriesUpdated'));
-    });
-  </script>
 </body>
 
 </html>

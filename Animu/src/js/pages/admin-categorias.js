@@ -2,6 +2,11 @@ class CategoryManager {
   constructor() {
     this.setupFormVisibility();
     this.loadCategories();
+
+    // Adiciona o event listener para atualização de categorias
+    window.addEventListener('categoriesUpdated', () => {
+      this.loadCategories();
+    });
   }
 
   generateForm() {
@@ -457,15 +462,25 @@ class CategoryManager {
     // Mostra o formulário
     const formContainer = document.getElementById('category-form-container');
     const showFormButton = document.getElementById('btn-show-form');
+    
+    // Primeiro, gera o formulário
+    formContainer.innerHTML = this.generateForm();
     formContainer.classList.remove('hidden');
     showFormButton.classList.add('hidden');
 
-    // Preenche o formulário com os dados da categoria
+    // Inicializa os componentes do formulário
+    this.initializeForm();
+    this.setupPreviewUpdates();
+    this.setupEmojiPicker();
+    this.setupColorInputs();
+    this.setupCharacterCounters();
+
+    // Agora preenche o formulário com os dados da categoria
     document.getElementById('category-name').value = category.name;
     document.getElementById('category-icon').value = category.icon;
     document.getElementById('category-description').value = category.description;
     document.getElementById('gradient-start').value = category.gradient.start;
-    document.getElementById('gradient-end').value = category.gradient.start;
+    document.getElementById('gradient-end').value = category.gradient.end;
     document.getElementById('gradient-start-hex').value = category.gradient.start;
     document.getElementById('gradient-end-hex').value = category.gradient.end;
     
@@ -479,15 +494,16 @@ class CategoryManager {
     this.updatePreview();
 
     // Muda o botão de submit para modo de edição
-    const submitBtn = document.querySelector('#category-form button[type="submit"]');
+    const form = document.getElementById('category-form');
+    const submitBtn = form.querySelector('button[type="submit"]');
     submitBtn.textContent = 'Salvar Alterações';
     submitBtn.classList.add('editing');
 
     // Adiciona o ID da categoria sendo editada ao formulário
-    document.getElementById('category-form').dataset.editingId = categoryId;
+    form.dataset.editingId = categoryId;
 
     // Scroll suave até o formulário
-    document.querySelector('.admin-form-container').scrollIntoView({ behavior: 'smooth' });
+    formContainer.scrollIntoView({ behavior: 'smooth' });
   }
 
   async deleteCategory(categoryId) {
