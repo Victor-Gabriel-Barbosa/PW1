@@ -16,6 +16,34 @@ class NoticiasManager {
     } else {
       this.initNewsGrid();
     }
+
+    this.gridView = document.getElementById('news-grid-view');
+    this.detailView = document.getElementById('news-detail-view');
+    
+    this.init();
+  }
+
+  init() {
+    this.newsData = JSON.parse(localStorage.getItem('news') || '[]');
+    const urlParams = new URLSearchParams(window.location.search);
+    const noticiaId = urlParams.get('id');
+
+    if (noticiaId) {
+        this.showDetailView(noticiaId);
+    } else {
+        this.showGridView();
+    }
+
+    // Atualizar o histórico quando navegar
+    window.addEventListener('popstate', (event) => {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        if (id) {
+            this.showDetailView(id, false);
+        } else {
+            this.showGridView(false);
+        }
+    });
   }
 
   getCurrentPage() {
@@ -68,7 +96,7 @@ class NoticiasManager {
                     </div>
                     <h3 class="news-title">${noticia.title}</h3>
                     <p class="news-summary">${noticia.summary}</p>
-                    <a href="noticia.html?id=${noticia.id}" class="news-read-more">
+                    <a href="noticias.html?id=${noticia.id}" class="news-read-more">
                         Ler mais
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
@@ -193,10 +221,9 @@ class NoticiasManager {
     this.pageInfo.textContent = `Página ${this.currentPage} de ${totalPages || 1}`;
   }
 
-  loadNoticia(id) {
-    const noticia = this.newsData.find(item => item.id.toString() === id.toString());
+  loadNoticia(noticia) {
     if (!noticia) {
-      window.location.href = 'noticias.html';
+      this.showGridView();
       return;
     }
 
@@ -230,8 +257,29 @@ class NoticiasManager {
         .join('');
     }
 
+    // Setup botões de compartilhamento
+    this.setupShareButtons();
+    
     // Carregar notícias relacionadas
     this.loadRelatedNews(noticia);
+    
+    // Mostrar a visualização detalhada
+    this.gridView.style.display = 'none';
+    this.detailView.style.display = 'block';
+  }
+
+  showDetailView(id, updateHistory = true) {
+    const noticia = this.newsData.find(item => item.id.toString() === id.toString());
+    if (!noticia) {
+      this.showGridView();
+      return;
+    }
+
+    if (updateHistory) {
+      history.pushState({}, '', `noticias.html?id=${id}`);
+    }
+
+    this.loadNoticia(noticia);
   }
 
   formatContent(content) {
@@ -259,7 +307,7 @@ class NoticiasManager {
 
   createRelatedNewsCard(noticia) {
     return `
-            <a href="noticia.html?id=${noticia.id}" class="related-news-card">
+            <a href="noticias.html?id=${noticia.id}" class="related-news-card">
                 <div class="news-image-container">
                     <img src="${noticia.image}" alt="${noticia.title}" class="news-image">
                     <span class="news-category">${noticia.category}</span>
@@ -333,6 +381,23 @@ class NoticiasManager {
       const text = encodeURIComponent(`${shareData.title}\n\n${shareData.url}`);
       window.open(`https://wa.me/?text=${text}`, '_blank');
     });
+  }
+
+  showGridView(updateHistory = true) {
+    this.gridView.style.display = 'block';
+    this.detailView.style.display = 'none';
+    document.title = 'Notícias | Animu';
+    this.initializeFilters();
+    
+    if (updateHistory) {
+        history.pushState({}, '', 'noticias.html');
+        this.updateMetaTags({
+            title: 'Notícias | Animu',
+            description: 'Notícias sobre anime e mangá',
+            image: '', // imagem padrão
+            url: window.location.href
+        });
+    }
   }
 }
 

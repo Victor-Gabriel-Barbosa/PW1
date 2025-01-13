@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil do Usuário - Animu</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../src/css/styles.css">
+  <link rel="stylesheet" href="../src/css/search.css">
+  <link rel="stylesheet" href="../src/css/navegacao.css">
+  <link rel="icon" href="../src/favicon/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+  <div class="container mx-auto px-4 py-8 max-w-6xl">
+    <!-- Cabeçalho do Perfil -->
+    <div class="rounded-2xl shadow-lg p-8 mb-8">
+      <div class="flex flex-col md:flex-row items-center gap-8">
+        <!-- Avatar e Informações Básicas -->
+        <div class="text-center md:text-left">
+          <div class="relative inline-block">
+            <img id="profile-avatar" src="https://via.placeholder.com/150" alt="Avatar"
+              class="w-32 h-32 rounded-full object-cover border-4 border-purple-500">
+            <button id="change-avatar"
+              class="absolute bottom-0 right-0 bg-purple-600 text-white p-2 rounded-full hover:bg-purple-700 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+            </button>
+          </div>
+          <h1 id="profile-username" class="text-2xl font-bold mt-4">Carregando...</h1>
+          <p id="profile-joined" class="text-gray-500 dark:text-gray-400">Membro desde: ...</p>
+        </div>
+
+        <!-- Estatísticas do Usuário -->
+        <div class="flex-grow">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div class="p-4 rounded-lg bg-purple-50 dark:bg-purple-900">
+              <h3 class="font-semibold text-purple-600 dark:text-purple-300">Animes</h3>
+              <p id="stats-animes" class="text-2xl font-bold">0</p>
+            </div>
+            <div class="p-4 rounded-lg bg-blue-50 dark:bg-blue-900">
+              <h3 class="font-semibold text-blue-600 dark:text-blue-300">Reviews</h3>
+              <p id="stats-reviews" class="text-2xl font-bold">0</p>
+            </div>
+            <div class="p-4 rounded-lg bg-green-50 dark:bg-green-900">
+              <h3 class="font-semibold text-green-600 dark:text-green-300">Likes</h3>
+              <p id="stats-likes" class="text-2xl font-bold">0</p>
+            </div>
+            <div class="p-4 rounded-lg bg-pink-50 dark:bg-pink-900">
+              <h3 class="font-semibold text-pink-600 dark:text-pink-300">Favoritos</h3>
+              <p id="stats-favorites" class="text-2xl font-bold">0</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Coluna da Esquerda: Informações do Perfil -->
+      <div class="space-y-8">
+        <!-- Informações Pessoais -->
+        <div class="rounded-2xl shadow-lg p-6">
+          <h2 class="text-xl font-semibold mb-4">Informações Pessoais</h2>
+          <div class="space-y-4">
+            <div>
+              <label class="text-sm text-gray-500 dark:text-gray-400">Nome de Exibição</label>
+              <p id="display-name" class="font-medium">Carregando...</p>
+            </div>
+            <div>
+              <label class="text-sm text-gray-500 dark:text-gray-400">Email</label>
+              <p id="profile-email" class="font-medium">Carregando...</p>
+            </div>
+            <div>
+              <label class="text-sm text-gray-500 dark:text-gray-400">Gêneros Favoritos</label>
+              <div id="favorite-genres" class="flex flex-wrap gap-2 mt-2">
+                <!-- Gêneros serão inseridos aqui -->
+              </div>
+            </div>
+          </div>
+          <button id="edit-profile"
+            class="mt-6 w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors">
+            Editar Perfil
+          </button>
+        </div>
+
+        <!-- Conquistas -->
+        <div class="rounded-2xl shadow-lg p-6">
+          <h2 class="text-xl font-semibold mb-4">Conquistas</h2>
+          <div id="achievements" class="grid grid-cols-2 gap-4">
+            <!-- Conquistas serão inseridas aqui -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna Central: Lista de Animes -->
+      <div class="space-y-8 md:col-span-2">
+        <!-- Animes Favoritos -->
+        <div class="rounded-2xl shadow-lg p-6">
+          <h2 class="text-xl font-semibold mb-4">Animes Favoritos</h2>
+          <div id="favorite-animes" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Animes favoritos serão inseridos aqui -->
+          </div>
+        </div>
+
+        <!-- Histórico de Atividades -->
+        <div class="rounded-2xl shadow-lg p-6">
+          <h2 class="text-xl font-semibold mb-4">Histórico de Atividades</h2>
+          <div id="activity-timeline" class="space-y-4">
+            <!-- Atividades serão inseridas aqui -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- Modal de Edição de Perfil -->
+  <div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 max-w-md w-full mx-4">
+      <h2 class="text-2xl font-bold mb-6">Editar Perfil</h2>
+      <form id="edit-profile-form">
+        <div class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium mb-1">Nome de Exibição</label>
+            <input type="text" id="edit-display-name"
+              class="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Email</label>
+            <input type="email" id="edit-email"
+              class="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Gêneros Favoritos</label>
+            <div class="max-h-48 overflow-y-auto p-2 border rounded-lg dark:border-gray-600">
+              <div id="edit-genres" class="grid grid-cols-2 gap-2">
+                <!-- Checkboxes de gêneros serão inseridos aqui -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-4 mt-6">
+          <button type="submit"
+            class="flex-1 bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors">
+            Salvar
+          </button>
+          <button type="button" id="cancel-edit"
+            class="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../src/js/pages/animu.js"></script>
+    <script src="../src/js/pages/navbar.js"></script>
+    <script src="../src/js/utils/search.js"></script>
+    <script src="../src/js/pages/profile.js"></script>
+</body>
+
+</html>

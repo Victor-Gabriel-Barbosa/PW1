@@ -7,27 +7,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../src/css/styles.css">
   <link rel="stylesheet" href="../src/css/sobre.css">
+  <link rel="stylesheet" href="../src/css/search.css">
+  <link rel="stylesheet" href="../src/css/navegacao.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" href="../src/favicon/favicon.ico" type="image/x-icon">
 </head>
 
 <body>
-  <!-- Botão de voltar para a página anterior -->
-  <button class="back-button" onclick="window.history.back()" title="Voltar">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-      stroke-linecap="round" stroke-linejoin="round">
-      <path d="M15 18l-6-6 6-6" /> <!-- Desenho da seta -->
-    </svg>
-  </button>
-
-  <!-- Botão para alternância de tema claro/escuro -->
-  <div class="theme-toggle-container"></div>
-    <button class="toggle-theme" style="position: fixed; top: 20px; right: 20px;">
-      <div class="clouds"></div>
-      <div class="stars"><span><span></span></span></div>
-    </button>
-  </div>
-
   <div class="sobre-form card-hover" style="margin-top: 50px;">
     <h1 class="form-title text-center text-3xl mb-8"><b>Sobre o Animu</b></h1>
 
@@ -104,6 +90,8 @@
 
   <!-- Scripts -->
   <script src="../src/js/pages/animu.js"></script>
+  <script src="../src/js/pages/navbar.js"></script>
+  <script src="../src/js/utils/search.js"></script>
 </body>
 
 </html>

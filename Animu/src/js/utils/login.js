@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         userPanel.classList.remove('hidden');
 
         // Atualizar nome de usuário com link para o perfil
-        userNameSpan.innerHTML = `<a href="profile.html" class="hover:text-purple-600 transition-colors">${sessionData.username}</a>`;
+        userNameSpan.innerHTML = `<a href="perfil.html" class="hover:text-purple-600 transition-colors">${sessionData.username}</a>`;
 
         // Mostrar link de logout
         logoutLink.classList.remove('hidden');
@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (userAvatar && sessionData.avatar) {
           userAvatar.src = sessionData.avatar;
           userAvatar.style.cursor = 'pointer';
-          userAvatar.onclick = () => window.location.href = 'profile.html';
+          userAvatar.onclick = () => window.location.href = 'perfil.html';
           userAvatar.title = 'Ver perfil';
         }
 

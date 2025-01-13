@@ -52,3 +52,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// Função para obter o avatar do usuário
+function getUserAvatar(username) {
+  const users = JSON.parse(localStorage.getItem('animuUsers') || '[]');
+  const user = users.find(u => u.username === username);
+  return user ? user.avatar : `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=8B5CF6&color=ffffff&size=100`;
+}
+
+// Atualiza interface do usuário na navbar
+function updateUserInterface() {
+  const sessionData = JSON.parse(localStorage.getItem('userSession'));
+  if (sessionData) {
+    const userPanel = document.getElementById('user-panel');
+    const userNameSpan = document.getElementById('user-name');
+    const userAvatar = userPanel?.querySelector('img');
+    const logoutLink = document.getElementById('logout-link');
+
+    if (userPanel && userNameSpan) {
+      userNameSpan.innerHTML = `<a href="perfil.html" class="hover:text-purple-600 transition-colors">${sessionData.username}</a>`;
+      if (userAvatar) {
+        userAvatar.src = getUserAvatar(sessionData.username);
+        userAvatar.style.cursor = 'pointer';
+        userAvatar.onclick = () => window.location.href = 'perfil.html';
+        userAvatar.title = 'Ver perfil';
+      }
+      if (logoutLink) {
+        logoutLink.classList.remove('hidden');
+      }
+    }
+  }
+}
+
+// Inicialização da página
+window.addEventListener('DOMContentLoaded', () => {
+  updateUserInterface();
+});

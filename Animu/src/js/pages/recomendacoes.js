@@ -175,8 +175,16 @@ function renderRecommendations(recommendations, containerId) {
     // Debug
     console.log('Anime:', anime);
 
-    // Garante que o score seja um número válido ou use 'N/A'
-    const formattedScore = typeof anime.score === 'number' ? anime.score.toFixed(1) : 'N/A';
+    // Garante que o score seja um número válido
+    let formattedScore = 'N/A';
+    if (typeof anime.score === 'number') {
+      formattedScore = anime.score.toFixed(1);
+    } else if (typeof anime.score === 'string' && !isNaN(parseFloat(anime.score))) {
+      formattedScore = parseFloat(anime.score).toFixed(1);
+    }
+
+    // Debug dos valores
+    console.log('Anime:', anime.primaryTitle, 'Score original:', anime.score, 'Score formatado:', formattedScore);
 
     return `
       <div class="recommendation-card group">

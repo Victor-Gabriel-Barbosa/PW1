@@ -1,0 +1,446 @@
+/* Container fixo do menu de navegação principal */
+.nav-menu-container {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 51;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo-container a {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.logo-container a:hover {
+  color: var(--text-color);
+}
+
+/* Navegação Principal */
+nav {
+  background-color: rgba(var(--background), 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--card-shadow);
+  transform: translateY(0);
+  transition: transform 0.3s ease, background-color 0.3s ease, transform 0.3s ease-in-out;
+}
+
+.nav-hidden {
+  transform: translateY(-100%);
+}
+
+/* Animação do underline nos links de navegação */
+nav .ml-10 a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 50%;
+  background: var(--primary-gradient);
+  transition: width 0.3s ease-in-out, left 0.3s ease-in-out;
+  transform-origin: center;
+}
+
+nav .ml-10 a:hover::after,
+nav .ml-10 a.active::after {
+  width: 100%;
+  left: 0;
+}
+
+nav .ml-10 a.active {
+  color: var(--primary-color);
+}
+
+.nav-link {
+  position: relative;
+  padding: 0.5rem 0;
+  font-weight: 500;
+  color: var(--text-color);
+  transition: color 0.3s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary-gradient);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+.nav-link.active {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* Barra Lateral */
+.menu-toggle-btn {
+  padding: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+  position: static; 
+  top: auto;
+  left: auto;
+  z-index: 51;
+}
+
+.menu-toggle-btn:hover {
+  transform: scale(1.1);
+}
+
+.menu-toggle-btn svg {
+  fill: var(--text-color);
+}
+
+/* Menu lateral responsivo com estados aberto/fechado */
+.side-menu {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  width: min(240px, 70vw); 
+  height: calc(100vh - 64px);
+  background: var(--background);
+  box-shadow: 2px 0 8px var(--card-shadow);
+  transition: all 0.3s ease;
+  z-index: 49;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) transparent;
+}
+
+/* Estado recolhido do menu - mais compacto em telas menores */
+.side-menu:not(.open) {
+  width: min(50px, 12vw); 
+}
+
+.side-menu:not(.open) .nav-link span,
+.side-menu:not(.open) .admin-section-divider {
+  display: none;
+}
+
+.side-menu:not(.open) .nav-link {
+  padding: 12px;
+  justify-content: center;
+}
+
+.side-menu:not(.open) .nav-link svg {
+  margin: 0;
+}
+
+.side-menu .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px; 
+  padding: 8px 12px; 
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  font-size: 0.9rem;
+}
+
+/* Efeito hover com background gradiente nos links do menu lateral */
+.side-menu .nav-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-color-alpha);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: 0;
+}
+
+.side-menu .nav-link:hover::before {
+  transform: translateX(0);
+}
+
+.side-menu .nav-link > * {
+  position: relative;
+  z-index: 1;
+}
+
+.side-menu .nav-link:hover {
+  color: var(--primary-color);
+}
+
+.side-menu .nav-link svg {
+  fill: var(--text-color);
+  opacity: 0.7;
+  transition: fill 0.3s ease, opacity 0.3s ease;
+  min-width: 20px; 
+  height: 20px; 
+  width: 20px;
+}
+
+.side-menu .nav-link:hover svg {
+  fill: var(--primary-color);
+  opacity: 1;
+}
+
+.side-menu .nav-link.active {
+  background-color: var(--primary-color-alpha);
+  color: var(--primary-color);
+}
+
+.side-menu .nav-link.active::before {
+  transform: translateX(0);
+}
+
+.side-menu .nav-link.active svg {
+  fill: var(--primary-color);
+  opacity: 1;
+}
+
+/* Seção Admin */
+.admin-section-divider {
+  padding: 8px 12px;
+  font-size: 0.85rem; 
+}
+
+.admin-link {
+  color: var(--text-color) !important;
+  opacity: 0.8;
+  padding: 8px 12px !important;
+  margin: 4px 0;
+}
+
+.admin-link:hover {
+  opacity: 1;
+  background: var(--primary-color-alpha);
+}
+
+#admin-options {
+  position: relative;
+  margin-top: 16px;
+  padding-top: 16px;
+}
+
+#admin-options::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 16px;
+  right: 16px;
+  height: 1px;
+  background: var(--card-shadow);
+}
+
+#admin-options.hidden {
+  display: none;
+}
+
+/* Overlay do Menu */
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+  z-index: 48;
+}
+
+.menu-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Botão de alternância da navbar */
+.nav-toggle-btn {
+  position: fixed;
+  top: 64px; 
+  right: 20px;
+  padding: 8px;
+  background: var(--background);
+  border: 1px solid var(--card-shadow);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 49;
+  box-shadow: 0 2px 4px var(--card-shadow);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.nav-toggle-btn:hover {
+  transform: translateY(2px);
+  box-shadow: 0 1px 2px var(--card-shadow);
+}
+
+.nav-toggle-icon {
+  fill: var(--text-color);
+  transition: transform 0.3s ease;
+}
+
+.nav-toggle-btn.rotated .nav-toggle-icon {
+  transform: rotate(180deg);
+}
+
+/* Ajustes responsivos por breakpoint */
+@media (max-width: 768px) {
+  .side-menu {
+    top: 0;
+    height: 100vh;
+    width: min(280px, 80vw);
+    transform: translateX(-100%);
+  }
+
+  .side-menu.open {
+    transform: translateX(0);
+  }
+
+  .side-menu:not(.open) {
+    width: 0;
+  }
+
+  .side-menu-content {
+    padding: 80px 12px 16px;
+    min-width: 250px;
+  }
+
+  body.has-navbar.menu-open {
+    padding-left: 0;
+  }
+
+  body.has-navbar:not(.menu-open) {
+    padding-left: 0;
+  }
+
+  .nav-link {
+    padding: 0.75rem 1rem;
+  }
+
+  .menu-toggle-btn {
+    top: 16px;
+    left: 16px;
+  }
+
+  .flex-shrink-0.ml-4 {
+    display: none; 
+  }
+
+  .nav-menu-container {
+    top: 16px;
+    left: 16px;
+  }
+
+  .nav-toggle-btn {
+    right: 16px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .side-menu {
+    width: min(220px, 22vw);
+  }
+
+  .side-menu:not(.open) {
+    width: min(45px, 8vw);
+  }
+
+  body.has-navbar.menu-open {
+    padding-left: min(220px, 22vw);
+  }
+
+  body.has-navbar:not(.menu-open) {
+    padding-left: min(45px, 8vw);
+  }
+}
+
+@media (max-width: 480px) {
+  .side-menu {
+    width: clamp(180px, 75vw, 260px); 
+  }
+
+  .side-menu .nav-link {
+    padding: 14px 16px; 
+  }
+
+  .admin-link {
+    padding: 14px 16px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .side-menu {
+    width: 100vw;
+  }
+
+  .side-menu-content {
+    padding: 70px 8px 16px;
+  }
+
+  .nav-link {
+    padding: 12px 8px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .side-menu {
+    max-width: 320px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .side-menu {
+    width: min(240px, 18vw);
+  }
+
+  .side-menu:not(.open) {
+    width: 50px;
+  }
+
+  body.has-navbar.menu-open {
+    padding-left: min(240px, 18vw);
+  }
+
+  body.has-navbar:not(.menu-open) {
+    padding-left: 50px;
+  }
+}
+
+/* Ajustes para telas muito grandes */
+@media (min-width: 1600px) {
+  .side-menu {
+    width: min(280px, 12vw);
+  }
+
+  body.has-navbar.menu-open {
+    padding-left: min(280px, 12vw);
+  }
+}
