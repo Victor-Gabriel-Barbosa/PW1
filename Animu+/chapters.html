@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Capítulos | Animu+</title>
+    <link rel="stylesheet" href="animu+.css">
+    <link rel="stylesheet" href="chapters.css">
+</head>
+<body>
+    <header>
+        <nav class="main-nav">
+            <div class="logo">Animu+</div>
+            <div class="nav-links">
+                <a href="animu+.html">Voltar</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="manga-info">
+            <h1 id="mangaTitle">Carregando...</h1>
+            <img id="mangaCover" alt="Capa do Mangá" class="manga-cover">
+        </section>
+
+        <section class="chapters-section">
+            <div class="chapter-controls">
+                <h2>Capítulos</h2>
+                <button id="addChapterBtn" class="admin-btn">+ Novo Capítulo</button>
+            </div>
+            <div id="chaptersList" class="chapters-list">
+                <!-- Lista de capítulos será inserida aqui -->
+                <div class="chapter-actions">
+                    <button class="view-btn" onclick="viewChapter(${chapter.id})">Ler</button>
+                    <button class="edit-btn" onclick="editChapter(${chapter.id})">Editar</button>
+                    <button class="delete-btn" onclick="deleteChapter(${chapter.id})">Excluir</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal para adicionar/editar capítulo -->
+    <div id="chapterModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Novo Capítulo</h2>
+            <form id="chapterForm">
+                <input type="hidden" id="chapterId">
+                <div class="form-group">
+                    <label for="chapterNumber">Número do Capítulo:</label>
+                    <input type="number" id="chapterNumber" required step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="chapterTitle">Título do Capítulo:</label>
+                    <input type="text" id="chapterTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="chapterImages">Imagens do Capítulo:</label>
+                    <div class="image-upload-container">
+                        <input type="file" id="chapterImages" multiple accept="image/*" required>
+                        <div class="upload-instructions">
+                            <p>Arraste as imagens aqui ou clique para selecionar</p>
+                            <p class="upload-hint">Formatos aceitos: JPG, PNG, WEBP</p>
+                        </div>
+                    </div>
+                    <div class="image-preview-container">
+                        <h3>Páginas do Capítulo</h3>
+                        <div id="imagePreview" class="image-preview sortable">
+                            <!-- Imagens serão inseridas aqui -->
+                        </div>
+                    </div>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="save-btn">Salvar Capítulo</button>
+                    <button type="button" class="cancel-btn">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="chapters.js"></script>
+</body>
+</html>

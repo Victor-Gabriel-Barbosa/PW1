@@ -15,83 +15,93 @@
 
 <body>
   <div class="sobre-form card-hover" style="margin-top: 50px;">
-    <h1 class="form-title text-center text-3xl mb-8"><b>Sobre o Animu</b></h1>
+    <h1 class="form-title text-center text-3xl mb-8"><b>Bem-vindo ao Animu</b></h1>
 
     <div class="space-y-8">
       <section>
-        <h2 class="gradient-text text-2xl mb-4">Nossa Missão</h2>
-        <p class="mb-4 leading-relaxed">
-          O Animu é uma plataforma dedicada aos fãs de anime, criada com o objetivo de fornecer
-          informações detalhadas e organizadas sobre as mais diversas séries de animação japonesa.
-          Nossa missão é criar um ambiente acolhedor onde os fãs possam descobrir, explorar e
-          compartilhar sua paixão por animes.
-        </p>
+        <h2 class="gradient-text text-2xl mb-6">Nossa Missão</h2>
+        <div class="flex flex-col md:flex-row gap-8 items-center">
+          <div class="flex-1">
+            <p class="text-lg leading-relaxed">
+              O Animu é uma plataforma dedicada aos fãs de anime, criada com o objetivo de fornecer
+              informações detalhadas e organizadas sobre as mais diversas séries de animação japonesa.
+            </p>
+            <p class="text-lg leading-relaxed mt-4">
+              Nossa missão é criar um ambiente acolhedor onde os fãs possam descobrir, explorar e
+              compartilhar sua paixão por animes.
+            </p>
+          </div>
+          <div class="flex-1 text-center">
+            <img src="../src/favicon/web-app-manifest-512x512.png" alt="Animu Logo" class="max-w-[200px] mx-auto">
+          </div>
+        </div>
       </section>
 
       <section>
-        <h2 class="gradient-text text-2xl mb-4">Recursos</h2>
+        <h2 class="gradient-text text-2xl mb-6">Recursos</h2>
         <ul class="resource-list">
           <li>Banco de dados extensivo de animes</li>
           <li>Informações detalhadas sobre cada série</li>
           <li>Sistema de classificação e avaliação</li>
           <li>Interface intuitiva e responsiva</li>
           <li>Suporte a temas claro e escuro</li>
+          <li>Atualizações regulares</li>
         </ul>
       </section>
 
-      <section>
-        <h2 class="gradient-text text-2xl mb-4">Tecnologias Utilizadas</h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <div class="tag">HTML5</div>
-          <div class="tag">CSS3</div>
-          <div class="tag">JavaScript</div>
-          <div class="tag">Tailwind CSS</div>
-          <div class="tag">Responsivo</div>
-          <div class="tag">API REST</div>
-        </div>
-      </section>
+      <div class="grid md:grid-cols-2 gap-8">
+        <section>
+          <h2 class="gradient-text text-2xl mb-6">Tecnologias</h2>
+          <div class="tag-container">
+            <div class="tag">HTML5</div>
+            <div class="tag">CSS3</div>
+            <div class="tag">JavaScript</div>
+            <div class="tag">Tailwind CSS</div>
+            <div class="tag">Responsivo</div>
+            <div class="tag">API REST</div>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="gradient-text text-2xl mb-6">Equipe</h2>
+          <div class="team-info">
+            <p class="text-lg">
+              O Animu é desenvolvido por estudantes apaixonados por programação e anime,
+              focados em criar a melhor experiência possível para nossa comunidade.
+            </p>
+          </div>
+        </section>
+      </div>
 
       <section>
-        <h2 class="gradient-text text-2xl mb-4">Equipe</h2>
-        <div class="team-info">
-          <p class="mb-4">
-            O Animu é um projeto desenvolvido com dedicação por estudantes de
-            Programação Web, buscando criar uma experiência única para os amantes
-            de anime.
-          </p>
-        </div>
-      </section>
-
-      <section>
-        <h2 class="gradient-text text-2xl mb-4">Contato</h2>
-        <p class="mb-4">
-          Tem sugestões ou encontrou algum problema? Entre em contato conosco:
-        </p>
-        <div class="flex flex-col space-y-2">
+        <h2 class="gradient-text text-2xl mb-6">Entre em Contato</h2>
+        <div class="contact-section">
           <a href="mailto:victorgabrielbarbosa88@gmail.com" class="contact-link">
-            📧 victorgabrielbarbosa88@gmail.com
+            <i class="fas fa-envelope"></i>
+            victorgabrielbarbosa88@gmail.com
           </a>
           <a href="mailto:guilhermeepifanio14@gmail.com" class="contact-link">
-            📧 guilhermeepifanio14@gmail.com
+            <i class="fas fa-envelope"></i>
+            guilhermeepifanio14@gmail.com
           </a>
           <a href="https://github.com/animu" target="_blank" class="contact-link">
-            📂 GitHub
+            <i class="fab fa-github"></i>
+            GitHub
           </a>
         </div>
       </section>
 
-      <section>
-        <h2 class="gradient-text text-2xl mb-4">Versão</h2>
-        <span class="version-badge">1.0.0 Beta</span>
-        <p class="text-sm mt-2 text-gray-600">Última atualização: Janeiro 2024</p>
-      </section>
+      <div class="version-info">
+        <span class="version-badge">Versão 1.0.0 Beta</span>
+        <span class="text-sm opacity-75">Última atualização: Janeiro 2024</span>
+      </div>
     </div>
   </div>
 
   <!-- Scripts -->
-  <script src="../src/js/pages/animu.js"></script>
   <script src="../src/js/pages/navbar.js"></script>
   <script src="../src/js/utils/search.js"></script>
+  <script src="../src/js/pages/animu.js"></script>
 </body>
 
 </html>
