@@ -135,7 +135,7 @@ nav .ml-10 a.active {
 
 /* Estado recolhido do menu - mais compacto em telas menores */
 .side-menu:not(.open) {
-  width: min(50px, 12vw); 
+  width: min(65px, 15vw); 
 }
 
 .side-menu:not(.open) .nav-link span,
@@ -370,7 +370,7 @@ nav .ml-10 a.active {
   }
 
   .side-menu:not(.open) {
-    width: min(45px, 8vw);
+    width: min(65px, 12vw);
   }
 
   body.has-navbar.menu-open {
@@ -378,7 +378,7 @@ nav .ml-10 a.active {
   }
 
   body.has-navbar:not(.menu-open) {
-    padding-left: min(45px, 8vw);
+    padding-left: min(60px, 12vw); 
   }
 }
 
@@ -422,7 +422,7 @@ nav .ml-10 a.active {
   }
 
   .side-menu:not(.open) {
-    width: 50px;
+    width: 65px; 
   }
 
   body.has-navbar.menu-open {
@@ -430,7 +430,7 @@ nav .ml-10 a.active {
   }
 
   body.has-navbar:not(.menu-open) {
-    padding-left: 50px;
+    padding-left: 60px; 
   }
 }
 

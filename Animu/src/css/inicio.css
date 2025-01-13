@@ -115,36 +115,72 @@
 }
 
 .section-divider {
-  height: 1px;
+  position: relative;
+  height: 2px;
   background: linear-gradient(
     90deg,
     transparent,
-    var(--text-color),
+    var(--primary-color),
     transparent
   );
-  opacity: 0.2;
-  margin: 4rem auto;
-  width: 80%;
+  opacity: 0.3;
+  margin: 6rem auto;
+  width: 90%;
   max-width: 1200px;
 }
 
 .section-divider::before {
-  content: '●';
+  content: '✦';
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   background: var(--background);
   padding: 0 1rem;
-  color: var(--text-color);
-  opacity: 0.5;
+  color: var(--primary-color);
+  font-size: 1.2rem;
 }
 
-.featured-title {
-  font-size: 1.875rem;
-  font-weight: bold;
+.section-wrapper {
+  padding: 4rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.section-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: linear-gradient(180deg, 
+    var(--background) 0%,
+    rgba(var(--primary-color-rgb), 0.05) 50%,
+    var(--background) 100%
+  );
+  z-index: -1;
+}
+
+.section-title {
   text-align: center;
-  margin-bottom: 2rem;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 3rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: var(--primary-gradient);
+  border-radius: 2px;
 }
 
 /* Gradientes para os cards */
