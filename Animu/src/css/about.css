@@ -1,4 +1,4 @@
-.sobre-form {
+.about-form {
   border-radius: 30px;
   padding: 60px;
   width: 100%;
@@ -10,7 +10,7 @@
   overflow: hidden;
 }
 
-.sobre-form::before {
+.about-form::before {
   content: '';
   position: absolute;
   top: 0;
@@ -183,7 +183,7 @@ section:hover {
 }
 
 @media (max-width: 768px) {
-  .sobre-form {
+  .about-form {
     padding: 30px;
     margin: 40px auto;
   }

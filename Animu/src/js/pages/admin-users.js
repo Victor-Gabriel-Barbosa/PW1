@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Redireciona usuários não-admin para a página inicial
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
   if (!sessionData?.isAdmin) {
-    window.location.href = 'inicio.html';
+    window.location.href = 'index.html';
     return;
   }
 

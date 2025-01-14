@@ -72,11 +72,11 @@ function updateUserInterface() {
     const logoutLink = document.getElementById('logout-link');
 
     if (userPanel && userNameSpan) {
-      userNameSpan.innerHTML = `<a href="perfil.html" class="hover:text-purple-600 transition-colors">${sessionData.username}</a>`;
+      userNameSpan.innerHTML = `<a href="profile.html" class="hover:text-purple-600 transition-colors">${sessionData.username}</a>`;
       if (userAvatar) {
         userAvatar.src = getUserAvatar(sessionData.username);
         userAvatar.style.cursor = 'pointer';
-        userAvatar.onclick = () => window.location.href = 'perfil.html';
+        userAvatar.onclick = () => window.location.href = 'profile.html';
         userAvatar.title = 'Ver perfil';
       }
       if (logoutLink) {

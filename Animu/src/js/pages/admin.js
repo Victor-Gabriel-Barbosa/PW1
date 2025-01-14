@@ -4,7 +4,7 @@ function checkAdminAccess() {
   // Redireciona para página inicial se não for admin
   if (!session || !session.isAdmin) {
     alert('Acesso negado. Esta página é restrita a administradores.');
-    window.location.href = 'inicio.html';
+    window.location.href = 'index.html';
     return false;
   }
   return true;

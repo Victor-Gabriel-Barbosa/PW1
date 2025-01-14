@@ -532,7 +532,7 @@ class CategoryManager {
     const session = JSON.parse(localStorage.getItem('userSession'));
     if (!session || !session.isAdmin) {
       alert('Acesso negado. Esta página é restrita a administradores.');
-      window.location.href = 'inicio.html';
+      window.location.href = 'index.html';
       return false;
     }
     return true;

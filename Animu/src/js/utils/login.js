@@ -442,7 +442,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         await authManager.loginUser(username, password, remember);
         authManager.updateUserPanel();
-        window.location.href = 'inicio.html';
+        window.location.href = 'index.html';
       } catch (error) {
         authManager.showError(error.message);
       } finally {

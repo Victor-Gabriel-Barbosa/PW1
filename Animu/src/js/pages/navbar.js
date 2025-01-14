@@ -13,7 +13,7 @@ class Navbar {
         
         <!-- Logo -->
         <div class="logo-container">
-          <a href="inicio.html" class="text-2xl font-bold text-purple-600">Animu</a>
+          <a href="index.html" class="text-2xl font-bold text-purple-600">Animu</a>
         </div>
       </div>
 
@@ -57,7 +57,7 @@ class Navbar {
       <!-- Menu Lateral -->
       <div id="side-menu" class="side-menu">
         <div class="side-menu-content">
-          <a href="inicio.html" class="nav-link" title="Ir para página inicial">
+          <a href="index.html" class="nav-link" title="Ir para página inicial">
             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24">
               <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
             </svg>
@@ -69,31 +69,31 @@ class Navbar {
             </svg>
             <span>Animes</span>
           </a>
-          <a href="recomendacoes.html" class="nav-link" title="Ver recomendações de animes">
+          <a href="recommendation.html" class="nav-link" title="Ver recomendações de animes">
             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24">
               <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
             </svg>
             <span>Recomendações</span>
           </a>
-          <a href="noticias.html" class="nav-link" title="Ver notícias sobre animes">
+          <a href="news.html" class="nav-link" title="Ver notícias sobre animes">
             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24">
               <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 14H4v-6h11v6zm0-8H4V6h11v4zm5 8h-4V6h4v12z"/>
             </svg>
             <span>Notícias</span>
           </a>
-          <a href="perfil.html" class="nav-link" title="Acessar perfil do usuário">
+          <a href="profile.html" class="nav-link" title="Acessar perfil do usuário">
             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24">
               <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
             </svg>
             <span>Perfil</span>
           </a>
-          <a href="categorias.html" class="nav-link" title="Explorar categorias de animes">
+          <a href="category.html" class="nav-link" title="Explorar categorias de animes">
             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24">
               <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
             </svg>
             <span>Categorias</span>
           </a>
-          <a href="sobre.html" class="nav-link" title="Informações sobre o site">
+          <a href="about.html" class="nav-link" title="Informações sobre o site">
             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
             </svg>
@@ -102,13 +102,13 @@ class Navbar {
           <!-- Opções de Admin (inicialmente ocultas) -->
           <div id="admin-options" class="hidden">
             <div class="admin-section-divider">Administração</div>
-            <a href="./admin-usuarios.html" class="nav-link admin-link" title="Gerenciar usuários do sistema">
+            <a href="./admin-users.html" class="nav-link admin-link" title="Gerenciar usuários do sistema">
               <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24">
                 <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
                 </svg>
               <span>Gerenciar Usuários</span>
             </a>
-            <a href="./admin-categorias.html" class="nav-link admin-link" title="Gerenciar categorias de animes">
+            <a href="./admin-category.html" class="nav-link admin-link" title="Gerenciar categorias de animes">
               <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24">
                 <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
               </svg>
@@ -120,7 +120,7 @@ class Navbar {
               </svg>
               <span>Gerenciar Animes</span>
             </a>
-            <a href="./admin-noticias.html" class="nav-link admin-link" title="Gerenciar notícias do site">
+            <a href="./admin-news.html" class="nav-link admin-link" title="Gerenciar notícias do site">
               <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24">
                 <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 14H4v-6h11v6zm0-8H4V6h11v4zm5 8h-4V6h4v12z"/>
               </svg>
@@ -186,7 +186,7 @@ class Navbar {
       else if (!isAdminPage && !isAdminLink) {
         if (currentPage === href ||
           (currentPage.includes('anime') && href === 'animes.html') ||
-          (currentPage === '' && href === 'inicio.html')) {
+          (currentPage === '' && href === 'index.html')) {
           link.classList.add('active');
         } else {
           link.classList.remove('active');

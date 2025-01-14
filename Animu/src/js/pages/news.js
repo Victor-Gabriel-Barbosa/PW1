@@ -1,4 +1,4 @@
-class NoticiasManager {
+class NewsManager {
   constructor() {
     // Carrega dados do localStorage e configura listeners globais
     this.newsData = JSON.parse(localStorage.getItem('news') || '[]');
@@ -17,21 +17,21 @@ class NoticiasManager {
     // Inicializa grid com base no contexto da página
     const newsGrid = document.querySelector('.news-grid');
     if (newsGrid) {
-      this.currentPage === 'noticias' 
+      this.currentPage === 'news' 
         ? this.initializeFilters()
-        : this.currentPage === 'inicio' && this.renderNewsGrid(newsGrid, 4);
+        : this.currentPage === 'index' && this.renderNewsGrid(newsGrid, 4);
     }
 
     // Inicializa visualização detalhada na página de notícias
-    this.currentPage === 'noticias' && this.init();
+    this.currentPage === 'news' && this.init();
   }
 
   init() {
     const urlParams = new URLSearchParams(window.location.search);
-    const noticiaId = urlParams.get('id');
+    const newsId = urlParams.get('id');
 
-    if (noticiaId && this.detailView) {
-      this.showDetailView(noticiaId);
+    if (newsId && this.detailView) {
+      this.showDetailView(newsId);
     } else if (this.gridView) {
       this.showGridView();
     } else {
@@ -56,9 +56,8 @@ class NoticiasManager {
 
   getCurrentPage() {
     const path = window.location.pathname;
-    if (path.includes('noticia.html')) return 'noticia';
-    if (path.includes('noticias.html')) return 'noticias';
-    if (path.includes('inicio.html')) return 'inicio';
+    if (path.includes('news.html')) return 'news';
+    if (path.includes('index.html')) return 'index';
     return '';
   }
 
@@ -67,7 +66,7 @@ class NoticiasManager {
     if (!newsGrid) return;
 
     // Se estiver na página de notícias, inicializar filtros
-    if (this.currentPage === 'noticias') {
+    if (this.currentPage === 'news') {
       this.initializeFilters();
     } else {
       // Na página inicial, mostrar apenas 4 notícias
@@ -77,14 +76,14 @@ class NoticiasManager {
 
   initSingleNews() {
     const urlParams = new URLSearchParams(window.location.search);
-    const noticiaId = urlParams.get('id');
+    const newsId = urlParams.get('id');
 
-    if (!noticiaId) {
-      window.location.href = 'noticias.html';
+    if (!newsId) {
+      window.location.href = 'news.html';
       return;
     }
 
-    this.loadNoticia(noticiaId);
+    this.loadNoticia(newsId);
     this.setupShareButtons();
   }
 
@@ -104,7 +103,7 @@ class NoticiasManager {
           </div>
           <h3 class="news-title">${noticia.title}</h3>
           <p class="news-summary">${noticia.summary}</p>
-          <a href="noticias.html?id=${noticia.id}" class="news-read-more">
+          <a href="news.html?id=${noticia.id}" class="news-read-more">
             Ler mais
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
@@ -143,7 +142,7 @@ class NoticiasManager {
     if (newsGrid) {
       // Se estiver na página inicial, mostrar apenas 4 notícias
       // Se estiver na página de notícias, mostrar todas
-      const limit = window.location.pathname.includes('inicio.html') ? 4 : null;
+      const limit = window.location.pathname.includes('index.html') ? 4 : null;
       this.renderNewsGrid(newsGrid, limit);
     }
   }
@@ -282,7 +281,7 @@ class NoticiasManager {
     }
 
     if (updateHistory) {
-      history.pushState({}, '', `noticias.html?id=${id}`);
+      history.pushState({}, '', `news.html?id=${id}`);
     }
 
     this.loadNoticia(noticia);
@@ -313,7 +312,7 @@ class NoticiasManager {
 
   createRelatedNewsCard(noticia) {
     return `
-            <a href="noticias.html?id=${noticia.id}" class="related-news-card">
+            <a href="news.html?id=${noticia.id}" class="related-news-card">
                 <div class="news-image-container">
                     <img src="${noticia.image}" alt="${noticia.title}" class="news-image">
                     <span class="news-category">${noticia.category}</span>
@@ -400,12 +399,12 @@ class NoticiasManager {
     this.detailView.style.display = 'none';
     document.title = 'Notícias | Animu';
     
-    if (this.currentPage === 'noticias') {
+    if (this.currentPage === 'news') {
       this.initializeFilters();
     }
     
     if (updateHistory) {
-      history.pushState({}, '', 'noticias.html');
+      history.pushState({}, '', 'news.html');
       this.updateMetaTags({
         title: 'Notícias | Animu',
         description: 'Notícias sobre anime e mangá',
@@ -417,4 +416,4 @@ class NoticiasManager {
 }
 
 // Inicializa gerenciador de notícias
-const noticiasManager = new NoticiasManager();
+const newsManager = new NewsManager();

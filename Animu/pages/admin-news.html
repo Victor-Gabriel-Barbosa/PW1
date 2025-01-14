@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="../src/css/styles.css">
   <link rel="stylesheet" href="../src/css/search.css">
   <link rel="stylesheet" href="../src/css/admin.css">
-  <link rel="stylesheet" href="../src/css/navegacao.css">
+  <link rel="stylesheet" href="../src/css/navbar.css">
   <link rel="icon" href="../src/favicon/favicon.ico" type="image/x-icon">
 </head>
 
@@ -72,13 +72,13 @@
         <form id="news-form" class="admin-form">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="form-group md:col-span-2">
-              <label for="title">Título</label>
-              <input type="text" id="title" name="title" required>
+              <label for="news-title">Título</label>
+              <input type="text" id="news-title" name="title" required>
             </div>
 
             <div class="form-group">
-              <label for="category">Categoria</label>
-              <select id="category" name="category" required>
+              <label for="news-category">Categoria</label>
+              <select id="news-category" name="category" required>
                 <option value="">Selecione...</option>
                 <option value="Anúncio">Anúncio</option>
                 <option value="Lançamento">Lançamento</option>
@@ -88,15 +88,15 @@
             </div>
 
             <div class="form-group">
-              <label for="tags">Tags (separadas por vírgula)</label>
-              <input type="text" id="tags" name="tags" placeholder="anime, evento, lançamento">
+              <label for="news-tags">Tags (separadas por vírgula)</label>
+              <input type="text" id="news-tags" name="tags" placeholder="anime, evento, lançamento">
             </div>
 
             <div class="form-group md:col-span-2">
-              <label for="image">Imagem</label>
+              <label for="news-image">Imagem</label>
               <div class="image-upload-container" id="image-drop-zone">
                 <input type="file" id="image-file" accept="image/*" class="hidden">
-                <input type="hidden" id="image" name="image">
+                <input type="hidden" id="news-image" name="image">
                 <div class="upload-area">
                   <div class="upload-prompt">
                     <svg class="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -119,13 +119,13 @@
             </div>
 
             <div class="form-group md:col-span-2">
-              <label for="summary">Resumo</label>
-              <textarea id="summary" name="summary" maxlength="200" rows="2" required></textarea>
+              <label for="news-summary">Resumo</label>
+              <textarea id="news-summary" name="summary" maxlength="200" rows="2" required></textarea>
             </div>
 
             <div class="form-group md:col-span-2">
-              <label for="content">Conteúdo</label>
-              <textarea id="content" name="content" class="form-textarea" rows="6" required></textarea>
+              <label for="news-content">Conteúdo</label>
+              <textarea id="news-content" name="content" class="form-textarea" rows="6" required></textarea>
             </div>
           </div>
 
@@ -143,7 +143,7 @@
   <script src="../src/js/pages/animu.js"></script>
   <script src="../src/js/utils/search.js"></script>
   <script src="../src/js/pages/admin.js"></script>
-  <script src="../src/js/pages/admin-noticias.js"></script>
+  <script src="../src/js/pages/admin-news.js"></script>
 </body>
 
 </html>

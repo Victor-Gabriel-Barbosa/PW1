@@ -71,11 +71,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (newsData) {
       editingId = newsData.id;
       form.title.value = newsData.title;
-      form.category.value = newsData.category;
-      form.tags.value = newsData.tags.join(', ');
-      form.image.value = newsData.image;
-      form.summary.value = newsData.summary;
-      form.content.value = newsData.content;
+      document.getElementById('news-title').value = newsData.title;
+      document.getElementById('news-category').value = newsData.category;
+      document.getElementById('news-tags').value = newsData.tags.join(', ');
+      document.getElementById('news-image').value = newsData.image;
+      document.getElementById('news-summary').value = newsData.summary;
+      document.getElementById('news-content').value = newsData.content;
       document.getElementById('modal-title').textContent = 'Editar Notícia';
     } else {
       editingId = null;
