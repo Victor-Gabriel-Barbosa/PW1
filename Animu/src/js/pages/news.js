@@ -24,34 +24,77 @@ class NewsManager {
 
     // Inicializa visualização detalhada na página de notícias
     this.currentPage === 'news' && this.init();
+
+    // Novo sistema de views
+    this.views = {
+      grid: {
+        element: document.getElementById('news-grid-view'),
+        title: 'Notícias | Animu',
+        init: () => this.initializeFilters()
+      },
+      detail: {
+        element: document.getElementById('news-detail-view'),
+        init: (id) => this.loadNews(id)
+      }
+    };
+
+    this.activeView = null;
+    this.init();
   }
 
   init() {
     const urlParams = new URLSearchParams(window.location.search);
     const newsId = urlParams.get('id');
 
-    if (newsId && this.detailView) {
-      this.showDetailView(newsId);
-    } else if (this.gridView) {
-      this.showGridView();
-    } else {
-      // Se não houver view específica, apenas renderizar o grid
-      const newsGrid = document.querySelector('.news-grid');
-      if (newsGrid) {
-        this.renderNewsGrid(newsGrid);
-      }
-    }
+    // Configurar navegação
+    this.setupNavigation();
 
-    // Atualizar o histórico quando navegar
+    // Mostrar view apropriada baseado na URL
+    newsId ? this.switchToView('detail', newsId) : this.switchToView('grid');
+  }
+
+  setupNavigation() {
+    // Lidar com navegação do browser
     window.addEventListener('popstate', (event) => {
       const params = new URLSearchParams(window.location.search);
       const id = params.get('id');
-      if (id && this.detailView) {
-        this.showDetailView(id, false);
-      } else if (this.gridView) {
-        this.showGridView(false);
-      }
+      id ? this.switchToView('detail', id, false) : this.switchToView('grid', null, false);
     });
+  }
+
+  switchToView(viewName, params = null, updateHistory = true) {
+    if (!this.views[viewName]) return;
+
+    // Esconder view atual
+    if (this.activeView) {
+      this.views[this.activeView].element.style.display = 'none';
+    }
+
+    // Mostrar e inicializar nova view
+    const view = this.views[viewName];
+    view.element.style.display = 'block';
+    view.init(params);
+    this.activeView = viewName;
+
+    // Atualizar URL e histórico se necessário
+    if (updateHistory) {
+      const url = viewName === 'detail' ? `news.html?id=${params}` : 'news.html';
+      history.pushState({view: viewName, params}, '', url);
+    }
+
+    // Atualizar título e metadata
+    if (viewName === 'grid') {
+      document.title = view.title;
+      this.updateMetaTags({
+        title: view.title,
+        description: 'Notícias sobre anime e mangá',
+        image: '',
+        url: window.location.href
+      });
+    }
+
+    // Rolar para o topo da página
+    window.scrollTo(0, 0);
   }
 
   getCurrentPage() {
@@ -83,30 +126,38 @@ class NewsManager {
       return;
     }
 
-    this.loadNoticia(newsId);
+    this.loadNews(newsId);
     this.setupShareButtons();
   }
 
-  createNewsCard(noticia) {
+  createNewsCard(news) {
+    const readMoreLink = this.currentPage === 'index' 
+      ? `news.html?id=${news.id}`  // Link direto para página de notícias quando na index
+      : `javascript:void(0)`; // Link JavaScript quando na página de notícias
+    
+    const onClickHandler = this.currentPage === 'index'
+      ? ''  // Sem handler quando na index
+      : `onclick="event.preventDefault(); newsManager.switchToView('detail', '${news.id}')"`;
+
     return `
       <article class="news-card">
         <div class="news-image-container">
-          <img src="${noticia.image}" alt="${noticia.title}" class="news-image">
-          <span class="news-category">${noticia.category}</span>
+          <img src="${news.image}" alt="${news.title}" class="news-image">
+          <span class="news-category">${news.category}</span>
         </div>
         <div class="news-content">
           <div class="news-metadata">
-            <span class="news-date">${this.formatDate(noticia.date)}</span>
+            <span class="news-date">${this.formatDate(news.date)}</span>
             <div class="news-tags">
-              ${noticia.tags.map(tag => `<span class="news-tag">#${tag}</span>`).join('')}
+              ${news.tags.map(tag => `<span class="news-tag">#${tag}</span>`).join('')}
             </div>
           </div>
-          <h3 class="news-title">${noticia.title}</h3>
-          <p class="news-summary">${noticia.summary}</p>
-          <a href="news.html?id=${noticia.id}" class="news-read-more">
+          <h3 class="news-title">${news.title}</h3>
+          <p class="news-summary">${news.summary}</p>
+          <a href="${readMoreLink}" ${onClickHandler} class="news-read-more">
             Ler mais
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a 1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
             </svg>
           </a>
         </div>
@@ -132,7 +183,7 @@ class NewsManager {
     );
 
     const newsToShow = limit ? sortedNews.slice(0, limit) : sortedNews;
-    container.innerHTML = newsToShow.map(noticia => this.createNewsCard(noticia)).join('');
+    container.innerHTML = newsToShow.map(news => this.createNewsCard(news)).join('');
   }
 
   // Método para atualizar os dados quando houver mudanças
@@ -228,16 +279,19 @@ class NewsManager {
     this.pageInfo.textContent = `Página ${this.currentPage} de ${totalPages || 1}`;
   }
 
-  loadNoticia(noticia) {
+  loadNews(newsId) {
+    // Encontra a notícia pelo ID
+    const news = this.newsData.find(item => item.id.toString() === newsId.toString());
+
     // Redireciona para grid se notícia não existir
-    if (!noticia) {
+    if (!news) {
       this.showGridView();
       return;
     }
 
     // Atualiza metadata da página
-    document.title = `${noticia.title} | Animu`;
-    this.updateMetaTags(noticia);
+    document.title = `${news.title} | Animu`;
+    this.updateMetaTags(news);
 
     // Cache dos elementos DOM da notícia
     const elements = {
@@ -251,40 +305,32 @@ class NewsManager {
     };
 
     // Preenche conteúdo nos elementos existentes
-    elements.date && (elements.date.textContent = this.formatDate(noticia.date));
-    elements.category && (elements.category.textContent = noticia.category);
-    elements.title && (elements.title.textContent = noticia.title);
+    elements.date && (elements.date.textContent = this.formatDate(news.date));
+    elements.category && (elements.category.textContent = news.category);
+    elements.title && (elements.title.textContent = news.title);
     if (elements.image) {
-      elements.image.src = noticia.image;
-      elements.image.alt = noticia.title;
+      elements.image.src = news.image;
+      elements.image.alt = news.title;
     }
-    elements.summary && (elements.summary.textContent = noticia.summary);
-    elements.content && (elements.content.innerHTML = this.formatContent(noticia.content));
-    elements.tags && (elements.tags.innerHTML = noticia.tags
+    elements.summary && (elements.summary.textContent = news.summary);
+    elements.content && (elements.content.innerHTML = this.formatContent(news.content));
+    elements.tags && (elements.tags.innerHTML = news.tags
       .map(tag => `<span class="news-tag">#${tag}</span>`)
       .join(''));
 
     // Configura compartilhamento e notícias relacionadas
     this.setupShareButtons();
-    this.loadRelatedNews(noticia);
-    
+    this.loadRelatedNews(news);
+
     // Alterna para visualização detalhada
-    this.gridView.style.display = 'none';
-    this.detailView.style.display = 'block';
+    if (this.gridView && this.detailView) {
+      this.gridView.style.display = 'none';
+      this.detailView.style.display = 'block';
+    }
   }
 
   showDetailView(id, updateHistory = true) {
-    const noticia = this.newsData.find(item => item.id.toString() === id.toString());
-    if (!noticia) {
-      this.showGridView();
-      return;
-    }
-
-    if (updateHistory) {
-      history.pushState({}, '', `news.html?id=${id}`);
-    }
-
-    this.loadNoticia(noticia);
+    this.switchToView('detail', id, updateHistory);
   }
 
   formatContent(content) {
@@ -295,41 +341,43 @@ class NewsManager {
       .join('');
   }
 
-  loadRelatedNews(currentNoticia) {
+  loadRelatedNews(currentNews) {
     const relatedNews = this.newsData
       .filter(item =>
-        item.id !== currentNoticia.id &&
-        (item.category === currentNoticia.category ||
-          item.tags.some(tag => currentNoticia.tags.includes(tag)))
+        item.id !== currentNews.id &&
+        (item.category === currentNews.category ||
+          item.tags.some(tag => currentNews.tags.includes(tag)))
       )
       .slice(0, 2);
 
     const relatedGrid = document.getElementById('related-news-grid');
     relatedGrid.innerHTML = relatedNews
-      .map(noticia => this.createRelatedNewsCard(noticia))
+      .map(news => this.createRelatedNewsCard(news))
       .join('');
   }
 
-  createRelatedNewsCard(noticia) {
+  createRelatedNewsCard(news) {
     return `
-            <a href="news.html?id=${noticia.id}" class="related-news-card">
+            <a href="javascript:void(0)" 
+               onclick="event.preventDefault(); newsManager.switchToView('detail', '${news.id}')" 
+               class="related-news-card">
                 <div class="news-image-container">
-                    <img src="${noticia.image}" alt="${noticia.title}" class="news-image">
-                    <span class="news-category">${noticia.category}</span>
+                    <img src="${news.image}" alt="${news.title}" class="news-image">
+                    <span class="news-category">${news.category}</span>
                 </div>
                 <div class="news-content">
-                    <h4 class="text-lg font-semibold mb-2">${noticia.title}</h4>
-                    <p class="text-sm opacity-75 line-clamp-2">${noticia.summary}</p>
+                    <h4 class="text-lg font-semibold mb-2">${news.title}</h4>
+                    <p class="text-sm opacity-75 line-clamp-2">${news.summary}</p>
                 </div>
             </a>
         `;
   }
 
-  updateMetaTags(noticia) {
+  updateMetaTags(news) {
     // Atualizar meta tags para SEO e compartilhamento
     const meta = {
-      description: noticia.summary,
-      image: noticia.image,
+      description: news.summary,
+      image: news.image,
       url: window.location.href
     };
 
@@ -337,14 +385,14 @@ class NewsManager {
     this.updateMetaTag('description', meta.description);
 
     // Open Graph
-    this.updateMetaTag('og:title', noticia.title);
+    this.updateMetaTag('og:title', news.title);
     this.updateMetaTag('og:description', meta.description);
     this.updateMetaTag('og:image', meta.image);
     this.updateMetaTag('og:url', meta.url);
 
     // Twitter Card
     this.updateMetaTag('twitter:card', 'summary_large_image');
-    this.updateMetaTag('twitter:title', noticia.title);
+    this.updateMetaTag('twitter:title', news.title);
     this.updateMetaTag('twitter:description', meta.description);
     this.updateMetaTag('twitter:image', meta.image);
   }
@@ -393,25 +441,7 @@ class NewsManager {
   }
 
   showGridView(updateHistory = true) {
-    if (!this.gridView || !this.detailView) return;
-
-    this.gridView.style.display = 'block';
-    this.detailView.style.display = 'none';
-    document.title = 'Notícias | Animu';
-    
-    if (this.currentPage === 'news') {
-      this.initializeFilters();
-    }
-    
-    if (updateHistory) {
-      history.pushState({}, '', 'news.html');
-      this.updateMetaTags({
-        title: 'Notícias | Animu',
-        description: 'Notícias sobre anime e mangá',
-        image: '', // imagem padrão
-        url: window.location.href
-      });
-    }
+    this.switchToView('grid', null, updateHistory);
   }
 }
 

@@ -1,3 +1,6 @@
+/* Importa as configurações da barra de pesquisa */
+@import "search.css";
+
 /* Container fixo do menu de navegação principal */
 .nav-menu-container {
   position: fixed;
@@ -29,15 +32,9 @@
 /* Navegação Principal */
 nav {
   background-color: rgba(var(--background), 0.8);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--card-shadow);
   transform: translateY(0);
   transition: transform 0.3s ease, background-color 0.3s ease, transform 0.3s ease-in-out;
-}
-
-.nav-hidden {
-  transform: translateY(-100%);
 }
 
 /* Animação do underline nos links de navegação */
@@ -125,7 +122,7 @@ nav .ml-10 a.active {
   height: calc(100vh - 64px);
   background: var(--background);
   box-shadow: 2px 0 8px var(--card-shadow);
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 49;
   overflow-y: auto;
   overflow-x: hidden;
@@ -136,6 +133,7 @@ nav .ml-10 a.active {
 /* Estado recolhido do menu - mais compacto em telas menores */
 .side-menu:not(.open) {
   width: min(65px, 15vw); 
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .side-menu:not(.open) .nav-link span,
@@ -264,11 +262,12 @@ nav .ml-10 a.active {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: transparent; 
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 48;
+  pointer-events: none; 
 }
 
 .menu-overlay.show {
@@ -276,39 +275,13 @@ nav .ml-10 a.active {
   visibility: visible;
 }
 
-/* Botão de alternância da navbar */
+body.menu-open {
+  overflow: auto !important;
+}
+
+/* Remover estilos do botão de toggle da navbar */
 .nav-toggle-btn {
-  position: fixed;
-  top: 64px; 
-  right: 20px;
-  padding: 8px;
-  background: var(--background);
-  border: 1px solid var(--card-shadow);
-  border-top: none;
-  border-radius: 0 0 8px 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  z-index: 49;
-  box-shadow: 0 2px 4px var(--card-shadow);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-.nav-toggle-btn:hover {
-  transform: translateY(2px);
-  box-shadow: 0 1px 2px var(--card-shadow);
-}
-
-.nav-toggle-icon {
-  fill: var(--text-color);
-  transition: transform 0.3s ease;
-}
-
-.nav-toggle-btn.rotated .nav-toggle-icon {
-  transform: rotate(180deg);
+  display: none;
 }
 
 /* Ajustes responsivos por breakpoint */
@@ -318,6 +291,7 @@ nav .ml-10 a.active {
     height: 100vh;
     width: min(280px, 80vw);
     transform: translateX(-100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .side-menu.open {
@@ -359,8 +333,9 @@ nav .ml-10 a.active {
     left: 16px;
   }
 
+  /* Remover estilo do botão de toggle */
   .nav-toggle-btn {
-    right: 16px;
+    display: none;
   }
 }
 

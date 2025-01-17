@@ -131,8 +131,6 @@ class Navbar {
       </div>
       <div id="menu-overlay" class="menu-overlay"></div>
     `;
-    this.lastScrollPosition = 0;
-    this.isNavbarVisible = true;
   }
 
   // Gera o painel do usuário com avatar e opções de login/logout
@@ -156,7 +154,6 @@ class Navbar {
     this.highlightCurrentPage();
 
     this.checkLoginStatus();
-    this.initScrollHandler();
     this.initSideMenu();
   }
 
@@ -254,29 +251,6 @@ class Navbar {
     }
   }
 
-  // Controla a visibilidade da navbar durante scroll e salva estado
-  initScrollHandler() {
-    // Removendo o manipulador de scroll antigo
-    const navToggle = document.getElementById('toggle-navbar');
-    const navbar = document.querySelector('nav');
-
-    navToggle.addEventListener('click', () => {
-      navbar.classList.toggle('nav-hidden');
-      navToggle.classList.toggle('rotated');
-
-      // Salvar estado da navbar no localStorage
-      const isHidden = navbar.classList.contains('nav-hidden');
-      localStorage.setItem('navbarState', isHidden ? 'hidden' : 'visible');
-    });
-
-    // Restaurar estado da navbar
-    const savedState = localStorage.getItem('navbarState');
-    if (savedState === 'hidden') {
-      navbar.classList.add('nav-hidden');
-      navToggle.classList.add('rotated');
-    }
-  }
-
   // Gerencia estados e eventos do menu lateral, incluindo persistência
   initSideMenu() {
     const menuToggle = document.getElementById('menu-toggle');
@@ -299,14 +273,6 @@ class Navbar {
       // Salva o estado do menu
       const isOpen = sideMenu.classList.contains('open');
       localStorage.setItem('sideMenuState', isOpen ? 'open' : 'closed');
-    });
-
-    menuOverlay.addEventListener('click', () => {
-      sideMenu.classList.remove('open');
-      menuOverlay.classList.remove('show');
-      document.body.classList.remove('menu-open');
-      // Atualiza o estado quando fecha pelo overlay
-      localStorage.setItem('sideMenuState', 'closed');
     });
   }
 

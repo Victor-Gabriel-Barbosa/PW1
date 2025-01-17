@@ -136,26 +136,30 @@ class CategoryManager {
 
     // Mostra o formulário ao clicar no botão
     showFormButton.addEventListener('click', () => {
-      formContainer.innerHTML = this.generateForm();
-      formContainer.classList.remove('hidden');
-      showFormButton.classList.add('hidden');
+        formContainer.innerHTML = this.generateForm();
+        formContainer.classList.remove('hidden');
+        showFormButton.classList.add('hidden');
 
-      // Inicializa todos os componentes do formulário
-      this.initializeForm();
-      this.setupPreviewUpdates();
-      this.setupEmojiPicker();
-      this.setupColorInputs();
-      this.setupCharacterCounters();
+        // Inicializa todos os componentes do formulário
+        this.initializeForm();
+        this.setupPreviewUpdates();
+        this.setupEmojiPicker();
+        this.setupColorInputs();
+        this.setupCharacterCounters();
 
-      // Configura o botão cancelar
-      const cancelButton = document.getElementById('btn-cancel');
-      cancelButton.addEventListener('click', () => {
-        formContainer.classList.add('hidden');
-        showFormButton.classList.remove('hidden');
-        formContainer.innerHTML = ''; // Limpa o formulário do DOM
-      });
+        // Configura o botão cancelar com event listener correto
+        const cancelButton = document.getElementById('btn-cancel');
+        if (cancelButton) {
+            cancelButton.addEventListener('click', () => {
+                // Limpa e esconde o formulário
+                formContainer.innerHTML = '';
+                formContainer.classList.add('hidden');
+                // Mostra o botão de adicionar nova categoria
+                showFormButton.classList.remove('hidden');
+            });
+        }
     });
-  }
+}
 
   initializeForm() {
     const form = document.getElementById('category-form');
@@ -474,6 +478,16 @@ class CategoryManager {
     this.setupEmojiPicker();
     this.setupColorInputs();
     this.setupCharacterCounters();
+
+    // Adiciona evento ao botão cancelar
+    const cancelButton = document.getElementById('btn-cancel');
+    if (cancelButton) {
+        cancelButton.addEventListener('click', () => {
+            formContainer.innerHTML = '';
+            formContainer.classList.add('hidden');
+            showFormButton.classList.remove('hidden');
+        });
+    }
 
     // Agora preenche o formulário com os dados da categoria
     document.getElementById('category-name').value = category.name;

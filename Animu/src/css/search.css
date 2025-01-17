@@ -156,8 +156,6 @@
   overflow-y: auto;
   box-shadow: 0 4px 12px var(--card-shadow);
   z-index: 2000;
-  
-  /* Estilizar a barra de rolagem */
   scrollbar-width: thin;
   scrollbar-color: var(--primary-color) var(--background);
 }

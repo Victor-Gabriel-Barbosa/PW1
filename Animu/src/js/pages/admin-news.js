@@ -70,17 +70,24 @@ document.addEventListener('DOMContentLoaded', function () {
     modal.classList.remove('hidden');
     if (newsData) {
       editingId = newsData.id;
-      form.title.value = newsData.title;
-      document.getElementById('news-title').value = newsData.title;
-      document.getElementById('news-category').value = newsData.category;
-      document.getElementById('news-tags').value = newsData.tags.join(', ');
-      document.getElementById('news-image').value = newsData.image;
-      document.getElementById('news-summary').value = newsData.summary;
-      document.getElementById('news-content').value = newsData.content;
+      document.getElementById('title').value = newsData.title;
+      document.getElementById('category').value = newsData.category;
+      document.getElementById('tags').value = newsData.tags.join(', ');
+      document.getElementById('image').value = newsData.image;
+      // Atualizar preview da imagem se existir
+      if (newsData.image) {
+        previewImage.src = newsData.image;
+        imagePreview.classList.remove('hidden');
+        imageDropZone.querySelector('.upload-area').classList.add('hidden');
+      }
+      document.getElementById('summary').value = newsData.summary;
+      document.getElementById('content').value = newsData.content;
       document.getElementById('modal-title').textContent = 'Editar Notícia';
     } else {
       editingId = null;
       form.reset();
+      imagePreview.classList.add('hidden');
+      imageDropZone.querySelector('.upload-area').classList.remove('hidden');
       document.getElementById('modal-title').textContent = 'Nova Notícia';
     }
   }
@@ -96,12 +103,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const newsData = {
       id: editingId || Date.now().toString(),
-      title: form.title.value,
-      category: form.category.value,
-      tags: form.tags.value.split(',').map(tag => tag.trim()).filter(tag => tag),
-      image: form.image.value,
-      summary: form.summary.value,
-      content: form.content.value,
+      title: document.getElementById('title').value,
+      category: document.getElementById('category').value,
+      tags: document.getElementById('tags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
+      image: document.getElementById('image').value,
+      summary: document.getElementById('summary').value,
+      content: document.getElementById('content').value,
       date: editingId ? (await getExistingDate(editingId)) : new Date().toISOString()
     };
 
@@ -154,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const imagePreview = document.querySelector('.image-preview');
   const previewImage = document.getElementById('preview-image');
   const removeImageBtn = document.getElementById('remove-image');
-  const imageInput = document.getElementById('image');
+  const imageInput = document.getElementById('image'); // Corrigido para usar o ID correto
 
   // Eventos de arrastar e soltar
   imageDropZone.addEventListener('dragover', (e) => {
@@ -180,10 +187,14 @@ document.addEventListener('DOMContentLoaded', function () {
     handleImageFile(e.target.files[0]);
   });
 
-  removeImageBtn.addEventListener('click', () => {
-    imageInput.value = '';
-    imagePreview.classList.add('hidden');
-    imageDropZone.querySelector('.upload-area').classList.remove('hidden');
+  removeImageBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation(); // Impede que o evento chegue ao imageDropZone
+    if (imageInput) {
+      imageInput.value = '';
+      imagePreview.classList.add('hidden');
+      imageDropZone.querySelector('.upload-area').classList.remove('hidden');
+    }
   });
 
   function handleImageFile(file) {
@@ -191,8 +202,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const reader = new FileReader();
     reader.onload = (e) => {
-      previewImage.src = e.target.result;
-      imageInput.value = e.target.result;
+      const imageData = e.target.result;
+      document.getElementById('image').value = imageData;
+      previewImage.src = imageData;
       imagePreview.classList.remove('hidden');
       imageDropZone.querySelector('.upload-area').classList.add('hidden');
     };

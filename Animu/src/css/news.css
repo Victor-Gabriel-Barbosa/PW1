@@ -31,7 +31,7 @@
 }
 
 .news-category {
-  position: absolute;
+  position: flex;
   top: var(--spacing-sm);
   right: var(--spacing-sm);
   background: var(--primary-gradient);
@@ -103,17 +103,6 @@
 
 .news-header {
   animation: fadeIn 0.5s ease;
-}
-
-.news-category {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  background: var(--primary-gradient);
-  color: white;
-  border-radius: 20px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  margin-left: 1rem;
 }
 
 .news-tags {
