@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadAnimesList();
   setupDropZone('coverImageDropzone', 'coverImageInput', 'coverImage', 'coverImagePreview', handleImageDrop);
   setupDropZone('trailerDropzone', 'trailerInput', 'trailerUrl', 'trailerPreview', handleVideoDrop);
+  setupMediaRemoval(); // Adicione esta linha
 });
 
 // Carrega lista de animes
@@ -81,10 +82,29 @@ function showAnimeForm() {
   if (!currentAnimeId) {
     document.getElementById('modalTitle').textContent = 'Adicionar Novo Anime';
     document.getElementById('animeForm').reset();
+    
+    // Limpar arrays
     alternativeTitles = [];
     genres = [];
     producers = [];
     licensors = [];
+    
+    // Limpar previews e valores dos campos de imagem e trailer
+    const coverPreview = document.getElementById('coverImagePreview');
+    const coverPrompt = coverPreview.previousElementSibling;
+    coverPreview.src = '';
+    coverPreview.classList.add('hidden');
+    coverPrompt.classList.remove('hidden');
+    document.getElementById('coverImage').value = '';
+    
+    const trailerPreview = document.getElementById('trailerPreview');
+    const trailerPrompt = trailerPreview.previousElementSibling;
+    trailerPreview.innerHTML = '';
+    trailerPreview.classList.add('hidden');
+    trailerPrompt.classList.remove('hidden');
+    document.getElementById('trailerUrl').value = '';
+    
+    // Atualizar todas as listas
     updateAlternativeTitlesList();
     updateGenresList();
     updateProducersList();
@@ -117,14 +137,13 @@ function addAlternativeTitle() {
 function updateAlternativeTitlesList() {
   const container = document.getElementById('altTitlesList');
   container.innerHTML = alternativeTitles.map((title, index) => `
-        <div class="tag">
-            <span>${title.title} (${title.type})</span>
-            <button type="button" onclick="removeAlternativeTitle(${index})"
-                    class="tag-remove">
-                ✕
-            </button>
-        </div>
-    `).join('');
+    <div class="tag">
+      <span>${title.title} (${title.type})</span>
+      <button type="button" onclick="removeAlternativeTitle(${index})" class="tag-remove">
+        ✕
+      </button>
+    </div>
+  `).join('');
 }
 
 // Remove título alternativo
@@ -133,18 +152,15 @@ function removeAlternativeTitle(index) {
   updateAlternativeTitlesList();
 }
 
-// Gerencia entrada de gêneros
-function handleGenreInput(event) {
-  if (event.key === 'Enter') {
-    event.preventDefault();
-    const input = event.target;
-    const genre = input.value.trim();
+// Adiciona gênero à lista
+function addGenre() {
+  const input = document.getElementById('genreInput');
+  const genre = input.value.trim();
 
-    if (genre && !genres.includes(genre)) {
-      genres.push(genre);
-      input.value = '';
-      updateGenresList();
-    }
+  if (genre && !genres.includes(genre)) {
+    genres.push(genre);
+    input.value = '';
+    updateGenresList();
   }
 }
 
@@ -152,15 +168,15 @@ function handleGenreInput(event) {
 function updateGenresList() {
   const container = document.getElementById('genresList');
   container.innerHTML = genres.map((genre, index) => `
-        <div class="tag">
-            <span>
-                ${genre}
-                <button type="button" onclick="removeGenre(${index})" class="tag-remove">
-                    ✕
-                </button>
-            </span>
-        </div>
-    `).join('');
+    <div class="tag">
+      <span>
+        ${genre}
+        <button type="button" onclick="removeGenre(${index})" class="tag-remove">
+          ✕
+        </button>
+      </span>
+    </div>
+  `).join('');
 }
 
 // Remove gênero
@@ -184,12 +200,15 @@ function addProducer() {
 function updateProducersList() {
   const container = document.getElementById('producersList');
   container.innerHTML = producers.map((producer, index) => `
-        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
-            <span>${producer}</span>
-            <button type="button" onclick="removeProducer(${index})"
-                    class="text-red-600 hover:text-red-800">✕</button>
-        </div>
-    `).join('');
+    <div class="tag">
+      <span>
+        ${producer}
+        <button type="button" onclick="removeProducer(${index})" class="tag-remove">
+          ✕
+        </button>
+      </span>
+    </div>
+  `).join('');
 }
 
 function removeProducer(index) {
@@ -212,12 +231,14 @@ function addLicensor() {
 function updateLicensorsList() {
   const container = document.getElementById('licensorsList');
   container.innerHTML = licensors.map((licensor, index) => `
-        <div class="flex items-center justify-between p-2 rounded">
-            <span>${licensor}</span>
-            <button type="button" onclick="removeLicensor(${index})"
-                    class="text-red-600 hover:text-red-800">✕</button>
-        </div>
-    `).join('');
+    <div class="tag">
+      <span>${licensor}
+        <button type="button" onclick="removeLicensor(${index})" class="tag-remove">
+          ✕
+        </button>
+      </span>
+    </div>
+  `).join('');
 }
 
 function removeLicensor(index) {
@@ -318,18 +339,22 @@ function editAnime(index) {
     // Preview da imagem de capa
     const coverPreview = document.getElementById('coverImagePreview');
     const coverPrompt = coverPreview.previousElementSibling;
+    const removeCoverBtn = document.getElementById('removeCoverImage');
     if (anime.coverImage) {
       coverPreview.src = anime.coverImage;
       coverPreview.classList.remove('hidden');
       coverPrompt.classList.add('hidden');
+      removeCoverBtn.classList.remove('hidden'); // Mostra botão de remover
     } else {
       coverPreview.classList.add('hidden');
       coverPrompt.classList.remove('hidden');
+      removeCoverBtn.classList.add('hidden');
     }
 
     // Preview do trailer
     const trailerPreview = document.getElementById('trailerPreview');
     const trailerPrompt = trailerPreview.previousElementSibling;
+    const removeTrailerBtn = document.getElementById('removeTrailer');
     if (anime.trailerUrl) {
       if (anime.trailerUrl.includes('data:video')) {
         trailerPreview.innerHTML = `
@@ -352,9 +377,11 @@ function editAnime(index) {
       }
       trailerPreview.classList.remove('hidden');
       trailerPrompt.classList.add('hidden');
+      removeTrailerBtn.classList.remove('hidden'); // Mostra botão de remover
     } else {
       trailerPreview.classList.add('hidden');
       trailerPrompt.classList.remove('hidden');
+      removeTrailerBtn.classList.add('hidden');
     }
   }, 100);
 }
@@ -569,18 +596,18 @@ function setupDropZone(dropzoneId, inputId, urlInputId, previewId, dropHandler) 
 }
 
 async function handleImageDrop(file, urlInput, previewElement) {
-  if (!file.type.startsWith('image/')) {
+  if (!file.type?.startsWith('image/')) {
     alert('Por favor, selecione apenas arquivos de imagem.');
     return;
   }
 
   try {
-    // Converte a imagem para base64
     const reader = new FileReader();
     reader.onloadend = () => {
       previewElement.src = reader.result;
       previewElement.classList.remove('hidden');
-      previewElement.previousElementSibling.classList.add('hidden'); // Esconde o texto de prompt
+      previewElement.previousElementSibling.classList.add('hidden');
+      document.getElementById('removeCoverImage').classList.remove('hidden'); // Mostra botão de remover
       urlInput.value = reader.result;
     };
     reader.readAsDataURL(file);
@@ -604,6 +631,7 @@ function handleVideoDrop(file, urlInput, previewElement) {
         `;
         previewElement.classList.remove('hidden');
         previewElement.previousElementSibling.classList.add('hidden');
+        document.getElementById('removeTrailer').classList.remove('hidden'); // Mostra botão de remover
         urlInput.value = reader.result;
       };
       reader.readAsDataURL(file);
@@ -642,6 +670,7 @@ function handleYoutubeUrl(url, urlInput, previewElement) {
     `;
     previewElement.classList.remove('hidden');
     previewElement.previousElementSibling.classList.add('hidden');
+    document.getElementById('removeTrailer').classList.remove('hidden'); // Mostra botão de remover
     urlInput.value = url;
   } else {
     alert('URL do YouTube inválida. Por favor, verifique a URL e tente novamente.');
@@ -663,4 +692,37 @@ function extractYouTubeId(url) {
     if (match) return match[1];
   }
   return null;
+}
+
+// Adicione essas funções após setupDropZone
+function setupMediaRemoval() {
+  // Setup para remover imagem de capa
+  document.getElementById('removeCoverImage').addEventListener('click', (e) => {
+    e.stopPropagation(); // Evita que o clique propague para o dropzone
+    const coverPreview = document.getElementById('coverImagePreview');
+    const coverPrompt = document.getElementById('coverImageDropzone').querySelector('.drop-zone-prompt');
+    const removeBtn = document.getElementById('removeCoverImage');
+    
+    coverPreview.src = '';
+    coverPreview.classList.add('hidden');
+    removeBtn.classList.add('hidden');
+    coverPrompt.classList.remove('hidden');
+    document.getElementById('coverImage').value = '';
+    document.getElementById('coverImageInput').value = '';
+  });
+
+  // Setup para remover trailer
+  document.getElementById('removeTrailer').addEventListener('click', (e) => {
+    e.stopPropagation(); // Evita que o clique propague para o dropzone
+    const trailerPreview = document.getElementById('trailerPreview');
+    const trailerPrompt = document.getElementById('trailerDropzone').querySelector('.drop-zone-prompt');
+    const removeBtn = document.getElementById('removeTrailer');
+    
+    trailerPreview.innerHTML = '';
+    trailerPreview.classList.add('hidden');
+    removeBtn.classList.add('hidden');
+    trailerPrompt.classList.remove('hidden');
+    document.getElementById('trailerUrl').value = '';
+    document.getElementById('trailerInput').value = '';
+  });
 }

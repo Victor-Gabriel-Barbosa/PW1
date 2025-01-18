@@ -697,3 +697,80 @@
   transform: scaleY(1);
   opacity: 1;
 }
+
+.remove-media-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-size: 14px;
+}
+
+.remove-media-btn:hover {
+  background: rgb(239, 68, 68);
+  transform: scale(1.1);
+}
+
+.close-btn {
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  line-height: 0;
+}
+
+.close-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transform: scale(1.1);
+}
+
+/* Estilos para a lista de animes */
+#animesList tr {
+  transition: all 0.2s ease;
+  border-left: 4px solid transparent;
+}
+
+#animesList tr:hover {
+  background-color: var(--primary-color-alpha) !important;
+  border-left: 4px solid var(--primary-color);
+  transform: translateX(4px);
+}
+
+#animesList tr:hover td {
+  color: var(--text-color);
+}
+
+#animesList tr:hover img {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#animesList img {
+  transition: all 0.2s ease;
+}
+
+#animesList .action-buttons {
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+#animesList tr:hover .action-buttons {
+  opacity: 1;
+}
+
+#animesList .btn-action {
+  transition: all 0.2s ease;
+}
+
+#animesList .btn-action:hover {
+  transform: scale(1.15);
+}
