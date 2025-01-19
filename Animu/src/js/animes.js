@@ -136,7 +136,7 @@ function renderAnimeDetails(anime) {
           </div>
           <div class="detail-item">
             <span class="detail-label font-semibold">Popularidade:</span>
-            <span>${anime.popularity ? `#${anime.popularity}` : 'Não informado'}</span>
+            <span>${anime.popularityRank ? `#${anime.popularityRank} (${anime.popularity} pontos)` : 'Não avaliado'}</span>
           </div>
         </div>
       </div>
@@ -445,6 +445,10 @@ function saveComment(animeTitle, comment, rating) {
 
     // Atualizar a média de avaliações do anime
     updateAnimeRating(animeTitle);
+
+    // Após salvar o comentário, atualiza a popularidade de todos os animes
+    updateAllAnimesPopularity();
+
     return newComment;
   } catch (e) {
     console.error('Erro ao salvar comentário:', e);
@@ -1023,8 +1027,61 @@ function updateFavoriteButton(animeTitle) {
   }
 }
 
+// Calcula popularidade do anime baseado nas notas
+function calculatePopularity(animeTitle) {
+  try {
+    const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
+    const animeComments = comments[animeTitle] || [];
+    
+    if (animeComments.length === 0) return 0;
+
+    const score = parseFloat(animeComments.reduce((sum, comment) => sum + (comment.rating || 0), 0) / animeComments.length);
+    
+    // Fórmula para calcular popularidade:
+    // (média das notas * 0.6) + (número de comentários * 0.4) * 10
+    const popularityScore = (score * 0.6 + (animeComments.length * 0.4)) * 10;
+    
+    return Math.round(popularityScore);
+  } catch (e) {
+    console.error('Erro ao calcular popularidade:', e);
+    return 0;
+  }
+}
+
+// Atualiza ranking de popularidade de todos os animes
+function updateAllAnimesPopularity() {
+  try {
+    const animes = JSON.parse(localStorage.getItem('animeData')) || [];
+    
+    // Calcula popularidade para cada anime
+    const animesWithPopularity = animes.map(anime => ({
+      ...anime,
+      popularity: calculatePopularity(anime.primaryTitle)
+    }));
+
+    // Ordena por popularidade
+    animesWithPopularity.sort((a, b) => b.popularity - a.popularity);
+
+    // Atualiza o ranking (posição) de cada anime
+    animesWithPopularity.forEach((anime, index) => {
+      anime.popularityRank = index + 1;
+    });
+
+    // Salva de volta no localStorage
+    localStorage.setItem('animeData', JSON.stringify(animesWithPopularity));
+    
+    return true;
+  } catch (e) {
+    console.error('Erro ao atualizar popularidade:', e);
+    return false;
+  }
+}
+
 // Inicialização da página
 window.addEventListener('DOMContentLoaded', () => {
+  // Atualiza popularidade ao carregar
+  updateAllAnimesPopularity();
+
   const animeTitle = getUrlParameter('anime');
   const searchQuery = getUrlParameter('search');
 

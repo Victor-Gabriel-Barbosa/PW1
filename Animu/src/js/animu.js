@@ -150,8 +150,104 @@ function renderFeaturedAnimes() {
   `).join('');
 }
 
+// Função para carregar os últimos reviews
+function loadLatestReviews() {
+  const reviewsList = document.getElementById('latest-reviews');
+  if (!reviewsList) return;
+
+  // Recupera todos os comentários dos animes
+  const allComments = JSON.parse(localStorage.getItem('animeComments')) || {};
+  
+  // Cria um array com todos os comentários e suas informações
+  const reviews = Object.entries(allComments).flatMap(([animeTitle, comments]) =>
+    comments.map(comment => ({
+      animeTitle,
+      comment,
+      timestamp: new Date(comment.timestamp)
+    }))
+  );
+
+  // Ordena por data, mais recentes primeiro
+  reviews.sort((a, b) => b.timestamp - a.timestamp);
+
+  // Pega os 3 reviews mais recentes
+  const latestReviews = reviews.slice(0, 3);
+
+  // Renderiza os reviews
+  reviewsList.innerHTML = latestReviews.map(review => `
+    <li class="inicio-card-item">
+      <a href="animes.html?anime=${encodeURIComponent(review.animeTitle)}" class="inicio-card-link">
+        <span class="inicio-card-link-title">${review.animeTitle}</span>
+        <p class="inicio-card-link-subtitle">
+          ${review.comment.text.length > 50 
+            ? review.comment.text.substring(0, 50) + '...' 
+            : review.comment.text}
+        </p>
+      </a>
+    </li>
+  `).join('') || '<li class="inicio-card-item">Nenhum review disponível</li>';
+}
+
+// Obtém as categorias mais populares baseado no número de animes
+function getPopularCategories(limit = 3) {
+  const animes = JSON.parse(localStorage.getItem('animeData')) || [];
+  const categoryCount = {};
+
+  // Conta animes por categoria
+  animes.forEach(anime => {
+    anime.genres.forEach(genre => {
+      categoryCount[genre] = (categoryCount[genre] || 0) + 1;
+    });
+  });
+
+  // Converte para array e ordena por contagem
+  return Object.entries(categoryCount)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, limit)
+    .map(([category, count]) => ({
+      category,
+      count,
+      description: getCategoryDescription(category)
+    }));
+}
+
+// Descrições para categorias populares
+function getCategoryDescription(category) {
+  const descriptions = {
+    'Shounen': 'Ação e aventura',
+    'Slice of Life': 'Histórias cotidianas',
+    'Mecha': 'Robôs e tecnologia',
+    'Romance': 'Histórias de amor',
+    'Action': 'Lutas e confrontos',
+    'Comedy': 'Diversão e humor',
+    'Drama': 'Histórias emocionantes',
+    'Fantasy': 'Mundos mágicos',
+    // Adicione mais categorias conforme necessário
+  };
+  return descriptions[category] || 'Explore mais desta categoria';
+}
+
+// Renderiza as categorias populares
+function renderPopularCategories() {
+  const popularCategoriesList = document.querySelector('.inicio-card:nth-child(2) .inicio-card-list');
+  if (!popularCategoriesList) return;
+
+  const popularCategories = getPopularCategories();
+  
+  popularCategoriesList.innerHTML = popularCategories.map(({ category, description }) => `
+    <li class="inicio-card-item">
+      <a href="animes.html?category=${encodeURIComponent(category)}" class="inicio-card-link">
+        <span class="inicio-card-link-title">${category}</span>
+        <p class="inicio-card-link-subtitle">${description}</p>
+      </a>
+    </li>
+  `).join('');
+}
+
 // Inicialização da página
 window.addEventListener('DOMContentLoaded', () => {
   updateUserInterface();
   renderFeaturedAnimes(); 
+  loadLatestReviews(); // Adiciona esta linha
+  renderPopularCategories(); // Adiciona esta linha
 });

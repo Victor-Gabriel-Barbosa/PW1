@@ -1,3 +1,7 @@
+/**
+ * Classe que implementa uma barra de busca de animes com filtros
+ * e sugestões em tempo real
+ */
 class AnimeSearchBar {
   constructor(options = {}) {
     this.options = {
@@ -100,6 +104,10 @@ class AnimeSearchBar {
     this.setupEventListeners();
   }
 
+  /**
+   * Gera HTML do select para um filtro específico
+   * @param {string} filterKey - Chave do filtro (genre, year, etc)
+   */
   createFilterSelect(filterKey) {
     const filter = this.options.filters[filterKey];
     return `
@@ -114,6 +122,9 @@ class AnimeSearchBar {
     `;
   }
 
+  /**
+   * Inicializa a estrutura HTML da barra de busca e seus componentes
+   */
   setupSearchBar() {
     if (!this.container) return;
 
@@ -165,10 +176,13 @@ class AnimeSearchBar {
     this.setupFilterEvents();
   }
 
+  /**
+   * Configura listeners para input de busca e interações do usuário
+   */
   setupEventListeners() {
     if (!this.input || !this.results) return;
 
-    // Debounce function
+    // Debounce para evitar múltiplas requisições durante digitação
     let timeout = null;
     this.input.addEventListener('input', () => {
       clearTimeout(timeout);
@@ -192,6 +206,9 @@ class AnimeSearchBar {
     });
   }
 
+  /**
+   * Configura eventos para interação com filtros de busca
+   */
   setupFilterEvents() {
     // Toggle do menu de filtros
     this.filterBtn.addEventListener('click', () => {
@@ -217,6 +234,10 @@ class AnimeSearchBar {
     });
   }
 
+  /**
+   * Processa a busca e decide entre exibir resultados ou redirecionar
+   * @param {boolean} redirect - Se true, redireciona para página de resultados
+   */
   async handleSearch(redirect = false) {
     const query = this.input.value.trim();
 
@@ -241,14 +262,19 @@ class AnimeSearchBar {
     }
   }
 
+  /**
+   * Realiza busca nos dados locais com sistema de pontuação por relevância
+   * @param {string} query - Termo de busca
+   * @returns {Array} Animes ordenados por relevância
+   */
   async searchAnimes(query) {
     const animes = JSON.parse(localStorage.getItem('animeData')) || [];
     const normalizedQuery = this.normalizeText(query);
     const queryWords = normalizedQuery.split(/\s+/).filter(word => word.length > 1);
 
+    // Sistema de pontuação para relevância dos resultados
     const scoredResults = animes
       .map(anime => {
-        // Calcula pontuação de relevância para cada anime
         let score = 0;
         const normalizedTitle = this.normalizeText(anime.primaryTitle);
 
@@ -294,6 +320,10 @@ class AnimeSearchBar {
     return scoredResults;
   }
 
+  /**
+   * Normaliza texto removendo acentos e caracteres especiais
+   * @param {string} text - Texto a ser normalizado
+   */
   normalizeText(text) {
     return text
       .toLowerCase()
@@ -302,6 +332,11 @@ class AnimeSearchBar {
       .replace(/[^a-z0-9\s]/g, ''); // Remove caracteres especiais
   }
 
+  /**
+   * Aplica filtros selecionados aos resultados da busca
+   * @param {Object} anime - Objeto contendo dados do anime
+   * @returns {boolean} True se o anime passa pelos filtros
+   */
   applyFilters(anime) {
     const genreMatch = !this.filters.genre ||
       anime.genres.some(g => this.normalizeText(g) === this.normalizeText(this.filters.genre));
@@ -328,6 +363,10 @@ class AnimeSearchBar {
       seasonMatch && ratingMatch && sourceMatch;
   }
 
+  /**
+   * Renderiza lista de resultados da busca
+   * @param {Array} results - Array de animes encontrados
+   */
   displayResults(results) {
     if (!this.results) return;
 
@@ -346,6 +385,10 @@ class AnimeSearchBar {
     this.showResults();
   }
 
+  /**
+   * Gera HTML para um item individual da lista de resultados
+   * @param {Object} anime - Dados do anime a ser exibido
+   */
   createResultItem(anime) {
     return `
       <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
@@ -363,6 +406,9 @@ class AnimeSearchBar {
     `;
   }
 
+  /**
+   * Exibe mensagem de erro na interface
+   */
   displayError() {
     if (!this.results) return;
 
@@ -374,6 +420,7 @@ class AnimeSearchBar {
     this.showResults();
   }
 
+  // Métodos auxiliares para controle de visibilidade
   showResults() {
     if (this.results) {
       this.results.style.display = 'block';
@@ -387,7 +434,7 @@ class AnimeSearchBar {
   }
 }
 
-// Inicialização da barra de busca
+// Inicializa barra de busca com configurações personalizadas
 document.addEventListener('DOMContentLoaded', () => {
   new AnimeSearchBar({
     debounceTime: 400,
