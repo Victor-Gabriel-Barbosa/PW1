@@ -244,10 +244,56 @@ function renderPopularCategories() {
   `).join('');
 }
 
+// Função para renderizar notícias na página inicial
+function renderIndexNews() {
+  const newsGrid = document.querySelector('.news-grid');
+  if (!newsGrid) return;
+
+  const newsData = JSON.parse(localStorage.getItem('news') || '[]');
+  
+  // Ordena as notícias por data, mais recentes primeiro
+  const sortedNews = [...newsData].sort((a, b) =>
+    new Date(b.date) - new Date(a.date)
+  );
+
+  // Mostra apenas as 4 notícias mais recentes
+  const recentNews = sortedNews.slice(0, 4);
+
+  newsGrid.innerHTML = recentNews.map(news => `
+    <a href="news.html?id=${news.id}" class="news-card block hover:transform hover:scale-[1.02] transition-transform">
+      <div class="news-image-container">
+        <img src="${news.image}" alt="${news.title}" class="news-image">
+        <span class="news-category">${news.category}</span>
+      </div>
+      <div class="news-content">
+        <div class="news-metadata">
+          <span class="news-date">${formatDate(news.date)}</span>
+          <div class="news-tags">
+            ${news.tags.map(tag => `<span class="news-tag">#${tag}</span>`).join('')}
+          </div>
+        </div>
+        <h3 class="news-title">${news.title}</h3>
+        <p class="news-summary">${news.summary}</p>
+      </div>
+    </a>
+  `).join('');
+}
+
+// Formata data para o formato brasileiro
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  });
+}
+
 // Inicialização da página
 window.addEventListener('DOMContentLoaded', () => {
   updateUserInterface();
   renderFeaturedAnimes(); 
   loadLatestReviews(); // Adiciona esta linha
   renderPopularCategories(); // Adiciona esta linha
+  renderIndexNews(); // Adiciona esta linha
 });

@@ -406,4 +406,11 @@ function setupEventListeners(user) {
 
     input.click();
   });
+
+  // Adicionar handler para o botão de logout
+  const logoutButton = document.getElementById('logout-button');
+  logoutButton?.addEventListener('click', () => {
+    localStorage.removeItem('userSession');
+    window.location.href = './signin.html';
+  });
 }

@@ -136,11 +136,9 @@ class Navbar {
   // Gera o painel do usuário com avatar e opções de login/logout
   getUserPanel() {
     return `
-      <img class="h-10 w-10 rounded-full object-cover" src="https://ui-avatars.com/api/?name=User&background=random" alt="Avatar do Usuário" />
-      <div class="flex flex-col ml-2">
-        <span class="font-medium" id="user-name"><a href="./signin.html">Login</a></span>
-        <a href="#" id="logout-link" class="text-sm text-purple-600 hover:text-purple-700 hidden">Sair</a>
-      </div>
+      <a href="./profile.html" class="flex items-center">
+        <img class="h-10 w-10 rounded-full object-cover" src="https://ui-avatars.com/api/?name=User&background=random" alt="Avatar do Usuário" />
+      </a>
     `;
   }
 
@@ -194,21 +192,18 @@ class Navbar {
 
   // Verifica status de login e configura interface de acordo com permissões
   checkLoginStatus() {
-    // Alterado de 'user' para 'userSession'
     const userSession = JSON.parse(localStorage.getItem('userSession'));
 
     if (userSession) {
-      const userNameElement = document.getElementById('user-name');
-      const logoutLink = document.getElementById('logout-link');
       const adminOptions = document.getElementById('admin-options');
+      const userPanel = document.getElementById('user-panel');
 
-      if (userNameElement) {
-        userNameElement.innerHTML = userSession.username;  // Alterado de 'name' para 'username'
-      }
-
-      if (logoutLink) {
-        logoutLink.classList.remove('hidden');
-        logoutLink.addEventListener('click', this.handleLogout);
+      // Atualizar avatar se disponível
+      if (userSession.avatar && userPanel) {
+        const avatarImg = userPanel.querySelector('img');
+        if (avatarImg) {
+          avatarImg.src = userSession.avatar;
+        }
       }
 
       // Mostrar opções de admin no menu lateral se o usuário for admin
