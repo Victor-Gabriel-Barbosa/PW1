@@ -78,7 +78,14 @@ function getStatusClass(status) {
 
 // Mostra formulário para adicionar/editar anime
 function showAnimeForm() {
+  const modalContent = document.querySelector('.admin-form-container');
   document.getElementById('animeModal').classList.remove('hidden');
+  
+  // Reseta a posição de rolagem do formulário
+  if (modalContent) {
+    modalContent.scrollTop = 0;
+  }
+
   if (!currentAnimeId) {
     document.getElementById('modalTitle').textContent = 'Adicionar Novo Anime';
     document.getElementById('animeForm').reset();
@@ -92,16 +99,22 @@ function showAnimeForm() {
     // Limpar previews e valores dos campos de imagem e trailer
     const coverPreview = document.getElementById('coverImagePreview');
     const coverPrompt = coverPreview.previousElementSibling;
+    const removeCoverBtn = document.getElementById('removeCoverImage');
+    
     coverPreview.src = '';
     coverPreview.classList.add('hidden');
     coverPrompt.classList.remove('hidden');
+    removeCoverBtn.classList.add('hidden'); // Garante que o botão de remover está oculto
     document.getElementById('coverImage').value = '';
     
     const trailerPreview = document.getElementById('trailerPreview');
     const trailerPrompt = trailerPreview.previousElementSibling;
+    const removeTrailerBtn = document.getElementById('removeTrailer');
+    
     trailerPreview.innerHTML = '';
     trailerPreview.classList.add('hidden');
     trailerPrompt.classList.remove('hidden');
+    removeTrailerBtn.classList.add('hidden'); // Garante que o botão de remover está oculto
     document.getElementById('trailerUrl').value = '';
     
     // Atualizar todas as listas
@@ -114,6 +127,13 @@ function showAnimeForm() {
 
 // Fecha formulário
 function closeAnimeForm() {
+  const modalContent = document.querySelector('.admin-form-container');
+  
+  // Reseta a posição de rolagem antes de fechar
+  if (modalContent) {
+    modalContent.scrollTop = 0;
+  }
+  
   document.getElementById('animeModal').classList.add('hidden');
   currentAnimeId = null;
 }
@@ -248,218 +268,156 @@ function removeLicensor(index) {
 
 // Carrega dados do anime para edição
 function editAnime(index) {
-  const animes = JSON.parse(localStorage.getItem('animeData')) || [];
-  const anime = animes[index];
-  currentAnimeId = index;
+  try {
+    const animes = JSON.parse(localStorage.getItem('animeData')) || [];
+    const anime = animes[index];
+    if (!anime) throw new Error('Anime não encontrado');
 
-  // Primeiro mostra o modal para garantir que os elementos existam no DOM
-  document.getElementById('animeModal').classList.remove('hidden');
-  document.getElementById('modalTitle').textContent = 'Editar Anime';
+    currentAnimeId = index;
+    showAnimeForm();
 
-  // Limpa os arrays globais
-  alternativeTitles = [];
-  genres = [];
+    // Configura temporizador para garantir que o modal esteja visível
+    setTimeout(() => {
+      // Preenche campos básicos
+      document.getElementById('primaryTitle').value = anime.primaryTitle || '';
+      document.getElementById('coverImage').value = anime.coverImage || '';
+      document.getElementById('synopsis').value = anime.synopsis || '';
+      document.getElementById('episodes').value = anime.episodes || '';
+      document.getElementById('episodeDuration').value = anime.episodeDuration || '';
+      document.getElementById('status').value = anime.status || 'Em Exibição';
+      document.getElementById('ageRating').value = anime.ageRating || 'Livre';
+      document.getElementById('seasonPeriod').value = anime.season?.period || 'Inverno';
+      document.getElementById('seasonYear').value = anime.season?.year || new Date().getFullYear();
+      document.getElementById('studio').value = anime.studio || '';
+      document.getElementById('source').value = anime.source || '';
+      document.getElementById('trailerUrl').value = anime.trailerUrl || '';
 
-  // Pequeno delay para garantir que o modal está visível
-  setTimeout(() => {
-    // Carrega informações básicas
-    document.getElementById('primaryTitle').value = anime.primaryTitle || '';
-    document.getElementById('coverImage').value = anime.coverImage || '';
-    document.getElementById('synopsis').value = anime.synopsis || '';
-    document.getElementById('episodes').value = anime.episodes || '';
-    document.getElementById('episodeDuration').value = anime.episodeDuration || '';
+      // Reseta e preenche arrays
+      alternativeTitles = Array.isArray(anime.alternativeTitles) ? [...anime.alternativeTitles] : [];
+      genres = Array.isArray(anime.genres) ? [...anime.genres] : [];
+      producers = Array.isArray(anime.producers) ? [...anime.producers] : [];
+      licensors = Array.isArray(anime.licensors) ? [...anime.licensors] : [];
 
-    // Ajuste para Status - garante correspondência exata
-    const statusSelect = document.getElementById('status');
-    const statusValue = anime.status || 'Em Exibição';
-    // Procura a opção que corresponde ao valor salvo
-    for (let option of statusSelect.options) {
-      if (option.value === statusValue) {
-        statusSelect.value = statusValue;
-        break;
-      }
-    }
-
-    // Ajuste para Classificação Etária - garante correspondência exata
-    const ageRatingSelect = document.getElementById('ageRating');
-    const ageRatingValue = anime.ageRating || 'Livre';
-    // Procura a opção que corresponde ao valor salvo
-    for (let option of ageRatingSelect.options) {
-      if (option.value === ageRatingValue) {
-        ageRatingSelect.value = ageRatingValue;
-        break;
-      }
-    }
-
-    // Ajuste para Temporada - garante correspondência exata
-    const seasonPeriodSelect = document.getElementById('seasonPeriod');
-    const seasonPeriodValue = anime.season?.period || 'winter';
-    // Procura a opção que corresponde ao valor salvo
-    for (let option of seasonPeriodSelect.options) {
-      if (option.value === seasonPeriodValue) {
-        seasonPeriodSelect.value = seasonPeriodValue;
-        break;
-      }
-    }
-
-    // Carrega ano da temporada
-    document.getElementById('seasonYear').value = anime.season?.year || '';
-
-    // Carrega URL do trailer
-    document.getElementById('trailerUrl').value = anime.trailerUrl || '';
-
-    // Carrega títulos alternativos
-    if (Array.isArray(anime.alternativeTitles)) {
-      alternativeTitles = [...anime.alternativeTitles];
+      // Atualiza todas as listas visuais
       updateAlternativeTitlesList();
-    }
-
-    // Carrega gêneros
-    if (Array.isArray(anime.genres)) {
-      genres = [...anime.genres];
       updateGenresList();
-    }
+      updateProducersList();
+      updateLicensorsList();
 
-    // Carregar dados adicionais
-    document.getElementById('studio').value = anime.studio || '';
-    document.getElementById('source').value = anime.source || '';
+      // Atualiza previews de mídia
+      updateMediaPreviews(anime);
 
-    // Carregar produtores
-    producers = Array.isArray(anime.producers) ? [...anime.producers] : [];
-    updateProducersList();
+    }, 100);
 
-    // Carregar licenciadores
-    licensors = Array.isArray(anime.licensors) ? [...anime.licensors] : [];
-    updateLicensorsList();
-
-    // Força atualização das listas visuais
-    updateAlternativeTitlesList();
-    updateGenresList();
-
-    // Preview da imagem de capa
-    const coverPreview = document.getElementById('coverImagePreview');
-    const coverPrompt = coverPreview.previousElementSibling;
-    const removeCoverBtn = document.getElementById('removeCoverImage');
-    if (anime.coverImage) {
-      coverPreview.src = anime.coverImage;
-      coverPreview.classList.remove('hidden');
-      coverPrompt.classList.add('hidden');
-      removeCoverBtn.classList.remove('hidden'); // Mostra botão de remover
-    } else {
-      coverPreview.classList.add('hidden');
-      coverPrompt.classList.remove('hidden');
-      removeCoverBtn.classList.add('hidden');
-    }
-
-    // Preview do trailer
-    const trailerPreview = document.getElementById('trailerPreview');
-    const trailerPrompt = trailerPreview.previousElementSibling;
-    const removeTrailerBtn = document.getElementById('removeTrailer');
-    if (anime.trailerUrl) {
-      if (anime.trailerUrl.includes('data:video')) {
-        trailerPreview.innerHTML = `
-          <video controls class="max-h-48 mx-auto">
-            <source src="${anime.trailerUrl}">
-            Seu navegador não suporta a tag de vídeo.
-          </video>
-        `;
-      } else {
-        // Assume que é uma URL do YouTube
-        const videoId = extractYouTubeId(anime.trailerUrl);
-        if (videoId) {
-          trailerPreview.innerHTML = `
-            <iframe width="280" height="157" 
-                    src="https://www.youtube.com/embed/${videoId}" 
-                    frameborder="0" allowfullscreen>
-            </iframe>
-          `;
-        }
-      }
-      trailerPreview.classList.remove('hidden');
-      trailerPrompt.classList.add('hidden');
-      removeTrailerBtn.classList.remove('hidden'); // Mostra botão de remover
-    } else {
-      trailerPreview.classList.add('hidden');
-      trailerPrompt.classList.remove('hidden');
-      removeTrailerBtn.classList.add('hidden');
-    }
-  }, 100);
+  } catch (error) {
+    console.error('Erro ao editar anime:', error);
+    alert('Erro ao carregar dados do anime para edição.');
+  }
 }
 
 // Salva anime (novo ou editado)
-document.getElementById('animeForm').addEventListener('submit', function (e) {
+document.getElementById('animeForm').addEventListener('submit', async function (e) {
   e.preventDefault();
 
-  const animes = JSON.parse(localStorage.getItem('animeData')) || [];
-  const now = new Date().toISOString();
+  try {
+    // Validações básicas
+    const primaryTitle = document.getElementById('primaryTitle').value.trim();
+    const coverImage = document.getElementById('coverImage').value.trim();
+    const synopsis = document.getElementById('synopsis').value.trim();
+    const episodes = document.getElementById('episodes').value.trim();
+    const episodeDuration = document.getElementById('episodeDuration').value.trim();
+    const studio = document.getElementById('studio').value.trim();
+    const source = document.getElementById('source').value;
 
-  // Dados do formulário com todos os campos necessários
-  const formData = {
-    // Campos básicos
-    primaryTitle: document.getElementById('primaryTitle').value.trim(),
-    coverImage: document.getElementById('coverImage').value.trim(),
-    synopsis: document.getElementById('synopsis').value.trim(),
-    alternativeTitles: alternativeTitles,
+    // Validação de campos obrigatórios
+    if (!primaryTitle || !synopsis || !episodes || !episodeDuration || !studio || !source) {
+      alert('Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
 
-    // Informações de episódios
-    episodes: parseInt(document.getElementById('episodes').value) || 0,
-    episodeDuration: parseInt(document.getElementById('episodeDuration').value) || 0,
+    // Validação de gêneros
+    if (genres.length === 0) {
+      alert('Por favor, adicione pelo menos um gênero.');
+      return;
+    }
 
-    // Status e classificação
-    status: document.getElementById('status').value,
-    ageRating: document.getElementById('ageRating').value,
+    // Validação de imagem de capa
+    if (!coverImage) {
+      alert('Por favor, adicione uma imagem de capa.');
+      return;
+    }
 
-    // Informações de temporada
-    season: {
-      period: document.getElementById('seasonPeriod').value,
-      year: parseInt(document.getElementById('seasonYear').value) || new Date().getFullYear()
-    },
+    const animes = JSON.parse(localStorage.getItem('animeData')) || [];
+    const now = new Date().toISOString();
 
-    // Metadados
-    releaseYear: parseInt(document.getElementById('seasonYear').value) || new Date().getFullYear(),
-    genres: genres,
-    studio: document.getElementById('studio').value.trim(),
-    source: document.getElementById('source').value,
-    producers: producers,
-    licensors: licensors,
-    trailerUrl: document.getElementById('trailerUrl').value.trim(),
+    // Comprimir imagem se existir
+    let processedCoverImage = coverImage;
+    if (coverImage.startsWith('data:image')) {
+      processedCoverImage = await compressImage(coverImage, 800, 0.7);
+    }
 
-    // Dados de engajamento
-    score: 0,
-    popularity: 0,
-    comments: [],
-
-    // Campos de controle
-    updatedAt: now
-  };
-
-  if (currentAnimeId !== null) {
-    // Editando anime existente
-    const existingAnime = animes[currentAnimeId];
-    animes[currentAnimeId] = {
-      ...existingAnime,           // Mantém dados existentes
-      ...formData,                // Atualiza com novos dados
-      score: existingAnime.score || 0,
-      popularity: existingAnime.popularity || 0,
-      comments: existingAnime.comments || [],
-      createdAt: existingAnime.createdAt, // Mantém data de criação original
+    // Formata os dados
+    const formData = {
+      primaryTitle,
+      coverImage: processedCoverImage,
+      synopsis,
+      alternativeTitles: [...alternativeTitles],
+      episodes: Math.max(0, parseInt(document.getElementById('episodes').value) || 0),
+      episodeDuration: Math.max(0, parseInt(document.getElementById('episodeDuration').value) || 0),
+      status: document.getElementById('status').value,
+      ageRating: document.getElementById('ageRating').value,
+      season: {
+        period: document.getElementById('seasonPeriod').value,
+        year: Math.max(1960, parseInt(document.getElementById('seasonYear').value) || new Date().getFullYear())
+      },
+      releaseYear: Math.max(1960, parseInt(document.getElementById('seasonYear').value) || new Date().getFullYear()),
+      genres: [...genres],
+      studio: document.getElementById('studio').value.trim(),
+      source: document.getElementById('source').value,
+      producers: [...producers],
+      licensors: [...licensors],
+      trailerUrl: document.getElementById('trailerUrl').value.trim(),
       updatedAt: now
     };
-  } else {
-    // Adicionando novo anime
-    const newAnime = {
-      ...formData,
-      createdAt: now,
-      comments: [],
-      score: 0,
-      popularity: 0
-    };
-    animes.push(newAnime);
-  }
 
-  localStorage.setItem('animeData', JSON.stringify(animes));
-  closeAnimeForm();
-  loadAnimesList();
+    let updatedAnimes = [];
+    if (currentAnimeId !== null) {
+      const existingAnime = animes[currentAnimeId];
+      if (!existingAnime) throw new Error('Anime não encontrado');
+
+      updatedAnimes = [...animes];
+      updatedAnimes[currentAnimeId] = {
+        ...existingAnime,
+        ...formData,
+        score: existingAnime.score || 0,
+        popularity: existingAnime.popularity || 0,
+        comments: existingAnime.comments || [],
+        createdAt: existingAnime.createdAt
+      };
+    } else {
+      updatedAnimes = [...animes, {
+        ...formData,
+        createdAt: now,
+        comments: [],
+        score: 0,
+        popularity: 0
+      }];
+    }
+
+    // Verifica espaço disponível
+    if (!checkStorageQuota(updatedAnimes)) {
+      throw new Error('Limite de armazenamento excedido. Tente remover alguns animes antigos.');
+    }
+
+    localStorage.setItem('animeData', JSON.stringify(updatedAnimes));
+    closeAnimeForm();
+    loadAnimesList();
+    alert('Anime salvo com sucesso!');
+
+  } catch (error) {
+    console.error('Erro ao salvar anime:', error);
+    alert(`Erro ao salvar o anime: ${error.message}`);
+  }
 });
 
 // Exclui anime e seus comentários
@@ -603,12 +561,15 @@ async function handleImageDrop(file, urlInput, previewElement) {
 
   try {
     const reader = new FileReader();
-    reader.onloadend = () => {
-      previewElement.src = reader.result;
+    reader.onloadend = async () => {
+      // Comprimir imagem antes de salvar
+      const compressedImage = await compressImage(reader.result);
+      
+      previewElement.src = compressedImage;
       previewElement.classList.remove('hidden');
       previewElement.previousElementSibling.classList.add('hidden');
-      document.getElementById('removeCoverImage').classList.remove('hidden'); // Mostra botão de remover
-      urlInput.value = reader.result;
+      document.getElementById('removeCoverImage').classList.remove('hidden');
+      urlInput.value = compressedImage;
     };
     reader.readAsDataURL(file);
   } catch (error) {
@@ -697,32 +658,134 @@ function extractYouTubeId(url) {
 // Adicione essas funções após setupDropZone
 function setupMediaRemoval() {
   // Setup para remover imagem de capa
-  document.getElementById('removeCoverImage').addEventListener('click', (e) => {
-    e.stopPropagation(); // Evita que o clique propague para o dropzone
+  const removeCoverBtn = document.getElementById('removeCoverImage');
+  removeCoverBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
     const coverPreview = document.getElementById('coverImagePreview');
     const coverPrompt = document.getElementById('coverImageDropzone').querySelector('.drop-zone-prompt');
-    const removeBtn = document.getElementById('removeCoverImage');
     
     coverPreview.src = '';
     coverPreview.classList.add('hidden');
-    removeBtn.classList.add('hidden');
+    removeCoverBtn.classList.add('hidden');
     coverPrompt.classList.remove('hidden');
     document.getElementById('coverImage').value = '';
     document.getElementById('coverImageInput').value = '';
   });
 
   // Setup para remover trailer
-  document.getElementById('removeTrailer').addEventListener('click', (e) => {
-    e.stopPropagation(); // Evita que o clique propague para o dropzone
+  const removeTrailerBtn = document.getElementById('removeTrailer');
+  removeTrailerBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
     const trailerPreview = document.getElementById('trailerPreview');
     const trailerPrompt = document.getElementById('trailerDropzone').querySelector('.drop-zone-prompt');
-    const removeBtn = document.getElementById('removeTrailer');
     
     trailerPreview.innerHTML = '';
     trailerPreview.classList.add('hidden');
-    removeBtn.classList.add('hidden');
+    removeTrailerBtn.classList.add('hidden');
     trailerPrompt.classList.remove('hidden');
     document.getElementById('trailerUrl').value = '';
     document.getElementById('trailerInput').value = '';
   });
+}
+
+function updateMediaPreviews(anime) {
+  // Preview da imagem de capa
+  const coverPreview = document.getElementById('coverImagePreview');
+  const coverPrompt = coverPreview.previousElementSibling;
+  const removeCoverBtn = document.getElementById('removeCoverImage');
+  
+  if (anime.coverImage && anime.coverImage.trim()) {
+    coverPreview.src = anime.coverImage;
+    coverPreview.classList.remove('hidden');
+    coverPrompt.classList.add('hidden');
+    removeCoverBtn.classList.remove('hidden');
+  } else {
+    coverPreview.src = '';
+    coverPreview.classList.add('hidden');
+    coverPrompt.classList.remove('hidden');
+    removeCoverBtn.classList.add('hidden');
+  }
+
+  // Preview do trailer
+  const trailerPreview = document.getElementById('trailerPreview');
+  const trailerPrompt = trailerPreview.previousElementSibling;
+  const removeTrailerBtn = document.getElementById('removeTrailer');
+  
+  if (anime.trailerUrl && anime.trailerUrl.trim()) {
+    let trailerContent = '';
+    if (anime.trailerUrl.includes('data:video')) {
+      trailerContent = `<video controls class="max-h-48 mx-auto"><source src="${anime.trailerUrl}"></video>`;
+    } else {
+      const videoId = extractYouTubeId(anime.trailerUrl);
+      if (videoId) {
+        trailerContent = `<iframe width="280" height="157" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+      }
+    }
+    
+    if (trailerContent) {
+      trailerPreview.innerHTML = trailerContent;
+      trailerPreview.classList.remove('hidden');
+      trailerPrompt.classList.add('hidden');
+      removeTrailerBtn.classList.remove('hidden');
+    } else {
+      trailerPreview.innerHTML = '';
+      trailerPreview.classList.add('hidden');
+      trailerPrompt.classList.remove('hidden');
+      removeTrailerBtn.classList.add('hidden');
+    }
+  } else {
+    trailerPreview.innerHTML = '';
+    trailerPreview.classList.add('hidden');
+    trailerPrompt.classList.remove('hidden');
+    removeTrailerBtn.classList.add('hidden');
+  }
+}
+
+// Comprime imagem antes de salvar
+async function compressImage(imageDataUrl, maxWidth = 800, quality = 0.8) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      let width = img.width;
+      let height = img.height;
+
+      if (width > maxWidth) {
+        height = Math.floor(height * (maxWidth / width));
+        width = maxWidth;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.src = imageDataUrl;
+  });
+}
+
+// Verifica e gerencia espaço no localStorage
+function checkStorageQuota(data) {
+  const totalSpace = 5 * 1024 * 1024; // 5MB (aproximado para localStorage)
+  const currentData = JSON.stringify(data);
+  const requiredSpace = currentData.length * 2; // Em bytes
+
+  if (requiredSpace > totalSpace) {
+    throw new Error('Tamanho dos dados excede o limite permitido');
+  }
+
+  try {
+    // Teste de escrita
+    localStorage.setItem('quotaTest', currentData);
+    localStorage.removeItem('quotaTest');
+    return true;
+  } catch (e) {
+    if (e.name === 'QuotaExceededError') {
+      return false;
+    }
+    throw e;
+  }
 }
