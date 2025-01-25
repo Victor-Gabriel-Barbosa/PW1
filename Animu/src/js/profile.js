@@ -307,18 +307,24 @@ function changeAvatar(avatar, userId) {
  * Inicializa seletor de gêneros para edição do perfil
  */
 function setupGenreSelection() {
-  // Lista predefinida de gêneros disponíveis
-  const genres = [
-    "Ação", "Aventura", "Comédia", "Drama", "Fantasia",
-    "Ficção Científica", "Horror", "Mistério", "Romance",
-    "Slice of Life", "Esportes", "Sobrenatural", "Thriller"
-  ];
+  // Obtém todas as categorias do CategoryDisplay
+  const categoryDisplay = new CategoryDisplay();
+  const categories = categoryDisplay.getCategories();
+  
+  // Extrai os nomes das categorias
+  const genres = categories.map(category => category.name);
 
   const genreContainer = document.getElementById('edit-genres');
   genreContainer.innerHTML = genres.map(genre => `
-    <label class="inline-flex items-center p-2 border rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900 cursor-pointer">
-      <input type="checkbox" name="genres" value="${genre}" class="mr-2">
-      ${genre}
+    <label class="inline-flex items-center p-2.5 border border-gray-200 dark:border-gray-600 
+                rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/30 cursor-pointer
+                transition-colors duration-200">
+      <input type="checkbox" name="genres" value="${genre}" 
+             class="w-4 h-4 text-purple-600 dark:text-purple-400 
+                    border-gray-300 dark:border-gray-600 
+                    rounded focus:ring-purple-500 dark:focus:ring-purple-400
+                    bg-white dark:bg-gray-700">
+      <span class="ml-2 text-sm text-gray-700 dark:text-gray-200">${genre}</span>
     </label>
   `).join('');
 }
@@ -333,6 +339,7 @@ function setupEventListeners(user) {
   const editModal = document.getElementById('edit-modal');
   const editForm = document.getElementById('edit-profile-form');
   const cancelButton = document.getElementById('cancel-edit');
+  const closeButton = document.getElementById('close-modal'); // Nova referência
 
   // Botão de editar perfil
   editButton.addEventListener('click', () => {
@@ -355,6 +362,28 @@ function setupEventListeners(user) {
   cancelButton.addEventListener('click', () => {
     editModal.classList.remove('flex');
     editModal.classList.add('hidden');
+  });
+
+  // Botão de fechar modal (X)
+  closeButton.addEventListener('click', () => {
+    editModal.classList.remove('flex');
+    editModal.classList.add('hidden');
+  });
+
+  // Fechar modal ao clicar fora
+  editModal.addEventListener('click', (e) => {
+    if (e.target === editModal) {
+      editModal.classList.remove('flex');
+      editModal.classList.add('hidden');
+    }
+  });
+
+  // Fechar modal com tecla ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !editModal.classList.contains('hidden')) {
+      editModal.classList.remove('flex');
+      editModal.classList.add('hidden');
+    }
   });
 
   // Formulário de edição

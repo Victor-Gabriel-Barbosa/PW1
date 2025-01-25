@@ -21,7 +21,7 @@ class Navbar {
         <div class="container mx-auto px-4">
           <div class="flex items-center justify-between h-16">
             <!-- Espaço reservado para o menu e logo -->
-            <div class="w-48"></div>
+            <div class="w-36"></div>
 
             <!-- Barra de pesquisa -->
             <div class="flex-1 max-w-xl mx-4" id="search-area">
@@ -42,12 +42,33 @@ class Navbar {
                 ${this.getUserPanel()}
               </div>
 
-              <!-- Botão para alternância de tema claro/escuro -->
-              <div class="theme-toggle-container">
-                <button class="toggle-theme">
-                  <div class="clouds"></div>
-                  <div class="stars"><span><span></div>
+              <!-- Substituir o botão de tema por um dropdown -->
+              <div class="theme-selector">
+                <button id="theme-dropdown-btn" class="theme-dropdown-btn" title="Personalizar tema">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24">
+                    <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+                  </svg>
                 </button>
+                <div id="theme-menu" class="theme-menu hidden">
+                  <button data-theme="system" class="theme-option">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path d="M20 3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h3l-1 1v2h12v-2l-1-1h3c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 13H4V5h16v11z"/>
+                    </svg>
+                    <span>Sistema</span>
+                  </button>
+                  <button data-theme="light" class="theme-option">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
+                    </svg>
+                    <span>Claro</span>
+                  </button>
+                  <button data-theme="dark" class="theme-option">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+                    </svg>
+                    <span>Escuro</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -135,11 +156,55 @@ class Navbar {
 
   // Gera o painel do usuário com avatar e opções de login/logout
   getUserPanel() {
-    return `
-      <a href="./profile.html" class="flex items-center">
-        <img class="h-10 w-10 rounded-full object-cover" src="https://ui-avatars.com/api/?name=User&background=random" alt="Avatar do Usuário" />
-      </a>
-    `;
+    const userSession = JSON.parse(localStorage.getItem('userSession'));
+
+    if (userSession) {
+      return `
+        <div class="relative">
+          <button id="user-dropdown-btn" class="flex items-center focus:outline-none" title="Menu do usuário">
+            <img class="h-10 w-10 rounded-full object-cover" src="${userSession.avatar || 'https://ui-avatars.com/api/?name=User&background=random'}" alt="Avatar do Usuário" />
+          </button>
+          <div id="user-dropdown" class="user-dropdown hidden">
+            <a href="./profile.html" class="dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              </svg>
+              <span>Perfil</span>
+            </a>
+            <button class="dropdown-item text-red-600" id="logout-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24">
+                <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+              </svg>
+              <span>Sair</span>
+            </button>
+          </div>
+        </div>
+      `;
+    } else {
+      return `
+        <div class="relative">
+          <button id="auth-dropdown-btn" class="auth-btn focus:outline-none" title="Opções de Login">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+          </button>
+          <div id="auth-dropdown" class="user-dropdown hidden">
+            <a href="./signin.html" class="dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24">
+                <path d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z"/>
+              </svg>
+              <span>Entrar</span>
+            </a>
+            <a href="./signup.html" class="dropdown-item">
+              <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24">
+                <path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              </svg>
+              <span>Criar Conta</span>
+            </a>
+          </div>
+        </div>
+      `;
+    }
   }
 
   // Inicializa todos os componentes da navbar
@@ -153,6 +218,8 @@ class Navbar {
 
     this.checkLoginStatus();
     this.initSideMenu();
+    this.initUserDropdown();
+    this.initAuthDropdown();
   }
 
   // Marca o link ativo baseado na URL atual, tratando páginas normais e admin
@@ -269,6 +336,49 @@ class Navbar {
       const isOpen = sideMenu.classList.contains('open');
       localStorage.setItem('sideMenuState', isOpen ? 'open' : 'closed');
     });
+  }
+
+  // Inicializa o dropdown do usuário
+  initUserDropdown() {
+    const dropdownBtn = document.getElementById('user-dropdown-btn');
+    const dropdown = document.getElementById('user-dropdown');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    if (dropdownBtn && dropdown) {
+      dropdownBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!dropdownBtn.contains(e.target) && !dropdown.contains(e.target)) {
+          dropdown.classList.add('hidden');
+        }
+      });
+    }
+
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', this.handleLogout);
+    }
+  }
+
+  // Inicializa o dropdown de autenticação
+  initAuthDropdown() {
+    const authBtn = document.getElementById('auth-dropdown-btn');
+    const authDropdown = document.getElementById('auth-dropdown');
+
+    if (authBtn && authDropdown) {
+      authBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        authDropdown.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!authBtn.contains(e.target) && !authDropdown.contains(e.target)) {
+          authDropdown.classList.add('hidden');
+        }
+      });
+    }
   }
 
   // Limpa sessão e redireciona para login

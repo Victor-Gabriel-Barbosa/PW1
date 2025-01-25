@@ -1,6 +1,11 @@
+/**
+ * Gerenciador de notícias para área administrativa
+ * Permite criar, editar, excluir e visualizar notícias
+ */
 document.addEventListener('DOMContentLoaded', function () {
   if (!checkAdminAccess()) return;
 
+  // Elementos do DOM
   const modal = document.getElementById('news-modal');
   const form = document.getElementById('news-form');
   const addBtn = document.getElementById('add-news-btn');
@@ -10,16 +15,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
   let editingId = null;
 
-  // Carregar notícias existentes
+  // Inicialização
   loadNews();
 
-  // Event Listeners
+  // Event Listeners principais
   addBtn.addEventListener('click', () => openModal());
   closeBtn.addEventListener('click', closeModal);
   cancelBtn.addEventListener('click', closeModal);
   form.addEventListener('submit', handleSubmit);
 
-  // Funções
+  /**
+   * Carrega e exibe as notícias do localStorage
+   * Configura listeners para edição/exclusão
+   */
   function loadNews() {
     const news = JSON.parse(localStorage.getItem('news') || '[]');
     newsList.innerHTML = news.map(item => createNewsCard(item)).join('');
@@ -34,38 +42,46 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  /**
+   * Gera HTML para card de notícia com controles administrativos
+   * @param {Object} news - Dados da notícia
+   */
   function createNewsCard(news) {
     return `
-            <div class="admin-news-item">
-                <div class="news-preview">
-                    <img src="${news.image}" alt="${news.title}">
-                </div>
-                <div class="news-info">
-                    <span class="news-category">${news.category}</span>
-                    <h3>${news.title}</h3>
-                    <p class="text-sm opacity-75 line-clamp-2">${news.summary}</p>
-                    <div class="news-tags">
-                        ${news.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                    </div>
-                </div>
-                <div class="news-actions">
-                    <button class="btn-edit" title="Editar notícia" data-id="${news.id}">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                        </svg>
-                    </button>
-                    <button class="btn-delete" title="Excluir notícia" data-id="${news.id}">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        `;
+      <div class="admin-news-item">
+        <div class="news-preview">
+          <img src="${news.image}" alt="${news.title}">
+        </div>
+        <div class="news-info">
+          <span class="news-category">${news.category}</span>
+          <h3>${news.title}</h3>
+          <p class="text-sm opacity-75 line-clamp-2">${news.summary}</p>
+          <div class="news-tags">
+            ${news.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+          </div>
+        </div>
+        <div class="news-actions">
+          <button class="btn-edit" title="Editar notícia" data-id="${news.id}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+            </svg>
+          </button>
+          <button class="btn-delete" title="Excluir notícia" data-id="${news.id}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    `;
   }
 
+  /**
+   * Gerencia estado do modal para criação/edição
+   * @param {Object|null} newsData - Dados da notícia para edição
+   */
   function openModal(newsData = null) {
     modal.classList.remove('hidden');
     if (newsData) {
@@ -98,6 +114,10 @@ document.addEventListener('DOMContentLoaded', function () {
     editingId = null;
   }
 
+  /**
+   * Processa submissão do formulário
+   * Preserva data original em edições
+   */
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -155,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Adicionar manipulação de imagem
+  // Gerenciamento de imagens
   const imageDropZone = document.getElementById('image-drop-zone');
   const imageFile = document.getElementById('image-file');
   const imagePreview = document.querySelector('.image-preview');
@@ -197,6 +217,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  /**
+   * Processa arquivo de imagem e gera preview
+   * Converte para Base64 para armazenamento
+   */
   function handleImageFile(file) {
     if (!file || !file.type.startsWith('image/')) return;
 

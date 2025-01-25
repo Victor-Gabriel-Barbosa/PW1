@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setupDropZone('coverImageDropzone', 'coverImageInput', 'coverImage', 'coverImagePreview', handleImageDrop);
   setupDropZone('trailerDropzone', 'trailerInput', 'trailerUrl', 'trailerPreview', handleVideoDrop);
   setupMediaRemoval(); // Adicione esta linha
+  initializeCategorySelector();
+  setupDateInput();
 });
 
 // Carrega lista de animes
@@ -176,10 +178,16 @@ function removeAlternativeTitle(index) {
 function addGenre() {
   const input = document.getElementById('genreInput');
   const genre = input.value.trim();
+  const availableCategories = new CategoryDisplay().getCategories();
 
-  if (genre && !genres.includes(genre)) {
+  if (!genre) {
+    alert('Por favor, selecione uma categoria.');
+    return;
+  }
+
+  if (!genres.includes(genre)) {
     genres.push(genre);
-    input.value = '';
+    input.value = ''; // Limpa o select
     updateGenresList();
   }
 }
@@ -189,12 +197,10 @@ function updateGenresList() {
   const container = document.getElementById('genresList');
   container.innerHTML = genres.map((genre, index) => `
     <div class="tag">
-      <span>
-        ${genre}
-        <button type="button" onclick="removeGenre(${index})" class="tag-remove">
-          ✕
-        </button>
-      </span>
+      <span>${genre}</span>
+      <button type="button" onclick="removeGenre(${index})" class="tag-remove">
+        ✕
+      </button>
     </div>
   `).join('');
 }
@@ -203,6 +209,31 @@ function updateGenresList() {
 function removeGenre(index) {
   genres.splice(index, 1);
   updateGenresList();
+}
+
+// Inicializa o seletor de categorias
+function initializeCategorySelector() {
+  const categoryDisplay = new CategoryDisplay();
+  const categories = categoryDisplay.getCategories();
+  const genreInput = document.getElementById('genreInput');
+  
+  // Transformar o input em um select
+  const select = document.createElement('select');
+  select.id = 'genreInput';
+  select.className = 'flex-1 p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white';
+  
+  // Adicionar opção padrão
+  select.innerHTML = `
+    <option value="">Selecione uma categoria...</option>
+    ${categories.map(category => `
+      <option value="${category.name}">
+        ${category.icon} ${category.name}
+      </option>
+    `).join('')}
+  `;
+  
+  // Substituir o input pelo select
+  genreInput.parentNode.replaceChild(select, genreInput);
 }
 
 // Funções para produtores
@@ -287,7 +318,11 @@ function editAnime(index) {
       document.getElementById('status').value = anime.status || 'Em Exibição';
       document.getElementById('ageRating').value = anime.ageRating || 'Livre';
       document.getElementById('seasonPeriod').value = anime.season?.period || 'Inverno';
-      document.getElementById('seasonYear').value = anime.season?.year || new Date().getFullYear();
+      
+      // Formatar a data para o formato yyyy-MM-dd
+      const releaseDate = anime.releaseDate ? new Date(anime.releaseDate).toISOString().split('T')[0] : '';
+      document.getElementById('releaseDate').value = releaseDate;
+      
       document.getElementById('studio').value = anime.studio || '';
       document.getElementById('source').value = anime.source || '';
       document.getElementById('trailerUrl').value = anime.trailerUrl || '';
@@ -328,6 +363,7 @@ document.getElementById('animeForm').addEventListener('submit', async function (
     const episodeDuration = document.getElementById('episodeDuration').value.trim();
     const studio = document.getElementById('studio').value.trim();
     const source = document.getElementById('source').value;
+    const releaseDate = document.getElementById('releaseDate').value;
 
     // Validação de campos obrigatórios
     if (!primaryTitle || !synopsis || !episodes || !episodeDuration || !studio || !source) {
@@ -344,6 +380,12 @@ document.getElementById('animeForm').addEventListener('submit', async function (
     // Validação de imagem de capa
     if (!coverImage) {
       alert('Por favor, adicione uma imagem de capa.');
+      return;
+    }
+
+    // Validação de data de lançamento
+    if (!releaseDate) {
+      alert('Por favor, selecione uma data de lançamento.');
       return;
     }
 
@@ -368,9 +410,9 @@ document.getElementById('animeForm').addEventListener('submit', async function (
       ageRating: document.getElementById('ageRating').value,
       season: {
         period: document.getElementById('seasonPeriod').value,
-        year: Math.max(1960, parseInt(document.getElementById('seasonYear').value) || new Date().getFullYear())
+        year: new Date(releaseDate).getFullYear()
       },
-      releaseYear: Math.max(1960, parseInt(document.getElementById('seasonYear').value) || new Date().getFullYear()),
+      releaseDate: releaseDate,
       genres: [...genres],
       studio: document.getElementById('studio').value.trim(),
       source: document.getElementById('source').value,
@@ -581,79 +623,89 @@ async function handleImageDrop(file, urlInput, previewElement) {
 function handleVideoDrop(file, urlInput, previewElement) {
   // Se for um arquivo de vídeo
   if (file instanceof File && file.type.startsWith('video/')) {
-    try {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        previewElement.innerHTML = `
-          <video controls class="max-h-48 mx-auto">
-            <source src="${reader.result}" type="${file.type}">
-            Seu navegador não suporta a tag de vídeo.
-          </video>
-        `;
-        previewElement.classList.remove('hidden');
-        previewElement.previousElementSibling.classList.add('hidden');
-        document.getElementById('removeTrailer').classList.remove('hidden'); // Mostra botão de remover
-        urlInput.value = reader.result;
-      };
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error('Erro ao processar vídeo:', error);
-      alert('Erro ao processar o vídeo. Tente novamente.');
-    }
+    handleVideoFile(file, urlInput, previewElement);
     return;
   }
 
-  // Se for uma URL do YouTube (do drag and drop)
-  let url = '';
-  if (file instanceof File) {
-    // Tenta ler o conteúdo do arquivo como texto (caso seja um arquivo de texto com a URL)
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      url = e.target.result.trim();
-      handleYoutubeUrl(url, urlInput, previewElement);
-    };
-    reader.readAsText(file);
-  } else {
-    // Se for uma URL arrastada diretamente
-    url = file.toString().trim();
+  // Se for uma URL
+  let url = typeof file === 'string' ? file : '';
+  if (url) {
     handleYoutubeUrl(url, urlInput, previewElement);
   }
 }
 
+function handleVideoFile(file, urlInput, previewElement) {
+  try {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      previewElement.innerHTML = `
+        <video controls class="max-h-48 mx-auto">
+          <source src="${reader.result}" type="${file.type}">
+          Seu navegador não suporta a tag de vídeo.
+        </video>
+      `;
+      previewElement.classList.remove('hidden');
+      previewElement.previousElementSibling.classList.add('hidden');
+      document.getElementById('removeTrailer').classList.remove('hidden');
+      urlInput.value = reader.result;
+    };
+    reader.readAsDataURL(file);
+  } catch (error) {
+    console.error('Erro ao processar vídeo:', error);
+    alert('Erro ao processar o vídeo. Tente novamente.');
+  }
+}
+
 function handleYoutubeUrl(url, urlInput, previewElement) {
-  const videoId = extractYouTubeId(url);
+  const videoId = extractYouTubeId(url); // Atualizado para usar o mesmo nome
   if (videoId) {
+    const embedUrl = `https://www.youtube.com/embed/${videoId}`;
     previewElement.innerHTML = `
-      <iframe width="280" height="157" 
-              src="https://www.youtube.com/embed/${videoId}" 
-              frameborder="0" allowfullscreen>
-      </iframe>
+      <iframe
+        width="280"
+        height="157"
+        src="${embedUrl}"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
     `;
     previewElement.classList.remove('hidden');
     previewElement.previousElementSibling.classList.add('hidden');
-    document.getElementById('removeTrailer').classList.remove('hidden'); // Mostra botão de remover
-    urlInput.value = url;
+    document.getElementById('removeTrailer').classList.remove('hidden');
+    urlInput.value = embedUrl;
   } else {
     alert('URL do YouTube inválida. Por favor, verifique a URL e tente novamente.');
   }
 }
 
-// Melhore a função extractYouTubeId para suportar mais formatos de URL
+// Renomeie a função para manter consistência
 function extractYouTubeId(url) {
+  if (!url) return null;
+  
+  // Suporta vários formatos de URL do YouTube
   const patterns = [
-    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)/i,
-    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([^/?]+)/i,
-    /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([^/?]+)/i,
-    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/v\/([^/?]+)/i,
-    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/shorts\/([^/?]+)/i
+    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i,
+    /^[a-zA-Z0-9_-]{11}$/ // ID direto do YouTube
   ];
 
   for (const pattern of patterns) {
     const match = url.match(pattern);
-    if (match) return match[1];
+    if (match && match[1]) {
+      return match[1];
+    }
   }
+
   return null;
 }
+
+// Adicione também um listener para o input de URL direta
+document.getElementById('trailerUrl').addEventListener('input', function(e) {
+  const url = e.target.value.trim();
+  if (url) {
+    handleYoutubeUrl(url, e.target, document.getElementById('trailerPreview'));
+  }
+});
 
 // Adicione essas funções após setupDropZone
 function setupMediaRemoval() {
@@ -787,5 +839,17 @@ function checkStorageQuota(data) {
       return false;
     }
     throw e;
+  }
+}
+
+// Adicionar ao início do arquivo ou após o DOMContentLoaded
+function setupDateInput() {
+  const dateInput = document.getElementById('releaseDate');
+  const today = new Date().toISOString().split('T')[0];
+  dateInput.max = today; // Impede seleção de datas futuras
+  
+  // Define a data padrão para hoje se não houver data selecionada
+  if (!dateInput.value) {
+    dateInput.value = today;
   }
 }

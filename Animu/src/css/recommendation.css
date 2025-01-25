@@ -23,7 +23,6 @@
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1.5rem;
   min-height: 200px;
-  /* Altura mínima para evitar colapso */
 }
 
 .recommendation-card {
@@ -34,7 +33,6 @@
   transform: translateY(0);
   height: 100%;
   min-height: 300px;
-  /* Altura mínima para manter proporção */
   background: var(--background);
 }
 
@@ -169,7 +167,7 @@
   }
 }
 
-/* Melhorar responsividade */
+/* Melhora responsividade */
 @media (max-width: 640px) {
   .grid-recommendations {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -184,7 +182,7 @@
   }
 }
 
-/* Adicionar estilos para o modo escuro */
+/* Adiciona estilos para o modo escuro */
 .dark .recommendation-card {
   background: rgba(17, 24, 39, 0.8);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);

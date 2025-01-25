@@ -1,26 +1,7 @@
 // Aguarda o carregamento completo do DOM antes de executar o código
 document.addEventListener('DOMContentLoaded', () => {
-  // Elementos do tema
-  const themeToggle = document.querySelector('.toggle-theme');
-  const body = document.body;
-
-  // Restaura tema salvo ou usa padrão somente se o toggle existir
-  if (themeToggle) {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      body.classList.add('dark-mode');
-      themeToggle.classList.add('dark');
-    }
-
-    // Gerencia alternância de tema e persiste escolha
-    themeToggle.addEventListener('click', () => {
-      body.classList.toggle('dark-mode');
-      themeToggle.classList.toggle('dark');
-      
-      const theme = body.classList.contains('dark-mode') ? 'dark' : 'light';
-      localStorage.setItem('theme', theme);
-    });
-  }
+  // Substituir código antigo do tema
+  initThemeSystem();
 
   // Controle de visibilidade dos painéis baseado em permissões
   const adminPanel = document.getElementById("admin-panel");
@@ -54,6 +35,123 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+function initThemeSystem() {
+  const themeDropdownBtn = document.getElementById('theme-dropdown-btn');
+  const themeMenu = document.getElementById('theme-menu');
+  const themeOptions = document.querySelectorAll('.theme-option');
+  const body = document.body;
+
+  // Ícones para cada tema
+  const themeIcons = {
+    system: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M20 3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h3l-1 1v2h12v-2l-1-1h3c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 13H4V5h16v11z"/>
+    </svg>`,
+    light: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
+    </svg>`,
+    dark: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+    </svg>`
+  };
+
+  // Detecta preferência do sistema
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+  // Função para atualizar o ícone do botão
+  function updateThemeIcon(theme) {
+    const icon = themeIcons[theme] || themeIcons.system;
+    themeDropdownBtn.innerHTML = icon;
+    themeDropdownBtn.querySelector('svg').style.height = '24px';
+  }
+
+  // Carrega tema salvo ou usa preferência do sistema
+  const savedTheme = localStorage.getItem('theme') || 'system';
+  applyTheme(savedTheme);
+  updateActiveTheme(savedTheme);
+  updateThemeIcon(savedTheme);
+
+  // Toggle do menu dropdown com animação
+  themeDropdownBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    themeMenu.classList.toggle('hidden');
+    
+    // Nova animação do ícone
+    const icon = themeDropdownBtn.querySelector('svg');
+    themeDropdownBtn.classList.toggle('active');
+    
+    if (themeMenu.classList.contains('hidden')) {
+      icon.style.transform = 'scale(1)';
+      icon.style.filter = 'none';
+    }
+  });
+
+  // Fecha o menu ao clicar fora com animação suave
+  document.addEventListener('click', () => {
+    if (!themeMenu.classList.contains('hidden')) {
+      themeMenu.classList.add('hidden');
+      const icon = themeDropdownBtn.querySelector('svg');
+      themeDropdownBtn.classList.remove('active');
+      icon.style.transform = 'scale(1)';
+      icon.style.filter = 'none';
+    }
+  });
+
+  // Previne que cliques dentro do menu o fechem
+  themeMenu.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
+  // Gerencia seleção de tema com feedback visual
+  themeOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      const theme = option.dataset.theme;
+      applyTheme(theme);
+      updateActiveTheme(theme);
+      updateThemeIcon(theme);
+      localStorage.setItem('theme', theme);
+      
+      // Adiciona efeito de ripple ao clicar
+      const ripple = document.createElement('div');
+      ripple.className = 'ripple';
+      option.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 1000);
+
+      setTimeout(() => {
+        themeMenu.classList.add('hidden');
+        const icon = themeDropdownBtn.querySelector('svg');
+        icon.style.transform = 'rotate(0deg)';
+      }, 300);
+    });
+  });
+
+  // Atualiza tema quando muda preferência do sistema
+  prefersDark.addEventListener('change', () => {
+    if (localStorage.getItem('theme') === 'system') {
+      applyTheme('system');
+    }
+  });
+
+  function applyTheme(theme) {
+    if (theme === 'system') {
+      if (prefersDark.matches) {
+        body.classList.add('dark-mode');
+      } else {
+        body.classList.remove('dark-mode');
+      }
+    } else if (theme === 'dark') {
+      body.classList.add('dark-mode');
+    } else {
+      body.classList.remove('dark-mode');
+    }
+  }
+
+  function updateActiveTheme(theme) {
+    themeOptions.forEach(option => {
+      option.classList.toggle('active', option.dataset.theme === theme);
+    });
+  }
+}
 
 // Função para obter o avatar do usuário
 function getUserAvatar(username) {
@@ -130,20 +228,50 @@ function renderFeaturedAnimes() {
 
   featuredContainer.innerHTML = featuredAnimes.map(anime => `
     <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="anime-card">
-      <div class="rounded-2xl shadow-lg overflow-hidden h-full flex flex-col">
-        <div class="relative w-full aspect-[3/4]">
-          <img 
-            src="${anime.coverImage}" 
-            alt="${anime.primaryTitle}" 
-            class="absolute w-full h-full object-cover"
-            onerror="this.src='https://ui-avatars.com/api/?name=User&background=random'">
+      <div class="image-wrapper">
+        <img 
+          src="${anime.coverImage}" 
+          alt="${anime.primaryTitle}" 
+          class="anime-image"
+          onerror="this.src='https://ui-avatars.com/api/?name=Anime&background=8B5CF6&color=fff'">
+        
+        <div class="quick-info">
+          <span class="info-pill">⭐ ${Number(anime.score).toFixed(1)}</span>
+          <span class="info-pill">
+            <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-4h2v2h-2v-2zm0-2h2V7h-2v7z"/>
+            </svg>
+            ${anime.episodes > 0 ? anime.episodes : '?'} eps
+          </span>
         </div>
-        <div class="p-4 flex flex-col flex-grow">
-          <h3 class="text-lg font-semibold mb-auto line-clamp-2">${anime.primaryTitle}</h3>
-          <div class="flex items-center gap-2 mt-2">
-            <span class="rating-tag">⭐ ${anime.score || 'N/A'}</span>
-            <span class="rating-tag">💬 ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}</span>
+
+        <div class="anime-overlay">
+          <div class="overlay-content">
+            <div class="anime-genres">
+              ${anime.genres.slice(0, 3).map(genre => 
+                `<span class="genre-tag">${genre}</span>`
+              ).join('')}
+            </div>
+            <p class="text-sm mt-2 line-clamp-3">${anime.synopsis || 'Sinopse não disponível.'}</p>
           </div>
+        </div>
+      </div>
+
+      <div class="anime-info">
+        <h3 class="anime-title line-clamp-2">${anime.primaryTitle}</h3>
+        <div class="anime-meta">
+          <span class="meta-item">
+            <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/>
+            </svg>
+            ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}
+          </span>
+          <span class="meta-item">
+            <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+            ${anime.favorites || 0}
+          </span>
         </div>
       </div>
     </a>

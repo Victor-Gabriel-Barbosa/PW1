@@ -95,16 +95,141 @@
   display: block;
   overflow: hidden;
   border-radius: 8px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   height: 100%;
   position: relative;
   overflow: hidden;
   animation: fadeScale 0.5s ease-out;
 }
 
+/* Cards de Animes em Destaque */
+.anime-card {
+  background: var(--background);
+  border: 1px solid var(--card-shadow);
+}
+
+.anime-card .image-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 140%;
+  overflow: hidden;
+}
+
+.anime-card .anime-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.anime-card .anime-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.7) 70%,
+    rgba(0, 0, 0, 0.9) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+.anime-card:hover .anime-overlay {
+  opacity: 1;
+}
+
+.anime-card:hover .anime-image {
+  transform: scale(1.05);
+}
+
+.anime-card .anime-info {
+  padding: 1rem;
+}
+
+.anime-card .anime-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.anime-card .anime-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.anime-card .meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.anime-card .meta-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.anime-card .anime-genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.anime-card .genre-tag {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.anime-card .quick-info {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 1;
+}
+
+.anime-card .info-pill {
+  background: var(--primary-gradient);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.anime-card .overlay-content {
+  color: white;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.anime-card:hover .overlay-content {
+  transform: translateY(0);
+  opacity: 1;
+}
+
 .anime-card:hover {
-  transform: scale(1.03);
-  box-shadow: 0 10px 20px var(--card-shadow);
+  transform: translateY(-5px) scale(1.01);
+  box-shadow: 0 8px 16px var(--card-shadow);
 }
 
 .anime-card::before {
@@ -159,6 +284,9 @@
   font-weight: bold;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 2px;
 }
 
 .featured-animes {
@@ -218,6 +346,7 @@
   border-radius: 4px;
 }
 
+/* Sistema de estrelas para avaliação */
 .star-rating {
   display: flex;
   flex-direction: row-reverse;
@@ -269,12 +398,6 @@
   color: #ffa534 !important;
 }
 
-/* Remover os estilos antigos de estrelas */
-.star, .half-star {
-  display: none;
-}
-
-/* Novo sistema de estrelas */
 .stars-container {
   display: inline-flex;
   position: relative;
@@ -303,7 +426,6 @@
   color: #ffa534;
 }
 
-/* Atualização do sistema de estrelas */
 .rating-display {
   display: flex;
   align-items: center;
@@ -492,7 +614,7 @@
   transform: scale(1.1);
 }
 
-/* Novas animações para os botões de votação */
+/* Animações para os botões de votação */
 @keyframes ripple {
   from {
     opacity: 1;
@@ -538,7 +660,7 @@
   }
 }
 
-/* Novas animações e efeitos visuais */
+/* Animações e efeitos visuais */
 @keyframes fadeScale {
   from {
     opacity: 0;
@@ -614,6 +736,7 @@
 
 .rating-number-input input[type=number] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 /* Media Queries para diferentes tamanhos de tela */

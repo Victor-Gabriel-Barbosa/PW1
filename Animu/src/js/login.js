@@ -139,6 +139,18 @@ document.addEventListener('DOMContentLoaded', async function () {
         this.users.push(newUser);
         this.saveUsers();
 
+        // Criar sessão do usuário automaticamente
+        const sessionData = {
+          userId: newUser.id,
+          username: newUser.username,
+          isAdmin: newUser.isAdmin,
+          avatar: newUser.avatar,
+          loginTime: new Date().toISOString()
+        };
+
+        // Salvar sessão
+        localStorage.setItem('userSession', JSON.stringify(sessionData));
+
         return true;
       } catch (error) {
         this.showError(error.message);
@@ -409,8 +421,29 @@ document.addEventListener('DOMContentLoaded', async function () {
         );
 
         if (success) {
-          alert('Conta criada com sucesso!');
-          window.location.href = 'signin.html';
+          // Mostrar mensagem de sucesso
+          const message = document.createElement('div');
+          message.className = 'success-message';
+          message.textContent = 'Conta criada com sucesso! Redirecionando...';
+          message.style.cssText = `
+              background-color: #4CAF50;
+              color: white;
+              padding: 12px 20px;
+              border-radius: 8px;
+              position: fixed;
+              top: 20px;
+              left: 50%;
+              transform: translateX(-50%);
+              z-index: 1000;
+              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+              animation: slideDown 0.3s ease-out;
+          `;
+          document.body.appendChild(message);
+
+          // Redirecionar após um pequeno delay
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1500);
         }
       } catch (error) {
         authManager.showError(error.message);

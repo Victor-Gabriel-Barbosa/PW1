@@ -4,6 +4,9 @@
  */
 class AnimeSearchBar {
   constructor(options = {}) {
+    // Carregar categorias do localStorage
+    const categories = this.loadCategories();
+
     this.options = {
       containerId: 'search-area',
       inputId: 'search-input',
@@ -16,36 +19,18 @@ class AnimeSearchBar {
           label: 'Gênero',
           options: [
             { value: '', label: 'Todos' },
-            { value: 'action', label: 'Ação' },
-            { value: 'adventure', label: 'Aventura' },
-            { value: 'comedy', label: 'Comédia' },
-            { value: 'drama', label: 'Drama' },
-            { value: 'fantasy', label: 'Fantasia' },
-            { value: 'horror', label: 'Terror' },
-            { value: 'mecha', label: 'Mecha' },
-            { value: 'music', label: 'Música' },
-            { value: 'mystery', label: 'Mistério' },
-            { value: 'psychological', label: 'Psicológico' },
-            { value: 'romance', label: 'Romance' },
-            { value: 'sci-fi', label: 'Ficção Científica' },
-            { value: 'slice-of-life', label: 'Slice of Life' },
-            { value: 'sports', label: 'Esportes' },
-            { value: 'supernatural', label: 'Sobrenatural' },
-            { value: 'thriller', label: 'Thriller' }
+            ...this.formatCategoriesToOptions(categories)
           ]
         },
-        year: {
-          label: 'Ano',
+        date: {  // Alterado de 'year' para 'date'
+          label: 'Data de Lançamento',
           options: [
-            { value: '', label: 'Todos' },
-            { value: '2024', label: '2024' },
-            { value: '2023', label: '2023' },
-            { value: '2022', label: '2022' },
-            { value: '2021', label: '2021' },
-            { value: '2020', label: '2020' },
-            { value: '2019', label: '2019' },
-            { value: '2018', label: '2018' },
-            { value: 'older', label: '2017 ou anterior' }
+            { value: '', label: 'Todas' },
+            { value: 'this_season', label: 'Esta Temporada' },
+            { value: 'this_year', label: 'Este Ano' },
+            { value: 'last_year', label: 'Ano Passado' },
+            { value: 'older', label: '2 Anos ou Mais' },
+            { value: 'custom', label: 'A partir de:' }
           ]
         },
         status: {
@@ -95,13 +80,55 @@ class AnimeSearchBar {
 
     this.filters = {
       genre: '',
-      year: '',
+      date: '',
       rating: ''
     };
 
     this.container = document.getElementById(this.options.containerId);
     this.setupSearchBar();
     this.setupEventListeners();
+
+    // Adicionar listener para atualização de categorias
+    window.addEventListener('categoriesUpdated', () => {
+      this.updateGenreFilter();
+    });
+  }
+
+  /**
+   * Carrega categorias do localStorage
+   */
+  loadCategories() {
+    return JSON.parse(localStorage.getItem('animuCategories')) || [];
+  }
+
+  /**
+   * Converte categorias para o formato de opções do filtro
+   */
+  formatCategoriesToOptions(categories) {
+    return categories.map(cat => ({
+      value: cat.name.toLowerCase(),
+      label: cat.name
+    }));
+  }
+
+  /**
+   * Atualiza o filtro de gêneros quando as categorias são modificadas
+   */
+  updateGenreFilter() {
+    const categories = this.loadCategories();
+    const genreSelect = this.container.querySelector('#genre-filter');
+
+    if (genreSelect) {
+      const currentValue = genreSelect.value;
+      const options = [
+        { value: '', label: 'Todos' },
+        ...this.formatCategoriesToOptions(categories)
+      ];
+
+      genreSelect.innerHTML = options.map(option =>
+        `<option value="${option.value}" ${currentValue === option.value ? 'selected' : ''}>${option.label}</option>`
+      ).join('');
+    }
   }
 
   /**
@@ -110,6 +137,27 @@ class AnimeSearchBar {
    */
   createFilterSelect(filterKey) {
     const filter = this.options.filters[filterKey];
+    // Adiciona campo de data personalizada para o filtro de data
+    if (filterKey === 'date') {
+      return `
+        <div class="filter-group">
+          <label>${filter.label}</label>
+          <div class="flex gap-2 items-center">
+            <select id="${filterKey}-filter" class="flex-1">
+              ${filter.options.map(option =>
+        `<option value="${option.value}">${option.label}</option>`
+      ).join('')}
+            </select>
+            <input type="date" 
+                   id="custom-date-filter" 
+                   class="w-32 p-2 border rounded hidden"
+                   min="1960-01-01"
+                   max="${new Date().toISOString().split('T')[0]}">
+          </div>
+        </div>
+      `;
+    }
+    // Retorno padrão para outros filtros
     return `
       <div class="filter-group">
         <label>${filter.label}</label>
@@ -135,11 +183,11 @@ class AnimeSearchBar {
                  id="${this.options.inputId}" 
                  class="search-input" 
                  placeholder="Pesquisar anime...">
-          <div class="search-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-              <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          <button class="clear-input" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" width="20">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
             </svg>
-          </div>
+          </button>
         </div>
 
         <div class="filter-dropdown">
@@ -152,7 +200,6 @@ class AnimeSearchBar {
             ${Object.keys(this.options.filters)
         .map(filterKey => this.createFilterSelect(filterKey))
         .join('')}
-            <button class="apply-filters-btn">Aplicar Filtros</button>
           </div>
         </div>
 
@@ -170,7 +217,12 @@ class AnimeSearchBar {
     this.searchButton = this.container.querySelector('.search-button');
     this.filterBtn = this.container.querySelector('.filter-btn');
     this.filterMenu = this.container.querySelector('.filter-menu');
-    this.applyFiltersBtn = this.container.querySelector('.apply-filters-btn');
+
+    // Adicionar referência ao botão de limpar
+    this.clearButton = this.container.querySelector('.clear-input');
+
+    // Atualizar visibilidade inicial do botão
+    this.updateClearButtonVisibility();
 
     // Configurar eventos dos filtros
     this.setupFilterEvents();
@@ -204,6 +256,28 @@ class AnimeSearchBar {
         this.hideResults();
       }
     });
+
+    // Adicionar evento para o botão de limpar
+    this.clearButton.addEventListener('click', () => {
+      this.input.value = '';
+      this.hideResults();
+      this.updateClearButtonVisibility();
+      this.input.focus();
+    });
+
+    // Atualizar visibilidade do botão ao digitar
+    this.input.addEventListener('input', () => {
+      this.updateClearButtonVisibility();
+    });
+  }
+
+  // Novo método para controlar a visibilidade do botão de limpar
+  updateClearButtonVisibility() {
+    if (this.input.value.length > 0) {
+      this.clearButton.style.display = 'block';
+    } else {
+      this.clearButton.style.display = 'none';
+    }
   }
 
   /**
@@ -222,15 +296,82 @@ class AnimeSearchBar {
       }
     });
 
-    // Aplicar filtros
-    this.applyFiltersBtn.addEventListener('click', () => {
-      this.filters = {
-        genre: this.container.querySelector('#genre-filter').value,
-        year: this.container.querySelector('#year-filter').value,
-        rating: this.container.querySelector('#rating-filter').value
-      };
-      this.handleSearch();
-      this.filterMenu.classList.remove('show');
+    // Adicionar listeners para cada select de filtro
+    const filterSelects = this.container.querySelectorAll('.filter-group select');
+    filterSelects.forEach(select => {
+      select.addEventListener('change', () => {
+        this.filters = {
+          genre: this.container.querySelector('#genre-filter').value,
+          date: this.container.querySelector('#date-filter').value,
+          rating: this.container.querySelector('#rating-filter').value,
+          status: this.container.querySelector('#status-filter').value,
+          season: this.container.querySelector('#season-filter').value,
+          source: this.container.querySelector('#source-filter').value
+        };
+        this.handleSearch();
+      });
+    });
+
+    // Adicionar listener específico para o filtro de data
+    const dateFilter = this.container.querySelector('#date-filter');
+    const customDateFilter = this.container.querySelector('#custom-date-filter');
+
+    if (dateFilter && customDateFilter) {
+      dateFilter.addEventListener('change', () => {
+        if (dateFilter.value === 'custom') {
+          customDateFilter.classList.remove('hidden');
+        } else {
+          customDateFilter.classList.add('hidden');
+        }
+      });
+
+      customDateFilter.addEventListener('change', () => {
+        this.filters.customDate = customDateFilter.value;
+        this.handleSearch();
+      });
+    }
+
+    // Adiciona tratamento especial para dispositivos móveis
+    if (window.innerWidth <= 480) {
+      // Fecha o menu de filtros ao tocar fora
+      document.addEventListener('touchstart', (e) => {
+        if (this.filterMenu.classList.contains('show') &&
+          !this.filterMenu.contains(e.target) &&
+          !this.filterBtn.contains(e.target)) {
+          this.filterMenu.classList.remove('show');
+        }
+      });
+
+      // Adiciona gesto de swipe down para fechar os filtros
+      let touchStartY = 0;
+      let touchEndY = 0;
+
+      this.filterMenu.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+      });
+
+      this.filterMenu.addEventListener('touchmove', (e) => {
+        touchEndY = e.touches[0].clientY;
+        const diffY = touchEndY - touchStartY;
+
+        if (diffY > 50) { // Se arrastar mais de 50px para baixo
+          this.filterMenu.classList.remove('show');
+        }
+      });
+    }
+
+    // Ajusta posição dos resultados baseado no viewport
+    window.addEventListener('resize', () => {
+      if (this.results) {
+        const rect = this.input.getBoundingClientRect();
+        const spaceBelow = window.innerHeight - rect.bottom;
+
+        if (spaceBelow < 300) { // Se houver pouco espaço abaixo
+          this.results.style.maxHeight = `${spaceBelow - 10}px`;
+        } else {
+          this.results.style.maxHeight = '400px';
+        }
+      }
     });
   }
 
@@ -341,11 +482,39 @@ class AnimeSearchBar {
     const genreMatch = !this.filters.genre ||
       anime.genres.some(g => this.normalizeText(g) === this.normalizeText(this.filters.genre));
 
-    const yearMatch = !this.filters.year || (
-      this.filters.year === 'older' ?
-        parseInt(anime.releaseYear) <= 2017 :
-        anime.releaseYear.toString() === this.filters.year
-    );
+    // Nova lógica para filtro de data
+    const dateMatch = !this.filters.date || (() => {
+      if (!anime.releaseDate) return false;
+
+      const releaseDate = new Date(anime.releaseDate);
+      const today = new Date();
+      const currentYear = today.getFullYear();
+      const currentMonth = today.getMonth();
+
+      switch (this.filters.date) {
+        case 'this_season':
+          // Considera a temporada atual (3 meses)
+          const seasonStart = new Date(today.setMonth(currentMonth - currentMonth % 3));
+          return releaseDate >= seasonStart;
+
+        case 'this_year':
+          return releaseDate.getFullYear() === currentYear;
+
+        case 'last_year':
+          return releaseDate.getFullYear() === currentYear - 1;
+
+        case 'older':
+          return releaseDate.getFullYear() <= currentYear - 2;
+
+        case 'custom':
+          if (!this.filters.customDate) return true;
+          const customDate = new Date(this.filters.customDate);
+          return releaseDate >= customDate;
+
+        default:
+          return true;
+      }
+    })();
 
     const statusMatch = !this.filters.status ||
       this.normalizeText(anime.status) === this.normalizeText(this.filters.status);
@@ -359,7 +528,7 @@ class AnimeSearchBar {
     const sourceMatch = !this.filters.source ||
       (anime.source && this.normalizeText(anime.source) === this.normalizeText(this.filters.source));
 
-    return genreMatch && yearMatch && statusMatch &&
+    return genreMatch && dateMatch && statusMatch &&
       seasonMatch && ratingMatch && sourceMatch;
   }
 
@@ -390,6 +559,11 @@ class AnimeSearchBar {
    * @param {Object} anime - Dados do anime a ser exibido
    */
   createResultItem(anime) {
+    const releaseDate = anime.releaseDate ? new Date(anime.releaseDate).toLocaleDateString('pt-BR', {
+      month: 'short',
+      year: 'numeric'
+    }) : 'N/A';
+
     return `
       <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
          class="search-result-item">
@@ -399,7 +573,7 @@ class AnimeSearchBar {
         <div class="search-result-info">
           <div class="search-result-title">${anime.primaryTitle}</div>
           <div class="search-result-metadata">
-            ${anime.releaseYear} • ⭐ ${anime.score || 'N/A'}
+            ${releaseDate} • ⭐ ${anime.score || 'N/A'}
           </div>
         </div>
       </a>

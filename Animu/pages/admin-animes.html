@@ -62,7 +62,7 @@
 
   <!-- Modal do formulário -->
   <div id="animeModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="admin-form-container p-6 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+    <div class="admin-form-container scrollbar-thin p-6 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
       <!-- Adicionar botão de fechar -->
       <div class="flex justify-between items-center mb-4">
         <h2 id="modalTitle" class="text-2xl font-bold">Adicionar Novo Anime</h2>
@@ -190,8 +190,10 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium mb-1">Ano</label>
-                <input type="number" id="seasonYear" min="1960" max="2030" class="w-full p-2 border rounded">
+                <label class="block text-sm font-medium mb-1">Data de Lançamento</label>
+                <input type="date" id="releaseDate" 
+                       class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                       min="1960-01-01">
               </div>
             </div>
 
@@ -216,8 +218,12 @@
               <label class="block text-sm font-medium mb-1">Trailer do Anime</label>
               <div id="trailerDropzone" class="drop-zone border-2 border-dashed rounded-lg p-4 text-center cursor-pointer relative">
                 <div class="drop-zone-prompt">
-                  <p>Arraste um vídeo ou cole a URL do YouTube</p>
-                  <p class="text-sm text-gray-500">Formatos suportados: MP4 ou URL do YouTube</p>
+                  <p>Arraste um vídeo, cole a URL do YouTube ou clique para selecionar</p>
+                  <p class="text-sm text-gray-500">Cole uma URL do YouTube ou selecione um arquivo de vídeo</p>
+                  <input type="text" 
+                         placeholder="Cole a URL do YouTube aqui" 
+                         class="mt-2 p-2 w-full border rounded text-center"
+                         id="trailerUrlInput">
                 </div>
                 <div id="trailerPreview" class="hidden max-w-full"></div>
                 <button type="button" id="removeTrailer" class="remove-media-btn hidden" title="Remover vídeo">✕</button>
@@ -300,6 +306,7 @@
   <script src="../src/js/navbar.js"></script>
   <script src="../src/js/animu.js"></script>
   <script src="../src/js/search.js"></script>
+  <script src="../src/js/category.js"></script>
   <script src="../src/js/admin-animes.js"></script>
 </body>
 

@@ -72,6 +72,13 @@ function renderAnimeDetails(anime) {
 
   const embedUrl = getYouTubeEmbedUrl(anime.trailerUrl);
 
+  // Formatar a data de lançamento
+  const releaseDate = anime.releaseDate ? new Date(anime.releaseDate).toLocaleDateString('pt-BR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }) : 'Não informado';
+
   container.innerHTML = `
     <div class="anime-header flex flex-col md:flex-row gap-4">
       <img src="${anime.coverImage}" alt="${anime.primaryTitle}" class="cover-image w-full md:w-1/3 rounded-lg shadow-md">
@@ -137,6 +144,10 @@ function renderAnimeDetails(anime) {
           <div class="detail-item">
             <span class="detail-label font-semibold">Popularidade:</span>
             <span>${anime.popularityRank ? `#${anime.popularityRank} (${anime.popularity} pontos)` : 'Não avaliado'}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label font-semibold">Data de Lançamento:</span>
+            <span>${releaseDate}</span>
           </div>
         </div>
       </div>
@@ -287,7 +298,7 @@ function renderAllAnimes() {
         '<div class="featured-badge">🆕 Em breve</div>' :
         anime.score >= 8 ? '<div class="featured-badge">⭐ Destaque</div>' : ''
     }
-          <div class="score-badge ${anime.score >= 8 ? 'pulse-effect' : ''}">${anime.score || 'N/A'}</div>
+          <div class="score-badge ${anime.score >= 8 ? 'pulse-effect' : ''}">${anime.score >= 0 ? '⭐ ' : ''}${anime.score || 'N/A'}</div>
           <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
              class="block relative">
             <img src="${anime.coverImage}" 
@@ -307,7 +318,7 @@ function renderAllAnimes() {
               <div class="mt-2 flex items-center gap-2">
                 <span>💬 ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}</span>
                 <span>📺 ${anime.episodes} eps</span>
-                <span>📆 ${anime.releaseYear}</span>
+                <span>📅 ${new Date(anime.releaseDate).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}</span>
               </div>
             </div>
           </a>
@@ -908,20 +919,32 @@ function renderSearchResults(query) {
         <p>Nenhum anime encontrado para sua busca.</p>
       </div>
     ` : `
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="anime-grid">
         ${results.map(anime => `
-          <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
-             class="anime-card rounded-lg shadow-md overflow-hidden block hover:shadow-lg transition-shadow">
-            <img src="${anime.coverImage}" alt="${anime.primaryTitle}" class="w-full h-64 object-cover">
-            <div class="p-4">
-              <h2 class="text-xl font-semibold mb-2">${anime.primaryTitle}</h2>
-              <div class="genres mb-2">
-                ${anime.genres.map(genre =>
-    `<span class="genre-tag">${genre}</span>`
-  ).join('')}
+          <div class="anime-card rounded-lg shadow-lg overflow-hidden">
+            ${anime.score >= 8 ? '<div class="featured-badge">⭐ Destaque</div>' : ''}
+            <div class="score-badge ${anime.score >= 8 ? 'pulse-effect' : ''}">${anime.score >= 0 ? '⭐ ' : ''}${anime.score || 'N/A'}</div>
+            <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
+               class="block relative">
+              <img src="${anime.coverImage}" 
+                   alt="${anime.primaryTitle}" 
+                   class="w-full h-[350px] object-cover">
+              <div class="content-overlay">
+                <h2 class="text-xl font-bold mb-2">${anime.primaryTitle}</h2>
+                <p class="text-sm mb-2 line-clamp-2">${anime.synopsis}</p>
+                <div class="flex flex-wrap gap-2">
+                  ${anime.genres.map(genre =>
+                    `<span class="genre-tag text-xs">${genre}</span>`
+                  ).join('')}
+                </div>
+                <div class="mt-2 flex items-center gap-2">
+                  <span>💬 ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}</span>
+                  <span>📺 ${anime.episodes} eps</span>
+                  <span>📅 ${new Date(anime.releaseDate).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}</span>
+                </div>
               </div>
-            </div>
-          </a>
+            </a>
+          </div>
         `).join('')}
       </div>
     `}
