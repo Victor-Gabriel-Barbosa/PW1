@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupMediaRemoval(); // Adicione esta linha
   initializeCategorySelector();
   setupDateInput();
+  updateFormProgress(); // Atualização inicial
 });
 
 // Carrega lista de animes
@@ -569,6 +570,11 @@ function setupDropZone(dropzoneId, inputId, urlInputId, previewId, dropHandler) 
       // Tenta pegar o texto arrastado (URL)
       const text = dt.getData('text');
       if (text) {
+        // Se for o dropzone do MAL
+        if (dropzoneId === 'malUrlDropzone') {
+          document.getElementById('malUrl').value = text;
+          return;
+        }
         dropHandler(text, urlInput, document.getElementById(previewId));
       }
     }
@@ -579,6 +585,11 @@ function setupDropZone(dropzoneId, inputId, urlInputId, previewId, dropHandler) 
     e.preventDefault();
     const text = e.clipboardData.getData('text');
     if (text) {
+      // Se for o dropzone do MAL
+      if (dropzoneId === 'malUrlDropzone') {
+        document.getElementById('malUrl').value = text;
+        return;
+      }
       dropHandler(text, urlInput, document.getElementById(previewId));
     }
   });
@@ -853,3 +864,480 @@ function setupDateInput() {
     dateInput.value = today;
   }
 }
+
+// Limpa todos os campos do formulário
+function clearAnimeForm() {
+  if (confirm('Tem certeza que deseja limpar todos os campos do formulário?')) {
+    document.getElementById('animeForm').reset();
+    
+    // Limpar arrays
+    alternativeTitles = [];
+    genres = [];
+    producers = [];
+    licensors = [];
+    
+    // Limpar previews e valores dos campos de imagem e trailer
+    const coverPreview = document.getElementById('coverImagePreview');
+    const coverPrompt = coverPreview.previousElementSibling;
+    const removeCoverBtn = document.getElementById('removeCoverImage');
+    
+    coverPreview.src = '';
+    coverPreview.classList.add('hidden');
+    coverPrompt.classList.remove('hidden');
+    removeCoverBtn.classList.add('hidden');
+    document.getElementById('coverImage').value = '';
+    
+    const trailerPreview = document.getElementById('trailerPreview');
+    const trailerPrompt = trailerPreview.previousElementSibling;
+    const removeTrailerBtn = document.getElementById('removeTrailer');
+    
+    trailerPreview.innerHTML = '';
+    trailerPreview.classList.add('hidden');
+    trailerPrompt.classList.remove('hidden');
+    removeTrailerBtn.classList.add('hidden');
+    document.getElementById('trailerUrl').value = '';
+    
+    // Atualizar todas as listas
+    updateAlternativeTitlesList();
+    updateGenresList();
+    updateProducersList();
+    updateLicensorsList();
+  }
+}
+
+// Atualiza a barra de progresso do formulário
+function updateFormProgress() {
+  const form = document.getElementById('animeForm');
+  const requiredFields = form.querySelectorAll('[required]');
+  const totalFields = requiredFields.length + 1; // +1 para gêneros
+  let filledFields = 0;
+
+  // Verifica campos obrigatórios
+  requiredFields.forEach(field => {
+    if (field.value.trim() !== '') {
+      filledFields++;
+    }
+  });
+
+  // Verifica se há pelo menos um gênero
+  if (genres.length > 0) {
+    filledFields++;
+  }
+
+  const progress = (filledFields / totalFields) * 100;
+  const progressBar = document.getElementById('formProgress');
+  
+  // Atualiza a largura da barra
+  progressBar.style.width = `${progress}%`;
+  
+  // Atualiza a cor baseado no progresso
+  if (progress < 33) {
+    progressBar.style.background = 'var(--error-color, #EF4444)';
+  } else if (progress < 66) {
+    progressBar.style.background = 'var(--warning-color, #F59E0B)';
+  } else {
+    progressBar.style.background = 'var(--success-color, #10B981)';
+  }
+}
+
+// Adiciona listeners para todos os eventos que podem modificar o formulário
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('animeForm');
+  
+  // Monitora mudanças em inputs, textareas e selects
+  form.querySelectorAll('input, textarea, select').forEach(element => {
+    element.addEventListener('input', updateFormProgress);
+    element.addEventListener('change', updateFormProgress);
+  });
+
+  // Monitora mudanças nos arrays de dados
+  const originalPush = Array.prototype.push;
+  const arrays = [alternativeTitles, genres, producers, licensors];
+  
+  arrays.forEach(array => {
+    array.push = function(...args) {
+      originalPush.apply(this, args);
+      updateFormProgress();
+    };
+  });
+
+  // Adiciona listeners para os botões de remoção
+  const removeButtons = ['removeCoverImage', 'removeTrailer'];
+  removeButtons.forEach(btnId => {
+    const btn = document.getElementById(btnId);
+    if (btn) {
+      btn.addEventListener('click', updateFormProgress);
+    }
+  });
+
+  // Atualização inicial
+  updateFormProgress();
+});
+
+// Preenche automaticamente o formulário usando a API do MyAnimeList
+async function autoFillFromMal() {
+  const malUrl = document.getElementById('malUrl').value.trim();
+  let animeId;
+
+  // Aceita vários formatos de URL ou ID direto
+  if (malUrl.match(/^\d+$/)) {
+    animeId = malUrl;
+  } else {
+    animeId = malUrl.match(/(?:myanimelist\.net\/anime\/)?(\d+)/)?.[1];
+  }
+  
+  if (!animeId) {
+    alert('URL ou ID do MyAnimeList inválido. Use o formato https://myanimelist.net/anime/ID ou apenas o ID.');
+    return;
+  }
+
+  try {
+    const response = await fetch(`https://api.jikan.moe/v4/anime/${animeId}`);
+    const data = await response.json();
+    const anime = data.data;
+
+    // Preenche os campos básicos (mantém o código existente)
+    document.getElementById('primaryTitle').value = anime.title;
+    document.getElementById('coverImage').value = anime.images.jpg.large_image_url;
+    document.getElementById('synopsis').value = anime.synopsis;
+    document.getElementById('episodes').value = anime.episodes;
+    document.getElementById('episodeDuration').value = anime.duration?.match(/\d+/)?.[0] || '';
+    document.getElementById('status').value = translateStatus(anime.status);
+    document.getElementById('studio').value = anime.studios[0]?.name || '';
+
+    // Determina a fonte original
+    let source = translateSource(anime.source);
+    document.getElementById('source').value = source;
+
+    // Preenche produtores
+    producers = [];
+    anime.producers.forEach(producer => {
+      if (producer.name) {
+        producers.push(producer.name);
+      }
+    });
+    updateProducersList();
+
+    // Preenche licenciadores
+    licensors = [];
+    anime.licensors.forEach(licensor => {
+      if (licensor.name) {
+        licensors.push(licensor.name);
+      }
+    });
+    updateLicensorsList();
+
+    // Preenche o trailer se disponível
+    if (anime.trailer?.youtube_id) {
+      const trailerUrl = `https://www.youtube.com/embed/${anime.trailer.youtube_id}`;
+      document.getElementById('trailerUrl').value = trailerUrl;
+      handleYoutubeUrl(trailerUrl, document.getElementById('trailerUrl'), document.getElementById('trailerPreview'));
+    }
+
+    // Adiciona títulos alternativos
+    alternativeTitles = [];
+    if (anime.title_japanese) {
+      alternativeTitles.push({ title: anime.title_japanese, type: 'japonês' });
+    }
+    if (anime.title_english && anime.title_english !== anime.title) {
+      alternativeTitles.push({ title: anime.title_english, type: 'inglês' });
+    }
+    updateAlternativeTitlesList();
+
+    // Limpa gêneros existentes antes de adicionar novos
+    genres = [];
+    updateGenresList();
+
+    // Adiciona gêneros
+    anime.genres.forEach(genre => {
+      const translatedGenre = translateGenre(genre.name);
+      if (!genres.includes(translatedGenre)) {
+        genres.push(translatedGenre);
+      }
+    });
+    updateGenresList();
+
+    // Preenche a data de lançamento
+    if (anime.aired?.from) {
+      const releaseDate = new Date(anime.aired.from).toISOString().split('T')[0];
+      document.getElementById('releaseDate').value = releaseDate;
+    }
+
+    // Adiciona a tradução da classificação etária
+    document.getElementById('ageRating').value = translateRating(anime.rating);
+
+    // Adiciona a tradução da temporada
+    document.getElementById('seasonPeriod').value = translateSeason(anime.season);
+
+    // Atualiza previews
+    updateCoverImagePreview();
+    updateFormProgress();
+
+  } catch (error) {
+    console.error('Erro ao buscar dados:', error);
+    alert('Erro ao buscar dados do anime. Tente novamente mais tarde.');
+  }
+}
+
+// Traduz status do inglês para português
+function translateStatus(status) {
+  const statusMap = {
+    'Currently Airing': 'Em Exibição',
+    'Finished Airing': 'Finalizado',
+    'Not yet aired': 'Anunciado'
+  };
+  return statusMap[status] || status;
+}
+
+// Traduz gêneros do inglês para português
+function translateGenre(genre) {
+  const genreMap = {
+    'Action': 'Ação',
+    'Adventure': 'Aventura',
+    'Comedy': 'Comédia',
+    'Drama': 'Drama',
+    'Fantasy': 'Fantasia',
+    'Science Fiction': 'Ficção Científica',
+    'Romance': 'Romance',
+    'Slice of Life': 'Slice of Life',
+    'Sports': 'Esportes',
+    'Supernatural': 'Sobrenatural'
+  };
+  return genreMap[genre] || genre;
+}
+
+// Adiciona validação em tempo real
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('animeForm');
+  const inputs = form.querySelectorAll('input, textarea, select');
+
+  inputs.forEach(input => {
+    input.addEventListener('input', updateFormProgress);
+    
+    // Adiciona validação visual
+    input.addEventListener('blur', () => {
+      if (input.hasAttribute('required')) {
+        if (!input.value.trim()) {
+          input.classList.add('border-red-500');
+        } else {
+          input.classList.remove('border-red-500');
+          input.classList.add('border-green-500');
+        }
+      }
+    });
+  });
+
+  // Habilita arrastar e soltar para imagens e vídeos
+  enableDragAndDrop('coverImageDropzone', 'coverImage', 'image/*');
+  enableDragAndDrop('trailerDropzone', 'trailerUrl', 'video/*');
+});
+
+// Configuração de drag and drop para arquivos
+function enableDragAndDrop(dropzoneId, inputId, acceptedTypes) {
+  const dropzone = document.getElementById(dropzoneId);
+  
+  dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.classList.add('dragover');
+  });
+
+  dropzone.addEventListener('dragleave', () => {
+    dropzone.classList.remove('dragover');
+  });
+
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('dragover');
+    
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.match(acceptedTypes)) {
+      handleFileUpload(file, inputId);
+    }
+  });
+}
+
+// Função auxiliar para lidar com upload de arquivos
+function handleFileUpload(file, inputId) {
+  // Aqui você implementaria a lógica de upload do arquivo
+  // Por exemplo, usando FormData e fetch para enviar ao servidor
+  console.log(`Upload do arquivo ${file.name} para o campo ${inputId}`);
+  
+  // Preview temporário
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    document.getElementById(inputId).value = e.target.result;
+    updatePreview(inputId);
+  };
+  reader.readAsDataURL(file);
+}
+
+function updateCoverImagePreview() {
+  const coverImage = document.getElementById('coverImage').value;
+  const coverPreview = document.getElementById('coverImagePreview');
+  const coverPrompt = coverPreview.previousElementSibling;
+  const removeCoverBtn = document.getElementById('removeCoverImage');
+
+  if (coverImage) {
+    coverPreview.src = coverImage;
+    coverPreview.classList.remove('hidden');
+    coverPrompt.classList.add('hidden');
+    removeCoverBtn.classList.remove('hidden');
+  } else {
+    coverPreview.src = '';
+    coverPreview.classList.add('hidden');
+    coverPrompt.classList.remove('hidden');
+    removeCoverBtn.classList.add('hidden');
+  }
+}
+
+// Modifica a função autoFillFromMal para usar async/await corretamente
+async function autoFillFromMal() {
+  const malUrl = document.getElementById('malUrl').value;
+  const animeId = malUrl.match(/anime\/(\d+)/)?.[1];
+  
+  if (!animeId) {
+    alert('URL do MyAnimeList inválida');
+    return;
+  }
+
+  try {
+    const response = await fetch(`https://api.jikan.moe/v4/anime/${animeId}`);
+    const data = await response.json();
+    const anime = data.data;
+
+    // Preenche os campos automaticamente
+    document.getElementById('primaryTitle').value = anime.title;
+    document.getElementById('coverImage').value = anime.images.jpg.large_image_url;
+    document.getElementById('synopsis').value = anime.synopsis;
+    document.getElementById('episodes').value = anime.episodes;
+    document.getElementById('episodeDuration').value = anime.duration?.match(/\d+/)?.[0] || '';
+    document.getElementById('status').value = translateStatus(anime.status);
+    document.getElementById('studio').value = anime.studios[0]?.name || '';
+
+    // Determina a fonte original
+    let source = translateSource(anime.source);
+    document.getElementById('source').value = source;
+
+    // Preenche produtores
+    producers = [];
+    anime.producers.forEach(producer => {
+      if (producer.name) {
+        producers.push(producer.name);
+      }
+    });
+    updateProducersList();
+
+    // Preenche licenciadores
+    licensors = [];
+    anime.licensors.forEach(licensor => {
+      if (licensor.name) {
+        licensors.push(licensor.name);
+      }
+    });
+    updateLicensorsList();
+
+    // Preenche o trailer se disponível
+    if (anime.trailer?.youtube_id) {
+      const trailerUrl = `https://www.youtube.com/embed/${anime.trailer.youtube_id}`;
+      document.getElementById('trailerUrl').value = trailerUrl;
+      handleYoutubeUrl(trailerUrl, document.getElementById('trailerUrl'), document.getElementById('trailerPreview'));
+    }
+
+    // Adiciona títulos alternativos
+    alternativeTitles = [];
+    if (anime.title_japanese) {
+      alternativeTitles.push({ title: anime.title_japanese, type: 'japonês' });
+    }
+    if (anime.title_english && anime.title_english !== anime.title) {
+      alternativeTitles.push({ title: anime.title_english, type: 'inglês' });
+    }
+    updateAlternativeTitlesList();
+
+    // Limpa gêneros existentes antes de adicionar novos
+    genres = [];
+    updateGenresList();
+
+    // Adiciona gêneros
+    anime.genres.forEach(genre => {
+      const translatedGenre = translateGenre(genre.name);
+      if (!genres.includes(translatedGenre)) {
+        genres.push(translatedGenre);
+      }
+    });
+    updateGenresList();
+
+    // Preenche a data de lançamento
+    if (anime.aired?.from) {
+      const releaseDate = new Date(anime.aired.from).toISOString().split('T')[0];
+      document.getElementById('releaseDate').value = releaseDate;
+    }
+
+    // Atualiza previews
+    updateCoverImagePreview();
+    updateFormProgress();
+
+  } catch (error) {
+    console.error('Erro ao buscar dados:', error);
+    alert('Erro ao buscar dados do anime. Tente novamente mais tarde.');
+  }
+}
+
+// Adicione esta nova função de tradução de fonte
+function translateSource(source) {
+  const sourceMap = {
+    'Manga': 'Manga',
+    'Light Novel': 'Light Novel',
+    'Original': 'Original',
+    'Visual Novel': 'Visual Novel',
+    'Game': 'Game',
+    'Other': 'Other',
+    'Novel': 'Light Novel',
+    'Web manga': 'Manga',
+    '4-koma manga': 'Manga',
+    'Book': 'Other',
+    'Picture book': 'Other',
+    'Card game': 'Game',
+    'Mixed media': 'Other'
+  };
+  return sourceMap[source] || 'Other';
+}
+
+// Adicione estas funções de tradução
+function translateRating(rating) {
+  const ratingMap = {
+    'G - All Ages': 'Livre',
+    'PG - Children': '10+',
+    'PG-13 - Teens 13 or older': '12+',
+    'R - 17+ (violence & profanity)': '16+',
+    'R+ - Mild Nudity': '16+',
+    'Rx - Hentai': '18+'
+  };
+  return ratingMap[rating] || 'Livre';
+}
+
+function translateSeason(season) {
+  const seasonMap = {
+    'winter': 'Inverno',
+    'spring': 'Primavera',
+    'summer': 'Verão',
+    'fall': 'Outono'
+  };
+  return seasonMap[season?.toLowerCase()] || 'Inverno';
+}
+
+// Adicione um evento de entrada direta para o campo malUrl
+document.addEventListener('DOMContentLoaded', function() {
+  const malUrlInput = document.getElementById('malUrl');
+  if (malUrlInput) {
+    malUrlInput.addEventListener('input', function(e) {
+      const url = e.target.value.trim();
+      if (url && !url.startsWith('https://myanimelist.net/anime/')) {
+        // Tenta extrair e formatar a URL do MAL
+        const malId = url.match(/(?:anime\/)?(\d+)/)?.[1];
+        if (malId) {
+          e.target.value = `https://myanimelist.net/anime/${malId}`;
+        }
+      }
+    });
+  }
+});

@@ -42,6 +42,11 @@ function initThemeSystem() {
   const themeOptions = document.querySelectorAll('.theme-option');
   const body = document.body;
 
+  // Se os elementos do tema não existirem, retorne sem fazer nada
+  if (!themeDropdownBtn || !themeMenu) {
+    return;
+  }
+
   // Ícones para cada tema
   const themeIcons = {
     system: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -60,6 +65,7 @@ function initThemeSystem() {
 
   // Função para atualizar o ícone do botão
   function updateThemeIcon(theme) {
+    if (!themeDropdownBtn) return;
     const icon = themeIcons[theme] || themeIcons.system;
     themeDropdownBtn.innerHTML = icon;
     themeDropdownBtn.querySelector('svg').style.height = '24px';
@@ -68,7 +74,9 @@ function initThemeSystem() {
   // Carrega tema salvo ou usa preferência do sistema
   const savedTheme = localStorage.getItem('theme') || 'system';
   applyTheme(savedTheme);
-  updateActiveTheme(savedTheme);
+  if (themeOptions.length > 0) {
+    updateActiveTheme(savedTheme);
+  }
   updateThemeIcon(savedTheme);
 
   // Toggle do menu dropdown com animação
@@ -350,7 +358,6 @@ function getCategoryDescription(category) {
     'Comedy': 'Diversão e humor',
     'Drama': 'Histórias emocionantes',
     'Fantasy': 'Mundos mágicos',
-    // Adicione mais categorias conforme necessário
   };
   return descriptions[category] || 'Explore mais desta categoria';
 }
@@ -421,7 +428,7 @@ function formatDate(dateStr) {
 window.addEventListener('DOMContentLoaded', () => {
   updateUserInterface();
   renderFeaturedAnimes(); 
-  loadLatestReviews(); // Adiciona esta linha
-  renderPopularCategories(); // Adiciona esta linha
-  renderIndexNews(); // Adiciona esta linha
+  loadLatestReviews();
+  renderPopularCategories(); 
+  renderIndexNews();
 });

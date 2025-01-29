@@ -8,13 +8,64 @@
   left: 8px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
   z-index: 51;
 }
 
+/* Estilos atualizados da Logo */
 .logo-container {
   display: flex;
   align-items: center;
+  margin-left: 4px;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.logo-link:hover {
+  transform: scale(1.05);
+}
+
+.logo-icon {
+  width: 28px;
+  height: 28px;
+  fill: var(--primary-color);
+  animation: logoSpin 20s linear infinite;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+}
+
+@keyframes logoSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Ajustes responsivos */
+@media (max-width: 480px) {
+  .logo-icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .logo-text {
+    font-size: 1.25rem;
+  }
 }
 
 .logo-container a {
@@ -144,22 +195,28 @@ nav .ml-10 a.active {
   overflow-x: hidden;
   scrollbar-width: thin;
   scrollbar-color: var(--primary-color) transparent;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  overflow-x: hidden;
 }
 
 /* Estado recolhido do menu - mais compacto em telas menores */
 .side-menu:not(.open) {
   width: min(65px, 15vw); 
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 65px;
 }
 
 .side-menu:not(.open) .nav-link span,
 .side-menu:not(.open) .admin-section-divider {
   display: none;
+  opacity: 0;
 }
 
 .side-menu:not(.open) .nav-link {
   padding: 12px;
   justify-content: center;
+  width: 65px;
 }
 
 .side-menu:not(.open) .nav-link svg {
@@ -178,6 +235,7 @@ nav .ml-10 a.active {
   overflow: hidden;
   font-size: 0.9rem;
   background: transparent;
+  width: 240px;
 }
 
 /* Novo efeito de hover com gradiente */
@@ -243,6 +301,8 @@ nav .ml-10 a.active {
 /* Efeito no texto */
 .side-menu .nav-link span {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.2s ease;
+  opacity: 1;
 }
 
 .side-menu .nav-link:hover span {
@@ -315,6 +375,7 @@ nav .ml-10 a.active {
 .admin-section-divider {
   padding: 8px 12px;
   font-size: 0.85rem; 
+  transition: opacity 0.2s ease;
 }
 
 .admin-link {
@@ -468,11 +529,17 @@ body.menu-open {
     position: fixed;
     left: 0;
     z-index: 1000;
+    width: 240px;
   }
 
   .side-menu.open {
     transform: translateX(0);
     box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
+    width: 240px;
+  }
+
+  .side-menu:not(.open) {
+    width: 0;
   }
 
   .side-menu-content {

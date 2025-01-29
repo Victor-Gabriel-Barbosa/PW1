@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         .join('');
     }
 
-    // Validar força da senha
+    // Valida força da senha
     validatePasswordStrength(password) {
       const minLength = 8;
       const hasUpperCase = /[A-Z]/.test(password);
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           email,
           password: hashedPassword,
           avatar: avatar, // Armazenar avatar no objeto do usuário
-          isAdmin: false,
+          isAdmin: true,
           createdAt: new Date().toISOString()
         };
 
@@ -396,6 +396,16 @@ document.addEventListener('DOMContentLoaded', async function () {
   const authManager = new AuthManager();
   await authManager.migrateOldPasswords(); // Migra senhas antigas
 
+  // Armazenar a página anterior quando o usuário acessa as páginas de login/registro
+  if (window.location.pathname.includes('signin.html') || window.location.pathname.includes('signup.html')) {
+    const referrer = document.referrer;
+    if (referrer &&
+      !referrer.includes('signin.html') &&
+      !referrer.includes('signup.html')) {
+      sessionStorage.setItem('previousPage', referrer);
+    }
+  }
+
   // Aguarda o DOM estar completamente carregado antes de atualizar o painel
   document.addEventListener('DOMContentLoaded', () => {
     // Atualizar painel de usuário ao carregar página
@@ -421,7 +431,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         );
 
         if (success) {
-          // Mostrar mensagem de sucesso
           const message = document.createElement('div');
           message.className = 'success-message';
           message.textContent = 'Conta criada com sucesso! Redirecionando...';
@@ -440,9 +449,11 @@ document.addEventListener('DOMContentLoaded', async function () {
           `;
           document.body.appendChild(message);
 
-          // Redirecionar após um pequeno delay
+          // Redirecionar para a página anterior ou index.html após o registro
           setTimeout(() => {
-            window.location.href = 'index.html';
+            const previousPage = sessionStorage.getItem('previousPage');
+            sessionStorage.removeItem('previousPage'); // Limpar depois de usar
+            window.location.href = previousPage || 'index.html';
           }, 1500);
         }
       } catch (error) {
@@ -475,7 +486,11 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         await authManager.loginUser(username, password, remember);
         authManager.updateUserPanel();
-        window.location.href = 'index.html';
+
+        // Redirecionar para a página anterior ou index.html
+        const previousPage = sessionStorage.getItem('previousPage');
+        sessionStorage.removeItem('previousPage'); // Limpar depois de usar
+        window.location.href = previousPage || 'index.html';
       } catch (error) {
         authManager.showError(error.message);
       } finally {
@@ -495,12 +510,14 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   // Configurar toggle de visibilidade da senha
   const passwordInput = document.getElementById('password');
-  const passwordToggle = document.querySelector('.password-toggle');
+  const confirmPasswordInput = document.getElementById('confirm-password');
+  const passwordToggles = document.querySelectorAll('.password-toggle');
 
-  if (passwordToggle) {
-    passwordToggle.addEventListener('click', function () {
-      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-      passwordInput.setAttribute('type', type);
+  passwordToggles.forEach(toggle => {
+    toggle.addEventListener('click', function () {
+      const input = this.closest('.password-input-wrapper').querySelector('input');
+      const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+      input.setAttribute('type', type);
 
       // Toggle ícones
       const eyeIcon = this.querySelector('.eye-icon');
@@ -508,5 +525,24 @@ document.addEventListener('DOMContentLoaded', async function () {
       eyeIcon.classList.toggle('hidden');
       eyeOffIcon.classList.toggle('hidden');
     });
+  });
+
+  // Configurar o botão de voltar
+  const backButton = document.getElementById('back-button');
+  if (backButton) {
+    backButton.addEventListener('click', () => {
+      if (document.referrer) {
+        // Verifica se o referrer é uma URL do projeto Animu
+        const referrer = new URL(document.referrer);
+        if (referrer.pathname.includes('/PW_1/Animu/')) {
+          window.history.back();
+        } else {
+          window.location.href = 'index.html';
+        }
+      } else {
+        window.location.href = 'index.html';
+      }
+    });
   }
+
 });

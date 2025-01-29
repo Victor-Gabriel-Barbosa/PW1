@@ -7,11 +7,11 @@
 }
 
 .signup-container {
-  border-radius: 15px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  padding: 25px;
   width: 100%;
-  max-width: 450px;
+  max-width: 400px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   animation: slideUp 0.5s ease-out;
 }
@@ -23,11 +23,11 @@
 
 .signup-title {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .signup-title h1 {
-  font-size: 2.5rem;
+  font-size: 2rem;
   background: var(--primary-gradient);
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -39,8 +39,8 @@
   justify-content: center;
   gap: 10px;
   width: 100%;
-  padding: 14px;
-  font-size: 1.1rem;
+  padding: 12px;
+  font-size: 1rem;
   font-weight: 600;
   background: var(--primary-gradient);
   color: white;
@@ -48,6 +48,7 @@
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
+  margin-top: 0.5rem;
 }
 
 .signup-btn i {
@@ -109,13 +110,13 @@
 .welcome-text {
   color: var(--text-color);
   text-align: center;
-  font-size: 1.1rem;
-  margin-bottom: 2rem;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
   opacity: 0.8;
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   position: relative;
 }
 
@@ -145,11 +146,11 @@
 
 .form-group input {
   width: 100%;
-  padding: 16px;
+  padding: 12px;
   border: 2px solid rgba(138, 43, 226, 0.2);
   background: transparent;
   border-radius: 10px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   transition: all 0.3s ease;
 }
 
@@ -191,8 +192,9 @@
 
 .login-link {
   text-align: center;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   color: var(--text-color);
+  font-size: 0.9rem;
 }
 
 .login-link a {
@@ -221,12 +223,12 @@
 /* Responsividade */
 @media (max-width: 480px) {
   .signup-container {
-    padding: 30px 20px;
-    margin: 20px;
+    padding: 20px 15px;
+    margin: 15px;
   }
 
   .signup-title h1 {
-    font-size: 2rem;
+    font-size: 1.75rem;
   }
 
   .welcome-text {
@@ -238,8 +240,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
 }
 
 .remember-me {
@@ -283,4 +285,54 @@
   .form-group label i {
     font-size: 0.8rem;
   }
+}
+
+.theme-selector {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.theme-dropdown-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.theme-dropdown-btn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 10px;
+  background: var(--card-background);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  z-index: 100;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-button:hover {
+  transform: translateX(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: var(--accent-color);
+  color: white;
+}
+
+.back-button i {
+  font-size: 1.2em;
 }

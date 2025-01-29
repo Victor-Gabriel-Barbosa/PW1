@@ -13,7 +13,12 @@ class Navbar {
         
         <!-- Logo -->
         <div class="logo-container">
-          <a href="index.html" class="text-2xl font-bold text-purple-600">Animu</a>
+          <a href="index.html" class="logo-link">
+            <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5.5-2.5l7.51-3.49L17.5 6.5 9.99 9.99 6.5 17.5zm5.5-6.6c.61 0 1.1.49 1.1 1.1s-.49 1.1-1.1 1.1-1.1-.49-1.1-1.1.49-1.1 1.1-1.1z"/>
+            </svg>
+            <span class="logo-text">Animu</span>
+          </a>
         </div>
       </div>
 
@@ -21,7 +26,7 @@ class Navbar {
         <div class="container mx-auto px-4">
           <div class="flex items-center justify-between h-16">
             <!-- Espaço reservado para o menu e logo -->
-            <div class="w-36"></div>
+            <div class="w-40"></div>
 
             <!-- Barra de pesquisa -->
             <div class="flex-1 max-w-xl mx-4" id="search-area">
@@ -42,7 +47,7 @@ class Navbar {
                 ${this.getUserPanel()}
               </div>
 
-              <!-- Substituir o botão de tema por um dropdown -->
+              <!-- Dropdown do seletor de temas -->
               <div class="theme-selector">
                 <button id="theme-dropdown-btn" class="theme-dropdown-btn" title="Personalizar tema">
                   <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24">

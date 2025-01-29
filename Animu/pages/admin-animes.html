@@ -62,7 +62,8 @@
 
   <!-- Modal do formulário -->
   <div id="animeModal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="admin-form-container scrollbar-thin p-6 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+    <div
+      class="admin-form-container scrollbar-thin p-6 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
       <!-- Adicionar botão de fechar -->
       <div class="flex justify-between items-center mb-4">
         <h2 id="modalTitle" class="text-2xl font-bold">Adicionar Novo Anime</h2>
@@ -74,6 +75,34 @@
       </div>
       <!-- Resto do formulário -->
       <form id="animeForm" class="space-y-4">
+        <!-- Barra de progresso do formulário -->
+        <div class="progress-bar">
+          <div class="progress-fill" id="formProgress"></div>
+        </div>
+
+        <!-- Guia rápido -->
+        <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg mb-4">
+          <h3 class="text-sm font-semibold mb-2">Dicas de preenchimento:</h3>
+          <ul class="text-sm space-y-1">
+            <li>• Cole a URL do MyAnimeList para preenchimento automático</li>
+            <li>• Arraste imagens diretamente para os campos de mídia</li>
+            <li>• Pressione Tab para navegar entre os campos</li>
+          </ul>
+        </div>
+
+        <!-- Campo de URL do MyAnimeList -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-1">URL do MyAnimeList (opcional)</label>
+          <div class="flex gap-2">
+            <input type="text" id="malUrl" placeholder="https://myanimelist.net/anime/... ou ID"
+              class="flex-1 p-2 border rounded">
+            <button type="button" onclick="autoFillFromMal()"
+              class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+              Preencher
+            </button>
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Informações básicas -->
           <div class="space-y-4">
@@ -81,23 +110,23 @@
               <label class="block text-sm font-medium mb-1">
                 Título Principal <span class="text-red-500">*</span>
               </label>
-              <input type="text" id="primaryTitle" required 
-                     class="w-full p-2 border rounded"
-                     minlength="2"
-                     maxlength="100">
+              <input type="text" id="primaryTitle" required class="w-full p-2 border rounded" minlength="2"
+                maxlength="100">
             </div>
 
             <div>
               <label class="block text-sm font-medium mb-1">
                 Imagem de Capa <span class="text-red-500">*</span>
               </label>
-              <div id="coverImageDropzone" class="drop-zone border-2 border-dashed rounded-lg p-4 text-center cursor-pointer relative">
+              <div id="coverImageDropzone"
+                class="drop-zone border-2 border-dashed rounded-lg p-4 text-center cursor-pointer relative">
                 <div class="drop-zone-prompt">
                   <p>Arraste uma imagem ou clique para selecionar</p>
                   <p class="text-sm text-gray-500">Formatos suportados: JPG, PNG, WebP</p>
                 </div>
                 <img id="coverImagePreview" class="hidden max-h-48 mx-auto">
-                <button type="button" id="removeCoverImage" class="remove-media-btn hidden" title="Remover imagem">✕</button>
+                <button type="button" id="removeCoverImage" class="remove-media-btn hidden"
+                  title="Remover imagem">✕</button>
                 <input type="url" id="coverImage" class="hidden">
                 <input type="file" id="coverImageInput" class="hidden" accept="image/*">
               </div>
@@ -107,10 +136,8 @@
               <label class="block text-sm font-medium mb-1">
                 Sinopse <span class="text-red-500">*</span>
               </label>
-              <textarea id="synopsis" rows="4" required 
-                        class="w-full p-2 border rounded"
-                        minlength="10"
-                        maxlength="2000"></textarea>
+              <textarea id="synopsis" rows="4" required class="w-full p-2 border rounded" minlength="10"
+                maxlength="2000"></textarea>
             </div>
 
             <div>
@@ -191,9 +218,9 @@
 
               <div>
                 <label class="block text-sm font-medium mb-1">Data de Lançamento</label>
-                <input type="date" id="releaseDate" 
-                       class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                       min="1960-01-01">
+                <input type="date" id="releaseDate"
+                  class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  min="1960-01-01">
               </div>
             </div>
 
@@ -202,8 +229,8 @@
                 Gêneros <span class="text-red-500">*</span>
               </label>
               <div class="flex gap-2 mb-2">
-                <input type="text" id="genreInput" placeholder="Digite um gênero"
-                  class="flex-1 p-2 border rounded">
+                <input type="text" id="genreInput" placeholder="Digite um gênero" class="flex-1 p-2 border rounded"
+                  list="genresSuggestions">
                 <button type="button" onclick="addGenre()"
                   class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
                   +
@@ -216,17 +243,17 @@
 
             <div>
               <label class="block text-sm font-medium mb-1">Trailer do Anime</label>
-              <div id="trailerDropzone" class="drop-zone border-2 border-dashed rounded-lg p-4 text-center cursor-pointer relative">
+              <div id="trailerDropzone"
+                class="drop-zone border-2 border-dashed rounded-lg p-4 text-center cursor-pointer relative">
                 <div class="drop-zone-prompt">
                   <p>Arraste um vídeo, cole a URL do YouTube ou clique para selecionar</p>
                   <p class="text-sm text-gray-500">Cole uma URL do YouTube ou selecione um arquivo de vídeo</p>
-                  <input type="text" 
-                         placeholder="Cole a URL do YouTube aqui" 
-                         class="mt-2 p-2 w-full border rounded text-center"
-                         id="trailerUrlInput">
+                  <input type="text" placeholder="Cole a URL do YouTube aqui"
+                    class="mt-2 p-2 w-full border rounded text-center" id="trailerUrlInput">
                 </div>
                 <div id="trailerPreview" class="hidden max-w-full"></div>
-                <button type="button" id="removeTrailer" class="remove-media-btn hidden" title="Remover vídeo">✕</button>
+                <button type="button" id="removeTrailer" class="remove-media-btn hidden"
+                  title="Remover vídeo">✕</button>
                 <input type="url" id="trailerUrl" class="hidden">
                 <input type="file" id="trailerInput" class="hidden" accept="video/*">
               </div>
@@ -237,7 +264,7 @@
                 <label class="block text-sm font-medium mb-1">
                   Estúdio <span class="text-red-500">*</span>
                 </label>
-                <input type="text" id="studio" class="w-full p-2 border rounded" required>
+                <input type="text" id="studio" class="w-full p-2 border rounded" required list="studiosSuggestions">
               </div>
 
               <div>
@@ -290,6 +317,10 @@
 
         <!-- Botões do formulário -->
         <div class="flex justify-end gap-4 mt-6">
+          <button type="button" onclick="clearAnimeForm()"
+            class="px-4 py-2 border rounded hover:bg-gray-100 dark:hover:bg-gray-700">
+            Limpar
+          </button>
           <button type="button" onclick="closeAnimeForm()"
             class="px-4 py-2 border rounded hover:bg-gray-100 dark:hover:bg-gray-700">
             Cancelar
@@ -301,6 +332,32 @@
       </form>
     </div>
   </div>
+
+  <!-- Template para sugestões de gêneros -->
+  <datalist id="genresSuggestions">
+    <option value="Ação">
+    <option value="Aventura">
+    <option value="Comédia">
+    <option value="Drama">
+    <option value="Fantasia">
+    <option value="Ficção Científica">
+    <option value="Romance">
+    <option value="Slice of Life">
+    <option value="Esportes">
+    <option value="Sobrenatural">
+  </datalist>
+
+  <!-- Template para sugestões de estúdios -->
+  <datalist id="studiosSuggestions">
+    <option value="Toei Animation">
+    <option value="Studio Ghibli">
+    <option value="Madhouse">
+    <option value="Kyoto Animation">
+    <option value="A-1 Pictures">
+    <option value="MAPPA">
+    <option value="ufotable">
+    <option value="Bones">
+  </datalist>
 
   <!-- Scripts -->
   <script src="../src/js/navbar.js"></script>

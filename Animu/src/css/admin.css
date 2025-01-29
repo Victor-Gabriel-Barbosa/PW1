@@ -814,3 +814,109 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
   }
 }
+
+/* Estilos do Formulário Melhorado */
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--input-border-color);
+  border-radius: 0.5rem;
+  background: var(--background);
+  color: var(--text-color);
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.focus-ring {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.focus-ring:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--primary-color-alpha);
+}
+
+.image-upload-container {
+  border: 2px dashed var(--input-border-color);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.image-upload-container:hover {
+  border-color: var(--primary-color);
+  background: var(--primary-color-alpha);
+}
+
+.image-upload-container.dragover {
+  border-color: var(--primary-color);
+  background: var(--primary-color-alpha);
+  transform: scale(1.01);
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--card-shadow);
+  color: var(--text-color);
+}
+
+.btn-secondary:hover {
+  background: var(--card-shadow-light);
+}
+
+.modal-content {
+  padding: 2rem;
+  border-radius: 1rem;
+  background: var(--background);
+  box-shadow: 0 20px 25px -5px var(--card-shadow),
+              0 8px 10px -6px var(--card-shadow);
+}
+
+/* Melhorias na responsividade do modal */
+@media (max-width: 640px) {
+  .modal-content {
+    padding: 1.5rem;
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  
+  .modal-footer {
+    flex-direction: column-reverse;
+  }
+}

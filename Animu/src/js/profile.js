@@ -386,6 +386,29 @@ function setupEventListeners(user) {
     }
   });
 
+  // Adicionar manipulação de upload de avatar no modal
+  const avatarUploadBtn = document.getElementById('avatar-upload-btn');
+  const avatarInput = document.getElementById('edit-avatar');
+  const previewAvatar = document.getElementById('preview-avatar');
+
+  // Inicializar preview com avatar atual
+  previewAvatar.src = user.avatar || "https://ui-avatars.com/api/?name=" + encodeURIComponent(user.username);
+
+  avatarUploadBtn.addEventListener('click', () => {
+    avatarInput.click();
+  });
+
+  avatarInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        previewAvatar.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
   // Formulário de edição
   editForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -394,6 +417,7 @@ function setupEventListeners(user) {
     const email = document.getElementById('edit-email').value;
     const selectedGenres = Array.from(document.querySelectorAll('input[name="genres"]:checked'))
       .map(checkbox => checkbox.value);
+    const newAvatar = previewAvatar.src;
 
     // Atualiza dados do usuário
     const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
@@ -404,10 +428,16 @@ function setupEventListeners(user) {
         ...users[userIndex],
         displayName,
         email,
-        favoriteGenres: selectedGenres
+        favoriteGenres: selectedGenres,
+        avatar: newAvatar
       };
 
       localStorage.setItem('animuUsers', JSON.stringify(users));
+
+      // Atualizar a sessão com o novo avatar
+      const sessionData = JSON.parse(localStorage.getItem('userSession'));
+      sessionData.avatar = newAvatar;
+      localStorage.setItem('userSession', JSON.stringify(sessionData));
 
       // Atualiza a página
       window.location.reload();
