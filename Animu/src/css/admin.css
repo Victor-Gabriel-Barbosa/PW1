@@ -920,3 +920,30 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     flex-direction: column-reverse;
   }
 }
+
+/* Estilos para os botões de tradução */
+.translation-btn {
+  transition: all 0.2s ease;
+}
+
+.translation-btn:hover {
+  transform: scale(1.1);
+}
+
+.translation-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Animação durante a tradução */
+@keyframes translating {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+textarea:disabled {
+  animation: translating 1.5s infinite;
+  background-color: var(--background);
+  cursor: wait;
+}

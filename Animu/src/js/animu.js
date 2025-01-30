@@ -222,12 +222,76 @@ function getFeaturedAnimes(limit = 8) {
   }
 }
 
+// Função para contar favoritos de um anime
+function countAnimeFavorites(animeTitle) {
+  try {
+    const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+    return users.reduce((count, user) => {
+      if (user.favoriteAnimes && user.favoriteAnimes.includes(animeTitle)) {
+        return count + 1;
+      }
+      return count;
+    }, 0);
+  } catch (e) {
+    console.error('Erro ao contar favoritos:', e);
+    return 0;
+  }
+}
+
+// Adicionar antes da função renderFeaturedAnimes
+
+// Sistema de favoritos
+function isAnimeFavorited(animeTitle) {
+  const sessionData = JSON.parse(localStorage.getItem('userSession'));
+  if (!sessionData) return false;
+
+  const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+  const currentUser = users.find(user => user.id === sessionData.userId);
+
+  return currentUser?.favoriteAnimes?.includes(animeTitle) || false;
+}
+
+// Alterna estado de favorito do anime
+function toggleFavorite(animeTitle) {
+  const sessionData = JSON.parse(localStorage.getItem('userSession'));
+  if (!sessionData) {
+    window.location.href = 'signin.html';
+    return;
+  }
+
+  const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+  const userIndex = users.findIndex(user => user.id === sessionData.userId);
+
+  if (userIndex === -1) return;
+
+  // Inicializa o array de favoritos se não existir
+  if (!users[userIndex].favoriteAnimes) {
+    users[userIndex].favoriteAnimes = [];
+  }
+
+  const isFavorited = users[userIndex].favoriteAnimes.includes(animeTitle);
+
+  if (isFavorited) {
+    // Remove dos favoritos
+    users[userIndex].favoriteAnimes = users[userIndex].favoriteAnimes.filter(
+      title => title !== animeTitle
+    );
+  } else {
+    // Adiciona aos favoritos
+    users[userIndex].favoriteAnimes.push(animeTitle);
+  }
+
+  // Atualiza o localStorage
+  localStorage.setItem('animuUsers', JSON.stringify(users));
+}
+
 // Renderiza seção de animes em destaque
 function renderFeaturedAnimes() {
   const featuredContainer = document.querySelector('.featured-animes');
   if (!featuredContainer) return;
 
   const featuredAnimes = getFeaturedAnimes();
+  const currentUser = JSON.parse(localStorage.getItem('userSession'));
 
   if (featuredAnimes.length === 0) {
     featuredContainer.innerHTML = '<p class="text-center">Nenhum anime em destaque disponível.</p>';
@@ -249,7 +313,7 @@ function renderFeaturedAnimes() {
             <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-4h2v2h-2v-2zm0-2h2V7h-2v7z"/>
             </svg>
-            ${anime.episodes > 0 ? anime.episodes : '?'} eps
+            ${anime.episodes > 0 ? anime.episodes : '?'}
           </span>
         </div>
 
@@ -274,16 +338,42 @@ function renderFeaturedAnimes() {
             </svg>
             ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}
           </span>
-          <span class="meta-item">
-            <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
+          <button 
+            class="meta-item favorite-count ${isAnimeFavorited(anime.primaryTitle) ? 'is-favorited' : ''}"
+            onclick="event.preventDefault(); toggleFavoriteFromCard('${anime.primaryTitle}')"
+            ${!currentUser ? 'title="Faça login para favoritar"' : ''}
+          >
+            <svg class="meta-icon heart-icon" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
-            ${anime.favorites || 0}
-          </span>
+            <span class="favorite-number">${countAnimeFavorites(anime.primaryTitle)}</span>
+          </button>
         </div>
       </div>
     </a>
   `).join('');
+}
+
+// Nova função para gerenciar favoritos a partir do card
+function toggleFavoriteFromCard(animeTitle) {
+  const sessionData = JSON.parse(localStorage.getItem('userSession'));
+  if (!sessionData) {
+    window.location.href = 'signin.html';
+    return;
+  }
+
+  toggleFavorite(animeTitle);
+  
+  // Atualiza o botão específico do card
+  const favoriteBtn = document.querySelector(`[onclick*="${animeTitle}"]`);
+  if (favoriteBtn) {
+    const isFavorited = isAnimeFavorited(animeTitle);
+    favoriteBtn.classList.toggle('is-favorited', isFavorited);
+    const countElement = favoriteBtn.querySelector('.favorite-number');
+    if (countElement) {
+      countElement.textContent = countAnimeFavorites(animeTitle);
+    }
+  }
 }
 
 // Função para carregar os últimos reviews

@@ -1341,3 +1341,114 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+// Traduz a sinopse usando a API do Google Translate
+async function translateSynopsis() {
+  const synopsisElement = document.getElementById('synopsis');
+  const text = synopsisElement.value.trim();
+  
+  if (!text) {
+    alert('Por favor, insira um texto para traduzir.');
+    return;
+  }
+
+  try {
+    // Mostra feedback visual de que está traduzindo
+    synopsisElement.disabled = true;
+    const originalText = synopsisElement.value;
+    synopsisElement.value = 'Traduzindo...';
+
+    // Divide o texto em partes menores
+    const chunks = splitTextIntoChunks(text, 450); // Limite de 450 caracteres por chunk
+    let translatedText = '';
+
+    // Traduz cada parte e combina os resultados
+    for (const chunk of chunks) {
+      const translatedChunk = await translateText(chunk, 'pt');
+      translatedText += translatedChunk + ' ';
+      // Atualiza o progresso na interface
+      synopsisElement.value = 'Traduzindo... ' + 
+        Math.round((chunks.indexOf(chunk) + 1) / chunks.length * 100) + '%';
+    }
+
+    // Remove espaços extras e atualiza o campo
+    synopsisElement.value = translatedText.trim();
+
+    // Adiciona botão para desfazer a tradução
+    const undoButton = document.createElement('button');
+    undoButton.className = 'absolute top-2 right-9 p-1 bg-gray-600 text-white rounded hover:bg-gray-700';
+    undoButton.title = 'Desfazer tradução';
+    undoButton.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
+      </svg>
+    `;
+    undoButton.onclick = () => {
+      synopsisElement.value = originalText;
+      undoButton.remove();
+    };
+
+    // Adiciona o botão após o botão de traduzir
+    const container = synopsisElement.parentElement;
+    const translateButton = container.querySelector('button');
+    container.insertBefore(undoButton, translateButton);
+
+  } catch (error) {
+    console.error('Erro ao traduzir:', error);
+    alert('Erro ao traduzir o texto. Por favor, tente novamente mais tarde.');
+    synopsisElement.value = text; // Restaura o texto original em caso de erro
+  } finally {
+    synopsisElement.disabled = false;
+  }
+}
+
+// Função auxiliar para dividir texto em partes menores
+function splitTextIntoChunks(text, maxLength) {
+  const chunks = [];
+  const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+  let currentChunk = '';
+
+  for (const sentence of sentences) {
+    if ((currentChunk + sentence).length <= maxLength) {
+      currentChunk += sentence;
+    } else {
+      if (currentChunk) chunks.push(currentChunk.trim());
+      currentChunk = sentence;
+    }
+  }
+
+  if (currentChunk) chunks.push(currentChunk.trim());
+  return chunks;
+}
+
+// Função que faz a chamada à API de tradução
+async function translateText(text, targetLang) {
+  try {
+    const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang}`);
+    const data = await response.json();
+    
+    if (data.responseStatus === 200 && data.responseData.translatedText) {
+      // Adiciona um pequeno atraso para evitar sobrecarga da API
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      return data.responseData.translatedText;
+    } else {
+      throw new Error(data.responseDetails || 'Erro na tradução');
+    }
+  } catch (error) {
+    console.error('Erro na tradução:', error);
+    throw error;
+  }
+}
+
+// Função auxiliar para detectar o idioma do texto
+function detectLanguage(text) {
+  // Lista de palavras comuns em japonês (caracteres específicos)
+  const japanesePattern = /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/;
+  
+  // Lista de palavras comuns em português
+  const portugueseWords = /\b(e|ou|mas|porque|que|quando|onde|como|se|para|com|em|no|na|os|as|um|uma)\b/i;
+  
+  if (japanesePattern.test(text)) return 'ja';
+  if (portugueseWords.test(text)) return 'pt';
+  return 'en'; // assume inglês como padrão
+}

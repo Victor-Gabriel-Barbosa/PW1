@@ -211,6 +211,7 @@ function renderAllAnimes() {
   const statusFilter = urlParams.get('status');
   const seasonPeriod = urlParams.get('season');
   const seasonYear = urlParams.get('year');
+  const currentUser = JSON.parse(localStorage.getItem('userSession'));
 
   if (commentsSection) {
     commentsSection.style.display = 'none';
@@ -255,54 +256,49 @@ function renderAllAnimes() {
     ${headerContent || `<h1 class="text-3xl font-bold mb-6">${pageTitle}</h1>`}
     <div class="anime-grid">
       ${filteredAnimes.map(anime => `
-        <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="anime-card">
-          <div class="image-wrapper">
-            <img 
-              src="${anime.coverImage}" 
-              alt="${anime.primaryTitle}" 
-              class="anime-image"
-              onerror="this.src='https://ui-avatars.com/api/?name=Anime&background=8B5CF6&color=fff'">
-            
-            <div class="quick-info">
-              <span class="info-pill">⭐ ${Number(anime.score).toFixed(1)}</span>
-              <span class="info-pill">
-                <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-4h2v2h-2v-2zm0-2h2V7h-2v7z"/>
-                </svg>
-                ${anime.episodes > 0 ? anime.episodes : '?'} eps
-              </span>
-            </div>
-
-            <div class="anime-overlay">
-              <div class="overlay-content">
-                <div class="anime-genres">
-                  ${anime.genres.slice(0, 3).map(genre => 
-                    `<span class="genre-tag">${genre}</span>`
-                  ).join('')}
-                </div>
-                <p class="text-sm mt-2 line-clamp-3">${anime.synopsis || 'Sinopse não disponível.'}</p>
+        <div class="anime-card">
+          <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="anime-card-link">
+            <div class="image-wrapper">
+              <img 
+                src="${anime.coverImage}" 
+                alt="${anime.primaryTitle}" 
+                class="anime-image"
+                onerror="this.src='https://ui-avatars.com/api/?name=Anime&background=8B5CF6&color=fff'">
+              
+              <div class="quick-info">
+                <span class="info-pill">⭐ ${Number(anime.score).toFixed(1)}</span>
+                <span class="info-pill">
+                  <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-4h2v2h-2v-2zm0-2h2V7h-2v7z"/>
+                  </svg>
+                  ${anime.episodes > 0 ? anime.episodes : '?'} eps
+                </span>
               </div>
             </div>
-          </div>
 
-          <div class="anime-info">
-            <h3 class="anime-title line-clamp-2">${anime.primaryTitle}</h3>
-            <div class="anime-meta">
-              <span class="meta-item">
-                <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/>
-                </svg>
-                ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}
-              </span>
-              <span class="meta-item">
-                <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                </svg>
-                ${anime.favorites || 0}
-              </span>
+            <div class="anime-info">
+              <h3 class="anime-title line-clamp-2">${anime.primaryTitle}</h3>
+              <div class="anime-meta">
+                <span class="meta-item">
+                  <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/>
+                  </svg>
+                  ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}
+                </span>
+                <button 
+                  class="meta-item favorite-count ${isAnimeFavorited(anime.primaryTitle) ? 'is-favorited' : ''}"
+                  onclick="event.preventDefault(); toggleFavoriteFromCard('${anime.primaryTitle}')"
+                  ${!currentUser ? 'title="Faça login para favoritar"' : ''}
+                >
+                  <svg class="meta-icon heart-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                  <span class="favorite-number">${countAnimeFavorites(anime.primaryTitle)}</span>
+                </button>
+              </div>
             </div>
-          </div>
-        </a>
+          </a>
+        </div>
       `).join('')}
     </div>
   `;
@@ -883,10 +879,10 @@ function updateRatingDisplay(value) {
 function renderSearchResults(query) {
   const container = document.getElementById('anime-content');
   const results = JSON.parse(localStorage.getItem('searchResults')) || [];
+  const currentUser = JSON.parse(localStorage.getItem('userSession'));
 
   if (!container) return;
 
-  // Atualiza o título da página
   document.title = `Resultados da busca: ${query}`;
 
   container.innerHTML = `
@@ -900,26 +896,45 @@ function renderSearchResults(query) {
     ` : `
       <div class="anime-grid">
         ${results.map(anime => `
-          <div class="anime-card rounded-lg shadow-lg overflow-hidden">
-            ${anime.score >= 8 ? '<div class="featured-badge">⭐ Destaque</div>' : ''}
-            <div class="score-badge ${anime.score >= 8 ? 'pulse-effect' : ''}">${anime.score >= 0 ? '⭐ ' : ''}${anime.score || 'N/A'}</div>
-            <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
-               class="block relative">
-              <img src="${anime.coverImage}" 
-                   alt="${anime.primaryTitle}" 
-                   class="w-full h-[350px] object-cover">
-              <div class="content-overlay">
-                <h2 class="text-xl font-bold mb-2">${anime.primaryTitle}</h2>
-                <p class="text-sm mb-2 line-clamp-2">${anime.synopsis}</p>
-                <div class="flex flex-wrap gap-2">
-                  ${anime.genres.map(genre =>
-                    `<span class="genre-tag text-xs">${genre}</span>`
-                  ).join('')}
+          <div class="anime-card">
+            <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="anime-card-link">
+              <div class="image-wrapper">
+                <img 
+                  src="${anime.coverImage}" 
+                  alt="${anime.primaryTitle}" 
+                  class="anime-image"
+                  onerror="this.src='https://ui-avatars.com/api/?name=Anime&background=8B5CF6&color=fff'">
+                
+                <div class="quick-info">
+                  <span class="info-pill">⭐ ${Number(anime.score).toFixed(1)}</span>
+                  <span class="info-pill">
+                    <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-4h2v2h-2v-2zm0-2h2V7h-2v7z"/>
+                    </svg>
+                    ${anime.episodes > 0 ? anime.episodes : '?'} eps
+                  </span>
                 </div>
-                <div class="mt-2 flex items-center gap-2">
-                  <span>💬 ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}</span>
-                  <span>📺 ${anime.episodes} eps</span>
-                  <span>📅 ${new Date(anime.releaseDate).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}</span>
+              </div>
+
+              <div class="anime-info">
+                <h3 class="anime-title line-clamp-2">${anime.primaryTitle}</h3>
+                <div class="anime-meta">
+                  <span class="meta-item">
+                    <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/>
+                    </svg>
+                    ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}
+                  </span>
+                  <button 
+                    class="meta-item favorite-count ${isAnimeFavorited(anime.primaryTitle) ? 'is-favorited' : ''}"
+                    onclick="event.preventDefault(); toggleFavoriteFromCard('${anime.primaryTitle}')"
+                    ${!currentUser ? 'title="Faça login para favoritar"' : ''}
+                  >
+                    <svg class="meta-icon heart-icon" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                    <span class="favorite-number">${countAnimeFavorites(anime.primaryTitle)}</span>
+                  </button>
                 </div>
               </div>
             </a>
