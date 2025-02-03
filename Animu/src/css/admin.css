@@ -979,3 +979,30 @@ textarea:disabled {
 .drop-zone .drop-zone-content {
   cursor: pointer;
 }
+
+/* Estilos do TinyMCE */
+.tox-tinymce {
+    border-radius: 0.5rem !important;
+    border-color: var(--input-border-color) !important;
+}
+
+.dark .tox-tinymce {
+    background-color: var(--background) !important;
+}
+
+.dark .tox .tox-toolbar,
+.dark .tox .tox-editor-container {
+    background-color: var(--background) !important;
+}
+
+.dark .tox .tox-toolbar__primary {
+    background: var(--card-shadow) !important;
+}
+
+.dark .tox .tox-tbtn {
+    color: var(--text-color) !important;
+}
+
+.dark .tox .tox-tbtn:hover {
+    background: var(--primary-color-alpha) !important;
+}

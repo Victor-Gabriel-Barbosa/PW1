@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="../src/css/admin.css">
   <link rel="stylesheet" href="../src/css/navbar.css">
   <link rel="icon" href="../src/data/favicon/favicon.ico" type="image/x-icon">
+  <script src="https://cdn.tiny.cloud/1/1ttgbo6afrzlaqawmaeatd8zcu7yzhowo9bh5c2wjmg56znz/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 
 <body>
@@ -21,7 +22,7 @@
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
         </svg>
-        Nova Notícia
+        Nova Notícia 
       </button>
     </header>
 
@@ -80,10 +81,21 @@
               <div class="md:col-span-2">
                 <div class="form-group">
                   <label for="title" class="form-label">Título da Notícia</label>
-                  <input type="text" id="title" name="title" 
-                         class="form-input focus-ring" 
-                         placeholder="Digite o título da notícia"
-                         required>
+                  <div class="flex gap-2">
+                    <input type="text" id="title" name="title" 
+                           class="form-input focus-ring flex-1" 
+                           placeholder="Digite o título da notícia"
+                           required>
+                    <button type="button" 
+                            id="generate-news-btn"
+                            class="btn btn-secondary flex items-center gap-2">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                      </svg>
+                      Gerar com IA
+                    </button>
+                  </div>
                 </div>
               </div>
               <div>
@@ -158,10 +170,9 @@
             <div class="form-group">
               <label for="content" class="form-label">Conteúdo</label>
               <textarea id="content" name="content" 
-                       class="form-textarea focus-ring" 
-                       rows="8"
-                       placeholder="Conteúdo completo da notícia"
-                       required></textarea>
+                        class="form-textarea focus-ring" 
+                        rows="8"
+                        placeholder="Conteúdo completo da notícia"></textarea>
             </div>
           </div>
 
@@ -191,4 +202,5 @@
   <script src="../src/js/admin-news.js"></script>
 </body>
 
+</html>
 </html>

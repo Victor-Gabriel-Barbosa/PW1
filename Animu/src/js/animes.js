@@ -82,87 +82,119 @@ function renderAnimeDetails(anime) {
   }) : 'Não informado';
 
   container.innerHTML = `
-    <div class="anime-header flex flex-col md:flex-row gap-4">
-      <img src="${anime.coverImage}" alt="${anime.primaryTitle}" class="cover-image w-full md:w-1/3 rounded-lg shadow-md">
-      <div class="anime-info flex-grow">
-        <div class="flex justify-between items-start">
-          <h1 class="title text-3xl font-bold mb-2">${anime.primaryTitle}</h1>
-          <button id="favorite-button" 
-                  onclick="toggleFavorite('${anime.primaryTitle}')"
-                  class="px-4 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors">
-          </button>
-        </div>
-        <div class="alternative-titles text-sm text-gray-500 mb-2">
-          ${alternativeTitlesHtml}
-        </div>
-        <div class="genres flex flex-wrap gap-2 mb-4">
-          ${genresHtml}
-        </div>
-          <div class="anime-details grid grid-cols-2 gap-4 text-sm">
-            <div class="detail-item">
-              <span class="detail-label font-semibold">Episódios:</span>
-              <span>${anime.episodes}</span>
+    <div class="anime-hero">
+      <div class="hero-backdrop" style="background-image: url('${anime.coverImage}')"></div>
+      <div class="hero-gradient"></div>
+      <div class="hero-content">
+        <img src="${anime.coverImage}" alt="${anime.primaryTitle}" class="hero-cover">
+        <div class="hero-info">
+          <h1 class="text-4xl font-bold mb-2">${anime.primaryTitle}</h1>
+          <div class="alternative-titles text-sm mb-4">
+            ${alternativeTitlesHtml}
+          </div>
+          <div class="genres flex flex-wrap gap-2 mb-4">
+            ${genresHtml}
+          </div>
+          <div class="anime-stats">
+            <div class="stat-item">
+              <svg class="stat-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+              </svg>
+              <div>
+                <div class="stat-value">${Number(anime.score).toFixed(1)}</div>
+                <div class="stat-label">Pontuação</div>
+              </div>
             </div>
-            <div class="detail-item">
-              <span class="detail-label font-semibold">Estúdio:</span>
-              <span>${anime.studio}</span>
+            <div class="stat-item">
+              <svg class="stat-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+              <div>
+                <div class="stat-value">${countAnimeFavorites(anime.primaryTitle)}</div>
+                <div class="stat-label">Favoritos</div>
+              </div>
             </div>
-            <div class="detail-item">
-              <span class="detail-label font-semibold">Status:</span>
-              <span>${anime.status || 'Não informado'}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label font-semibold">Classificação Etária:</span>
-              <span>${anime.ageRating || 'Não informado'}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label font-semibold">Temporada:</span>
-              <span>${anime.season ? `${anime.season.period} ${anime.season.year}` : 'Não informado'}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label font-semibold">Duração por Episódio:</span>
-              <span>${anime.episodeDuration ? `${anime.episodeDuration} min` : 'Não informado'}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label font-semibold">Produtores:</span>
-              <span>${anime.producers ? anime.producers.join(', ') : 'Não informado'}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label font-semibold">Licenciadores:</span>
-              <span>${anime.licensors ? anime.licensors.join(', ') : 'Não informado'}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label font-semibold">Fonte:</span>
-              <span>${anime.source || 'Não informado'}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label font-semibold">Pontuação:</span>
-              <span>${anime.score ? `${anime.score}/10` : 'Não informado'}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label font-semibold">Popularidade:</span>
-              <span>${anime.popularityRank ? `#${anime.popularityRank} (${anime.popularity} pontos)` : 'Não avaliado'}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label font-semibold">Data de Lançamento:</span>
-              <span>${releaseDate}</span>
+            <div class="stat-item">
+              <svg class="stat-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/>
+              </svg>
+              <div>
+                <div class="stat-value">${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}</div>
+                <div class="stat-label">Comentários</div>
+              </div>
             </div>
           </div>
+          <button id="favorite-button" 
+            onclick="toggleFavorite('${anime.primaryTitle}')"
+            class="px-6 py-3 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors mt-4">
+          </button>
         </div>
       </div>
-      <div class="synopsis mt-4">
-        <h2 class="text-2xl font-semibold mb-2">Sinopse</h2>
-        <p>${anime.synopsis}</p>
+    </div>
+
+    <div class="anime-main-content">
+      <div class="anime-primary-info">
+        <h2 class="text-2xl font-bold mb-4">Sinopse</h2>
+        <p class="text-lg leading-relaxed mb-8">${anime.synopsis}</p>
+
+        ${embedUrl ? `
+          <h2 class="text-2xl font-bold mb-4">Trailer</h2>
+          <div class="trailer-container">
+            <iframe 
+              src="${embedUrl}"
+              allowfullscreen
+              class="w-full aspect-video rounded-lg shadow-md">
+            </iframe>
+          </div>
+        ` : ''}
       </div>
-    ${embedUrl ? `
-        <div class="trailer-container mt-4">
-          <iframe 
-            src="${embedUrl}"
-            allowfullscreen
-            class="w-full aspect-video rounded-lg shadow-md">
-          </iframe>
-        </div>
-    ` : ''}
+
+      <div class="anime-secondary-info">
+        <h2 class="text-xl font-bold mb-4">Informações</h2>
+        <dl class="space-y-4">
+          <div class="detail-row">
+            <dt class="text-sm font-semibold text-gray-500">Episódios</dt>
+            <dd>${anime.episodes}</dd>
+          </div>
+          <div class="detail-row">
+            <dt class="text-sm font-semibold text-gray-500">Estúdio</dt>
+            <dd>${anime.studio}</dd>
+          </div>
+          <div class="detail-row">
+            <dt class="text-sm font-semibold text-gray-500">Status</dt>
+            <dd>${anime.status || 'Não informado'}</dd>
+          </div>
+          <div class="detail-row">
+            <dt class="text-sm font-semibold text-gray-500">Classificação</dt>
+            <dd>${anime.ageRating || 'Não informado'}</dd>
+          </div>
+          <div class="detail-row">
+            <dt class="text-sm font-semibold text-gray-500">Temporada</dt>
+            <dd>${anime.season ? `${anime.season.period} ${anime.season.year}` : 'Não informado'}</dd>
+          </div>
+          <div class="detail-row">
+            <dt class="text-sm font-semibold text-gray-500">Duração</dt>
+            <dd>${anime.episodeDuration ? `${anime.episodeDuration} min` : 'Não informado'}</dd>
+          </div>
+          <div class="detail-row">
+            <dt class="text-sm font-semibold text-gray-500">Produtores</dt>
+            <dd>${anime.producers ? anime.producers.join(', ') : 'Não informado'}</dd>
+          </div>
+          <div class="detail-row">
+            <dt class="text-sm font-semibold text-gray-500">Licenciadores</dt>
+            <dd>${anime.licensors ? anime.licensors.join(', ') : 'Não informado'}</dd>
+          </div>
+          <div class="detail-row">
+            <dt class="text-sm font-semibold text-gray-500">Fonte</dt>
+            <dd>${anime.source || 'Não informado'}</dd>
+          </div>
+          <div class="detail-row">
+            <dt class="text-sm font-semibold text-gray-500">Lançamento</dt>
+            <dd>${releaseDate}</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
   `;
 
   // Mostra a seção de comentários apenas para detalhes de um anime específico

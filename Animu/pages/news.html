@@ -27,38 +27,52 @@
 <body>
   <!-- Visualização em Grid -->
   <div id="news-grid-view" class="container mx-auto px-4 py-12 max-w-6xl">
-    <header class="mb-12">
-      <h1 class="text-4xl font-bold mb-4">Últimas Notícias</h1>
+    <header class="mb-12 bg-gradient-to-r from-purple-600/10 to-blue-600/10 p-8 rounded-2xl">
+      <h1 class="text-4xl font-bold mb-6 gradient-text">Últimas Notícias</h1>
       <!-- Filtros -->
-      <div class="flex flex-wrap gap-4 mb-8">
-        <div class="flex-1 min-w-[200px]">
-          <input type="text" id="search-news" placeholder="Buscar notícias..."
-            class="w-full p-2 rounded-lg border border-gray-300">
+      <div class="filters-container">
+        <div class="search-container">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input type="text" id="search-news" placeholder="Buscar notícias..." class="search-input">
         </div>
-        <select id="category-filter" class="p-2 rounded-lg border border-gray-300">
-          <option value="">Todas as categorias</option>
-          <option value="Anúncio">Anúncios</option>
-          <option value="Lançamento">Lançamentos</option>
-          <option value="Evento">Eventos</option>
-          <option value="Notícia">Notícias Gerais</option>
-        </select>
-        <select id="sort-news" class="p-2 rounded-lg border border-gray-300">
-          <option value="recent">Mais recentes</option>
-          <option value="oldest">Mais antigas</option>
-        </select>
+        <div class="filters-group">
+          <select id="category-filter" class="filter-select">
+            <option value="">Todas as categorias</option>
+            <option value="Anúncio">Anúncios</option>
+            <option value="Lançamento">Lançamentos</option>
+            <option value="Evento">Eventos</option>
+            <option value="Notícia">Notícias Gerais</option>
+          </select>
+          <select id="sort-news" class="filter-select">
+            <option value="recent">Mais recentes</option>
+            <option value="oldest">Mais antigas</option>
+          </select>
+        </div>
       </div>
     </header>
 
     <!-- Grid de Notícias -->
-    <div class="news-grid">
+    <div class="news-grid animated-grid">
       <!-- Notícias serão inseridas aqui via JavaScript -->
     </div>
 
     <!-- Paginação -->
-    <div class="pagination flex justify-center gap-2 mt-8">
-      <button id="prev-page" class="btn btn-secondary" disabled>Anterior</button>
-      <span id="page-info" class="flex items-center px-4">Página 1</span>
-      <button id="next-page" class="btn btn-secondary">Próxima</button>
+    <div class="pagination-container">
+      <button id="prev-page" class="pagination-btn" disabled>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Anterior
+      </button>
+      <span id="page-info" class="pagination-info">Página 1</span>
+      <button id="next-page" class="pagination-btn">
+        Próxima
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
     </div>
   </div>
 

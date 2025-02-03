@@ -18,6 +18,110 @@ document.addEventListener('DOMContentLoaded', function () {
   // Inicialização
   loadNews();
 
+  // Inicialização do TinyMCE
+  tinymce.init({
+    selector: '#content',
+    plugins: [
+      'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+      'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+      'insertdatetime', 'media', 'table', 'help', 'wordcount'
+    ],
+    toolbar: 'undo redo | blocks | ' +
+      'bold italic forecolor | alignleft aligncenter ' +
+      'alignright alignjustify | bullist numlist outdent indent | ' +
+      'removeformat | help',
+    content_style: 'body { font-family: Inter, sans-serif; font-size: 14px }',
+    height: 400,
+    language: 'pt_BR',
+    menubar: false,
+    branding: false,
+    promotion: false,
+    // Configuração para tema escuro
+    skin: (document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide'),
+    content_css: (document.documentElement.classList.contains('dark') ? 'dark' : 'default'),
+  });
+
+  // Após a inicialização do TinyMCE, adicione:
+  const generateBtn = document.getElementById('generate-news-btn');
+  generateBtn.addEventListener('click', generateNewsContent);
+
+  async function generateNewsContent() {
+    const title = document.getElementById('title').value;
+    if (!title) {
+      alert('Digite um título ou tópico para gerar a notícia');
+      return;
+    }
+
+    generateBtn.disabled = true;
+    generateBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Gerando...';
+
+    try {
+      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyAannBPxmplEUwKZaQj_5gG3Ms9t6IXnvI', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: `Gere uma notícia sobre anime relacionada ao tópico: "${title}".
+                     Formate a resposta exatamente assim:
+                     {
+                       "title": "título da notícia",
+                       "summary": "resumo curto da notícia",
+                       "content": "<p>primeiro parágrafo</p><p>segundo parágrafo</p>",
+                       "tags": ["tag1", "tag2", "tag3"],
+                       "category": "Notícia"
+                     }`
+            }]
+          }]
+        })
+      });
+
+      const data = await response.json();
+      
+      if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+        throw new Error('Resposta inválida da API');
+      }
+
+      const responseText = data.candidates[0].content.parts[0].text;
+      console.log('Resposta da API:', responseText); // Debug
+
+      // Procurar o JSON na resposta
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        throw new Error('JSON não encontrado na resposta');
+      }
+
+      try {
+        const newsData = JSON.parse(jsonMatch[0]);
+
+        // Verificar se temos todos os campos necessários
+        if (!newsData.title || !newsData.content) {
+          throw new Error('Dados incompletos na resposta');
+        }
+
+        // Preencher campos do formulário
+        document.getElementById('title').value = newsData.title;
+        document.getElementById('summary').value = newsData.summary || '';
+        document.getElementById('category').value = newsData.category || 'Notícia';
+        document.getElementById('tags').value = (newsData.tags || []).join(', ');
+        tinymce.get('content').setContent(newsData.content);
+
+      } catch (jsonError) {
+        console.error('Erro ao processar JSON:', jsonError);
+        throw new Error('Formato de resposta inválido');
+      }
+
+    } catch (error) {
+      console.error('Erro ao gerar notícia:', error);
+      alert(`Erro ao gerar notícia: ${error.message}`);
+    } finally {
+      generateBtn.disabled = false;
+      generateBtn.innerHTML = '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>Gerar com IA';
+    }
+  }
+
   // Event Listeners principais
   addBtn.addEventListener('click', () => openModal());
   closeBtn.addEventListener('click', closeModal);
@@ -97,13 +201,14 @@ document.addEventListener('DOMContentLoaded', function () {
         imageDropZone.querySelector('.upload-area').classList.add('hidden');
       }
       document.getElementById('summary').value = newsData.summary;
-      document.getElementById('content').value = newsData.content;
+      tinymce.get('content').setContent(newsData.content); // Setar conteúdo no editor
       document.getElementById('modal-title').textContent = 'Editar Notícia';
     } else {
       editingId = null;
       form.reset();
       imagePreview.classList.add('hidden');
       imageDropZone.querySelector('.upload-area').classList.remove('hidden');
+      tinymce.get('content').setContent(''); // Limpar editor
       document.getElementById('modal-title').textContent = 'Nova Notícia';
     }
   }
@@ -121,6 +226,13 @@ document.addEventListener('DOMContentLoaded', function () {
   async function handleSubmit(e) {
     e.preventDefault();
 
+    // Validar conteúdo antes de submeter
+    const content = tinymce.get('content').getContent();
+    if (!content) {
+        alert('Por favor, preencha o conteúdo da notícia');
+        return;
+    }
+
     const newsData = {
       id: editingId || Date.now().toString(),
       title: document.getElementById('title').value,
@@ -128,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function () {
       tags: document.getElementById('tags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
       image: document.getElementById('image').value,
       summary: document.getElementById('summary').value,
-      content: document.getElementById('content').value,
+      content: content, // Pegar conteúdo do editor
       date: editingId ? (await getExistingDate(editingId)) : new Date().toISOString()
     };
 

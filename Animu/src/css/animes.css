@@ -1221,3 +1221,197 @@
 .section-wrapper + .section-wrapper {
   margin-top: 3rem;
 }
+
+/* Hero Section */
+.anime-hero {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.hero-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  filter: blur(4px);
+  opacity: 0.7;
+  transform: scale(1.1);
+}
+
+.hero-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+}
+
+.hero-content {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.hero-cover {
+  width: 220px;
+  height: 330px; /* Altura fixa para manter proporção */
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  object-fit: cover; /* Garante que a imagem cubra todo o espaço */
+}
+
+.hero-info {
+  color: white;
+  flex: 1;
+  max-width: 800px; /* Limita a largura máxima do texto */
+}
+
+/* Estatísticas do anime */
+.anime-stats {
+  display: flex;
+  gap: 2rem;
+  margin: 1rem 0;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stat-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--primary-color);
+}
+
+.stat-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  opacity: 0.8;
+}
+
+/* Layout de duas colunas para o conteúdo principal */
+.anime-main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.anime-primary-info {
+  padding: 1.5rem;
+  background: var(--background);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px var(--card-shadow);
+}
+
+.anime-secondary-info {
+  padding: 1.5rem;
+  background: var(--background);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px var(--card-shadow);
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .anime-main-content {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-cover {
+    width: 200px;
+    height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .anime-hero {
+    height: auto;
+    min-height: 300px;
+    padding: 2rem 0;
+  }
+
+  .hero-content {
+    flex-direction: row; /* Mantém o layout horizontal */
+    padding: 1rem;
+    gap: 1rem;
+    align-items: flex-start; /* Alinha ao topo em telas menores */
+  }
+
+  .hero-cover {
+    width: 150px;
+    height: 225px;
+    flex-shrink: 0; /* Impede que a imagem encolha */
+  }
+
+  .hero-info {
+    font-size: 0.95rem; /* Reduz ligeiramente o tamanho da fonte */
+  }
+
+  .anime-stats {
+    margin: 0.5rem 0;
+    gap: 1rem;
+  }
+
+  .stat-value {
+    font-size: 1.1rem;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1rem 0.5rem;
+  }
+
+  .hero-cover {
+    width: 140px;
+    height: 210px;
+    margin-bottom: 1rem;
+  }
+
+  .hero-info {
+    padding: 0 0.5rem;
+  }
+
+  .anime-stats {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .stat-item {
+    flex-basis: calc(50% - 0.75rem); /* 2 itens por linha */
+    justify-content: center;
+  }
+}
