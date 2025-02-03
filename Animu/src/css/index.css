@@ -1,16 +1,16 @@
-.inicio-header {
+.index-header {
   text-align: center;
   margin-bottom: 2rem;
 }
 
-.inicio-title {
+.index-title {
   font-size: 3.75rem;
   font-weight: bold;
   margin-bottom: 1rem;
   letter-spacing: -0.025em;
 }
 
-.inicio-description {
+.index-description {
   font-size: 1.25rem;
   max-width: 42rem;
   margin: 0 auto;
@@ -18,14 +18,14 @@
   line-height: 1.75;
 }
 
-.inicio-sections {
+.index-sections {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
   margin-bottom: 2rem;
 }
 
-.inicio-card {
+.index-card {
   border-radius: 1rem;
   padding: 2rem;
   box-shadow: 0 4px 6px var(--card-shadow);
@@ -35,7 +35,7 @@
   background: var(--background);
 }
 
-.inicio-card::before {
+.index-card::before {
   content: '';
   position: absolute;
   top: 0;
@@ -48,21 +48,21 @@
   transition: opacity 0.3s ease;
 }
 
-.inicio-card:hover {
+.index-card:hover {
   transform: translateY(-10px) scale(1.02);
   box-shadow: 0 15px 30px var(--card-shadow);
 }
 
-.inicio-card:hover::before {
+.index-card:hover::before {
   opacity: 0.1;
 }
 
-.inicio-card > * {
+.index-card > * {
   position: relative;
   z-index: 1;
 }
 
-.inicio-card-header {
+.index-card-header {
   position: absolute;
   top: 0;
   left: 0;
@@ -70,41 +70,41 @@
   height: 4px;
 }
 
-.inicio-card-title {
+.index-card-title {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 1.5rem;
 }
 
-.inicio-card-list {
+.index-card-list {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.inicio-card-item {
+.index-card-item {
   border-bottom: 1px solid rgba(var(--text-color-rgb), 0.1);
   padding-bottom: 0.75rem;
 }
 
-.inicio-card-item:last-child {
+.index-card-item:last-child {
   border-bottom: none;
 }
 
-.inicio-card-link {
+.index-card-link {
   display: block;
   transition: color 0.2s;
 }
 
-.inicio-card-link:hover {
+.index-card-link:hover {
   color: var(--primary-color);
 }
 
-.inicio-card-link-title {
+.index-card-link-title {
   font-weight: 600;
 }
 
-.inicio-card-link-subtitle {
+.index-card-link-subtitle {
   font-size: 0.875rem;
 }
 
@@ -197,7 +197,7 @@
 }
 
 @media (max-width: 768px) {
-  .inicio-sections {
+  .index-sections {
     grid-template-columns: 1fr;
   }
 }

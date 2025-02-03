@@ -101,6 +101,22 @@
   <script src="../src/js/navbar.js"></script>
   <script src="../src/js/search.js"></script>
   <script src="../src/js/animu.js"></script>
-</body>
+  <script>
+    // Observer para animar seções quando ficarem visíveis
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, {
+      threshold: 0.1
+    });
 
+    // Observar todas as seções
+    document.querySelectorAll('section').forEach(section => {
+      observer.observe(section);
+    });
+  </script>
+</body>
 </html>

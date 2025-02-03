@@ -103,9 +103,10 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Informações básicas -->
-          <div class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Coluna esquerda -->
+          <div class="space-y-6">
+            <!-- Título Principal -->
             <div>
               <label class="block text-sm font-medium mb-1">
                 Título Principal <span class="text-red-500">*</span>
@@ -114,12 +115,13 @@
                 maxlength="100">
             </div>
 
+            <!-- Imagem de Capa -->
             <div>
               <label class="block text-sm font-medium mb-1">
                 Imagem de Capa <span class="text-red-500">*</span>
               </label>
               <div id="coverImageDropzone"
-                class="drop-zone border-2 border-dashed rounded-lg p-4 text-center cursor-pointer relative">
+                class="drop-zone border-2 border-dashed rounded-lg p-4 text-center cursor-pointer relative h-[230px] flex items-center justify-center">
                 <div class="drop-zone-prompt">
                   <p>Arraste uma imagem ou clique para selecionar</p>
                   <p class="text-sm text-gray-500">Formatos suportados: JPG, PNG, WebP</p>
@@ -132,12 +134,13 @@
               </div>
             </div>
 
+            <!-- Sinopse -->
             <div>
               <label class="block text-sm font-medium mb-1">
                 Sinopse <span class="text-red-500">*</span>
               </label>
               <div class="relative">
-                <textarea id="synopsis" rows="19" required class="w-full p-2 border rounded" minlength="10"
+                <textarea id="synopsis" rows="17" required class="w-full p-2 border rounded" minlength="10"
                   maxlength="2000"></textarea>
                 <button type="button" onclick="translateSynopsis()" 
                   class="absolute top-2 right-2 p-1 bg-purple-600 text-white rounded hover:bg-purple-700"
@@ -149,6 +152,7 @@
               </div>
             </div>
 
+            <!-- Títulos Alternativos -->
             <div>
               <label class="block text-sm font-medium mb-1">Títulos Alternativos</label>
               <div class="flex gap-2 mb-2">
@@ -169,8 +173,8 @@
             </div>
           </div>
 
-          <!-- Detalhes e classificações -->
-          <div class="space-y-4">
+          <!-- Coluna direita -->
+          <div class="space-y-6">
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium mb-1">
@@ -190,9 +194,9 @@
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium mb-1">
-                  Status <span class="text-red-500">*</span>
+                  Status
                 </label>
-                <select id="status" class="w-full p-2 border rounded" required>
+                <select id="status" class="w-full p-2 border rounded">
                   <option value="Em Exibição">Em Exibição</option>
                   <option value="Finalizado">Finalizado</option>
                   <option value="Anunciado">Anunciado</option>
@@ -201,9 +205,9 @@
 
               <div>
                 <label class="block text-sm font-medium mb-1">
-                  Classificação <span class="text-red-500">*</span>
+                  Classificação
                 </label>
-                <select id="ageRating" class="w-full p-2 border rounded" required>
+                <select id="ageRating" class="w-full p-2 border rounded">
                   <option value="Livre">Livre</option>
                   <option value="10+">10+</option>
                   <option value="12+">12+</option>
@@ -218,10 +222,10 @@
               <div>
                 <label class="block text-sm font-medium mb-1">Temporada</label>
                 <select id="seasonPeriod" class="w-full p-2 border rounded">
-                  <option value="Inverno">Inverno</option>
-                  <option value="Primavera">Primavera</option>
-                  <option value="Verão">Verão</option>
-                  <option value="Outono">Outono</option>
+                  <option value="inverno">Inverno</option>
+                  <option value="primavera">Primavera</option>
+                  <option value="verão">Verão</option>
+                  <option value="outono">Outono</option>
                 </select>
               </div>
 
@@ -252,17 +256,20 @@
 
             <div>
               <label class="block text-sm font-medium mb-1">Trailer do Anime</label>
-              <div id="trailerDropzone"
-                class="drop-zone border-2 border-dashed rounded-lg p-4 text-center cursor-pointer relative">
-                <div class="drop-zone-prompt">
-                  <p>Arraste um vídeo, cole a URL do YouTube ou clique para selecionar</p>
-                  <p class="text-sm text-gray-500">Cole uma URL do YouTube ou selecione um arquivo de vídeo</p>
-                  <input type="text" placeholder="Cole a URL do YouTube aqui"
-                    class="mt-2 p-2 w-full border rounded text-center" id="trailerUrlInput">
+              <div id="trailerDropzone" class="drop-zone border-2 border-dashed rounded-lg p-4 text-center cursor-pointer relative">
+                <div class="drop-zone-content">
+                  <div class="drop-zone-prompt">
+                    <p class="text-base mb-2">Adicione o trailer do anime</p>
+                    <p class="text-sm text-gray-500 mb-4">Arraste um arquivo de vídeo ou clique para selecionar</p>
+                  </div>
+                  <div class="youtube-input-container" onclick="event.stopPropagation()">
+                    <p class="text-sm text-gray-500 mb-2">Ou cole uma URL do YouTube:</p>
+                    <input type="text" placeholder="URL do YouTube" 
+                      class="p-2 w-full border rounded text-center" id="trailerUrlInput">
+                  </div>
                 </div>
                 <div id="trailerPreview" class="hidden max-w-full"></div>
-                <button type="button" id="removeTrailer" class="remove-media-btn hidden"
-                  title="Remover vídeo">✕</button>
+                <button type="button" id="removeTrailer" class="remove-media-btn hidden" title="Remover vídeo">✕</button>
                 <input type="url" id="trailerUrl" class="hidden">
                 <input type="file" id="trailerInput" class="hidden" accept="video/*">
               </div>

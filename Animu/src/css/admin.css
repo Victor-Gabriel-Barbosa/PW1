@@ -236,9 +236,7 @@
 }
 
 @keyframes shake {
-
-  0%,
-  100% {
+  0%, 100% {
     transform: translateX(0);
   }
 
@@ -815,7 +813,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 }
 
-/* Estilos do Formulário Melhorado */
+/* Estilos do Formulário */
 .form-label {
   display: block;
   font-size: 0.875rem;
@@ -896,7 +894,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   border-radius: 1rem;
   background: var(--background);
   box-shadow: 0 20px 25px -5px var(--card-shadow),
-              0 8px 10px -6px var(--card-shadow);
+    0 8px 10px -6px var(--card-shadow);
 }
 
 /* Melhorias na responsividade do modal */
@@ -906,16 +904,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin: 1rem;
     max-height: calc(100vh - 2rem);
   }
-  
+
   .form-group {
     margin-bottom: 1rem;
   }
-  
+
   .btn {
     width: 100%;
     margin-bottom: 0.5rem;
   }
-  
+
   .modal-footer {
     flex-direction: column-reverse;
   }
@@ -937,13 +935,47 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* Animação durante a tradução */
 @keyframes translating {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 textarea:disabled {
   animation: translating 1.5s infinite;
   background-color: var(--background);
   cursor: wait;
+}
+
+/* Container do input do YouTube */
+.youtube-input-container {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--card-shadow);
+  cursor: text;
+}
+
+.youtube-input-container input {
+  background: var(--background);
+  color: var(--text-color);
+  border-color: var(--card-shadow);
+  transition: all 0.2s ease;
+}
+
+.youtube-input-container input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--primary-color-alpha);
+}
+
+/* Ajuste do cursor apenas para a área de drop */
+.drop-zone .drop-zone-content {
+  cursor: pointer;
 }

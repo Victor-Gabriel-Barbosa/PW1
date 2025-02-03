@@ -98,70 +98,70 @@ function renderAnimeDetails(anime) {
         <div class="genres flex flex-wrap gap-2 mb-4">
           ${genresHtml}
         </div>
-        <div class="anime-details grid grid-cols-2 gap-4 text-sm">
-          <div class="detail-item">
-            <span class="detail-label font-semibold">Episódios:</span>
-            <span>${anime.episodes}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label font-semibold">Estúdio:</span>
-            <span>${anime.studio}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label font-semibold">Status:</span>
-            <span>${anime.status || 'Não informado'}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label font-semibold">Classificação Etária:</span>
-            <span>${anime.ageRating || 'Não informado'}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label font-semibold">Temporada:</span>
-            <span>${anime.season ? `${anime.season.period} ${anime.season.year}` : 'Não informado'}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label font-semibold">Duração por Episódio:</span>
-            <span>${anime.episodeDuration ? `${anime.episodeDuration} min` : 'Não informado'}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label font-semibold">Produtores:</span>
-            <span>${anime.producers ? anime.producers.join(', ') : 'Não informado'}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label font-semibold">Licenciadores:</span>
-            <span>${anime.licensors ? anime.licensors.join(', ') : 'Não informado'}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label font-semibold">Fonte:</span>
-            <span>${anime.source || 'Não informado'}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label font-semibold">Pontuação:</span>
-            <span>${anime.score ? `${anime.score}/10` : 'Não informado'}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label font-semibold">Popularidade:</span>
-            <span>${anime.popularityRank ? `#${anime.popularityRank} (${anime.popularity} pontos)` : 'Não avaliado'}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label font-semibold">Data de Lançamento:</span>
-            <span>${releaseDate}</span>
+          <div class="anime-details grid grid-cols-2 gap-4 text-sm">
+            <div class="detail-item">
+              <span class="detail-label font-semibold">Episódios:</span>
+              <span>${anime.episodes}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label font-semibold">Estúdio:</span>
+              <span>${anime.studio}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label font-semibold">Status:</span>
+              <span>${anime.status || 'Não informado'}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label font-semibold">Classificação Etária:</span>
+              <span>${anime.ageRating || 'Não informado'}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label font-semibold">Temporada:</span>
+              <span>${anime.season ? `${anime.season.period} ${anime.season.year}` : 'Não informado'}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label font-semibold">Duração por Episódio:</span>
+              <span>${anime.episodeDuration ? `${anime.episodeDuration} min` : 'Não informado'}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label font-semibold">Produtores:</span>
+              <span>${anime.producers ? anime.producers.join(', ') : 'Não informado'}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label font-semibold">Licenciadores:</span>
+              <span>${anime.licensors ? anime.licensors.join(', ') : 'Não informado'}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label font-semibold">Fonte:</span>
+              <span>${anime.source || 'Não informado'}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label font-semibold">Pontuação:</span>
+              <span>${anime.score ? `${anime.score}/10` : 'Não informado'}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label font-semibold">Popularidade:</span>
+              <span>${anime.popularityRank ? `#${anime.popularityRank} (${anime.popularity} pontos)` : 'Não avaliado'}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label font-semibold">Data de Lançamento:</span>
+              <span>${releaseDate}</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="synopsis mt-4">
-      <h2 class="text-2xl font-semibold mb-2">Sinopse</h2>
-      <p>${anime.synopsis}</p>
-    </div>
-    ${embedUrl ? `
-      <div class="trailer-container mt-4">
-        <iframe 
-          src="${embedUrl}"
-          allowfullscreen
-          class="w-full aspect-video rounded-lg shadow-md">
-        </iframe>
+      <div class="synopsis mt-4">
+        <h2 class="text-2xl font-semibold mb-2">Sinopse</h2>
+        <p>${anime.synopsis}</p>
       </div>
+    ${embedUrl ? `
+        <div class="trailer-container mt-4">
+          <iframe 
+            src="${embedUrl}"
+            allowfullscreen
+            class="w-full aspect-video rounded-lg shadow-md">
+          </iframe>
+        </div>
     ` : ''}
   `;
 
@@ -173,6 +173,9 @@ function renderAnimeDetails(anime) {
 
   // Atualiza o estado inicial do botão de favorito
   updateFavoriteButton(anime.primaryTitle);
+
+  // Adiciona renderização de animes relacionados após renderizar os detalhes do anime
+  renderRelatedAnimes(anime);
 }
 
 // Padroniza categorias para busca e filtragem
@@ -1092,6 +1095,173 @@ function updateAllAnimesPopularity() {
     console.error('Erro ao atualizar popularidade:', e);
     return false;
   }
+}
+
+// Encontra animes relacionados baseado em gêneros similares
+function findRelatedAnimes(currentAnime, limit = 10) {
+  if (!currentAnime) return [];
+
+  const animes = JSON.parse(localStorage.getItem('animeData')) || [];
+  const relatedAnimes = [];
+  
+  // Remove o anime atual da lista
+  const otherAnimes = animes.filter(anime => anime.primaryTitle !== currentAnime.primaryTitle);
+  
+  // Calcula pontuação de similaridade para cada anime
+  otherAnimes.forEach(anime => {
+    let similarityScore = 0;
+    
+    // Pontos por gêneros em comum
+    currentAnime.genres.forEach(genre => {
+      if (anime.genres.includes(genre)) {
+        similarityScore += 2;
+      }
+    });
+    
+    // Pontos por estúdio em comum
+    if (currentAnime.studio && anime.studio === currentAnime.studio) {
+      similarityScore += 1;
+    }
+    
+    // Pontos por fonte similar
+    if (currentAnime.source && anime.source === currentAnime.source) {
+      similarityScore += 1;
+    }
+    
+    // Pontos por temporada similar
+    if (currentAnime.season && anime.season &&
+        currentAnime.season.period === anime.season.period &&
+        Math.abs(currentAnime.season.year - anime.season.year) <= 1) {
+      similarityScore += 1;
+    }
+
+    if (similarityScore > 0) {
+      relatedAnimes.push({
+        ...anime,
+        similarityScore
+      });
+    }
+  });
+
+  // Ordena por pontuação de similaridade e retorna os top N
+  return relatedAnimes
+    .sort((a, b) => b.similarityScore - a.similarityScore)
+    .slice(0, limit);
+}
+
+// Renderiza carrossel de animes relacionados
+function renderRelatedAnimes(currentAnime) {
+  const relatedSection = document.getElementById('related-animes-section');
+  const carouselTrack = document.getElementById('related-animes-track');
+  
+  if (!relatedSection || !carouselTrack || !currentAnime) return;
+
+  const relatedAnimes = findRelatedAnimes(currentAnime);
+  
+  if (relatedAnimes.length === 0) {
+    relatedSection.style.display = 'none';
+    return;
+  }
+
+  // Mostra a seção
+  relatedSection.style.display = 'block';
+
+  // Duplica os animes para criar efeito infinito
+  const duplicatedAnimes = [...relatedAnimes, ...relatedAnimes, ...relatedAnimes];
+  
+  // Renderiza os cards
+  carouselTrack.innerHTML = duplicatedAnimes.map(anime => `
+    <div class="anime-card">
+      <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="anime-card-link">
+        <div class="image-wrapper">
+          <img 
+            src="${anime.coverImage}" 
+            alt="${anime.primaryTitle}" 
+            class="anime-image"
+            onerror="this.src='https://ui-avatars.com/api/?name=Anime&background=8B5CF6&color=fff'">
+          
+          <div class="quick-info">
+            <span class="info-pill">⭐ ${Number(anime.score).toFixed(1)}</span>
+            <span class="info-pill">
+              <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-4h2v2h-2v-2zm0-2h2V7h-2v7z"/>
+              </svg>
+              ${anime.episodes > 0 ? anime.episodes : '?'} eps
+            </span>
+          </div>
+        </div>
+
+        <div class="anime-info">
+          <h3 class="anime-title line-clamp-2">${anime.primaryTitle}</h3>
+          <div class="anime-meta">
+            <span class="meta-item">
+              <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/>
+              </svg>
+              ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}
+            </span>
+            <button 
+              class="meta-item favorite-count ${isAnimeFavorited(anime.primaryTitle) ? 'is-favorited' : ''}"
+              onclick="event.preventDefault(); toggleFavoriteFromCard('${anime.primaryTitle}')"
+            >
+              <svg class="meta-icon heart-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+              <span class="favorite-number">${countAnimeFavorites(anime.primaryTitle)}</span>
+            </button>
+          </div>
+        </div>
+      </a>
+    </div>
+  `).join('');
+
+  // Configuração do carrossel
+  let currentIndex = relatedAnimes.length; // Começar do conjunto do meio
+  let isTransitioning = false;
+  const track = carouselTrack;
+  const slideWidth = track.querySelector('.anime-card').offsetWidth + 20; // 20 é o margin total
+  
+  // Posicionar no conjunto do meio
+  track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+
+  function slide(direction) {
+    if (isTransitioning) return;
+    isTransitioning = true;
+
+    currentIndex += direction;
+    track.style.transition = 'transform 0.5s ease-in-out';
+    track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+
+    setTimeout(() => {
+      if (currentIndex >= relatedAnimes.length * 2) {
+        currentIndex = relatedAnimes.length;
+        track.style.transition = 'none';
+        track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+      } else if (currentIndex <= 0) {
+        currentIndex = relatedAnimes.length;
+        track.style.transition = 'none';
+        track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+      }
+      isTransitioning = false;
+    }, 500);
+  }
+
+  // Botões de navegação
+  const prevButton = document.querySelector('#related-animes-section .carousel-button.prev');
+  const nextButton = document.querySelector('#related-animes-section .carousel-button.next');
+
+  prevButton.addEventListener('click', () => slide(-1));
+  nextButton.addEventListener('click', () => slide(1));
+
+  // Auto-play do carrossel
+  let autoplayInterval = setInterval(() => slide(1), 1500);
+
+  // Pausar auto-play quando o mouse estiver sobre o carrossel
+  const container = document.querySelector('#related-animes-section .carousel-container');
+  container.addEventListener('mouseenter', () => clearInterval(autoplayInterval));
+  container.addEventListener('mouseleave', () => {
+    autoplayInterval = setInterval(() => slide(1), 1500);
+  });
 }
 
 // Inicialização da página

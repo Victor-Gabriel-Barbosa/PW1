@@ -20,9 +20,9 @@
   <!-- Conteúdo principal, container centralizado -->
   <div class="container mx-auto px-4 py-12 max-w-6xl">
     <!-- Cabeçalho com título e descrição -->
-    <header class="inicio-header">
-      <h1 class="inicio-title anime-gradient">Animu</h1>
-      <p class="inicio-description">
+    <header class="index-header">
+      <h1 class="index-title anime-gradient">Animu</h1>
+      <p class="index-description">
         Descubra universos infinitos, explore narrativas épicas e mergulhe nas histórias mais fascinantes do mundo dos
         animes.
       </p>
@@ -30,63 +30,63 @@
 
     <!-- Seções principais da página -->
     <section class="section-wrapper">
-      <div class="inicio-sections">
+      <div class="index-sections">
         <!-- Card com últimos reviews -->
-        <div class="inicio-card">
-          <div class="inicio-card-header gradient-purple"></div>
-          <h2 class="inicio-card-title">Últimos Reviews</h2>
-          <ul id="latest-reviews" class="inicio-card-list">
+        <div class="index-card">
+          <div class="index-card-header gradient-purple"></div>
+          <h2 class="index-card-title">Últimos Reviews</h2>
+          <ul id="latest-reviews" class="index-card-list">
             <!-- Reviews serão inseridos dinamicamente -->
           </ul>
         </div>
 
         <!-- Card com categorias populares -->
-        <div class="inicio-card">
-          <div class="inicio-card-header gradient-green"></div>
-          <h2 class="inicio-card-title">Categorias Populares</h2>
-          <ul class="inicio-card-list">
-            <li class="inicio-card-item">
-              <a href="animes.html?category=Shounen" class="inicio-card-link">
-                <span class="inicio-card-link-title">Shounen</span>
-                <p class="inicio-card-link-subtitle">Ação e aventura</p>
+        <div class="index-card">
+          <div class="index-card-header gradient-green"></div>
+          <h2 class="index-card-title">Categorias Populares</h2>
+          <ul class="index-card-list">
+            <li class="index-card-item">
+              <a href="animes.html?category=Shounen" class="index-card-link">
+                <span class="index-card-link-title">Shounen</span>
+                <p class="index-card-link-subtitle">Ação e aventura</p>
               </a>
             </li>
-            <li class="inicio-card-item">
-              <a href="animes.html?category=Slice of Life" class="inicio-card-link">
-                <span class="inicio-card-link-title">Slice of Life</span>
-                <p class="inicio-card-link-subtitle">Histórias cotidianas</p>
+            <li class="index-card-item">
+              <a href="animes.html?category=Slice of Life" class="index-card-link">
+                <span class="index-card-link-title">Slice of Life</span>
+                <p class="index-card-link-subtitle">Histórias cotidianas</p>
               </a>
             </li>
-            <li class="inicio-card-item">
-              <a href="animes.html?category=Mecha" class="inicio-card-link">
-                <span class="inicio-card-link-title">Mecha</span>
-                <p class="inicio-card-link-subtitle">Robôs e tecnologia</p>
+            <li class="index-card-item">
+              <a href="animes.html?category=Mecha" class="index-card-link">
+                <span class="index-card-link-title">Mecha</span>
+                <p class="index-card-link-subtitle">Robôs e tecnologia</p>
               </a>
             </li>
           </ul>
         </div>
 
         <!-- Card com novidades -->
-        <div class="inicio-card">
-          <div class="inicio-card-header gradient-pink"></div>
-          <h2 class="inicio-card-title">Novidades</h2>
-          <ul class="inicio-card-list">
-            <li class="inicio-card-item">
-              <a href="animes.html?status=Anunciado" class="inicio-card-link">
-                <span class="inicio-card-link-title">Próximos Lançamentos</span>
-                <p class="inicio-card-link-subtitle">Animes que vão estrear</p>
+        <div class="index-card">
+          <div class="index-card-header gradient-pink"></div>
+          <h2 class="index-card-title">Novidades</h2>
+          <ul class="index-card-list">
+            <li class="index-card-item">
+              <a href="animes.html?status=Anunciado" class="index-card-link">
+                <span class="index-card-link-title">Próximos Lançamentos</span>
+                <p class="index-card-link-subtitle">Animes que vão estrear</p>
               </a>
             </li>
-            <li class="inicio-card-item">
-              <a href="animes.html?season=inverno&year=2024" class="inicio-card-link">
-                <span class="inicio-card-link-title">Melhores da Temporada</span>
-                <p class="inicio-card-link-subtitle">Top animes do momento</p>
+            <li class="index-card-item">
+              <a href="" id="current-season-link" class="index-card-link">
+                <span class="index-card-link-title">Melhores da Temporada</span>
+                <p class="index-card-link-subtitle" id="current-season-text">Top animes do momento</p>
               </a>
             </li>
-            <li class="inicio-card-item">
-              <a href="recommendation.html" class="inicio-card-link">
-                <span class="inicio-card-link-title">Recomendações</span>
-                <p class="inicio-card-link-subtitle">Seleção especial</p>
+            <li class="index-card-item">
+              <a href="recommendation.html" class="index-card-link">
+                <span class="index-card-link-title">Recomendações</span>
+                <p class="index-card-link-subtitle">Seleção especial</p>
               </a>
             </li>
           </ul>
@@ -99,10 +99,46 @@
     <!-- Seção de animes em destaque -->
     <section class="section-wrapper">
       <h2 class="section-title">Animes em Destaque</h2>
-      <div class="featured-animes-container">
-        <div class="featured-animes">
-          <!-- Os cards serão inseridos dinamicamente aqui -->
+      <div class="carousel-container">
+        <button class="carousel-button prev">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <div class="carousel-wrapper">
+          <div class="carousel-track">
+            <!-- Os cards serão inseridos dinamicamente aqui -->
+          </div>
         </div>
+        <button class="carousel-button next">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Seção de animes da temporada -->
+    <section class="section-wrapper">
+      <h2 class="section-title">Animes da Temporada</h2>
+      <div class="carousel-container seasonal-carousel">
+        <button class="carousel-button prev">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <div class="carousel-wrapper">
+          <div class="carousel-track">
+            <!-- Os cards serão inseridos dinamicamente aqui -->
+          </div>
+        </div>
+        <button class="carousel-button next">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
       </div>
     </section>
 

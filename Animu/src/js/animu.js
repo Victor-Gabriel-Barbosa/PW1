@@ -1,11 +1,9 @@
 // Aguarda o carregamento completo do DOM antes de executar o código
 document.addEventListener('DOMContentLoaded', () => {
-  // Substituir código antigo do tema
   initThemeSystem();
 
   // Controle de visibilidade dos painéis baseado em permissões
   const adminPanel = document.getElementById("admin-panel");
-  const userPanel = document.getElementById("user-panel");
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
 
   if (sessionData?.isAdmin && adminPanel) {
@@ -201,7 +199,7 @@ function calculateHighlightScore(anime, comments) {
 }
 
 // Seleciona animes em destaque baseado em popularidade
-function getFeaturedAnimes(limit = 8) {
+function getFeaturedAnimes(limit = 16) {
   try {
     const animes = JSON.parse(localStorage.getItem('animeData')) || [];
     const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
@@ -237,8 +235,6 @@ function countAnimeFavorites(animeTitle) {
     return 0;
   }
 }
-
-// Adicionar antes da função renderFeaturedAnimes
 
 // Sistema de favoritos
 function isAnimeFavorited(animeTitle) {
@@ -285,20 +281,23 @@ function toggleFavorite(animeTitle) {
   localStorage.setItem('animuUsers', JSON.stringify(users));
 }
 
-// Renderiza seção de animes em destaque
+// Renderiza seção de animes em destaque com carrossel
 function renderFeaturedAnimes() {
-  const featuredContainer = document.querySelector('.featured-animes');
-  if (!featuredContainer) return;
+  const carouselTrack = document.querySelector('.carousel-track');
+  if (!carouselTrack) return;
 
   const featuredAnimes = getFeaturedAnimes();
   const currentUser = JSON.parse(localStorage.getItem('userSession'));
 
   if (featuredAnimes.length === 0) {
-    featuredContainer.innerHTML = '<p class="text-center">Nenhum anime em destaque disponível.</p>';
+    carouselTrack.innerHTML = '<p class="text-center">Nenhum anime em destaque disponível.</p>';
     return;
   }
 
-  featuredContainer.innerHTML = featuredAnimes.map(anime => `
+  // Duplicar os animes para criar efeito infinito
+  const duplicatedAnimes = [...featuredAnimes, ...featuredAnimes, ...featuredAnimes];
+  
+  carouselTrack.innerHTML = duplicatedAnimes.map(anime => `
     <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="anime-card">
       <div class="image-wrapper">
         <img 
@@ -352,6 +351,54 @@ function renderFeaturedAnimes() {
       </div>
     </a>
   `).join('');
+
+  // Configuração do carrossel
+  let currentIndex = featuredAnimes.length; // Começar do conjunto do meio
+  const slideWidth = carouselTrack.querySelector('.anime-card').offsetWidth + 20; // 20 é o margin total
+  
+  // Posicionar no conjunto do meio
+  carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+
+  // Botões de navegação
+  const prevButton = document.querySelector('.carousel-button.prev');
+  const nextButton = document.querySelector('.carousel-button.next');
+  let isTransitioning = false;
+
+  function slide(direction) {
+    if (isTransitioning) return;
+    isTransitioning = true;
+
+    currentIndex += direction;
+    carouselTrack.style.transition = 'transform 0.5s ease-in-out';
+    carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+
+    // Verificar se precisa resetar a posição
+    setTimeout(() => {
+      if (currentIndex >= featuredAnimes.length * 2) {
+        currentIndex = featuredAnimes.length;
+        carouselTrack.style.transition = 'none';
+        carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+      } else if (currentIndex <= 0) {
+        currentIndex = featuredAnimes.length;
+        carouselTrack.style.transition = 'none';
+        carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+      }
+      isTransitioning = false;
+    }, 500);
+  }
+
+  prevButton.addEventListener('click', () => slide(-1));
+  nextButton.addEventListener('click', () => slide(1));
+
+  // Auto-play do carrossel
+  let autoplayInterval = setInterval(() => slide(1), 1500);
+
+  // Pausar auto-play quando o mouse estiver sobre o carrossel
+  const carouselContainer = document.querySelector('.carousel-container');
+  carouselContainer.addEventListener('mouseenter', () => clearInterval(autoplayInterval));
+  carouselContainer.addEventListener('mouseleave', () => {
+    autoplayInterval = setInterval(() => slide(1), 1500);
+  });
 }
 
 // Nova função para gerenciar favoritos a partir do card
@@ -364,16 +411,18 @@ function toggleFavoriteFromCard(animeTitle) {
 
   toggleFavorite(animeTitle);
   
-  // Atualiza o botão específico do card
-  const favoriteBtn = document.querySelector(`[onclick*="${animeTitle}"]`);
-  if (favoriteBtn) {
-    const isFavorited = isAnimeFavorited(animeTitle);
-    favoriteBtn.classList.toggle('is-favorited', isFavorited);
-    const countElement = favoriteBtn.querySelector('.favorite-number');
+  // Atualiza todos os botões do mesmo anime no carrossel
+  const favoriteBtns = document.querySelectorAll(`[onclick*="${animeTitle}"]`);
+  const isFavorited = isAnimeFavorited(animeTitle);
+  const newFavoriteCount = countAnimeFavorites(animeTitle);
+  
+  favoriteBtns.forEach(btn => {
+    btn.classList.toggle('is-favorited', isFavorited);
+    const countElement = btn.querySelector('.favorite-number');
     if (countElement) {
-      countElement.textContent = countAnimeFavorites(animeTitle);
+      countElement.textContent = newFavoriteCount;
     }
-  }
+  });
 }
 
 // Função para carregar os últimos reviews
@@ -514,10 +563,177 @@ function formatDate(dateStr) {
   });
 }
 
+// Seleciona animes da temporada atual
+function getSeasonalAnimes(limit = 12) {
+  try {
+    const animes = JSON.parse(localStorage.getItem('animeData')) || [];
+    const currentSeason = getCurrentSeason();
+    
+    // Filtra animes da temporada atual
+    const seasonalAnimes = animes.filter(anime => {
+      // Verifica se tem a propriedade season e se os valores correspondem
+      return anime.season?.period?.toLowerCase() === currentSeason.season.toLowerCase() && 
+             parseInt(anime.season?.year) === currentSeason.year;
+    });
+
+    // Ordena por pontuação antes de retornar
+    return seasonalAnimes
+      .sort((a, b) => (parseFloat(b.score) || 0) - (parseFloat(a.score) || 0))
+      .slice(0, limit);
+  } catch (e) {
+    console.error('Erro ao obter animes da temporada:', e);
+    return [];
+  }
+}
+
+// Determina a temporada atual
+function getCurrentSeason() {
+  const date = new Date();
+  const month = date.getMonth();
+  
+  let season;
+  if (month >= 0 && month < 3) season = 'Inverno';
+  else if (month >= 3 && month < 6) season = 'Primavera';
+  else if (month >= 6 && month < 9) season = 'Verão';
+  else season = 'Outono';
+
+  return {
+    season,
+    year: date.getFullYear()
+  };
+}
+
+// Renderiza seção de animes da temporada
+function renderSeasonalAnimes() {
+  const carouselTrack = document.querySelector('.seasonal-carousel .carousel-track');
+  if (!carouselTrack) return;
+
+  const seasonalAnimes = getSeasonalAnimes();
+  const currentUser = JSON.parse(localStorage.getItem('userSession'));
+
+  if (seasonalAnimes.length === 0) {
+    carouselTrack.innerHTML = '<p class="text-center">Nenhum anime da temporada disponível.</p>';
+    return;
+  }
+
+  // Duplica os animes para criar efeito infinito
+  const duplicatedAnimes = [...seasonalAnimes, ...seasonalAnimes, ...seasonalAnimes];
+  
+  carouselTrack.innerHTML = duplicatedAnimes.map(anime => `
+    <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="anime-card">
+      <div class="image-wrapper">
+        <img 
+          src="${anime.coverImage}" 
+          alt="${anime.primaryTitle}" 
+          class="anime-image"
+          onerror="this.src='https://ui-avatars.com/api/?name=Anime&background=8B5CF6&color=fff'">
+        
+        <div class="quick-info">
+          <span class="info-pill">⭐ ${Number(anime.score).toFixed(1)}</span>
+          <span class="info-pill">
+            <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-4h2v2h-2v-2zm0-2h2V7h-2v7z"/>
+            </svg>
+            ${anime.episodes > 0 ? anime.episodes : '?'}
+          </span>
+        </div>
+      </div>
+
+      <div class="anime-info">
+        <h3 class="anime-title line-clamp-2">${anime.primaryTitle}</h3>
+        <div class="anime-meta">
+          <span class="meta-item">
+            <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/>
+            </svg>
+            ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}
+          </span>
+          <button 
+            class="meta-item favorite-count ${isAnimeFavorited(anime.primaryTitle) ? 'is-favorited' : ''}"
+            onclick="event.preventDefault(); toggleFavoriteFromCard('${anime.primaryTitle}')"
+            ${!currentUser ? 'title="Faça login para favoritar"' : ''}
+          >
+            <svg class="meta-icon heart-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+            <span class="favorite-number">${countAnimeFavorites(anime.primaryTitle)}</span>
+          </button>
+        </div>
+      </div>
+    </a>
+  `).join('');
+
+  // Configuração do carrossel
+  let currentIndex = seasonalAnimes.length;
+  const slideWidth = carouselTrack.querySelector('.anime-card').offsetWidth + 20;
+  
+  carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+
+  // Botões de navegação
+  const prevButton = document.querySelector('.seasonal-carousel .carousel-button.prev');
+  const nextButton = document.querySelector('.seasonal-carousel .carousel-button.next');
+  let isTransitioning = false;
+
+  function slide(direction) {
+    if (isTransitioning) return;
+    isTransitioning = true;
+
+    currentIndex += direction;
+    carouselTrack.style.transition = 'transform 0.5s ease-in-out';
+    carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+
+    setTimeout(() => {
+      if (currentIndex >= seasonalAnimes.length * 2) {
+        currentIndex = seasonalAnimes.length;
+        carouselTrack.style.transition = 'none';
+        carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+      } else if (currentIndex <= 0) {
+        currentIndex = seasonalAnimes.length;
+        carouselTrack.style.transition = 'none';
+        carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+      }
+      isTransitioning = false;
+    }, 500);
+  }
+
+  prevButton.addEventListener('click', () => slide(-1));
+  nextButton.addEventListener('click', () => slide(1));
+
+  // Auto-play do carrossel
+  let autoplayInterval = setInterval(() => slide(1), 3000);
+
+  // Pausar auto-play no hover
+  const carouselContainer = document.querySelector('.seasonal-carousel');
+  carouselContainer.addEventListener('mouseenter', () => clearInterval(autoplayInterval));
+  carouselContainer.addEventListener('mouseleave', () => {
+    autoplayInterval = setInterval(() => slide(1), 3000);
+  });
+}
+
+// Atualiza o link da temporada atual no card de Novidades
+function updateCurrentSeasonLink() {
+  const currentSeason = getCurrentSeason();
+  const seasonLink = document.getElementById('current-season-link');
+  const seasonText = document.getElementById('current-season-text');
+  
+  if (seasonLink && seasonText) {
+    const seasonName = currentSeason.season.toLowerCase();
+    const year = currentSeason.year;
+    
+    // Atualiza o href com a temporada atual
+    seasonLink.href = `animes.html?season=${seasonName}&year=${year}`;
+    
+    // Atualiza o texto com a temporada atual
+    seasonText.textContent = `Top animes de ${currentSeason.season} ${year}`;
+  }
+}
+
 // Inicialização da página
 window.addEventListener('DOMContentLoaded', () => {
   updateUserInterface();
+  updateCurrentSeasonLink(); 
   renderFeaturedAnimes(); 
+  renderSeasonalAnimes();
   loadLatestReviews();
   renderPopularCategories(); 
   renderIndexNews();

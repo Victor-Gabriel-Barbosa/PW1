@@ -25,6 +25,7 @@
   margin-bottom: 2em;
   position: relative;
   text-align: center;
+  animation: slideFromTop 1s ease-out;
 }
 
 .form-title::after {
@@ -54,11 +55,19 @@ section {
   background: linear-gradient(145deg, var(--background), rgba(138, 43, 226, 0.05));
   border: 1px solid rgba(138, 43, 226, 0.1);
   transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease-out;
 }
 
 section:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px var(--card-shadow);
+  transform: translateY(-5px) scale(1.01);
+  transition: all 0.3s ease;
+}
+
+section.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .resource-list {
@@ -80,6 +89,8 @@ section:hover {
   transition: all 0.3s ease;
   position: relative;
   padding-left: 30px;
+  opacity: 0;
+  animation: slideFromLeft 0.5s ease-out forwards;
 }
 
 .resource-list li:before {
@@ -88,6 +99,22 @@ section:hover {
   color: var(--primary-color);
   animation: float 3s ease-in-out infinite;
 }
+
+.resource-list li:nth-child(odd) {
+  animation: slideFromLeft 0.5s ease-out forwards;
+}
+
+.resource-list li:nth-child(even) {
+  animation: slideFromRight 0.5s ease-out forwards;
+}
+
+/* Atrasar a animação de cada item da lista */
+.resource-list li:nth-child(1) { animation-delay: 0.1s; }
+.resource-list li:nth-child(2) { animation-delay: 0.2s; }
+.resource-list li:nth-child(3) { animation-delay: 0.3s; }
+.resource-list li:nth-child(4) { animation-delay: 0.4s; }
+.resource-list li:nth-child(5) { animation-delay: 0.5s; }
+.resource-list li:nth-child(6) { animation-delay: 0.6s; }
 
 .tag-container {
   display: grid;
@@ -105,12 +132,20 @@ section:hover {
   text-align: center;
   transform-origin: center;
   transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  animation: fadeInScale 0.5s ease-out backwards;
 }
 
 .tag:hover {
-  transform: translateY(-5px) scale(1.05);
-  box-shadow: 0 10px 20px rgba(138, 43, 226, 0.3);
+  transform: translateY(-5px) scale(1.1);
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
+
+.tag:nth-child(1) { animation-delay: 0.1s; }
+.tag:nth-child(2) { animation-delay: 0.2s; }
+.tag:nth-child(3) { animation-delay: 0.3s; }
+.tag:nth-child(4) { animation-delay: 0.4s; }
+.tag:nth-child(5) { animation-delay: 0.5s; }
+.tag:nth-child(6) { animation-delay: 0.6s; }
 
 .contact-section {
   display: grid;
@@ -126,6 +161,7 @@ section:hover {
   display: flex;
   align-items: center;
   gap: 10px;
+  animation: slideFromRight 0.5s ease-out backwards;
 }
 
 .contact-link:hover {
@@ -133,6 +169,10 @@ section:hover {
   color: white;
   transform: translateX(10px);
 }
+
+.contact-link:nth-child(1) { animation-delay: 0.2s; }
+.contact-link:nth-child(2) { animation-delay: 0.4s; }
+.contact-link:nth-child(3) { animation-delay: 0.6s; }
 
 .version-info {
   display: flex;
@@ -152,6 +192,8 @@ section:hover {
   color: white;
   font-size: 0.9em;
   font-weight: 600;
+  background-size: 200% 200%;
+  animation: gradientShift 5s ease infinite;
 }
 
 .team-info {
@@ -160,6 +202,10 @@ section:hover {
   border-radius: 20px;
   position: relative;
   overflow: hidden;
+}
+
+.about-form img {
+  animation: fadeInScale 1.2s ease-out;
 }
 
 @keyframes pulse {
@@ -180,6 +226,64 @@ section:hover {
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
+}
+
+/* Novas animações */
+@keyframes slideFromTop {
+  0% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideFromLeft {
+  0% {
+    transform: translateX(-100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideFromRight {
+  0% {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInScale {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
 @media (max-width: 768px) {

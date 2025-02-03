@@ -58,37 +58,37 @@ document.addEventListener('DOMContentLoaded', function () {
     tr.className = 'border-b border-gray-200 hover:bg-gray-500';
 
     tr.innerHTML = `
-            <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                    <img class="h-10 w-10 rounded-full object-cover"
-                         src="${user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=8B5CF6&color=ffffff&size=100`}"
-                         alt="${user.username}">
-                    <div class="ml-4">
-                        <div class="font-medium">${user.username}</div>
-                    </div>
-                </div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">${user.email}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-center">
-                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                            ${user.isAdmin ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'}">
-                    ${user.isAdmin ? 'Admin' : 'Usuário'}
-                </span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-center">${formatDate(user.createdAt)}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-center">
-                <div class="flex justify-center gap-2">
-                    <button onclick="toggleAdminStatus('${user.id}')"
-                            class="text-sm bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-700 transition-colors">
-                        ${user.isAdmin ? 'Remover Admin' : 'Tornar Admin'}
-                    </button>
-                    <button onclick="deleteUser('${user.id}')"
-                            class="text-sm bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition-colors">
-                        Excluir
-                    </button>
-                </div>
-            </td>
-        `;
+      <td class="px-6 py-4 whitespace-nowrap">
+        <div class="flex items-center">
+          <img class="h-10 w-10 rounded-full object-cover"
+               src="${user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=8B5CF6&color=ffffff&size=100`}"
+               alt="${user.username}">
+          <div class="ml-4">
+            <div class="font-medium">${user.username}</div>
+          </div>
+        </div>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap">${user.email}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-center">
+        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+              ${user.isAdmin ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'}">
+              ${user.isAdmin ? 'Admin' : 'Usuário'}
+        </span>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-center">${formatDate(user.createdAt)}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-center">
+        <div class="flex justify-center gap-2">
+          <button onclick="toggleAdminStatus('${user.id}')"
+                  class="text-sm bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-700 transition-colors">
+                  ${user.isAdmin ? 'Remover Admin' : 'Tornar Admin'}
+          </button>
+          <button onclick="deleteUser('${user.id}')"
+                  class="text-sm bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition-colors">
+            Excluir
+          </button>
+        </div>
+      </td>
+    `;
     return tr;
   }
 

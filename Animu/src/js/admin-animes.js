@@ -318,7 +318,7 @@ function editAnime(index) {
       document.getElementById('episodeDuration').value = anime.episodeDuration || '';
       document.getElementById('status').value = anime.status || 'Em Exibição';
       document.getElementById('ageRating').value = anime.ageRating || 'Livre';
-      document.getElementById('seasonPeriod').value = anime.season?.period || 'Inverno';
+      document.getElementById('seasonPeriod').value = anime.season?.period || 'inverno';
       
       // Formatar a data para o formato yyyy-MM-dd
       const releaseDate = anime.releaseDate ? new Date(anime.releaseDate).toISOString().split('T')[0] : '';
@@ -735,19 +735,28 @@ function setupMediaRemoval() {
     document.getElementById('coverImageInput').value = '';
   });
 
-  // Setup para remover trailer
+  // Setup para remover trailer - Atualizado
   const removeTrailerBtn = document.getElementById('removeTrailer');
   removeTrailerBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
     const trailerPreview = document.getElementById('trailerPreview');
-    const trailerPrompt = document.getElementById('trailerDropzone').querySelector('.drop-zone-prompt');
+    const trailerDropzone = document.getElementById('trailerDropzone');
+    const trailerContent = trailerDropzone.querySelector('.drop-zone-content');
     
+    // Limpa o preview e esconde
     trailerPreview.innerHTML = '';
     trailerPreview.classList.add('hidden');
+    
+    // Mostra o conteúdo original
+    trailerContent.classList.remove('hidden');
+    
+    // Esconde o botão de remover
     removeTrailerBtn.classList.add('hidden');
-    trailerPrompt.classList.remove('hidden');
+    
+    // Limpa os campos de input
     document.getElementById('trailerUrl').value = '';
     document.getElementById('trailerInput').value = '';
+    document.getElementById('trailerUrlInput').value = '';
   });
 }
 
@@ -1317,12 +1326,12 @@ function translateRating(rating) {
 
 function translateSeason(season) {
   const seasonMap = {
-    'winter': 'Inverno',
-    'spring': 'Primavera',
-    'summer': 'Verão',
-    'fall': 'Outono'
+    'winter': 'inverno',
+    'spring': 'primavera',
+    'summer': 'verão',
+    'fall': 'outono'
   };
-  return seasonMap[season?.toLowerCase()] || 'Inverno';
+  return seasonMap[season?.toLowerCase()] || 'inverno';
 }
 
 // Adicione um evento de entrada direta para o campo malUrl
@@ -1451,4 +1460,69 @@ function detectLanguage(text) {
   if (japanesePattern.test(text)) return 'ja';
   if (portugueseWords.test(text)) return 'pt';
   return 'en'; // assume inglês como padrão
+}
+
+// Atualiza a visualização de acordo com o tipo de mídia
+function updatePreview(inputId) {
+  const input = document.getElementById(inputId);
+  const preview = input.id === 'coverImage' ? 
+    document.getElementById('coverImagePreview') : 
+    document.getElementById('trailerPreview');
+  const prompt = preview.previousElementSibling;
+  const removeBtn = input.id === 'coverImage' ? 
+    document.getElementById('removeCoverImage') : 
+    document.getElementById('removeTrailer');
+
+  if (!input.value) {
+    preview.src = '';
+    preview.innerHTML = '';
+    preview.classList.add('hidden');
+    prompt.classList.remove('hidden');
+    removeBtn.classList.add('hidden');
+    return;
+  }
+
+  if (input.id === 'coverImage') {
+    preview.src = input.value;
+    preview.classList.remove('hidden');
+    prompt.classList.add('hidden');
+    removeBtn.classList.remove('hidden');
+  } else if (input.id === 'trailerUrl') {
+    const videoId = extractYouTubeId(input.value);
+    if (videoId) {
+      preview.innerHTML = `
+        <iframe
+          width="280"
+          height="157"
+          src="https://www.youtube.com/embed/${videoId}"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      `;
+      preview.classList.remove('hidden');
+      prompt.classList.add('hidden');
+      removeBtn.classList.remove('hidden');
+    }
+  }
+}
+
+function saveAnime(animeData) {
+  try {
+    const animes = JSON.parse(localStorage.getItem('animeData')) || [];
+    
+    // Garante que os dados da temporada estão estruturados corretamente
+    if (animeData.seasonPeriod && animeData.releaseDate) {
+      animeData.season = {
+        period: animeData.seasonPeriod,
+        year: new Date(animeData.releaseDate).getFullYear()
+      };
+    }
+    delete animeData.seasonPeriod; // Remove o campo avulso
+
+    // ... resto do código de salvamento ...
+  } catch (e) {
+    console.error('Erro ao salvar anime:', e);
+    return false;
+  }
 }

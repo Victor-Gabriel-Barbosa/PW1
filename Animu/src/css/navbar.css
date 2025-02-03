@@ -690,7 +690,6 @@ body.menu-open {
     left: 8px;
   }
 
-  /* Remove estilo do botão de toggle */
   .nav-toggle-btn {
     display: none;
   }

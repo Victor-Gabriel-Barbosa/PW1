@@ -2,7 +2,7 @@ class NewsManager {
   constructor() {
     // Carrega dados do localStorage e configura listeners globais
     this.newsData = JSON.parse(localStorage.getItem('news') || '[]');
-    
+
     // Listeners para sincronização de dados entre abas
     window.addEventListener('newsUpdated', () => this.refreshData());
     window.addEventListener('storage', (e) => {
@@ -17,7 +17,7 @@ class NewsManager {
     // Inicializa grid com base no contexto da página
     const newsGrid = document.querySelector('.news-grid');
     if (newsGrid) {
-      this.currentPage === 'news' 
+      this.currentPage === 'news'
         ? this.initializeFilters()
         : this.currentPage === 'index' && this.renderNewsGrid(newsGrid, 4);
     }
@@ -79,7 +79,7 @@ class NewsManager {
     // Atualizar URL e histórico se necessário
     if (updateHistory) {
       const url = viewName === 'detail' ? `news.html?id=${params}` : 'news.html';
-      history.pushState({view: viewName, params}, '', url);
+      history.pushState({ view: viewName, params }, '', url);
     }
 
     // Atualizar título e metadata
@@ -93,7 +93,7 @@ class NewsManager {
       });
     }
 
-    // Rolar para o topo da página
+    // Rola para o topo da página
     window.scrollTo(0, 0);
   }
 
@@ -131,10 +131,10 @@ class NewsManager {
   }
 
   createNewsCard(news) {
-    const readMoreLink = this.currentPage === 'index' 
+    const readMoreLink = this.currentPage === 'index'
       ? `news.html?id=${news.id}`  // Link direto para página de notícias quando na index
       : `javascript:void(0)`; // Link JavaScript quando na página de notícias
-    
+
     const onClickHandler = this.currentPage === 'index'
       ? ''  // Sem handler quando na index
       : `onclick="event.preventDefault(); newsManager.switchToView('detail', '${news.id}')"`;
@@ -176,7 +176,7 @@ class NewsManager {
 
   renderNewsGrid(container, limit = null, newsData = null) {
     if (!container) return;
-    
+
     // Ordena as notícias por data, mais recentes primeiro
     const sortedNews = newsData || [...this.newsData].sort((a, b) =>
       new Date(b.date) - new Date(a.date)
@@ -358,19 +358,19 @@ class NewsManager {
 
   createRelatedNewsCard(news) {
     return `
-            <a href="javascript:void(0)" 
-               onclick="event.preventDefault(); newsManager.switchToView('detail', '${news.id}')" 
-               class="related-news-card">
-                <div class="news-image-container">
-                    <img src="${news.image}" alt="${news.title}" class="news-image">
-                    <span class="news-category">${news.category}</span>
-                </div>
-                <div class="news-content">
-                    <h4 class="text-lg font-semibold mb-2">${news.title}</h4>
-                    <p class="text-sm opacity-75 line-clamp-2">${news.summary}</p>
-                </div>
-            </a>
-        `;
+      <a href="javascript:void(0)" 
+         onclick="event.preventDefault(); newsManager.switchToView('detail', '${news.id}')" 
+         class="related-news-card">
+        <div class="news-image-container">
+          <img src="${news.image}" alt="${news.title}" class="news-image">
+          <span class="news-category">${news.category}</span>
+        </div>
+        <div class="news-content">
+          <h4 class="text-lg font-semibold mb-2">${news.title}</h4>
+          <p class="text-sm opacity-75 line-clamp-2">${news.summary}</p>
+        </div>
+      </a>
+    `;
   }
 
   updateMetaTags(news) {

@@ -55,14 +55,29 @@ function getCurrentUser() {
 function loadGenreBasedRecommendations(user) {
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
   const favoriteGenres = user.favoriteGenres || [];
-  
-  // Calcular pontuação de correspondência para cada anime
+  const watchedAnimes = user.watchedAnimes || [];
+  const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
+
+  // Calcular pontuação baseada em múltiplos fatores
   const recommendations = animes
     .map(anime => {
-      const matchScore = calculateGenreMatchScore(anime.genres, favoriteGenres);
-      return { ...anime, matchScore };
+      const genreScore = calculateGenreMatchScore(anime.genres, favoriteGenres);
+      const watchHistoryScore = calculateWatchHistoryScore(anime, user, comments);
+      const ratingScore = calculateRatingScore(anime, comments);
+      
+      const totalScore = (genreScore * 0.5) + (watchHistoryScore * 0.3) + (ratingScore * 0.2);
+      
+      return { 
+        ...anime, 
+        matchScore: totalScore,
+        matchDetails: {
+          genreScore,
+          watchHistoryScore,
+          ratingScore
+        }
+      };
     })
-    .filter(anime => !user.watchedAnimes?.includes(anime.primaryTitle))
+    .filter(anime => !watchedAnimes.includes(anime.primaryTitle))
     .sort((a, b) => b.matchScore - a.matchScore)
     .slice(0, 8);
 
@@ -110,14 +125,14 @@ function loadTrendingRecommendations() {
 
 // Calcula porcentagem de compatibilidade entre gêneros do anime e preferências do usuário
 function calculateGenreMatchScore(animeGenres, userGenres) {
-  if (!userGenres?.length || !animeGenres?.length) return 0;
+  if (!userGenres?.length || !animeGenres?.length) return 50; // Valor padrão em vez de 0
   
   const matchingGenres = animeGenres.filter(genre => 
     userGenres.includes(genre)
   );
   
   const matchScore = (matchingGenres.length / userGenres.length) * 100;
-  return Math.min(matchScore, 100); // Limita o score a 100%
+  return isNaN(matchScore) ? 50 : Math.min(matchScore, 100);
 }
 
 // Determina similaridade entre um anime e histórico do usuário
@@ -146,6 +161,57 @@ function calculatePopularityScore(anime, comments) {
   const watchCount = animeComments.length * 5; // Adiciona peso para quantidade de visualizações
   
   return commentScore + ratingScore + watchCount;
+}
+
+function calculateWatchHistoryScore(anime, user, comments) {
+  if (!user.watchedAnimes?.length) return 50; // Valor padrão para usuários sem histórico
+
+  const watchedGenres = new Map();
+  const watchedStudios = new Map();
+  
+  // Analisa histórico de visualização
+  user.watchedAnimes?.forEach(watchedTitle => {
+    const watchedAnime = JSON.parse(localStorage.getItem('animeData'))
+      .find(a => a.primaryTitle === watchedTitle);
+    
+    if (watchedAnime) {
+      // Contagem de gêneros assistidos
+      watchedAnime.genres?.forEach(genre => {
+        watchedGenres.set(genre, (watchedGenres.get(genre) || 0) + 1);
+      });
+      
+      // Contagem de estúdios assistidos
+      watchedStudios.set(watchedAnime.studio, (watchedStudios.get(watchedAnime.studio) || 0) + 1);
+    }
+  });
+
+  // Calcula score baseado em padrões de visualização
+  let score = 0;
+  
+  // Pontos por gêneros frequentemente assistidos
+  anime.genres?.forEach(genre => {
+    const genreCount = watchedGenres.get(genre) || 0;
+    score += (genreCount / (user.watchedAnimes?.length || 1)) * 30;
+  });
+  
+  // Pontos por estúdio favorito
+  const studioCount = watchedStudios.get(anime.studio) || 0;
+  score += (studioCount / (user.watchedAnimes?.length || 1)) * 20;
+
+  // Garante que o score seja um número válido
+  return isNaN(score) ? 50 : Math.min(score, 100);
+}
+
+function calculateRatingScore(anime, comments) {
+  const animeComments = comments[anime.primaryTitle] || [];
+  const ratings = animeComments.map(c => c.rating).filter(Boolean);
+  
+  if (ratings.length === 0) return 50; // Score neutro para animes sem avaliações
+
+  const avgRating = ratings.reduce((sum, rating) => sum + Number(rating), 0) / ratings.length;
+  const normalizedScore = (avgRating / 5) * 100;
+  
+  return isNaN(normalizedScore) ? 50 : Math.min(normalizedScore, 100);
 }
 
 // Renderiza cards de recomendação com lazy loading de imagens
@@ -186,6 +252,11 @@ function renderRecommendations(recommendations, containerId) {
     // Debug dos valores
     console.log('Anime:', anime.primaryTitle, 'Score original:', anime.score, 'Score formatado:', formattedScore);
 
+    const { genreScore = 50, watchHistoryScore = 50, ratingScore = 50 } = anime.matchDetails || {};
+    
+    // Garante que matchScore seja um número válido
+    const matchScore = isNaN(anime.matchScore) ? 50 : Math.round(anime.matchScore);
+
     return `
       <div class="recommendation-card group">
         <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
@@ -200,13 +271,20 @@ function renderRecommendations(recommendations, containerId) {
               <h3 class="recommendation-title text-lg font-semibold mb-2 text-white line-clamp-2">
                 ${anime.primaryTitle}
               </h3>
-              <div class="flex justify-between items-center">
-                <span class="recommendation-match bg-purple-600 text-white px-2 py-1 rounded-full text-sm">
-                  ${Math.round(anime.matchScore)}% Match
-                </span>
-                <span class="text-sm bg-black/50 px-2 py-1 rounded text-white">
-                  ⭐ ${formattedScore}
-                </span>
+              <div class="flex flex-col gap-1">
+                <div class="flex justify-between items-center">
+                  <span class="recommendation-match bg-purple-600 text-white px-2 py-1 rounded-full text-sm">
+                    ${matchScore}% Match
+                  </span>
+                  <span class="text-sm bg-black/50 px-2 py-1 rounded text-white">
+                    ⭐ ${formattedScore}
+                  </span>
+                </div>
+                <div class="flex gap-2 text-xs text-white/80">
+                  <span title="Compatibilidade de Gênero">🎭 ${Math.round(genreScore) || 0}%</span>
+                  <span title="Baseado no Histórico">📺 ${Math.round(watchHistoryScore) || 0}%</span>
+                  <span title="Avaliações">⭐ ${Math.round(ratingScore) || 0}%</span>
+                </div>
               </div>
             </div>
           </div>

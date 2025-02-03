@@ -311,7 +311,6 @@ body.dark-mode {
   --card-shadow: var(--card-shadow-dark);
 }
 
-/* Substitui os estilos do seletor de tema */
 .theme-selector {
   position: relative;
 }
