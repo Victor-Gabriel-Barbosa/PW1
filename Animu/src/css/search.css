@@ -220,18 +220,21 @@
 @media (max-width: 768px) {
   .search-container {
     max-width: 100%;
+    min-width: 0; 
   }
 
   .search-input {
     font-size: 14px;
     height: 32px;
-    padding: 0 12px; 
+    padding: 0 32px 0 12px; 
+    min-width: 120px;
   }
 
   .search-button,
   .filter-btn {
     height: 32px; 
-    padding: 0 8px; 
+    padding: 0 6px;
+    min-width: 32px; 
   }
 
   .search-icon {
@@ -278,6 +281,29 @@
 }
 
 @media (max-width: 480px) {
+  .search-container {
+    max-width: calc(100vw - 180px); 
+  }
+
+  .search-input {
+    font-size: 13px;
+    height: 30px;
+    padding: 0 28px 0 8px; 
+    min-width: 80px; 
+  }
+
+  .search-button,
+  .filter-btn {
+    height: 30px;
+    padding: 0 4px;
+  }
+
+  .search-button svg,
+  .filter-btn svg {
+    width: 18px; 
+    height: 18px;
+  }
+
   .filter-menu {
     position: fixed;
     top: 56px;
@@ -322,6 +348,14 @@
 
 /* Adiciona breakpoint específico para telas ainda menores */
 @media (max-width: 380px) {
+  .search-container {
+    max-width: calc(100vw - 160px); /* Reduz ainda mais em telas muito pequenas */
+  }
+
+  .search-input {
+    min-width: 60px; /* Reduz ainda mais a largura mínima */
+  }
+
   .filter-menu {
     top: 48px;
     max-height: calc(100vh - 48px);

@@ -304,6 +304,24 @@ button:disabled {
   padding-right: 8px; 
 }
 
+/* Personalização do seletor de data */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(35%) sepia(63%) saturate(710%) hue-rotate(247deg) brightness(84%) contrast(92%);
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  opacity: 0.8;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* Ajuste para modo escuro */
+.dark input[type="date"]::-webkit-calendar-picker-indicator,
+body.dark-mode input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(35%) sepia(63%) saturate(710%) hue-rotate(247deg) brightness(84%) contrast(92%);
+}
+
 /* 4.3. Tema */
 body.dark-mode {
   --background: var(--background-dark);

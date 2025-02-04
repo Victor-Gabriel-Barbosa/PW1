@@ -14,10 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
   loadAnimesList();
   setupDropZone('coverImageDropzone', 'coverImageInput', 'coverImage', 'coverImagePreview', handleImageDrop);
   setupDropZone('trailerDropzone', 'trailerInput', 'trailerUrl', 'trailerPreview', handleVideoDrop);
-  setupMediaRemoval(); // Adicione esta linha
+  setupMediaRemoval();
   initializeCategorySelector();
   setupDateInput();
-  updateFormProgress(); // Atualização inicial
+  updateFormProgress(); 
 });
 
 // Carrega lista de animes
@@ -26,43 +26,42 @@ function loadAnimesList() {
   const tbody = document.getElementById('animesList');
 
   tbody.innerHTML = animes.map((anime, index) => `
-        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-            <td class="px-6 py-4 whitespace-nowrap">
-                <img src="${anime.coverImage}" alt="${anime.primaryTitle}" 
-                     class="h-20 w-14 object-cover rounded">
-            </td>
-            <td class="px-6 py-4">
-                <div class="text-sm font-medium">${anime.primaryTitle}</div>
-                <div class="text-sm text-gray-500">${anime.alternativeTitles[0]?.title || ''}</div>
-            </td>
-            <td class="px-6 py-4 text-sm">
-                ${anime.episodes || 'N/A'}
-            </td>
-            <td class="px-6 py-4 text-sm">
-                <span class="px-2 py-1 rounded-full ${getStatusClass(anime.status)}">
-                    ${anime.status || 'N/A'}
-                </span>
-            </td>
-            <td class="px-6 py-4 text-sm">
-              <div class="action-buttons">
-                <button class="btn-action btn-edit" title="Editar" onclick="editAnime(${index})">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                  </svg>
-                </button>
-                <button class="btn-action btn-delete" title="Remover" onclick="deleteAnime(${index})">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 6h18"></path>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                    <line x1="10" y1="11" x2="10" y2="17"></line>
-                    <line x1="14" y1="11" x2="14" y2="17"></line>
-                  </svg>
-                </button>
-              </div>
-            </td>
-        </tr>
-    `).join('');
+    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+      <td class="px-6 py-4 whitespace-nowrap">
+        <img src="${anime.coverImage}" alt="${anime.primaryTitle}" class="h-20 w-14 object-cover rounded">
+      </td>
+      <td class="px-6 py-4">
+        <div class="text-sm font-medium">${anime.primaryTitle}</div>
+        <div class="text-sm text-gray-500">${anime.alternativeTitles[0]?.title || ''}</div>
+      </td>
+      <td class="px-6 py-4 text-sm">
+        ${anime.episodes || 'N/A'}
+      </td>
+      <td class="px-6 py-4 text-sm">
+        <span class="px-2 py-1 rounded-full ${getStatusClass(anime.status)}">
+          ${anime.status || 'N/A'}
+        </span>
+      </td>
+      <td class="px-6 py-4 text-sm">
+        <div class="action-buttons">
+          <button class="btn-action btn-edit" title="Editar" onclick="editAnime(${index})">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+          </button>
+          <button class="btn-action btn-delete" title="Remover" onclick="deleteAnime(${index})">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 6h18"></path>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              <line x1="10" y1="11" x2="10" y2="17"></line>
+              <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
 }
 
 // Retorna classe CSS baseada no status do anime
@@ -99,7 +98,7 @@ function showAnimeForm() {
     producers = [];
     licensors = [];
     
-    // Limpar previews e valores dos campos de imagem e trailer
+    // Limpa os previews e valores dos campos de imagem e trailer
     const coverPreview = document.getElementById('coverImagePreview');
     const coverPrompt = coverPreview.previousElementSibling;
     const removeCoverBtn = document.getElementById('removeCoverImage');
@@ -107,7 +106,7 @@ function showAnimeForm() {
     coverPreview.src = '';
     coverPreview.classList.add('hidden');
     coverPrompt.classList.remove('hidden');
-    removeCoverBtn.classList.add('hidden'); // Garante que o botão de remover está oculto
+    removeCoverBtn.classList.add('hidden'); 
     document.getElementById('coverImage').value = '';
     
     const trailerPreview = document.getElementById('trailerPreview');
@@ -117,10 +116,10 @@ function showAnimeForm() {
     trailerPreview.innerHTML = '';
     trailerPreview.classList.add('hidden');
     trailerPrompt.classList.remove('hidden');
-    removeTrailerBtn.classList.add('hidden'); // Garante que o botão de remover está oculto
+    removeTrailerBtn.classList.add('hidden');
     document.getElementById('trailerUrl').value = '';
     
-    // Atualizar todas as listas
+    // Atualiza todas as listas
     updateAlternativeTitlesList();
     updateGenresList();
     updateProducersList();
@@ -179,7 +178,6 @@ function removeAlternativeTitle(index) {
 function addGenre() {
   const input = document.getElementById('genreInput');
   const genre = input.value.trim();
-  const availableCategories = new CategoryDisplay().getCategories();
 
   if (!genre) {
     alert('Por favor, selecione uma categoria.');
@@ -554,7 +552,7 @@ function setupDropZone(dropzoneId, inputId, urlInputId, previewId, dropHandler) 
     dropZone.classList.add('drag-over');
   });
 
-  // Adicione suporte para drag and drop de texto (URLs)
+  // Adiciona suporte para drag and drop de texto (URLs)
   dropZone.addEventListener('drop', (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -580,7 +578,7 @@ function setupDropZone(dropzoneId, inputId, urlInputId, previewId, dropHandler) 
     }
   });
 
-  // Adicione suporte para colar URLs
+  // Adiciona suporte para colar URLs
   dropZone.addEventListener('paste', (e) => {
     e.preventDefault();
     const text = e.clipboardData.getData('text');
@@ -710,7 +708,6 @@ function extractYouTubeId(url) {
   return null;
 }
 
-// Adicione também um listener para o input de URL direta
 document.getElementById('trailerUrl').addEventListener('input', function(e) {
   const url = e.target.value.trim();
   if (url) {
@@ -718,7 +715,6 @@ document.getElementById('trailerUrl').addEventListener('input', function(e) {
   }
 });
 
-// Adicione essas funções após setupDropZone
 function setupMediaRemoval() {
   // Setup para remover imagem de capa
   const removeCoverBtn = document.getElementById('removeCoverImage');
@@ -1167,11 +1163,7 @@ function enableDragAndDrop(dropzoneId, inputId, acceptedTypes) {
 
 // Função auxiliar para lidar com upload de arquivos
 function handleFileUpload(file, inputId) {
-  // Aqui você implementaria a lógica de upload do arquivo
-  // Por exemplo, usando FormData e fetch para enviar ao servidor
   console.log(`Upload do arquivo ${file.name} para o campo ${inputId}`);
-  
-  // Preview temporário
   const reader = new FileReader();
   reader.onload = (e) => {
     document.getElementById(inputId).value = e.target.result;
@@ -1291,7 +1283,7 @@ async function autoFillFromMal() {
   }
 }
 
-// Adicione esta nova função de tradução de fonte
+// Função de tradução de fonte
 function translateSource(source) {
   const sourceMap = {
     'Manga': 'Manga',
@@ -1299,19 +1291,18 @@ function translateSource(source) {
     'Original': 'Original',
     'Visual Novel': 'Visual Novel',
     'Game': 'Game',
-    'Other': 'Other',
+    'Other': 'Outro',
     'Novel': 'Light Novel',
     'Web manga': 'Manga',
     '4-koma manga': 'Manga',
-    'Book': 'Other',
-    'Picture book': 'Other',
+    'Book': 'Outro',
+    'Picture book': 'Outro',
     'Card game': 'Game',
-    'Mixed media': 'Other'
+    'Mixed media': 'Outro'
   };
-  return sourceMap[source] || 'Other';
+  return sourceMap[source] || 'Outro';
 }
 
-// Adicione estas funções de tradução
 function translateRating(rating) {
   const ratingMap = {
     'G - All Ages': 'Livre',
@@ -1334,7 +1325,7 @@ function translateSeason(season) {
   return seasonMap[season?.toLowerCase()] || 'inverno';
 }
 
-// Adicione um evento de entrada direta para o campo malUrl
+// Adiciona um evento de entrada direta para o campo malUrl
 document.addEventListener('DOMContentLoaded', function() {
   const malUrlInput = document.getElementById('malUrl');
   if (malUrlInput) {
@@ -1504,25 +1495,5 @@ function updatePreview(inputId) {
       prompt.classList.add('hidden');
       removeBtn.classList.remove('hidden');
     }
-  }
-}
-
-function saveAnime(animeData) {
-  try {
-    const animes = JSON.parse(localStorage.getItem('animeData')) || [];
-    
-    // Garante que os dados da temporada estão estruturados corretamente
-    if (animeData.seasonPeriod && animeData.releaseDate) {
-      animeData.season = {
-        period: animeData.seasonPeriod,
-        year: new Date(animeData.releaseDate).getFullYear()
-      };
-    }
-    delete animeData.seasonPeriod; // Remove o campo avulso
-
-    // ... resto do código de salvamento ...
-  } catch (e) {
-    console.error('Erro ao salvar anime:', e);
-    return false;
   }
 }

@@ -5,7 +5,7 @@
 .nav-menu-container {
   position: fixed;
   top: 8px; 
-  left: 8px;
+  left: 13px; 
   display: flex;
   align-items: center;
   gap: 8px;
@@ -35,6 +35,11 @@
   height: 28px;
   fill: var(--primary-color);
   animation: logoSpin 20s linear infinite;
+  transition: animation-duration 0.3s ease;
+}
+
+.logo-link:hover .logo-icon {
+  animation-duration: 2s; /* Acelera a rotação no hover */
 }
 
 .logo-text {
@@ -191,13 +196,45 @@ nav .ml-10 a.active {
   box-shadow: 2px 0 8px var(--card-shadow);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 49;
-  overflow-y: auto;
+  overflow-y: hidden; /* Muda de auto para hidden */
   overflow-x: hidden;
   scrollbar-width: thin;
   scrollbar-color: var(--primary-color) transparent;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), overflow-y 0.1s;
   white-space: nowrap;
   overflow-x: hidden;
+}
+
+/* Mostra a barra de rolagem apenas quando o mouse estiver sobre o menu */
+.side-menu:hover {
+  overflow-y: auto;
+}
+
+/* Estilização da barra de rolagem */
+.side-menu::-webkit-scrollbar {
+  width: 6px;
+  background: transparent;
+}
+
+.side-menu::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 3px;
+  opacity: 0.8;
+}
+
+.side-menu::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color);
+  opacity: 1;
+}
+
+/* Ajuste para Firefox */
+.side-menu {
+  scrollbar-width: none;
+}
+
+.side-menu:hover {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) transparent;
 }
 
 /* Estado recolhido do menu - mais compacto em telas menores */
@@ -545,9 +582,13 @@ body.menu-open {
   .side-menu-content {
     padding: 16px 12px;
     height: 100%;
-    overflow-y: auto;
+    overflow-y: hidden; /* Muda de auto para hidden */
     scrollbar-width: thin;
     scrollbar-color: var(--primary-color) transparent;
+  }
+
+  .side-menu-content:hover {
+    overflow-y: auto;
   }
 
   .side-menu-content::-webkit-scrollbar {
@@ -669,7 +710,7 @@ body.menu-open {
 
   .nav-menu-container {
     top: 6px;
-    left: 6px;
+    left: 12px;
   }
 
   .container {
@@ -742,6 +783,11 @@ body.menu-open {
   #user-panel img {
     width: 32px;
     height: 32px;
+  }
+
+  .nav-menu-container {
+    top: 8px;
+    left: 10px;
   }
 }
 

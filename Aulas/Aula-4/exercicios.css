@@ -1,0 +1,193 @@
+body {
+  background-image: url('favicon/web-app-manifest-512x512.png');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+}
+
+.map-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.map-container img {
+  width: 100%;
+  height: auto;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+/* Estilos base para parágrafos */
+.paragrafo-principal,
+.paragrafo-secundario,
+.paragrafo-destaque {
+  padding: 15px;
+  margin: 20px auto;
+  max-width: 800px;
+}
+
+.paragrafo-principal {
+  background-color: #f0f0f0;
+  color: #2c3e50;
+  font-family: 'Georgia', serif;
+  font-size: 18px;
+  border-left: 5px solid #2c3e50;
+}
+
+.paragrafo-secundario {
+  background-color: #e8f4f8;
+  color: #34495e;
+  font-family: 'Verdana', sans-serif;
+  font-size: 16px;
+  border-radius: 8px;
+}
+
+/* Estilo específico para parágrafo destaque */
+.paragrafo-destaque {
+  background-color: #fff3e0;
+  color: #d35400;
+  font-family: 'Trebuchet MS', sans-serif;
+  font-size: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Estilos para as novas divisões */
+.div-laranja {
+  background-color: orange;
+  border: 3px solid green;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 800px;
+  border-radius: 8px;
+}
+
+.div-roxa {
+  background-color: purple;
+  border-top: 3px solid yellow;
+  border-bottom: 3px solid yellow;
+  border-left: 3px solid brown;
+  border-right: 3px solid brown;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 800px;
+  color: white;
+}
+
+/* Estilos adicionais para elementos dentro das divisões */
+.div-laranja h2,
+.div-roxa h2 {
+  margin-top: 0;
+}
+
+/* Estilos para os novos parágrafos alinhados */
+.novos-paragrafos {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.texto-esquerda {
+  text-align: left;
+  color: #2c3e50;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-left: 4px solid #3498db;
+  background-color: #fff;
+}
+
+.texto-centro {
+  text-align: center;
+  color: #8e44ad;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-top: 4px solid #9b59b6;
+  background-color: #fff;
+}
+
+.texto-direita {
+  text-align: right;
+  color: #c0392b;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-right: 4px solid #e74c3c;
+  background-color: #fff;
+}
+
+/* Estilos para os parágrafos decorados */
+.paragrafos-decorados {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+.texto-sublinhado {
+  text-decoration: underline;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  padding: 10px;
+}
+
+.texto-linha-superior {
+  text-decoration: overline;
+  color: #8e44ad;
+  margin-bottom: 20px;
+  padding: 10px;
+  text-indent: 50px;
+}
+
+.texto-linha-meio {
+  text-decoration: line-through;
+  color: #c0392b;
+  padding: 10px;
+}
+
+/* Estilos para o novo container de patos */
+.patos-container {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.patos-container h2 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.patos-container img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+/* Estilos para o botão de voltar */
+.voltar-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.voltar-btn:hover {
+    background-color: #2980b9;
+}

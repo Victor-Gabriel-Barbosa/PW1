@@ -158,16 +158,21 @@ function loadFavoriteAnimes(user) {
 
     return `
       <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
-         class="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+       class="flex items-center gap-4 p-4 rounded-lg 
+              hover:bg-purple-50 dark:hover:bg-purple-800/30
+              hover:shadow-lg dark:hover:shadow-purple-900/30
+              hover:scale-102 transform
+              transition-all duration-200 ease-in-out">
         <img src="${anime.coverImage}" alt="${anime.primaryTitle}" 
-             class="w-16 h-16 object-cover rounded-lg">
+             class="w-16 h-16 object-cover rounded-lg 
+             hover:shadow-md transition-shadow duration-200">
         <div>
           <h3 class="font-semibold">${anime.primaryTitle}</h3>
           <div class="flex gap-2 mt-1">
-            <span class="text-sm bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded">
+            <span class="text-sm bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded text-white">
               ⭐ ${anime.score || 'N/A'}
             </span>
-            <span class="text-sm text-gray-500 dark:text-gray-400">${anime.status}</span>
+            <span class="text-sm">${anime.status}</span>
           </div>
         </div>
       </a>

@@ -798,21 +798,6 @@
   transform: scale(1.15);
 }
 
-/* Estilização do input de data para tema escuro */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-}
-
-.dark input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-}
-
-@media (prefers-color-scheme: dark) {
-  input[type="date"]::-webkit-calendar-picker-indicator {
-    filter: invert(1);
-  }
-}
-
 /* Estilos do Formulário */
 .form-label {
   display: block;
