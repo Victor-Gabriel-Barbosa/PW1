@@ -706,8 +706,8 @@ function toggleEditMode(commentId) {
         <small id="edit-comment-count-${commentId}" class="text-right block mt-1">0/${MAX_COMMENT_LENGTH}</small>
       </div>
       <div class="flex gap-2 mt-2">
-        <button type="submit" class="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700">Salvar</button>
-        <button type="button" onclick="toggleEditMode(${commentId})" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <button type="button" onclick="toggleEditMode(${commentId})" class="btn btn-cancel">Cancelar</button>
       </div>
     `;
 

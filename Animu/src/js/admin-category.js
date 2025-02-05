@@ -118,7 +118,7 @@ class CategoryManager {
         <!-- Botões -->
         <div class="flex justify-end gap-4 pt-4 border-t">
           <button type="button" id="btn-cancel" 
-            class="px-6 py-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+            class="btn btn-cancel">
             Cancelar
           </button>
           <button type="submit" 

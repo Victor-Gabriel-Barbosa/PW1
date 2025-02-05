@@ -17,7 +17,7 @@ body {
 .map-container img {
   width: 100%;
   height: auto;
-}
+} 
 
 h1 {
   text-align: center;
@@ -168,12 +168,6 @@ h1 {
   text-align: center;
   color: #2c3e50;
   margin-bottom: 20px;
-}
-
-.patos-container img {
-  width: 100%;
-  height: auto;
-  border-radius: 4px;
 }
 
 /* Estilos para o botão de voltar */

@@ -300,10 +300,10 @@ function renderReplies(replies, topicId, userId) {
               </div>
               <div class="flex flex-col gap-2">
                 <button type="submit" 
-                        class="px-4 py-2 bg-purple-600 text-white rounded-lg">Salvar</button>
+                        class="btn btn-primary">Salvar</button>
                 <button type="button"
                         onclick="cancelReplyEdit(${reply.id})" 
-                        class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg">Cancelar</button>
+                        class="btn btn-cancel">Cancelar</button>
               </div>
             </form>
           </div>
@@ -398,7 +398,7 @@ function renderTopicCard(topic, userId) {
             <button type="button" onclick="cancelTopicEdit(${topic.id})" 
                     class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg">Cancelar</button>
             <button type="submit" 
-                    class="px-4 py-2 bg-purple-600 text-white rounded-lg">Salvar</button>
+                    class="btn btn-primary">Salvar</button>
           </div>
         </form>
       </div>
@@ -497,8 +497,8 @@ function renderReplies(replies, topicId, userId) {
                             <small id="reply-edit-count-${reply.id}" class="text-right block mt-1">0/${FORUM_CONFIG.maxReplyLength}</small>
                         </div>
                         <div class="flex flex-col gap-2">
-                            <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg">Salvar</button>
-                            <button type="button" onclick="cancelReplyEdit(${reply.id})" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                            <button type="button" onclick="cancelReplyEdit(${reply.id})" class="btn btn-cancel">Cancelar</button>
                         </div>
                     </form>
                 </div>

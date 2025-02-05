@@ -991,3 +991,146 @@ textarea:disabled {
 .dark .tox .tox-tbtn:hover {
     background: var(--primary-color-alpha) !important;
 }
+
+/* Drop Zones - Padrão Visual */
+.drop-zone {
+  border: 2px dashed var(--input-border-color);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  min-height: 220px;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: var(--background);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.drop-zone:hover {
+  border-color: var(--primary-color);
+  background: var(--primary-color-alpha);
+}
+
+.drop-zone.drag-over {
+  border-color: var(--primary-color);
+  background: var(--primary-color-alpha);
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(138, 43, 226, 0.15);
+}
+
+.drop-zone-prompt {
+  text-align: center;
+  transition: opacity 0.3s ease;
+}
+
+.drop-zone-prompt svg {
+  width: 64px;
+  height: 64px;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  opacity: 0.8;
+  transition: transform 0.3s ease;
+}
+
+.drop-zone:hover .drop-zone-prompt svg {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+.drop-zone-prompt p {
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+.drop-zone-prompt p:last-child {
+  font-size: 0.875rem;
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+/* Preview de mídia */
+.drop-zone img,
+.drop-zone iframe {
+  max-width: 100%;
+  max-height: 180px;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.drop-zone img:hover,
+.drop-zone iframe:hover {
+  transform: scale(1.02);
+}
+
+/* Botão de remover mídia */
+.remove-media-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.2s ease;
+}
+
+.drop-zone:hover .remove-media-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.remove-media-btn:hover {
+  background: rgb(239, 68, 68);
+  transform: scale(1.1);
+}
+
+/* Campo de URL do YouTube */
+.youtube-input {
+  width: 100%;
+  max-width: 300px;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  border: 1px solid var(--input-border-color);
+  border-radius: 0.375rem;
+  background: var(--background);
+  color: var(--text-color);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.youtube-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color-alpha);
+  outline: none;
+}
+
+/* Mensagens de feedback */
+.drop-zone-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.drop-zone.drag-over .drop-zone-message {
+  opacity: 1;
+}

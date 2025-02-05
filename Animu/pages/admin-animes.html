@@ -121,10 +121,15 @@
                 Imagem de Capa <span class="text-red-500">*</span>
               </label>
               <div id="coverImageDropzone"
-                class="drop-zone border-2 border-dashed rounded-lg p-4 text-center cursor-pointer relative h-[230px] flex items-center justify-center">
+                class="drop-zone border-2 border-dashed rounded-lg p-4 text-center cursor-pointer relative flex items-center justify-center h-[223px]">
                 <div class="drop-zone-prompt">
+                  <svg class="w-16 h-16 mx-auto mb-4 text-purple-600" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
                   <p>Arraste uma imagem ou clique para selecionar</p>
-                  <p class="text-sm text-gray-500">Formatos suportados: JPG, PNG, WebP</p>
+                  <p class="text-sm text-gray-500">PNG, JPG ou GIF (max. 2MB)</p>
                 </div>
                 <img id="coverImagePreview" class="hidden max-h-48 mx-auto">
                 <button type="button" id="removeCoverImage" class="remove-media-btn hidden"
@@ -134,24 +139,51 @@
               </div>
             </div>
 
-            <!-- Sinopse -->
+            <!-- Video de Trailer -->
             <div>
-              <label class="block text-sm font-medium mb-1">
-                Sinopse <span class="text-red-500">*</span>
-              </label>
-              <div class="relative">
-                <textarea id="synopsis" rows="17" required class="w-full p-2 border rounded" minlength="10"
-                  maxlength="2000"></textarea>
-                <button type="button" onclick="translateSynopsis()" 
-                  class="absolute top-2 right-2 p-1 bg-purple-600 text-white rounded hover:bg-purple-700"
-                  title="Traduzir para português">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M7 2a1 1 0 011 1v1h3a1 1 0 110 2H9.578a18.87 18.87 0 01-1.724 4.78c.29.354.596.696.914 1.026a1 1 0 11-1.44 1.389 21.034 21.034 0 01-.554-.6 19.098 19.098 0 01-3.107 3.567 1 1 0 01-1.334-1.49 17.087 17.087 0 003.13-3.733 18.992 18.992 0 01-1.487-2.494 1 1 0 111.79-.89c.234.47.489.928.764 1.372.417-.934.752-1.913.997-2.927H3a1 1 0 110-2h3V3a1 1 0 011-1zm6 6a1 1 0 01.894.553l2.991 5.982a.869.869 0 01.02.037l.99 1.98a1 1 0 11-1.79.895L15.383 16h-4.764l-.724 1.447a1 1 0 11-1.788-.894l.99-1.98.019-.038 2.99-5.982A1 1 0 0113 8zm-1.382 6h2.764L13 11.236 11.618 14z" clip-rule="evenodd" />
-                  </svg>
-                </button>
+              <label class="block text-sm font-medium mb-1">Trailer do Anime</label>
+              <div id="trailerDropzone"
+                class="drop-zone border-2 border-dashed rounded-lg p-4 text-center cursor-pointer relative h-[223px]">
+                <div class="drop-zone-content">
+                  <div class="drop-zone-prompt">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-purple-600" fill="none" stroke="currentColor"
+                      viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    <p class="text-base mb-2">Arraste um vídeo ou clique para selecionar</p>
+                    <p class="text-sm text-gray-500 mb-4">MP4, WebM ou YouTube (max. 100MB)</p>
+                  </div>
+                  <div onclick="event.stopPropagation()">
+                    <input type="text" placeholder="URL do YouTube" class="p-2 w-full border rounded text-center"
+                      id="trailerUrlInput">
+                  </div>
+                </div>
+                <div id="trailerPreview" class="hidden max-w-full"></div>
+                <button type="button" id="removeTrailer" class="remove-media-btn hidden"
+                  title="Remover vídeo">✕</button>
+                <input type="url" id="trailerUrl" class="hidden">
+                <input type="file" id="trailerInput" class="hidden" accept="video/*">
               </div>
             </div>
 
+            <div>
+              <label class="block text-sm font-medium mb-1">Produtores</label>
+              <div class="flex gap-2 mb-2">
+                <input type="text" id="producerInput" placeholder="Nome do produtor" class="flex-1 p-2 border rounded">
+                <button type="button" onclick="addProducer()"
+                  class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+                  +
+                </button>
+              </div>
+              <div id="producersList" class="space-y-2">
+                <!-- Lista de produtores será inserida aqui -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Coluna direita -->
+          <div class="space-y-6">
             <!-- Títulos Alternativos -->
             <div>
               <label class="block text-sm font-medium mb-1">Títulos Alternativos</label>
@@ -171,10 +203,7 @@
                 <!-- Títulos alternativos serão inseridos aqui -->
               </div>
             </div>
-          </div>
 
-          <!-- Coluna direita -->
-          <div class="space-y-6">
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium mb-1">
@@ -255,93 +284,73 @@
             </div>
 
             <div>
-              <label class="block text-sm font-medium mb-1">Trailer do Anime</label>
-              <div id="trailerDropzone" class="drop-zone border-2 border-dashed rounded-lg p-4 text-center cursor-pointer relative">
-                <div class="drop-zone-content">
-                  <div class="drop-zone-prompt">
-                    <p class="text-base mb-2">Adicione o trailer do anime</p>
-                    <p class="text-sm text-gray-500 mb-4">Arraste um arquivo de vídeo ou clique para selecionar</p>
-                  </div>
-                  <div class="youtube-input-container" onclick="event.stopPropagation()">
-                    <p class="text-sm text-gray-500 mb-2">Ou cole uma URL do YouTube:</p>
-                    <input type="text" placeholder="URL do YouTube" 
-                      class="p-2 w-full border rounded text-center" id="trailerUrlInput">
-                  </div>
-                </div>
-                <div id="trailerPreview" class="hidden max-w-full"></div>
-                <button type="button" id="removeTrailer" class="remove-media-btn hidden" title="Remover vídeo">✕</button>
-                <input type="url" id="trailerUrl" class="hidden">
-                <input type="file" id="trailerInput" class="hidden" accept="video/*">
-              </div>
+              <label class="block text-sm font-medium mb-1">
+                Estúdio <span class="text-red-500">*</span>
+              </label>
+              <input type="text" id="studio" class="w-full p-2 border rounded" required list="studiosSuggestions">
             </div>
 
-            <div class="space-y-4">
-              <div>
-                <label class="block text-sm font-medium mb-1">
-                  Estúdio <span class="text-red-500">*</span>
-                </label>
-                <input type="text" id="studio" class="w-full p-2 border rounded" required list="studiosSuggestions">
-              </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">
+                Fonte Original <span class="text-red-500">*</span>
+              </label>
+              <select id="source" class="w-full p-2 border rounded" required>
+                <option value="">Selecione...</option>
+                <option value="Manga">Mangá</option>
+                <option value="Light Novel">Light Novel</option>
+                <option value="Original">Original</option>
+                <option value="Visual Novel">Visual Novel</option>
+                <option value="Game">Game</option>
+                <option value="Other">Outro</option>
+              </select>
+            </div>
 
-              <div>
-                <label class="block text-sm font-medium mb-1">
-                  Fonte Original <span class="text-red-500">*</span>
-                </label>
-                <select id="source" class="w-full p-2 border rounded" required>
-                  <option value="">Selecione...</option>
-                  <option value="Manga">Mangá</option>
-                  <option value="Light Novel">Light Novel</option>
-                  <option value="Original">Original</option>
-                  <option value="Visual Novel">Visual Novel</option>
-                  <option value="Game">Game</option>
-                  <option value="Other">Outro</option>
-                </select>
+            <div>
+              <label class="block text-sm font-medium mb-1">Licenciadores</label>
+              <div class="flex gap-2 mb-2">
+                <input type="text" id="licensorInput" placeholder="Nome do licenciador"
+                  class="flex-1 p-2 border rounded">
+                <button type="button" onclick="addLicensor()"
+                  class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+                  +
+                </button>
               </div>
-
-              <div>
-                <label class="block text-sm font-medium mb-1">Produtores</label>
-                <div class="flex gap-2 mb-2">
-                  <input type="text" id="producerInput" placeholder="Nome do produtor"
-                    class="flex-1 p-2 border rounded">
-                  <button type="button" onclick="addProducer()"
-                    class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
-                    +
-                  </button>
-                </div>
-                <div id="producersList" class="space-y-2">
-                  <!-- Lista de produtores será inserida aqui -->
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium mb-1">Licenciadores</label>
-                <div class="flex gap-2 mb-2">
-                  <input type="text" id="licensorInput" placeholder="Nome do licenciador"
-                    class="flex-1 p-2 border rounded">
-                  <button type="button" onclick="addLicensor()"
-                    class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
-                    +
-                  </button>
-                </div>
-                <div id="licensorsList" class="space-y-2">
-                  <!-- Lista de licenciadores será inserida aqui -->
-                </div>
+              <div id="licensorsList" class="space-y-2">
+                <!-- Lista de licenciadores será inserida aqui -->
               </div>
             </div>
           </div>
         </div>
 
+        <!-- Sinopse -->
+        <div>
+          <label class="block text-sm font-medium mb-1">
+            Sinopse <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <textarea id="synopsis" rows="4" required class="w-full p-2 border rounded" minlength="10"
+              maxlength="2000"></textarea>
+            <button type="button" onclick="translateSynopsis()"
+              class="absolute top-2 right-2 p-1 bg-purple-600 text-white rounded hover:bg-purple-700"
+              title="Traduzir para português">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                  d="M7 2a1 1 0 011 1v1h3a1 1 0 110 2H9.578a18.87 18.87 0 01-1.724 4.78c.29.354.596.696.914 1.026a1 1 0 11-1.44 1.389 21.034 21.034 0 01-.554-.6 19.098 19.098 0 01-3.107 3.567 1 1 0 01-1.334-1.49 17.087 17.087 0 003.13-3.733 18.992 18.992 0 01-1.487-2.494 1 1 0 111.79-.89c.234.47.489.928.764 1.372.417-.934.752-1.913.997-2.927H3a1 1 0 110-2h3V3a1 1 0 011-1zm6 6a1 1 0 01.894.553l2.991 5.982a.869.869 0 01.02.037l.99 1.98a1 1 0 11-1.79.895L15.383 16h-4.764l-.724 1.447a1 1 0 11-1.788-.894l.99-1.98.019-.038 2.99-5.982A1 1 0 0113 8zm-1.382 6h2.764L13 11.236 11.618 14z"
+                  clip-rule="evenodd" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
         <!-- Botões do formulário -->
         <div class="flex justify-end gap-4 mt-6">
-          <button type="button" onclick="clearAnimeForm()"
-            class="px-4 py-2 border rounded hover:bg-red-600">
+          <button type="button" onclick="clearAnimeForm()" class="btn btn-secondary">
             Limpar
           </button>
-          <button type="button" onclick="closeAnimeForm()"
-            class="px-4 py-2 border rounded hover:bg-red-600">
+          <button type="button" onclick="closeAnimeForm()" class="btn btn-cancel">
             Cancelar
           </button>
-          <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+          <button type="submit" class="btn btn-primary">
             Salvar
           </button>
         </div>

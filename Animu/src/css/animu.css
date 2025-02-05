@@ -21,7 +21,7 @@
   --text-dark: #ffffff;
   --card-shadow-light: rgba(0, 0, 0, 0.1);
   --card-shadow-dark: rgba(255, 255, 255, 0.1);
-  --primary-gradient: linear-gradient(135deg, #8e2de2 0%, #4a00e0 100%);
+  --primary-gradient: linear-gradient(135deg, #9d4edd 0%, #7b2cbf 50%, #5a189a 100%);
   --primary-color: blueviolet;
   --input-border-color: var(--primary-color);
   --primary-color-alpha: rgba(138, 43, 226, 0.2); /* Versão transparente da cor primária */
@@ -182,6 +182,47 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
 }
 
+.btn-cancel {
+  background: #ff4444;
+  color: white;
+  border: none;
+  padding: var(--spacing-sm) var(--spacing-md);
+  box-shadow: 0 4px 6px rgba(204, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-cancel:hover {
+  opacity: 0.95;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(204, 0, 0, 0.3);
+}
+
+.btn-cancel:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(204, 0, 0, 0.2);
+}
+
+.btn-cancel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.btn-cancel:hover::before {
+  left: 100%;
+}
+
 /* 4.2. Formulários */
 input, button, textarea, select {
   background: var(--background);
@@ -283,7 +324,6 @@ input, button, textarea, select {
 
 .btn-secondary {
   background: transparent;
-  border: 2px solid var(--card-shadow);
   color: var(--text-color);
   
   &:hover {
