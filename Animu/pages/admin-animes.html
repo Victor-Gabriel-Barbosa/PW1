@@ -103,25 +103,26 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Grid responsivo ajustado -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8">
           <!-- Coluna esquerda -->
-          <div class="space-y-6">
+          <div class="space-y-4 lg:space-y-6">
             <!-- Título Principal -->
-            <div>
+            <div class="w-full">
               <label class="block text-sm font-medium mb-1">
                 Título Principal <span class="text-red-500">*</span>
               </label>
-              <input type="text" id="primaryTitle" required class="w-full p-2 border rounded" minlength="2"
-                maxlength="100">
+              <input type="text" id="primaryTitle" required 
+                class="w-full p-2 sm:p-3 border rounded text-sm sm:text-base">
             </div>
 
-            <!-- Imagem de Capa -->
-            <div>
+            <!-- Imagem de Capa - Altura ajustável -->
+            <div class="w-full">
               <label class="block text-sm font-medium mb-1">
                 Imagem de Capa <span class="text-red-500">*</span>
               </label>
               <div id="coverImageDropzone"
-                class="drop-zone border-2 border-dashed rounded-lg p-4 text-center cursor-pointer relative flex items-center justify-center h-[223px]">
+                class="drop-zone border-2 border-dashed rounded-lg p-4 text-center cursor-pointer relative flex items-center justify-center min-h-[180px] sm:min-h-[223px]">
                 <div class="drop-zone-prompt">
                   <svg class="w-16 h-16 mx-auto mb-4 text-purple-600" fill="none" stroke="currentColor"
                     viewBox="0 0 24 24">
@@ -139,11 +140,11 @@
               </div>
             </div>
 
-            <!-- Video de Trailer -->
-            <div>
+            <!-- Video de Trailer - Altura ajustável -->
+            <div class="w-full">
               <label class="block text-sm font-medium mb-1">Trailer do Anime</label>
               <div id="trailerDropzone"
-                class="drop-zone border-2 border-dashed rounded-lg p-4 text-center cursor-pointer relative h-[223px]">
+                class="drop-zone border-2 border-dashed rounded-lg p-4 text-center cursor-pointer relative min-h-[180px] sm:min-h-[223px]">
                 <div class="drop-zone-content">
                   <div class="drop-zone-prompt">
                     <svg class="w-16 h-16 mx-auto mb-4 text-purple-600" fill="none" stroke="currentColor"
@@ -183,7 +184,7 @@
           </div>
 
           <!-- Coluna direita -->
-          <div class="space-y-6">
+          <div class="space-y-4 lg:space-y-6">
             <!-- Títulos Alternativos -->
             <div>
               <label class="block text-sm font-medium mb-1">Títulos Alternativos</label>
@@ -204,19 +205,22 @@
               </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-              <div>
+            <!-- Grid responsivo para campos menores -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="w-full">
                 <label class="block text-sm font-medium mb-1">
                   Episódios <span class="text-red-500">*</span>
                 </label>
-                <input type="number" id="episodes" min="1" required class="w-full p-2 border rounded">
+                <input type="number" id="episodes" min="1" required 
+                  class="w-full p-2 sm:p-3 border rounded text-sm sm:text-base">
               </div>
 
-              <div>
+              <div class="w-full">
                 <label class="block text-sm font-medium mb-1">
                   Duração (min) <span class="text-red-500">*</span>
                 </label>
-                <input type="number" id="episodeDuration" min="1" required class="w-full p-2 border rounded">
+                <input type="number" id="episodeDuration" min="1" required 
+                  class="w-full p-2 sm:p-3 border rounded text-sm sm:text-base">
               </div>
             </div>
 
@@ -322,14 +326,14 @@
           </div>
         </div>
 
-        <!-- Sinopse -->
-        <div>
+        <!-- Sinopse - Full width -->
+        <div class="w-full mt-6">
           <label class="block text-sm font-medium mb-1">
             Sinopse <span class="text-red-500">*</span>
           </label>
           <div class="relative">
-            <textarea id="synopsis" rows="4" required class="w-full p-2 border rounded" minlength="10"
-              maxlength="2000"></textarea>
+            <textarea id="synopsis" rows="4" required 
+              class="w-full p-2 sm:p-3 border rounded text-sm sm:text-base"></textarea>
             <button type="button" onclick="translateSynopsis()"
               class="absolute top-2 right-2 p-1 bg-purple-600 text-white rounded hover:bg-purple-700"
               title="Traduzir para português">
@@ -342,15 +346,18 @@
           </div>
         </div>
 
-        <!-- Botões do formulário -->
-        <div class="flex justify-end gap-4 mt-6">
-          <button type="button" onclick="clearAnimeForm()" class="btn btn-secondary">
+        <!-- Botões responsivos -->
+        <div class="flex flex-col sm:flex-row justify-end gap-2 sm:gap-4 mt-6">
+          <button type="button" onclick="clearAnimeForm()" 
+            class="w-full sm:w-auto btn btn-secondary order-3 sm:order-1">
             Limpar
           </button>
-          <button type="button" onclick="closeAnimeForm()" class="btn btn-cancel">
+          <button type="button" onclick="closeAnimeForm()" 
+            class="w-full sm:w-auto btn btn-cancel order-2">
             Cancelar
           </button>
-          <button type="submit" class="btn btn-primary">
+          <button type="submit" 
+            class="w-full sm:w-auto btn btn-primary order-1 sm:order-3">
             Salvar
           </button>
         </div>

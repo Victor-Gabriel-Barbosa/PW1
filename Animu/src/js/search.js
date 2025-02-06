@@ -12,7 +12,7 @@ class AnimeSearchBar {
       inputId: 'search-input',
       resultsId: 'search-results',
       debounceTime: 300,
-      minChars: 1,
+      minChars: 0,
       maxResults: 10,
       filters: {
         genre: {
