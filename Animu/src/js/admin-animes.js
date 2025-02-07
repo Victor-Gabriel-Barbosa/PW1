@@ -26,7 +26,7 @@ function loadAnimesList() {
   const tbody = document.getElementById('animesList');
 
   tbody.innerHTML = animes.map((anime, index) => `
-    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+    <tr class="hover:">
       <td class="px-6 py-4 whitespace-nowrap">
         <img src="${anime.coverImage}" alt="${anime.primaryTitle}" class="h-20 w-14 object-cover rounded">
       </td>

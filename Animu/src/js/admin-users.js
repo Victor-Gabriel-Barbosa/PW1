@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Gera linha da tabela com dados e ações do usuário
   function createUserRow(user) {
     const tr = document.createElement('tr');
-    tr.className = 'border-b border-gray-200 hover:bg-gray-500';
+    tr.className = 'border-b border-gray-200 hover:bg-purple-500/2';
 
     tr.innerHTML = `
       <td class="px-6 py-4 whitespace-nowrap">
