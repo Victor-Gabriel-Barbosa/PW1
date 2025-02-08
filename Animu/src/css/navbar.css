@@ -12,7 +12,7 @@
   z-index: 51;
 }
 
-/* Estilos atualizados da Logo */
+/* Estilos da Logo */
 .logo-container {
   display: flex;
   align-items: center;
@@ -38,10 +38,6 @@
   transition: animation-duration 0.3s ease;
 }
 
-.logo-link:hover .logo-icon {
-  animation-duration: 2s; /* Acelera a rotação no hover */
-}
-
 .logo-text {
   font-size: 1.5rem;
   font-weight: 800;
@@ -53,44 +49,48 @@
 }
 
 @keyframes logoSpin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Ajustes responsivos */
-@media (max-width: 480px) {
-  .logo-icon {
-    width: 24px;
-    height: 24px;
-  }
-  
-  .logo-text {
-    font-size: 1.25rem;
-  }
-}
-
-.logo-container a {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--primary-color);
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.logo-container a:hover {
-  color: var(--text-color);
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* Navegação Principal */
 nav {
   background-color: rgba(var(--background), 0.8);
   border-bottom: 1px solid var(--card-shadow);
-  transform: translateY(0);
-  transition: transform 0.3s ease, background-color 0.3s ease, transform 0.3s ease-in-out;
+  padding: 0;
+}
+
+.container {
+  padding: 0 12px !important;
+  max-width: 1440px !important;
+  height: 56px;
+}
+
+/* Menu Toggle Button */
+.menu-toggle-btn {
+  padding: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+  z-index: 51;
+}
+
+.menu-toggle-btn:hover {
+  transform: scale(1.1);
+}
+
+.menu-toggle-btn svg {
+  fill: var(--text-color);
+}
+
+/* Menu Lateral */
+.side-menu {
+  position: fixed;
+  top: 56px;
   padding: 0;
 }
 
@@ -146,7 +146,6 @@ nav .ml-10 a.active {
   display: none;
 }
 
-/* Novo efeito hover estilo YouTube */
 .nav-link:hover {
   background-color: var(--card-shadow);
   color: var(--text-color);
@@ -154,7 +153,6 @@ nav .ml-10 a.active {
 
 /* Estado ativo */
 .nav-link.active {
-  background-color: var(--card-shadow);
   color: var(--primary-color);
   font-weight: 600;
 }
@@ -263,7 +261,7 @@ nav .ml-10 a.active {
   margin: 0;
 }
 
-/* Atualização dos estilos do menu lateral */
+/* Estilos do menu lateral */
 .side-menu .nav-link {
   display: flex;
   align-items: center;
@@ -351,11 +349,6 @@ nav .ml-10 a.active {
 
 /* Estado ativo */
 .side-menu .nav-link.active {
-  background: linear-gradient(
-    45deg,
-    var(--primary-color-alpha) 0%,
-    rgba(138, 43, 226, 0.15) 100%
-  );
   color: var(--primary-color);
 }
 
@@ -397,7 +390,6 @@ nav .ml-10 a.active {
 }
 
 .side-menu .nav-link.active {
-  background-color: var(--primary-color-alpha);
   color: var(--primary-color);
 }
 
@@ -412,15 +404,9 @@ nav .ml-10 a.active {
 
 /* Seção Admin */
 .admin-link {
-  color: var(--text-color) !important;
   opacity: 0.8;
   padding: 8px 12px !important;
   margin: 4px 0;
-}
-
-.admin-link:hover {
-  opacity: 1;
-  background: var(--primary-color-alpha);
 }
 
 #admin-options {

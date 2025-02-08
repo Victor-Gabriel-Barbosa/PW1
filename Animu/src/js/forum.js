@@ -122,19 +122,20 @@ class TextFormatter {
  */
 class ForumModerator {
   static validateContent(content, type = 'conteúdo') {
-    if (!content || content.trim() === '') {
+    const plainContent = content.replace(/<[^>]*>/g, '').trim();
+    
+    if (!plainContent) {
       throw new Error(`O ${type} não pode estar vazio.`);
     }
 
-    // Verifica comprimento máximo
     const maxLengths = {
       título: FORUM_CONFIG.maxTitleLength,
       conteúdo: FORUM_CONFIG.maxContentLength,
-      resposta: FORUM_CONFIG.maxContentLength,
-      tag: 30 // Limite máximo para tags
+      resposta: FORUM_CONFIG.maxReplyLength,
+      tag: 30
     };
 
-    if (maxLengths[type] && content.length > maxLengths[type]) {
+    if (maxLengths[type] && plainContent.length > maxLengths[type]) {
       throw new Error(`O ${type} excede o limite máximo de ${maxLengths[type]} caracteres.`);
     }
 
@@ -371,7 +372,9 @@ function renderTopicCard(topic, userId) {
             </button>
           </div>
         </div>
-        <p class="mt-4 mb-4 break-words">${topic.content}</p>
+        <p class="mt-4 mb-4 break-words topic-content">
+          ${topic.content} <!-- O conteúdo agora já contém HTML formatado -->
+        </p>
       </div>
 
       <!-- Formulário de edição do tópico -->
@@ -387,7 +390,7 @@ function renderTopicCard(topic, userId) {
             </small>
           </div>
           <div>
-            <textarea class="w-full p-2 border rounded-lg min-h-[100px]"
+            <textarea id="edit-content-${topic.id}" class="w-full p-2 border rounded-lg min-h-[100px]"
                       maxlength="${FORUM_CONFIG.maxContentLength}"
                       oninput="updateCharCount(this, 'edit-content-count-${topic.id}')">${topic.content}</textarea>
             <small id="edit-content-count-${topic.id}" class="text-right block mt-1">
@@ -619,19 +622,50 @@ function addReply(event, topicId) {
 
 // Funções para edição e remoção de tópicos
 function editTopic(topicId) {
-  const topicElement = document.getElementById(`topic-${topicId}`);
-  if (!topicElement) return;
-
   const topic = forumTopics.find(t => t.id === topicId);
   if (!topic || (!isAuthor(topic.author) && !isAdmin())) return;
 
+  const topicElement = document.getElementById(`topic-${topicId}`);
+  if (!topicElement) return;
+
   const contentDiv = topicElement.querySelector('.topic-content');
   const editFormDiv = topicElement.querySelector('.topic-edit-form');
-  const editButton = topicElement.querySelector('.edit-topic-btn');
 
-  contentDiv.classList.add('hidden');
-  editFormDiv.classList.remove('hidden');
-  editButton.disabled = true;
+  // Inicializa TinyMCE para o formulário de edição
+  tinymce.init({
+    selector: `#edit-content-${topicId}`,
+    plugins: [
+      'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+      'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+      'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons'
+    ],
+    toolbar: 'undo redo | blocks | ' +
+      'bold italic forecolor | alignleft aligncenter ' +
+      'alignright alignjustify | bullist numlist outdent indent | ' +
+      'removeformat | emoticons | help',
+    content_style: 'body { font-family: Inter, sans-serif; font-size: 14px }',
+    height: 300,
+    language: 'pt_BR',
+    menubar: false,
+    branding: false,
+    promotion: false,
+    skin: (document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide'),
+    content_css: (document.documentElement.classList.contains('dark') ? 'dark' : 'default'),
+    setup: (editor) => {
+      editor.on('change', () => {
+        const content = editor.getContent();
+        const charCount = document.getElementById('content-char-count');
+        if (charCount) {
+          const textLength = content.replace(/<[^>]*>/g, '').length;
+          charCount.textContent = `${textLength}/${FORUM_CONFIG.maxContentLength}`;
+        }
+      });
+    }
+  }).then(() => {
+    contentDiv.classList.add('hidden');
+    editFormDiv.classList.remove('hidden');
+    tinymce.get(`edit-content-${topicId}`).setContent(topic.content);
+  });
 }
 
 // Função para salvar a edição de um tópico
@@ -643,14 +677,18 @@ function saveTopicEdit(event, topicId) {
 
   const form = event.target;
   const newTitle = form.querySelector('input').value.trim();
-  const newContent = form.querySelector('textarea').value.trim();
+  const newContent = tinymce.get(`edit-content-${topicId}`).getContent();
+  const plainContent = newContent.replace(/<[^>]*>/g, '');
 
   try {
     ForumModerator.validateContent(newTitle, 'título');
-    ForumModerator.validateContent(newContent, 'conteúdo');
+    const plainContent = newContent.replace(/<[^>]*>/g, '');
+    if (plainContent.length > FORUM_CONFIG.maxContentLength) {
+      throw new Error(`O conteúdo excede o limite de ${FORUM_CONFIG.maxContentLength} caracteres.`);
+    }
 
     topic.title = TextFormatter.format(newTitle);
-    topic.content = TextFormatter.format(newContent);
+    topic.content = newContent; // Salva o HTML formatado
     topic.editedAt = new Date().toISOString();
     renderTopics();
     saveForumData();
@@ -786,26 +824,25 @@ function addTopic(event) {
   }
 
   const title = document.getElementById('topic-title').value.trim();
-  const content = document.getElementById('topic-content').value.trim();
+  const content = tinymce.get('topic-content').getContent();
+  const plainContent = content.replace(/<[^>]*>/g, '');
   const category = document.getElementById('topic-category').value;
   const rawTags = document.getElementById('topic-tags').value
     .split(',')
     .map(tag => tag.trim())
     .filter(Boolean);
 
-  // Adicionar validação de categoria
   if (!category) {
     alert('Por favor, selecione uma categoria.');
     return;
   }
 
-  // Verificar limites de caracteres
   if (title.length > FORUM_CONFIG.maxTitleLength) {
     alert(`O título deve ter no máximo ${FORUM_CONFIG.maxTitleLength} caracteres.`);
     return;
   }
 
-  if (content.length > FORUM_CONFIG.maxContentLength) {
+  if (plainContent.length > FORUM_CONFIG.maxContentLength) {
     alert(`O conteúdo deve ter no máximo ${FORUM_CONFIG.maxContentLength} caracteres.`);
     return;
   }
@@ -993,6 +1030,45 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Carregar dados salvos
   loadForumData();
+
+  // Inicialização do TinyMCE
+  tinymce.init({
+    selector: '#topic-content',
+    plugins: [
+      'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+      'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+      'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons'
+    ],
+    toolbar: 'undo redo | blocks | ' +
+      'bold italic forecolor | alignleft aligncenter ' +
+      'alignright alignjustify | bullist numlist outdent indent | ' +
+      'removeformat | emoticons | help',
+    content_style: 'body { font-family: Inter, sans-serif; font-size: 14px }',
+    height: 300,
+    language: 'pt_BR',
+    menubar: false,
+    branding: false,
+    promotion: false,
+    skin: (document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide'),
+    content_css: (document.documentElement.classList.contains('dark') ? 'dark' : 'default'),
+    setup: (editor) => {
+      editor.on('KeyUp Change', () => {
+        const content = editor.getContent();
+        const plainText = content.replace(/<[^>]*>/g, '');
+        const charCount = document.getElementById('content-char-count');
+        if (charCount) {
+          charCount.textContent = `${plainText.length}/${FORUM_CONFIG.maxContentLength}`;
+          
+          // Adiciona classe de aviso quando próximo do limite
+          if (plainText.length > FORUM_CONFIG.maxContentLength * 0.9) {
+            charCount.classList.add('text-red-500');
+          } else {
+            charCount.classList.remove('text-red-500');
+          }
+        }
+      });
+    }
+  });
 
   // Renderizar tópicos e popular categorias
   renderTopics();

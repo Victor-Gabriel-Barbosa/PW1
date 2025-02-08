@@ -32,6 +32,33 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // Criar e adicionar o botão de voltar ao topo
+  const backToTopButton = document.createElement('button');
+  backToTopButton.className = 'back-to-top';
+  backToTopButton.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M12 20V4M5 11L12 4L19 11" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  `;
+  document.body.appendChild(backToTopButton);
+
+  // Controla a visibilidade do botão
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+      backToTopButton.classList.add('visible');
+    } else {
+      backToTopButton.classList.remove('visible');
+    }
+  });
+
+  // Adiciona o evento de clique para rolar suavemente ao topo
+  backToTopButton.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
 });
 
 function initThemeSystem() {

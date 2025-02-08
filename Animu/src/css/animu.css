@@ -223,6 +223,53 @@ h1, h2, h3, h4, h5, h6 {
   left: 100%;
 }
 
+/* Botão Voltar ao Topo */
+.back-to-top {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background: transparent;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  width: 45px;
+  height: 45px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(8px);
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-2px) scale(1.05);
+}
+
+.back-to-top svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2;
+  stroke: currentColor;
+  fill: none;
+  transition: transform 0.2s ease;
+}
+
+.back-to-top:hover svg {
+  transform: translateY(-2px);
+}
+
 /* 4.2. Formulários */
 input, button, textarea, select {
   background: var(--background);
