@@ -134,31 +134,34 @@ nav .ml-10 a.active {
 
 .nav-link {
   position: relative;
-  padding: 0.5rem 0;
+  padding: 8px 12px;
   font-weight: 500;
   color: var(--text-color);
-  transition: color 0.3s ease;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  margin: 2px 0;
 }
 
 .nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--primary-gradient);
-  transition: width 0.3s ease;
+  display: none;
 }
 
-.nav-link:hover::after,
-.nav-link.active::after {
-  width: 100%;
+/* Novo efeito hover estilo YouTube */
+.nav-link:hover {
+  background-color: var(--card-shadow);
+  color: var(--text-color);
 }
 
+/* Estado ativo */
 .nav-link.active {
+  background-color: var(--card-shadow);
   color: var(--primary-color);
   font-weight: 600;
+}
+
+.nav-link.active svg {
+  fill: var(--primary-color);
+  opacity: 1;
 }
 
 /* Barra Lateral */
@@ -266,13 +269,12 @@ nav .ml-10 a.active {
   align-items: center;
   gap: 12px;
   padding: 8px 12px;
-  border-radius: 8px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-  font-size: 0.9rem;
-  background: transparent;
-  width: 240px;
+  width: 100%;
+}
+
+/* Remove efeitos de gradiente anteriores */
+.side-menu .nav-link::before {
+  display: none;
 }
 
 /* Novo efeito de hover com gradiente */
@@ -409,12 +411,6 @@ nav .ml-10 a.active {
 }
 
 /* Seção Admin */
-.admin-section-divider {
-  padding: 8px 12px;
-  font-size: 0.85rem; 
-  transition: opacity 0.2s ease;
-}
-
 .admin-link {
   color: var(--text-color) !important;
   opacity: 0.8;
@@ -659,13 +655,6 @@ body.menu-open {
     border-top: 1px solid var(--card-shadow);
   }
 
-  .admin-section-divider {
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-bottom: 8px;
-    color: var(--primary-color);
-  }
-
   .side-menu {
     top: 48px;
     height: calc(100vh - 48px);
@@ -755,13 +744,6 @@ body.menu-open {
   /* Melhora espaçamento em telas muito pequenas */
   .side-menu-content {
     padding: 20px 16px;
-  }
-
-  /* Ajusta tamanho do texto para melhor legibilidade */
-  .admin-section-divider {
-    font-size: 1rem;
-    padding: 0 8px;
-    margin-bottom: 12px;
   }
 
   .side-menu {
