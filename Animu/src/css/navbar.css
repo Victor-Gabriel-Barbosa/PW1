@@ -1,4 +1,4 @@
-/* Importa as configurações da barra de pesquisa */
+/* Importações */
 @import "search.css";
 
 /* Container fixo do menu de navegação principal */
@@ -12,7 +12,7 @@
   z-index: 51;
 }
 
-/* Estilos da Logo */
+/* Estilos atualizados da Logo */
 .logo-container {
   display: flex;
   align-items: center;
@@ -38,6 +38,10 @@
   transition: animation-duration 0.3s ease;
 }
 
+.logo-link:hover .logo-icon {
+  animation-duration: 2s; 
+}
+
 .logo-text {
   font-size: 1.5rem;
   font-weight: 800;
@@ -49,48 +53,44 @@
 }
 
 @keyframes logoSpin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Ajustes responsivos */
+@media (max-width: 480px) {
+  .logo-icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .logo-text {
+    font-size: 1.25rem;
+  }
+}
+
+.logo-container a {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.logo-container a:hover {
+  color: var(--text-color);
 }
 
 /* Navegação Principal */
 nav {
   background-color: rgba(var(--background), 0.8);
   border-bottom: 1px solid var(--card-shadow);
-  padding: 0;
-}
-
-.container {
-  padding: 0 12px !important;
-  max-width: 1440px !important;
-  height: 56px;
-}
-
-/* Menu Toggle Button */
-.menu-toggle-btn {
-  padding: 8px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.3s ease;
-  z-index: 51;
-}
-
-.menu-toggle-btn:hover {
-  transform: scale(1.1);
-}
-
-.menu-toggle-btn svg {
-  fill: var(--text-color);
-}
-
-/* Menu Lateral */
-.side-menu {
-  position: fixed;
-  top: 56px;
+  transform: translateY(0);
+  transition: transform 0.3s ease, background-color 0.3s ease, transform 0.3s ease-in-out;
   padding: 0;
 }
 

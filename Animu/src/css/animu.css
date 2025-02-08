@@ -21,7 +21,7 @@
   --text-dark: #ffffff;
   --card-shadow-light: rgba(0, 0, 0, 0.1);
   --card-shadow-dark: rgba(255, 255, 255, 0.1);
-  --primary-gradient: linear-gradient(135deg, #9d4edd 0%, #7b2cbf 50%, #5a189a 100%);
+  --primary-gradient: linear-gradient(135deg, #8a2be2 0%, #9932cc 100%);
   --primary-color: blueviolet;
   --input-border-color: var(--primary-color);
   --primary-color-alpha: rgba(138, 43, 226, 0.2); /* Versão transparente da cor primária */

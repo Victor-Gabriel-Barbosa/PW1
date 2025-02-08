@@ -1279,3 +1279,61 @@ textarea:disabled {
     max-width: 1200px;
   }
 }
+
+/* Estilos do modal e cabeçalho fixo */
+.admin-form-container {
+  display: flex;
+  flex-direction: column;
+  height: 90vh; /* Altura fixa para o container */
+  overflow: hidden;
+  background: var(--background);
+  border-radius: 0.75rem;
+}
+
+.modal-header-fixed {
+  position: sticky;
+  top: 0;
+  background: var(--background);
+  padding: 1.5rem;
+  z-index: 10;
+  border-bottom: 1px solid var(--card-shadow);
+  backdrop-filter: blur(8px);
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.modal-content-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) transparent;
+}
+
+.modal-content-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-content-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 3px;
+}
+
+/* Ajuste da barra de progresso */
+.modal-header-fixed .progress-bar {
+  margin-bottom: 0;
+}
+
+/* Ajuste para telas pequenas */
+@media (max-width: 640px) {
+  .modal-header-fixed {
+    padding: 1rem;
+  }
+  
+  .modal-content-scroll {
+    padding: 1rem;
+  }
+}

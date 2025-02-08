@@ -3,6 +3,10 @@ let alternativeTitles = [];
 let genres = [];
 let producers = [];
 let licensors = [];
+let isFormSaving = false; // Adicione esta variável no topo do arquivo junto com as outras
+
+// Armazena os valores iniciais dos campos quando o formulário é aberto
+let initialFormState = null;
 
 // Verifica se o usuário é admin ao carregar a página
 document.addEventListener('DOMContentLoaded', () => {
@@ -18,6 +22,15 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeCategorySelector();
   setupDateInput();
   updateFormProgress(); 
+
+  // Adiciona alerta ao tentar sair da página
+  window.addEventListener('beforeunload', function (e) {
+    const form = document.getElementById('animeForm');
+    if (form && isFormDirty(form)) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
 });
 
 // Carrega lista de animes
@@ -125,10 +138,24 @@ function showAnimeForm() {
     updateProducersList();
     updateLicensorsList();
   }
+
+  // Captura o estado inicial do formulário após o preenchimento
+  setTimeout(() => {
+    initialFormState = getFormState();
+  }, 100);
 }
 
 // Fecha formulário
 function closeAnimeForm() {
+  const form = document.getElementById('animeForm');
+  
+  // Não mostra o alerta se estiver salvando
+  if (!isFormSaving && isFormDirty(form)) {
+    if (!confirm('Existem alterações não salvas. Deseja realmente sair?')) {
+      return;
+    }
+  }
+
   const modalContent = document.querySelector('.admin-form-container');
   
   // Reseta a posição de rolagem antes de fechar
@@ -138,6 +165,7 @@ function closeAnimeForm() {
   
   document.getElementById('animeModal').classList.add('hidden');
   currentAnimeId = null;
+  isFormSaving = false; // Reseta a flag
 }
 
 // Adiciona título alternativo à lista
@@ -352,6 +380,7 @@ function editAnime(index) {
 // Salva anime (novo ou editado)
 document.getElementById('animeForm').addEventListener('submit', async function (e) {
   e.preventDefault();
+  isFormSaving = true; // Define a flag antes de salvar
 
   try {
     // Validações básicas
@@ -458,6 +487,7 @@ document.getElementById('animeForm').addEventListener('submit', async function (
   } catch (error) {
     console.error('Erro ao salvar anime:', error);
     alert(`Erro ao salvar o anime: ${error.message}`);
+    isFormSaving = false; // Reseta a flag em caso de erro
   }
 });
 
@@ -914,7 +944,8 @@ function clearAnimeForm() {
 function updateFormProgress() {
   const form = document.getElementById('animeForm');
   const requiredFields = form.querySelectorAll('[required]');
-  const totalFields = requiredFields.length + 1; // +1 para gêneros
+  const coverImage = document.getElementById('coverImage');
+  const totalFields = requiredFields.length + 2; // +1 para gêneros, +1 para imagem de capa
   let filledFields = 0;
 
   // Verifica campos obrigatórios
@@ -926,6 +957,11 @@ function updateFormProgress() {
 
   // Verifica se há pelo menos um gênero
   if (genres.length > 0) {
+    filledFields++;
+  }
+
+  // Verifica se há imagem de capa
+  if (coverImage.value.trim() !== '') {
     filledFields++;
   }
 
@@ -1391,4 +1427,48 @@ function updatePreview(inputId) {
       removeBtn.classList.remove('hidden');
     }
   }
+}
+
+// Função auxiliar para verificar se o formulário foi modificado
+function isFormDirty(form) {
+  // Verifica se o modal está visível
+  if (document.getElementById('animeModal').classList.contains('hidden')) {
+    return false;
+  }
+
+  // Se não houver estado inicial, não considera como modificado
+  if (!initialFormState) {
+    return false;
+  }
+
+  // Compara o estado atual com o estado inicial
+  const currentState = getFormState();
+  return currentState !== initialFormState;
+}
+
+// Captura o estado atual do formulário
+function getFormState() {
+  const form = document.getElementById('animeForm');
+  const state = {
+    inputs: {},
+    arrays: {
+      alternativeTitles: [...alternativeTitles],
+      genres: [...genres],
+      producers: [...producers],
+      licensors: [...licensors]
+    },
+    media: {
+      coverImage: document.getElementById('coverImage').value,
+      trailerUrl: document.getElementById('trailerUrl').value
+    }
+  };
+
+  // Captura valores dos campos
+  form.querySelectorAll('input, textarea, select').forEach(input => {
+    if (input.type !== 'file' && !input.classList.contains('hidden')) {
+      state.inputs[input.id] = input.value.trim();
+    }
+  });
+
+  return JSON.stringify(state);
 }
