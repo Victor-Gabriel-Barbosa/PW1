@@ -554,7 +554,7 @@ class CategoryManager {
       categoriesList.innerHTML = `
         <div class="table-container">
           <table>
-            <thead">
+            <thead>
               <tr>
                 <th>Categoria</th>
                 <th>Tipo</th>
@@ -563,7 +563,7 @@ class CategoryManager {
               </tr>
             </thead>
             <tbody>
-              ${categories.map((category, index) => `
+              ${categories.map((category) => `
                 <tr>
                   <td>
                     <div class="flex items-center gap-3">
@@ -583,19 +583,19 @@ class CategoryManager {
                     ${category.description}
                   </td>
                   <td>
-                    <div class="flex gap-2">
-                      <button onclick="categoryManager.editCategory(${category.id})" 
-                        class="p-2 text-purple-600 hover:bg-purple-100 dark:hover:bg-purple-900/50 rounded-lg transition-colors"
-                        title="Editar">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    <div class="action-buttons">
+                      <button class="btn-action btn-edit" title="Editar" onclick="categoryManager.editCategory(${category.id})">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                         </svg>
                       </button>
-                      <button onclick="categoryManager.deleteCategory(${category.id})"
-                        class="p-2 text-red-600 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-lg transition-colors"
-                        title="Excluir">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      <button class="btn-action btn-delete" title="Remover" onclick="categoryManager.deleteCategory(${category.id})">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M3 6h18"></path>
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                          <line x1="10" y1="11" x2="10" y2="17"></line>
+                          <line x1="14" y1="11" x2="14" y2="17"></line>
                         </svg>
                       </button>
                     </div>

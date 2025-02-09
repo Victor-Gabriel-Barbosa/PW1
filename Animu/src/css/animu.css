@@ -166,28 +166,28 @@ tr {
   position: relative;
 }
 
-tr:hover {
+tbody tr:hover {
   background: linear-gradient(90deg, var(--primary-color-alpha) 0%, transparent 100%);
   transform: scale(1.01);
   box-shadow: 0 4px 12px var(--card-shadow);
   transition: all 0.3s ease;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-tr {
+tbody tr {
   animation: fadeIn 0.5s ease forwards;
   opacity: 0;
 }
 
-tr:nth-child(1) { animation-delay: 0.1s; }
-tr:nth-child(2) { animation-delay: 0.2s; }
-tr:nth-child(3) { animation-delay: 0.3s; }
-tr:nth-child(4) { animation-delay: 0.4s; }
-tr:nth-child(5) { animation-delay: 0.5s; }
+tbody tr:nth-child(1) { animation-delay: 0.1s; }
+tbody tr:nth-child(2) { animation-delay: 0.2s; }
+tbody tr:nth-child(3) { animation-delay: 0.3s; }
+tbody tr:nth-child(4) { animation-delay: 0.4s; }
+tbody tr:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 /* 3. Layout e Containers
    ========================================================================== */
