@@ -330,6 +330,41 @@
                 <!-- Gêneros serão inseridos aqui -->
               </div>
             </div>
+
+            <!-- Nova seção de amigos -->
+            <div>
+              <label class="text-sm text-gray-500 dark:text-gray-400">Amigos</label>
+              <div id="friends-list" class="mt-2 space-y-2">
+                <!-- Lista de amigos será inserida aqui -->
+              </div>
+              <div id="friend-requests" class="mt-4">
+                <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Solicitações de Amizade</h3>
+                <div class="space-y-2">
+                  <!-- Solicitações de amizade serão inseridas aqui -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Modal de busca de amigos -->
+            <div id="add-friend-modal" class="fixed inset-0 bg-black/50 dark:bg-black/70 hidden items-center justify-center z-50">
+              <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 max-w-md w-full mx-4">
+                <div class="flex justify-between items-center mb-4">
+                  <h3 class="text-lg font-semibold">Adicionar Amigo</h3>
+                  <button id="close-friend-modal" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  </button>
+                </div>
+                <div class="mb-4">
+                  <input type="text" id="friend-search" placeholder="Buscar usuário..."
+                    class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg">
+                </div>
+                <div id="friend-search-results" class="max-h-60 overflow-y-auto">
+                  <!-- Resultados da busca serão inseridos aqui -->
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -439,12 +474,18 @@
     </div>
   </div>
 
+  <!-- Container para as janelas de chat -->
+  <div id="chat-windows" class="fixed bottom-0 right-4 flex gap-4 z-50">
+    <!-- As janelas de chat serão inseridas aqui dinamicamente -->
+  </div>
+
   <!-- Scripts -->
   <script src="../src/js/navbar.js"></script>
   <script src="../src/js/animu.js"></script>
   <script src="../src/js/search.js"></script>
   <script src="../src/js/category.js"></script>
   <script src="../src/js/profile.js"></script>
+  <script src="../src/js/chat.js"></script>
 </body>
 
 </html>

@@ -477,4 +477,372 @@ function setupEventListeners(user) {
     localStorage.removeItem('userSession');
     window.location.href = './signin.html';
   });
+
+  // Inicializar sistema de amizades
+  initializeFriendSystem(user);
+}
+
+/**
+ * Sistema de Amizades
+ */
+
+function initializeFriendSystem(currentUser) {
+  // Adiciona botão de adicionar amigo
+  const friendsList = document.getElementById('friends-list');
+  const addFriendButton = document.createElement('button');
+  addFriendButton.className = 'btn btn-primary mb-4';
+  addFriendButton.innerHTML = '+ Adicionar Amigo';
+  addFriendButton.onclick = showAddFriendModal;
+  friendsList.parentElement.insertBefore(addFriendButton, friendsList);
+
+  loadFriends(currentUser);
+  loadFriendRequests(currentUser);
+  setupFriendSearchListener();
+}
+
+function loadFriends(user) {
+  const friendsList = document.getElementById('friends-list');
+  const friends = user.friends || [];
+  const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+
+  if (friends.length === 0) {
+    friendsList.innerHTML = '<p class="text-gray-500">Nenhum amigo adicionado</p>';
+    return;
+  }
+
+  friendsList.innerHTML = friends.map(friendId => {
+    const friend = users.find(u => u.id === friendId);
+    if (!friend) return '';
+
+    return `
+      <div class="group relative flex items-center gap-3 p-2.5 rounded-xl
+                  bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700
+                  hover:border-purple-200 dark:hover:border-purple-700
+                  transition-all duration-300 ease-in-out">
+        <div class="relative">
+          <img src="${friend.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(friend.username)}`}" 
+               alt="${friend.username}" 
+               class="w-10 h-10 rounded-full object-cover transition-transform duration-300
+                      border-2 border-purple-100 dark:border-purple-900
+                      group-hover:border-purple-300 dark:group-hover:border-purple-700">
+          <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-gray-800
+                      ${friend.online ? 'bg-green-400' : 'bg-gray-300 dark:bg-gray-600'}"></div>
+        </div>
+        
+        <div class="flex-1 min-w-0">
+          <h4 class="font-medium text-gray-900 dark:text-gray-100 truncate">
+            ${friend.displayName || friend.username}
+          </h4>
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            ${friend.online ? 'Online' : 'Offline'}
+          </p>
+        </div>
+        
+        <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button onclick="openChat('${friend.id}')" 
+                  class="p-2 text-gray-400 hover:text-purple-500 dark:hover:text-purple-400
+                         hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded-lg
+                         transition-colors duration-200"
+                  title="Iniciar chat">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+          </button>
+          
+          <button onclick="removeFriend('${friend.id}')" 
+                  class="p-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400
+                         hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg
+                         transition-colors duration-200"
+                  title="Remover amigo">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function loadFriendRequests(user) {
+  const requestsContainer = document.getElementById('friend-requests');
+  const requests = user.friendRequests || [];
+  const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+
+  if (requests.length === 0) {
+    requestsContainer.style.display = 'none';
+    return;
+  }
+
+  requestsContainer.style.display = 'block';
+  const requestsList = requestsContainer.querySelector('div');
+  requestsList.innerHTML = requests.map(requestId => {
+    const requester = users.find(u => u.id === requestId);
+    if (!requester) return '';
+
+    return `
+      <div class="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
+        <div class="flex items-center gap-2">
+          <img src="${requester.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(requester.username)}`}" 
+               alt="${requester.username}" 
+               class="w-8 h-8 rounded-full">
+          <span>${requester.displayName || requester.username}</span>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="acceptFriendRequest('${requester.id}')" 
+                  class="text-green-500 hover:text-green-700 p-1">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M5 13l4 4L19 7" />
+            </svg>
+          </button>
+          <button onclick="rejectFriendRequest('${requester.id}')" 
+                  class="text-red-500 hover:text-red-700 p-1">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function showAddFriendModal() {
+  const modal = document.getElementById('add-friend-modal');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+  document.getElementById('friend-search').value = '';
+  document.getElementById('friend-search-results').innerHTML = '';
+}
+
+function setupFriendSearchListener() {
+  const searchInput = document.getElementById('friend-search');
+  const resultsContainer = document.getElementById('friend-search-results');
+  const closeModal = document.getElementById('close-friend-modal');
+  const modal = document.getElementById('add-friend-modal');
+
+  searchInput.addEventListener('input', debounce(async (e) => {
+    const query = e.target.value.toLowerCase();
+    if (query.length < 3) {
+      resultsContainer.innerHTML = '<p class="text-gray-500 p-2">Digite pelo menos 3 caracteres...</p>';
+      return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+    const currentUser = JSON.parse(localStorage.getItem('userSession'));
+    const filteredUsers = users.filter(user => 
+      user.id !== currentUser.userId &&
+      (user.username.toLowerCase().includes(query) || 
+       (user.displayName && user.displayName.toLowerCase().includes(query)))
+    );
+
+    resultsContainer.innerHTML = filteredUsers.length ? 
+      filteredUsers.map(user => `
+        <div class="flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-gray-700">
+          <div class="flex items-center gap-2">
+            <img src="${user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}`}" 
+                 alt="${user.username}" 
+                 class="w-8 h-8 rounded-full">
+            <span>${user.displayName || user.username}</span>
+          </div>
+          <button onclick="sendFriendRequest('${user.id}')" 
+                  class="btn btn-primary py-1 px-3">
+            Adicionar
+          </button>
+        </div>
+      `).join('') : 
+      '<p class="text-gray-500 p-2">Nenhum usuário encontrado</p>';
+  }, 300));
+
+  closeModal.addEventListener('click', () => {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  });
+}
+
+function sendFriendRequest(targetUserId) {
+  const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+  const currentUser = JSON.parse(localStorage.getItem('userSession'));
+  const targetUserIndex = users.findIndex(u => u.id === targetUserId);
+
+  if (targetUserIndex === -1) return;
+
+  // Adiciona a solicitação para o usuário alvo
+  users[targetUserIndex].friendRequests = users[targetUserIndex].friendRequests || [];
+  if (!users[targetUserIndex].friendRequests.includes(currentUser.userId)) {
+    users[targetUserIndex].friendRequests.push(currentUser.userId);
+    localStorage.setItem('animuUsers', JSON.stringify(users));
+    
+    // Fecha o modal e mostra mensagem de sucesso
+    document.getElementById('add-friend-modal').classList.add('hidden');
+    alert('Solicitação de amizade enviada!');
+  }
+}
+
+function acceptFriendRequest(requesterId) {
+  const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+  const currentUser = JSON.parse(localStorage.getItem('userSession'));
+  const currentUserIndex = users.findIndex(u => u.id === currentUser.userId);
+  const requesterIndex = users.findIndex(u => u.id === requesterId);
+
+  if (currentUserIndex === -1 || requesterIndex === -1) return;
+
+  // Remove a solicitação e adiciona à lista de amigos de ambos
+  users[currentUserIndex].friendRequests = users[currentUserIndex].friendRequests.filter(id => id !== requesterId);
+  users[currentUserIndex].friends = users[currentUserIndex].friends || [];
+  users[requesterIndex].friends = users[requesterIndex].friends || [];
+
+  users[currentUserIndex].friends.push(requesterId);
+  users[requesterIndex].friends.push(currentUser.userId);
+
+  localStorage.setItem('animuUsers', JSON.stringify(users));
+  window.location.reload();
+}
+
+function rejectFriendRequest(requesterId) {
+  const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+  const currentUser = JSON.parse(localStorage.getItem('userSession'));
+  const currentUserIndex = users.findIndex(u => u.id === currentUser.userId);
+
+  if (currentUserIndex === -1) return;
+
+  // Remove a solicitação
+  users[currentUserIndex].friendRequests = users[currentUserIndex].friendRequests.filter(id => id !== requesterId);
+  localStorage.setItem('animuUsers', JSON.stringify(users));
+  loadFriendRequests(users[currentUserIndex]);
+}
+
+function removeFriend(friendId) {
+  if (!confirm('Tem certeza que deseja remover este amigo?')) return;
+
+  const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+  const currentUser = JSON.parse(localStorage.getItem('userSession'));
+  const currentUserIndex = users.findIndex(u => u.id === currentUser.userId);
+  const friendIndex = users.findIndex(u => u.id === friendId);
+
+  if (currentUserIndex === -1 || friendIndex === -1) return;
+
+  // Remove da lista de amigos de ambos os usuários
+  users[currentUserIndex].friends = users[currentUserIndex].friends.filter(id => id !== friendId);
+  users[friendIndex].friends = users[friendIndex].friends.filter(id => id !== currentUser.userId);
+
+  localStorage.setItem('animuUsers', JSON.stringify(users));
+  window.location.reload();
+}
+
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+function openChat(friendId) {
+  const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+  const currentUser = JSON.parse(localStorage.getItem('userSession'));
+  const friend = users.find(u => u.id === friendId);
+
+  if (!friend) return;
+
+  // Verifica se já existe uma janela de chat aberta
+  const existingChat = document.querySelector(`#chat-${friendId}`);
+  if (existingChat) {
+    existingChat.querySelector('input').focus();
+    return;
+  }
+
+  const chatWindow = document.createElement('div');
+  chatWindow.id = `chat-${friendId}`;
+  chatWindow.className = 'w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden';
+  chatWindow.innerHTML = `
+    <div class="flex items-center justify-between p-3 bg-purple-500 text-white">
+      <div class="flex items-center gap-2">
+        <img src="${friend.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(friend.username)}`}" 
+             alt="${friend.username}" 
+             class="w-8 h-8 rounded-full">
+        <span class="font-medium">${friend.displayName || friend.username}</span>
+      </div>
+      <button onclick="closeChat('${friendId}')" class="text-white hover:text-gray-200 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <div class="h-80 overflow-y-auto p-4 space-y-3" id="chat-messages-${friendId}">
+      <!-- Mensagens serão inseridas aqui -->
+    </div>
+    <div class="p-3 border-t dark:border-gray-700">
+      <form onsubmit="sendMessage(event, '${currentUser.userId}', '${friendId}')" class="flex gap-2">
+        <input type="text" placeholder="Digite sua mensagem..." 
+               class="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 
+                      bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+        <button type="submit" 
+                class="p-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
+        </button>
+      </form>
+    </div>
+  `;
+
+  document.getElementById('chat-windows').appendChild(chatWindow);
+  loadChatMessages(currentUser.userId, friendId);
+}
+
+function closeChat(friendId) {
+  const chatWindow = document.getElementById(`chat-${friendId}`);
+  if (chatWindow) {
+    chatWindow.remove();
+  }
+}
+
+function loadChatMessages(senderId, receiverId) {
+  const chat = new Chat();
+  const messages = chat.getMessages(senderId, receiverId);
+  const container = document.getElementById(`chat-messages-${receiverId}`);
+  const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+
+  container.innerHTML = messages.map(msg => {
+    const isMine = msg.senderId === senderId;
+    const messageClasses = isMine ? 
+      'ml-auto bg-purple-500 text-white' : 
+      'mr-auto bg-gray-100 dark:bg-gray-700';
+
+    return `
+      <div class="flex ${isMine ? 'justify-end' : 'justify-start'}">
+        <div class="max-w-[70%] ${messageClasses} rounded-lg p-2 break-words">
+          <p class="text-sm">${msg.message}</p>
+          <span class="text-xs ${isMine ? 'text-purple-100' : 'text-gray-500'} block mt-1">
+            ${new Date(msg.timestamp).toLocaleTimeString()}
+          </span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.scrollTop = container.scrollHeight;
+}
+
+function sendMessage(event, senderId, receiverId) {
+  event.preventDefault();
+  const input = event.target.querySelector('input');
+  const message = input.value.trim();
+
+  if (!message) return;
+
+  const chat = new Chat();
+  chat.sendMessage(senderId, receiverId, message);
+  
+  loadChatMessages(senderId, receiverId);
+  input.value = '';
 }
