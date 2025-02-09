@@ -111,6 +111,84 @@ h1, h2, h3, h4, h5, h6 {
   color: #ff4444;
 }
 
+/* Tabela */
+.table-container {
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  max-width: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.table-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: var(--primary-gradient);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th {
+  background: transparent;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 1.5rem 1rem;
+  text-align: left;
+  font-size: 0.85rem;
+  border-bottom: 2px solid var(--primary-color);
+}
+
+td {
+  padding: 1.2rem 1rem;
+  font-size: 0.95rem;
+  text-align: left;
+  border-bottom: 1px solid var(--primary-color);
+  transition: background 0.3s ease;
+  max-width: 200px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+tr {
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+tr:hover {
+  background: linear-gradient(90deg, var(--primary-color-alpha) 0%, transparent 100%);
+  transform: scale(1.01);
+  box-shadow: 0 4px 12px var(--card-shadow);
+  transition: all 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+tr {
+  animation: fadeIn 0.5s ease forwards;
+  opacity: 0;
+}
+
+tr:nth-child(1) { animation-delay: 0.1s; }
+tr:nth-child(2) { animation-delay: 0.2s; }
+tr:nth-child(3) { animation-delay: 0.3s; }
+tr:nth-child(4) { animation-delay: 0.4s; }
+tr:nth-child(5) { animation-delay: 0.5s; }
+
 /* 3. Layout e Containers
    ========================================================================== */
 .container {

@@ -55,10 +55,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // Gera linha da tabela com dados e ações do usuário
   function createUserRow(user) {
     const tr = document.createElement('tr');
-    tr.className = 'border-b border-gray-200 hover:bg-purple-500/2';
 
     tr.innerHTML = `
-      <td class="px-6 py-4 whitespace-nowrap">
+      <td>
         <div class="flex items-center">
           <img class="h-10 w-10 rounded-full object-cover"
                src="${user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=8B5CF6&color=ffffff&size=100`}"
@@ -68,15 +67,15 @@ document.addEventListener('DOMContentLoaded', function () {
           </div>
         </div>
       </td>
-      <td class="px-6 py-4 whitespace-nowrap">${user.email}</td>
-      <td class="px-6 py-4 whitespace-nowrap text-center">
+      <td>${user.email}</td>
+      <td>
         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
               ${user.isAdmin ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'}">
               ${user.isAdmin ? 'Admin' : 'Usuário'}
         </span>
       </td>
-      <td class="px-6 py-4 whitespace-nowrap text-center">${formatDate(user.createdAt)}</td>
-      <td class="px-6 py-4 whitespace-nowrap text-center">
+      <td>${formatDate(user.createdAt)}</td>
+      <td>
         <div class="flex justify-center gap-2">
           <button onclick="toggleAdminStatus('${user.id}')"
                   class="text-sm bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-700 transition-colors">

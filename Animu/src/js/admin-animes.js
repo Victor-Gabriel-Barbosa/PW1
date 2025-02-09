@@ -39,23 +39,23 @@ function loadAnimesList() {
   const tbody = document.getElementById('animesList');
 
   tbody.innerHTML = animes.map((anime, index) => `
-    <tr class="hover:">
-      <td class="px-6 py-4 whitespace-nowrap">
+    <tr>
+      <td>
         <img src="${anime.coverImage}" alt="${anime.primaryTitle}" class="h-20 w-14 object-cover rounded">
       </td>
-      <td class="px-6 py-4">
+      <td>
         <div class="text-sm font-medium">${anime.primaryTitle}</div>
         <div class="text-sm text-gray-500">${anime.alternativeTitles[0]?.title || ''}</div>
       </td>
-      <td class="px-6 py-4 text-sm">
+      <td>
         ${anime.episodes || 'N/A'}
       </td>
-      <td class="px-6 py-4 text-sm">
+      <td>
         <span class="px-2 py-1 rounded-full ${getStatusClass(anime.status)}">
           ${anime.status || 'N/A'}
         </span>
       </td>
-      <td class="px-6 py-4 text-sm">
+      <td>
         <div class="action-buttons">
           <button class="btn-action btn-edit" title="Editar" onclick="editAnime(${index})">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

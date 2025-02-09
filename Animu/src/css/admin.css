@@ -514,9 +514,16 @@
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Mudado de center para flex-start */
   justify-content: center;
   z-index: 1000;
+  padding: 2rem;
+  overflow-y: auto; /* Permite scroll no modal */
+  pointer-events: auto; /* Garante que cliques funcionem */
+}
+
+.modal > * {
+  pointer-events: auto; /* Garante que cliques dentro do modal funcionem */
 }
 
 .modal.hidden {
@@ -754,48 +761,6 @@
 .close-btn:hover {
   background: rgba(0, 0, 0, 0.1);
   transform: scale(1.1);
-}
-
-/* Estilos para a lista de animes */
-#animesList tr {
-  transition: all 0.2s ease;
-  border-left: 4px solid transparent;
-}
-
-#animesList tr:hover {
-  background-color: var(--primary-color-alpha) !important;
-  border-left: 4px solid var(--primary-color);
-  transform: translateX(4px);
-}
-
-#animesList tr:hover td {
-  color: var(--text-color);
-}
-
-#animesList tr:hover img {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-#animesList img {
-  transition: all 0.2s ease;
-}
-
-#animesList .action-buttons {
-  opacity: 0.7;
-  transition: opacity 0.2s ease;
-}
-
-#animesList tr:hover .action-buttons {
-  opacity: 1;
-}
-
-#animesList .btn-action {
-  transition: all 0.2s ease;
-}
-
-#animesList .btn-action:hover {
-  transform: scale(1.15);
 }
 
 /* Estilos do Formulário */
@@ -1288,6 +1253,10 @@ textarea:disabled {
   overflow: hidden;
   background: var(--background);
   border-radius: 0.75rem;
+  margin: 2rem auto; /* Adiciona margem para melhor visualização */
+  max-height: calc(100vh - 4rem); /* Ajusta altura máxima considerando o padding */
+  overflow: auto;
+  position: relative; /* Garante que o modal fique sobre o conteúdo */
 }
 
 .modal-header-fixed {
@@ -1335,5 +1304,129 @@ textarea:disabled {
   
   .modal-content-scroll {
     padding: 1rem;
+  }
+}
+
+/* Estado de carregamento */
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background: var(--background);
+  border-radius: 0.5rem;
+}
+
+.loading-state::after {
+  content: '';
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--card-shadow);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  #categories-list {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Estilos para o seletor de cores */
+input[type="color"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: transparent;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border: 2px solid var(--card-shadow);
+  border-radius: 8px;
+}
+
+/* Firefox */
+input[type="color"]::-moz-color-swatch {
+  border: 2px solid var(--card-shadow);
+  border-radius: 8px;
+}
+
+/* Campo hexadecimal */
+input[id$="-hex"] {
+  font-family: monospace;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 1px;
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: 2px solid var(--card-shadow);
+}
+
+input[id$="-hex"]:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+input[id$="-hex"].error {
+  border-color: #EF4444;
+  animation: shake 0.5s ease;
+}
+
+/* Container dos inputs de cor */
+.color-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+}
+
+.color-input-group:hover input[type="color"] {
+  transform: scale(1.05);
+}
+
+/* Dica visual */
+.color-input-group::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.color-input-group:focus-within::after {
+  box-shadow: 0 0 0 2px var(--primary-color-alpha);
+}
+
+/* Responsividade */
+@media (max-width: 640px) {
+  input[type="color"] {
+    width: 44px;
+    height: 44px;
+  }
+
+  input[id$="-hex"] {
+    font-size: 0.875rem;
+    padding: 0.5rem;
   }
 }
