@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quadrados</title>
+  <style>
+    body {
+      background: yellow;
+      padding: 0;
+      margin: 0;
+    }
+
+    .quadrado-marrom {
+      width: 100px;
+      height: 100px;
+      background-color: lightsalmon;
+      position: relative;
+      top: 0px;
+      left: 0px;
+    }
+
+    .quadrado-verde {
+      width: 100px;
+      height: 100px;
+      background-color: green;
+      position: relative;
+    }
+
+    .quadrado-vermelho {
+      width: 100px;
+      height: 100px;
+      background-color: red;
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quadrado-marrom">div1</div>
+  <div class="quadrado-verde">div3</div>
+  <div class="quadrado-vermelho">div2</div>
+</body>
+
+</html>
