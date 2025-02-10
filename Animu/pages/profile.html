@@ -237,6 +237,151 @@
     #logout-button:hover {
       box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
     }
+
+    /* Estilos do sistema de amizades */
+    .friends-container {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .friend-card {
+      background: transparent;
+      border: 1px solid rgba(139, 92, 246, 0.1);
+      border-radius: 1rem;
+      padding: 0.75rem;
+      transition: all 0.3s ease;
+    }
+
+    .friend-card:hover {
+      border-color: rgba(139, 92, 246, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    }
+
+    .status-indicator {
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      transition: all 0.3s ease;
+    }
+
+    .status-online {
+      background: #34D399;
+      box-shadow: 0 0 0 rgba(52, 211, 153, 0.4);
+      animation: pulse 2s infinite;
+    }
+
+    .status-offline {
+      background: #9CA3AF;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.4);
+      }
+
+      70% {
+        box-shadow: 0 0 0 6px rgba(52, 211, 153, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(52, 211, 153, 0);
+      }
+    }
+
+    /* Estilos para o modal de adicionar amigos */
+    .friend-search-container {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .friend-search-container input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      padding-left: 2.5rem;
+      border-radius: 0.75rem;
+      border: 2px solid transparent;
+      background: rgba(139, 92, 246, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .friend-search-container input:focus {
+      border-color: rgba(139, 92, 246, 0.5);
+      background: transparent;
+      outline: none;
+    }
+
+    .friend-search-container svg {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1.25rem;
+      height: 1.25rem;
+      color: #9CA3AF;
+      transition: color 0.3s ease;
+    }
+
+    .friend-search-container input:focus+svg {
+      color: #8B5CF6;
+    }
+
+    /* Solicitações de amizade */
+    .friend-request-card {
+      background: rgba(139, 92, 246, 0.05);
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .request-actions {
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .request-actions button {
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      transition: all 0.3s ease;
+    }
+
+    .accept-btn {
+      background: #34D399;
+      color: white;
+    }
+
+    .accept-btn:hover {
+      background: #059669;
+      transform: translateY(-1px);
+    }
+
+    .reject-btn {
+      background: #EF4444;
+      color: white;
+    }
+
+    .reject-btn:hover {
+      background: #DC2626;
+      transform: translateY(-1px);
+    }
   </style>
 </head>
 
@@ -333,34 +478,51 @@
 
             <!-- Nova seção de amigos -->
             <div>
-              <label class="text-sm text-gray-500 dark:text-gray-400">Amigos</label>
-              <div id="friends-list" class="mt-2 space-y-2">
+              <div class="flex justify-between items-center mb-4">
+                <label class="text-sm text-gray-500 dark:text-gray-400">Amigos</label>
+                <button id="add-friend-btn" class="text-sm text-purple-600 hover:text-purple-700 flex items-center gap-2 transition-all hover:scale-105">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                  </svg>
+                  Adicionar Amigo
+                </button>
+              </div>
+
+              <div id="friends-list" class="friends-container">
                 <!-- Lista de amigos será inserida aqui -->
               </div>
-              <div id="friend-requests" class="mt-4">
-                <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Solicitações de Amizade</h3>
+
+              <!-- Solicitações de Amizade -->
+              <div id="friend-requests" class="mt-6">
+                <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                  Solicitações de Amizade
+                </h3>
                 <div class="space-y-2">
-                  <!-- Solicitações de amizade serão inseridas aqui -->
+                  <!-- Solicitações serão inseridas aqui -->
                 </div>
               </div>
             </div>
 
-            <!-- Modal de busca de amigos -->
-            <div id="add-friend-modal" class="fixed inset-0 bg-black/50 dark:bg-black/70 hidden items-center justify-center z-50">
-              <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 max-w-md w-full mx-4">
-                <div class="flex justify-between items-center mb-4">
+            <!-- Modal de busca de amigos atualizado -->
+            <div id="add-friend-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+              <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 max-w-md w-full mx-4 transform transition-all">
+                <div class="flex justify-between items-center mb-6">
                   <h3 class="text-lg font-semibold">Adicionar Amigo</h3>
                   <button id="close-friend-modal" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
                 </div>
-                <div class="mb-4">
-                  <input type="text" id="friend-search" placeholder="Buscar usuário..."
-                    class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg">
+
+                <div class="friend-search-container">
+                  <input type="text" id="friend-search" placeholder="Digite o nome do usuário..." class="w-full">
+                  <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
                 </div>
-                <div id="friend-search-results" class="max-h-60 overflow-y-auto">
+
+                <div id="friend-search-results" class="max-h-60 overflow-y-auto mt-4 space-y-2">
                   <!-- Resultados da busca serão inseridos aqui -->
                 </div>
               </div>
