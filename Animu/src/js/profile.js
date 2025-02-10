@@ -587,24 +587,34 @@ function loadFriendRequests(user) {
 
     return `
       <div class="friend-request-card">
-        <div class="flex items-center gap-3">
-          <img src="${requester.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(requester.username)}`}" 
-               alt="${requester.username}" 
-               class="w-10 h-10 rounded-full">
-          <div>
-            <h4 class="font-medium">${requester.displayName || requester.username}</h4>
-            <p class="text-xs text-gray-500">Quer ser seu amigo</p>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <img src="${requester.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(requester.username)}`}" 
+                 alt="${requester.username}" 
+                 class="w-10 h-10 rounded-full">
+            <div>
+              <h4 class="font-medium">${requester.displayName || requester.username}</h4>
+              <p class="text-xs text-gray-500">Quer ser seu amigo</p>
+            </div>
           </div>
-        </div>
-        <div class="request-actions flex justify-end">
-          <button onclick="acceptFriendRequest('${requester.id}')" 
-                  class="accept-btn">
-            Aceitar
-          </button>
-          <button onclick="rejectFriendRequest('${requester.id}')" 
-                  class="reject-btn">
-            Recusar
-          </button>
+          <div class="flex items-center gap-3">
+            <button onclick="acceptFriendRequest('${requester.id}')" 
+                    class="text-green-500 hover:text-green-600 transition-colors"
+                    title="Aceitar solicitação">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M5 13l4 4L19 7"/>
+              </svg>
+            </button>
+            <button onclick="rejectFriendRequest('${requester.id}')" 
+                    class="text-red-500 hover:text-red-600 transition-colors"
+                    title="Recusar solicitação">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     `;
@@ -648,7 +658,7 @@ function setupFriendSearchListener() {
         const hasPendingRequest = targetUser.friendRequests?.includes(currentUser.userId);
         
         return `
-          <div class="flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-gray-700">
+          <div class="flex items-center justify-between p-2">
             <div class="flex items-center gap-2">
               <img src="${user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}`}" 
                    alt="${user.username}" 
@@ -684,10 +694,22 @@ function sendFriendRequest(targetUserId) {
 
   if (targetUserIndex === -1 || currentUserIndex === -1) return;
 
-  // Verifica se já existe uma solicitação ou se já são amigos
   const targetUser = users[targetUserIndex];
+  const currentUserData = users[currentUserIndex];
+
+  // Verifica se já existe uma solicitação ou se já são amigos
   if (targetUser.friendRequests?.includes(currentUser.userId) || 
       targetUser.friends?.includes(currentUser.userId)) {
+    return;
+  }
+
+  // Nova verificação: se o usuário atual tem uma solicitação pendente do usuário alvo
+  if (currentUserData.friendRequests?.includes(targetUserId)) {
+    const button = event.target;
+    button.disabled = true;
+    button.textContent = 'Solicitação pendente recebida';
+    button.classList.remove('bg-purple-500', 'hover:bg-purple-600');
+    button.classList.add('bg-gray-400');
     return;
   }
 
