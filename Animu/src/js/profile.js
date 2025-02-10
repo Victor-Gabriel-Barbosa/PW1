@@ -329,7 +329,7 @@ function setupGenreSelection() {
                     border-gray-300 dark:border-gray-600 
                     rounded focus:ring-purple-500 dark:focus:ring-purple-400
                     bg-white dark:bg-gray-700">
-      <span class="ml-2 text-sm text-gray-700 dark:text-gray-200">${genre}</span>
+      <span class="ml-2 text-sm">${genre}</span>
     </label>
   `).join('');
 }
@@ -783,8 +783,7 @@ function openChat(friendId) {
     <div class="p-3 border-t dark:border-gray-700">
       <form onsubmit="sendMessage(event, '${currentUser.userId}', '${friendId}')" class="flex gap-2">
         <input type="text" placeholder="Digite sua mensagem..." 
-               class="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 
-                      bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+               class="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600">
         <button type="submit" 
                 class="p-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
