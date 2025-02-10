@@ -640,21 +640,33 @@ function setupFriendSearchListener() {
        (user.displayName && user.displayName.toLowerCase().includes(query)))
     );
 
+    // Verifica se o usuário já é amigo ou se já existe uma solicitação pendente
     resultsContainer.innerHTML = filteredUsers.length ? 
-      filteredUsers.map(user => `
-        <div class="flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-gray-700">
-          <div class="flex items-center gap-2">
-            <img src="${user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}`}" 
-                 alt="${user.username}" 
-                 class="w-8 h-8 rounded-full">
-            <span>${user.displayName || user.username}</span>
+      filteredUsers.map(user => {
+        const targetUser = users.find(u => u.id === user.id);
+        const isAlreadyFriend = targetUser.friends?.includes(currentUser.userId);
+        const hasPendingRequest = targetUser.friendRequests?.includes(currentUser.userId);
+        
+        return `
+          <div class="flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-gray-700">
+            <div class="flex items-center gap-2">
+              <img src="${user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}`}" 
+                   alt="${user.username}" 
+                   class="w-8 h-8 rounded-full">
+              <span>${user.displayName || user.username}</span>
+            </div>
+            ${isAlreadyFriend ? 
+              '<span class="text-sm text-gray-500">Já é amigo</span>' :
+              hasPendingRequest ?
+              '<span class="text-sm text-gray-500">Solicitação pendente</span>' :
+              `<button onclick="sendFriendRequest('${user.id}')" 
+                      class="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded-lg transition-colors">
+                Adicionar
+              </button>`
+            }
           </div>
-          <button onclick="sendFriendRequest('${user.id}')" 
-                  class="btn btn-primary py-1 px-3">
-            Adicionar
-          </button>
-        </div>
-      `).join('') : 
+        `;
+      }).join('') : 
       '<p class="text-gray-500 p-2">Nenhum usuário encontrado</p>';
   }, 300));
 
@@ -668,19 +680,43 @@ function sendFriendRequest(targetUserId) {
   const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
   const currentUser = JSON.parse(localStorage.getItem('userSession'));
   const targetUserIndex = users.findIndex(u => u.id === targetUserId);
+  const currentUserIndex = users.findIndex(u => u.id === currentUser.userId);
 
-  if (targetUserIndex === -1) return;
+  if (targetUserIndex === -1 || currentUserIndex === -1) return;
 
-  // Adiciona a solicitação para o usuário alvo
-  users[targetUserIndex].friendRequests = users[targetUserIndex].friendRequests || [];
-  if (!users[targetUserIndex].friendRequests.includes(currentUser.userId)) {
-    users[targetUserIndex].friendRequests.push(currentUser.userId);
-    localStorage.setItem('animuUsers', JSON.stringify(users));
-    
-    // Fecha o modal e mostra mensagem de sucesso
-    document.getElementById('add-friend-modal').classList.add('hidden');
-    alert('Solicitação de amizade enviada!');
+  // Verifica se já existe uma solicitação ou se já são amigos
+  const targetUser = users[targetUserIndex];
+  if (targetUser.friendRequests?.includes(currentUser.userId) || 
+      targetUser.friends?.includes(currentUser.userId)) {
+    return;
   }
+
+  // Inicializa o array de solicitações se não existir
+  if (!users[targetUserIndex].friendRequests) {
+    users[targetUserIndex].friendRequests = [];
+  }
+
+  // Adiciona a solicitação
+  users[targetUserIndex].friendRequests.push(currentUser.userId);
+  localStorage.setItem('animuUsers', JSON.stringify(users));
+
+  // Atualiza a interface
+  const button = event.target;
+  button.disabled = true;
+  button.textContent = 'Solicitação enviada';
+  button.classList.remove('bg-purple-500', 'hover:bg-purple-600');
+  button.classList.add('bg-gray-400');
+
+  // Mostra uma notificação
+  const notification = document.createElement('div');
+  notification.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg';
+  notification.textContent = 'Solicitação de amizade enviada!';
+  document.body.appendChild(notification);
+
+  // Remove a notificação após 3 segundos
+  setTimeout(() => {
+    notification.remove();
+  }, 3000);
 }
 
 function acceptFriendRequest(requesterId) {
@@ -762,7 +798,8 @@ function openChat(friendId) {
 
   const chatWindow = document.createElement('div');
   chatWindow.id = `chat-${friendId}`;
-  chatWindow.className = 'w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden';
+  chatWindow.className = 'w-80 rounded-lg shadow-lg overflow-hidden';
+  chatWindow.style.background = 'var(--background)';
   chatWindow.innerHTML = `
     <div class="flex items-center justify-between p-3 bg-purple-500 text-white">
       <div class="flex items-center gap-2">
@@ -810,21 +847,38 @@ function loadChatMessages(senderId, receiverId) {
   const messages = chat.getMessages(senderId, receiverId);
   const container = document.getElementById(`chat-messages-${receiverId}`);
   const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+  
+  // Buscar dados dos usuários para os avatares
+  const sender = users.find(u => u.id === senderId);
+  const receiver = users.find(u => u.id === receiverId);
 
   container.innerHTML = messages.map(msg => {
     const isMine = msg.senderId === senderId;
+    const user = isMine ? sender : receiver;
     const messageClasses = isMine ? 
       'ml-auto bg-purple-500 text-white' : 
-      'mr-auto bg-gray-100 dark:bg-gray-700';
+      'mr-auto bg-blue-500 text-white';
+
+    const avatar = user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.username || 'User')}`;
 
     return `
-      <div class="flex ${isMine ? 'justify-end' : 'justify-start'}">
+      <div class="flex ${isMine ? 'justify-end' : 'justify-start'} items-end gap-2">
+        ${!isMine ? `
+          <img src="${avatar}" 
+               alt="${user?.username || 'User'}" 
+               class="w-6 h-6 rounded-full object-cover">
+        ` : ''}
         <div class="max-w-[70%] ${messageClasses} rounded-lg p-2 break-words">
           <p class="text-sm">${msg.message}</p>
-          <span class="text-xs ${isMine ? 'text-purple-100' : 'text-gray-500'} block mt-1">
+          <span class="text-xs ${isMine ? 'text-purple-100' : 'text-blue-100'} block mt-1">
             ${new Date(msg.timestamp).toLocaleTimeString()}
           </span>
         </div>
+        ${isMine ? `
+          <img src="${avatar}" 
+               alt="${user?.username || 'User'}" 
+               class="w-6 h-6 rounded-full object-cover">
+        ` : ''}
       </div>
     `;
   }).join('');
