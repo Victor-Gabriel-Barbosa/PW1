@@ -637,8 +637,8 @@ function setupFriendSearchListener() {
 
   searchInput.addEventListener('input', debounce(async (e) => {
     const query = e.target.value.toLowerCase();
-    if (query.length < 3) {
-      resultsContainer.innerHTML = '<p class="text-gray-500 p-2">Digite pelo menos 3 caracteres...</p>';
+    if (!query) {
+      resultsContainer.innerHTML = '<div class="text-center text-gray-500 dark:text-gray-400 py-8">Comece digitando para encontrar amigos...</div>';
       return;
     }
 
@@ -677,7 +677,7 @@ function setupFriendSearchListener() {
           </div>
         `;
       }).join('') : 
-      '<p class="text-gray-500 p-2">Nenhum usuário encontrado</p>';
+      '<div class="text-center text-gray-500 dark:text-gray-400 py-8">Nenhum usuário encontrado</div>';
   }, 300));
 
   closeModal.addEventListener('click', () => {

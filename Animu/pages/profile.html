@@ -382,6 +382,95 @@
       background: #DC2626;
       transform: translateY(-1px);
     }
+
+    /* Estilos atualizados para o modal de amigos */
+    #add-friend-modal .friend-search-container {
+      position: relative;
+      background: rgba(139, 92, 246, 0.05);
+      border-radius: 1rem;
+      padding: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    #add-friend-modal .friend-search-container:focus-within {
+      background: rgba(139, 92, 246, 0.1);
+      box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+    }
+
+    #add-friend-modal input {
+      background: transparent;
+      border: none;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      width: 100%;
+      border-radius: 0.75rem;
+      transition: all 0.3s ease;
+    }
+
+    #add-friend-modal input:focus {
+      outline: none;
+    }
+
+    #add-friend-modal .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1.25rem;
+      height: 1.25rem;
+      color: #8B5CF6;
+      opacity: 0.5;
+      transition: all 0.3s ease;
+    }
+
+    #add-friend-modal .friend-search-container:focus-within .search-icon {
+      opacity: 1;
+    }
+
+    /* Animação de entrada do modal */
+    #add-friend-modal[class*="flex"] > div {
+      animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes modalPop {
+      from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    /* Estilização dos resultados de busca */
+    #friend-search-results > div {
+      padding: 0.75rem;
+      border-radius: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    #friend-search-results > div:not(.text-center):hover {
+      background: rgba(139, 92, 246, 0.05);
+      transform: translateX(4px);
+    }
+
+    /* Scrollbar personalizada para os resultados */
+    #friend-search-results::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #friend-search-results::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    #friend-search-results::-webkit-scrollbar-thumb {
+      background-color: rgba(139, 92, 246, 0.2);
+      border-radius: 3px;
+    }
+
+    #friend-search-results::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(139, 92, 246, 0.4);
+    }
   </style>
 </head>
 
@@ -503,27 +592,64 @@
               </div>
             </div>
 
-            <!-- Modal de busca de amigos atualizado -->
-            <div id="add-friend-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
-              <div class="rounded-2xl shadow-xl p-6 max-w-md w-full mx-4 transform transition-all" style="background:var(--background)">
-                <div class="flex justify-between items-center mb-6">
-                  <h3 class="text-lg font-semibold">Adicionar Amigo</h3>
-                  <button id="close-friend-modal" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <!-- Modal de busca de amigos -->
+            <div id="add-friend-modal" class="fixed inset-0 bg-black/50 dark:bg-black/70 hidden items-center justify-center z-50">
+              <div class="rounded-2xl shadow-xl max-w-md w-full mx-4 transform transition-all duration-300" style="background:var(--background)">
+                <!-- Cabeçalho do Modal -->
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                  <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                      <div class="p-2 bg-purple-100 dark:bg-purple-900/50 rounded-lg">
+                        <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 class="text-lg font-semibold">Adicionar Amigo</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Encontre novos amigos para compartilhar suas experiências</p>
+                      </div>
+                    </div>
+                    <button id="close-friend-modal" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                      <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Corpo do Modal -->
+                <div class="p-6">
+                  <!-- Barra de Pesquisa -->
+                  <div class="friend-search-container">
+                    <input type="text" id="friend-search" 
+                           placeholder="Procurar por nome ou @username" 
+                           class="w-full bg-gray-50 dark:bg-gray-800">
+                    <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
-                  </button>
+                  </div>
+
+                  <!-- Resultados da Pesquisa -->
+                  <div class="mt-6">
+                    <div class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">Resultados da busca</div>
+                    <div id="friend-search-results" class="space-y-2 max-h-[400px] overflow-y-auto 
+                                                         scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600
+                                                         pr-2">
+                      <!-- Resultados serão inseridos aqui via JavaScript -->
+                      <div class="text-center text-gray-500 dark:text-gray-400 py-8">
+                        Comece digitando para encontrar amigos...
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div class="friend-search-container">
-                  <input type="text" id="friend-search" placeholder="Digite o nome do usuário..." class="w-full">
-                  <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-
-                <div id="friend-search-results" class="max-h-60 overflow-y-auto mt-4 space-y-2">
-                  <!-- Resultados da busca serão inseridos aqui -->
+                <!-- Rodapé do Modal -->
+                <div class="p-6 border-t border-gray-200 dark:border-gray-700">
+                  <p class="text-sm text-gray-500 dark:text-gray-400 text-center">
+                    Dica: Você também pode encontrar amigos através dos comentários e reviews
+                  </p>
                 </div>
               </div>
             </div>
