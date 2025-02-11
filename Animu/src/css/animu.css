@@ -364,8 +364,8 @@ tbody tr:nth-child(5) { animation-delay: 0.5s; }
   background: transparent;
   border: 2px solid var(--primary-color);
   color: var(--primary-color);
-  width: 45px;
-  height: 45px;
+  width: 35px;
+  height: 35px;
   border-radius: 12px;
   display: flex;
   align-items: center;
