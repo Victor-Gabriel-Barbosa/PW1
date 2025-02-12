@@ -156,9 +156,8 @@ function closeAnimeForm() {
     }
   }
 
-  const modalContent = document.querySelector('.admin-form-container');
-  
-  // Reseta a posição de rolagem antes de fechar
+  // Reseta a posição do scroll do formulário
+  const modalContent = document.querySelector('.modal-content-scroll');
   if (modalContent) {
     modalContent.scrollTop = 0;
   }

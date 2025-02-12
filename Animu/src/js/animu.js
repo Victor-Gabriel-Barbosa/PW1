@@ -1,5 +1,109 @@
-// Aguarda o carregamento completo do DOM antes de executar o código
+// Configuração da barra de progresso
+const setupPageProgress = () => {
+  const progressBar = document.createElement('div');
+  progressBar.className = 'page-progress';
+  document.body.appendChild(progressBar);
+
+  let loadingTimeout;
+  let isLoading = false;
+  let progress = 0;
+
+  const easeInOut = (t) => {
+    return t < 0.5
+      ? 4 * t * t * t
+      : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+  };
+
+  const animateProgress = (targetProgress) => {
+    const duration = 500;
+    const startProgress = progress;
+    const startTime = performance.now();
+
+    const updateProgress = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const timeProgress = Math.min(elapsed / duration, 1);
+      
+      progress = startProgress + (targetProgress - startProgress) * easeInOut(timeProgress);
+      progressBar.style.width = `${progress}%`;
+
+      if (timeProgress < 1) {
+        requestAnimationFrame(updateProgress);
+      }
+    };
+
+    requestAnimationFrame(updateProgress);
+  };
+
+  const startProgress = () => {
+    if (isLoading) return;
+    
+    isLoading = true;
+    progress = 0;
+    progressBar.classList.add('loading');
+    
+    // Simula progresso com aceleração suave
+    const incrementProgress = () => {
+      const nextProgress = progress + (Math.random() * 15 * (1 - progress / 100));
+      if (nextProgress < 90) {
+        animateProgress(nextProgress);
+        loadingTimeout = setTimeout(incrementProgress, 500);
+      }
+    };
+
+    incrementProgress();
+  };
+
+  const finishProgress = () => {
+    if (!isLoading) return;
+
+    clearTimeout(loadingTimeout);
+    animateProgress(100);
+    
+    setTimeout(() => {
+      progressBar.style.transition = 'opacity 0.5s ease';
+      progressBar.style.opacity = '0';
+      
+      setTimeout(() => {
+        isLoading = false;
+        progressBar.classList.remove('loading');
+        progressBar.style.width = '0%';
+        progressBar.style.transition = '';
+        progressBar.style.opacity = '';
+      }, 500);
+    }, 300);
+  };
+
+  // Intercepta cliques em links
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (link?.href && !link.target && link.href !== window.location.href) {
+      startProgress();
+    }
+  });
+
+  // Intercepta requisições fetch
+  const originalFetch = window.fetch;
+  window.fetch = async (...args) => {
+    startProgress();
+    try {
+      const response = await originalFetch(...args);
+      finishProgress();
+      return response;
+    } catch (error) {
+      finishProgress();
+      throw error;
+    }
+  };
+
+  // Eventos de navegação
+  window.addEventListener('beforeunload', startProgress);
+  window.addEventListener('load', finishProgress);
+  window.addEventListener('popstate', startProgress);
+};
+
+// Adiciona a chamada da função no carregamento do DOM
 document.addEventListener('DOMContentLoaded', () => {
+  setupPageProgress();
   initThemeSystem();
 
   // Controle de visibilidade dos painéis baseado em permissões
@@ -490,15 +594,65 @@ function loadLatestReviews() {
   `).join('') || '<li class="inicio-card-item">Nenhum review disponível</li>';
 }
 
-// Obtém as categorias mais populares baseado no número de animes
+// Função atualizada para incluir mais informações sobre categorias
+function getCategoryDescription(category) {
+  const categoryInfo = {
+    'Shounen': {
+      desc: 'Ação e aventura para jovens',
+      icon: '⚔️'
+    },
+    'Slice of Life': {
+      desc: 'Histórias do cotidiano',
+      icon: '🌸'
+    },
+    'Mecha': {
+      desc: 'Robôs e tecnologia',
+      icon: '🤖'
+    },
+    'Romance': {
+      desc: 'Histórias de amor',
+      icon: '💕'
+    },
+    'Action': {
+      desc: 'Lutas e confrontos',
+      icon: '👊'
+    },
+    'Comedy': {
+      desc: 'Diversão e humor',
+      icon: '😆'
+    },
+    'Drama': {
+      desc: 'Histórias emocionantes',
+      icon: '🎭'
+    },
+    'Fantasy': {
+      desc: 'Mundos mágicos',
+      icon: '✨'
+    }
+  };
+  
+  return categoryInfo[category] || {
+    desc: 'Explore mais desta categoria',
+    icon: '📺'
+  };
+}
+
+// Função atualizada para obter categorias populares
 function getPopularCategories(limit = 3) {
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
   const categoryCount = {};
+  const categoryAnimes = {};
 
-  // Conta animes por categoria
+  // Conta animes por categoria e guarda exemplos
   animes.forEach(anime => {
     anime.genres.forEach(genre => {
       categoryCount[genre] = (categoryCount[genre] || 0) + 1;
+      if (!categoryAnimes[genre]) {
+        categoryAnimes[genre] = [];
+      }
+      if (categoryAnimes[genre].length < 3) {
+        categoryAnimes[genre].push(anime.primaryTitle);
+      }
     });
   });
 
@@ -509,37 +663,32 @@ function getPopularCategories(limit = 3) {
     .map(([category, count]) => ({
       category,
       count,
-      description: getCategoryDescription(category)
+      examples: categoryAnimes[category],
+      ...getCategoryDescription(category)
     }));
 }
 
-// Descrições para categorias populares
-function getCategoryDescription(category) {
-  const descriptions = {
-    'Shounen': 'Ação e aventura',
-    'Slice of Life': 'Histórias cotidianas',
-    'Mecha': 'Robôs e tecnologia',
-    'Romance': 'Histórias de amor',
-    'Action': 'Lutas e confrontos',
-    'Comedy': 'Diversão e humor',
-    'Drama': 'Histórias emocionantes',
-    'Fantasy': 'Mundos mágicos',
-  };
-  return descriptions[category] || 'Explore mais desta categoria';
-}
-
-// Renderiza as categorias populares
+// Função atualizada para renderizar categorias
 function renderPopularCategories() {
-  const popularCategoriesList = document.querySelector('.inicio-card:nth-child(2) .inicio-card-list');
+  const popularCategoriesList = document.getElementById('popular-categories');
   if (!popularCategoriesList) return;
 
   const popularCategories = getPopularCategories();
   
-  popularCategoriesList.innerHTML = popularCategories.map(({ category, description }) => `
-    <li class="inicio-card-item">
-      <a href="animes.html?category=${encodeURIComponent(category)}" class="inicio-card-link">
-        <span class="inicio-card-link-title">${category}</span>
-        <p class="inicio-card-link-subtitle">${description}</p>
+  popularCategoriesList.innerHTML = popularCategories.map(({ category, desc, icon, count, examples }) => `
+    <li class="index-card-item">
+      <a href="animes.html?category=${encodeURIComponent(category)}" class="index-card-link">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="category-icon">${icon}</span>
+          <span class="index-card-link-title">${category}</span>
+          <span class="text-sm opacity-75">(${count})</span>
+        </div>
+        <p class="index-card-link-subtitle">${desc}</p>
+        ${examples && examples.length > 0 ? `
+          <p class="text-sm mt-1 opacity-75">
+            Ex: ${examples.slice(0, 2).join(', ')}
+          </p>
+        ` : ''}
       </a>
     </li>
   `).join('');

@@ -156,6 +156,15 @@ class Navbar {
       </div>
       <div id="menu-overlay" class="menu-overlay"></div>
     `;
+
+    // Adiciona suporte a navegação por teclado
+    this.setupKeyboardNav();
+    
+    // Adiciona suporte a gestos touch
+    this.setupTouchGestures();
+    
+    // Adiciona observador de conexão
+    this.setupConnectionObserver();
   }
 
   // Gera o painel do usuário com avatar e opções de login/logout
@@ -390,6 +399,93 @@ class Navbar {
     e.preventDefault();
     localStorage.removeItem('userSession');
     window.location.href = './signin.html';
+  }
+
+  setupKeyboardNav() {
+    document.addEventListener('keydown', (e) => {
+      // ESC fecha menus
+      if (e.key === 'Escape') {
+        this.closeAllMenus();
+      }
+
+      // Alt + M toggle menu lateral
+      if (e.key === 'm' && e.altKey) {
+        document.getElementById('menu-toggle').click();
+      }
+    });
+
+    // Navegação por Tab nos menus
+    const menuItems = document.querySelectorAll('.nav-link, .dropdown-item');
+    menuItems.forEach(item => {
+      item.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.target.click();
+        }
+      });
+    });
+  }
+
+  setupTouchGestures() {
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+    }, false);
+
+    document.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].clientX;
+      this.handleSwipe();
+    }, false);
+
+    this.handleSwipe = () => {
+      const swipeDistance = touchEndX - touchStartX;
+      const sideMenu = document.getElementById('side-menu');
+      
+      if (Math.abs(swipeDistance) > 50) { // Mínimo de 50px
+        if (swipeDistance > 0) { // Swipe direita
+          sideMenu.classList.add('open');
+        } else { // Swipe esquerda
+          sideMenu.classList.remove('open');
+        }
+      }
+    }
+  }
+
+  setupConnectionObserver() {
+    // Monitora estado da conexão
+    window.addEventListener('online', () => {
+      this.updateConnectionStatus(true);
+    });
+    
+    window.addEventListener('offline', () => {
+      this.updateConnectionStatus(false);
+    });
+  }
+
+  updateConnectionStatus(isOnline) {
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    navLinks.forEach(link => {
+      if (!isOnline) {
+        link.setAttribute('data-offline', 'true');
+        link.style.opacity = '0.5';
+        link.title += ' (Offline)';
+      } else {
+        link.removeAttribute('data-offline');
+        link.style.opacity = '';
+        link.title = link.title.replace(' (Offline)', '');
+      }
+    });
+  }
+
+  closeAllMenus() {
+    // Fecha menu lateral
+    document.getElementById('side-menu').classList.remove('open');
+    
+    // Fecha dropdowns
+    document.querySelectorAll('.user-dropdown, .theme-menu')
+      .forEach(menu => menu.classList.add('hidden'));
   }
 }
 

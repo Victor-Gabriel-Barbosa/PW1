@@ -9,9 +9,19 @@ class Chat {
       this.messages[chatId] = [];
     }
 
+    let messageContent;
+    try {
+      // Verifica se é uma mensagem especial (objeto JSON)
+      const parsed = JSON.parse(message);
+      messageContent = message;
+    } catch (e) {
+      // Mensagem normal de texto
+      messageContent = message;
+    }
+
     const newMessage = {
       senderId,
-      message,
+      message: messageContent,
       timestamp: new Date().toISOString()
     };
 

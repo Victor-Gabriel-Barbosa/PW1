@@ -24,6 +24,8 @@
   align-items: center;
   text-decoration: none;
   transition: transform 0.3s ease;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .logo-link:hover {
@@ -87,10 +89,12 @@
 
 /* Navegação Principal */
 nav {
-  background-color: rgba(var(--background), 0.8);
+  background-color: rgba(var(--background-rgb), 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--card-shadow);
   transform: translateY(0);
-  transition: transform 0.3s ease, background-color 0.3s ease, transform 0.3s ease-in-out;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 0;
 }
 
@@ -140,6 +144,9 @@ nav .ml-10 a.active {
   transition: all 0.2s ease;
   border-radius: 8px;
   margin: 2px 0;
+  overflow: hidden;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .nav-link::after {
@@ -149,6 +156,25 @@ nav .ml-10 a.active {
 .nav-link:hover {
   background-color: var(--card-shadow);
   color: var(--text-color);
+}
+
+.nav-link::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-color);
+  border-radius: inherit;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.nav-link:active::before {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 0.1;
 }
 
 /* Estado ativo */
@@ -204,6 +230,8 @@ nav .ml-10 a.active {
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), overflow-y 0.1s;
   white-space: nowrap;
   overflow-x: hidden;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 /* Mostra a barra de rolagem apenas quando o mouse estiver sobre o menu */
@@ -472,6 +500,8 @@ body.menu-open {
   backdrop-filter: blur(8px);
   transform-origin: top right;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .user-dropdown.hidden {
@@ -543,7 +573,7 @@ body.menu-open {
     height: calc(100vh - 48px);
     width: min(350px, 85vw); /* Aumentado de 300px para 350px */
     transform: translateX(-100%);
-    transition: transform 0.3s ease-out, box-shadow 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: none;
     position: fixed;
     left: 0;
@@ -596,8 +626,9 @@ body.menu-open {
   .menu-overlay.show {
     opacity: 1;
     visibility: visible;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(2px);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     pointer-events: all;
   }
 
@@ -841,4 +872,26 @@ body.menu-open {
   .flex-1.max-w-xl {
     max-width: 800px;
   }
+}
+
+/* Adiciona indicador de loading */
+.nav-loading::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--primary-color) 50%,
+    transparent 100%
+  );
+  animation: loadingBar 1s infinite;
+}
+
+@keyframes loadingBar {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
 }

@@ -162,11 +162,12 @@ function loadFavoriteAnimes(user) {
               hover:bg-purple-50 dark:hover:bg-purple-800/30
               hover:shadow-lg dark:hover:shadow-purple-900/30
               hover:scale-102 transform
+              group
               transition-all duration-200 ease-in-out">
         <img src="${anime.coverImage}" alt="${anime.primaryTitle}" 
              class="w-16 h-16 object-cover rounded-lg 
              hover:shadow-md transition-shadow duration-200">
-        <div>
+        <div class="flex-1">
           <h3 class="font-semibold">${anime.primaryTitle}</h3>
           <div class="flex gap-2 mt-1">
             <span class="text-sm bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded text-white">
@@ -175,9 +176,113 @@ function loadFavoriteAnimes(user) {
             <span class="text-sm">${anime.status}</span>
           </div>
         </div>
+        <button onclick="shareAnime(event, '${anime.primaryTitle}', '${anime.coverImage}')"
+                class="opacity-0 group-hover:opacity-100 p-2 text-purple-600 hover:text-purple-800 
+                       hover:bg-purple-100 rounded-full transition-all duration-200"
+                title="Compartilhar com amigos">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+          </svg>
+        </button>
       </a>
     `;
   }).join('');
+}
+
+function shareAnime(event, animeTitle, coverImage) {
+  event.preventDefault();
+  event.stopPropagation();
+  
+  const sessionData = JSON.parse(localStorage.getItem('userSession'));
+  const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+  const currentUser = users.find(u => u.id === sessionData.userId);
+  
+  if (!currentUser || !currentUser.friends || currentUser.friends.length === 0) {
+    alert('Você precisa ter amigos para compartilhar animes!');
+    return;
+  }
+
+  // Criar modal de seleção de amigos
+  const modalHtml = `
+    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" id="share-modal">
+      <div class="rounded-lg p-6 max-w-md w-full mx-4" style="background:var(--background)">
+        <h3 class="text-lg font-semibold mb-4">Compartilhar "${animeTitle}"</h3>
+        <div class="mb-4">
+          <label class="text-sm text-gray-500">Selecione os amigos:</label>
+          <div class="mt-2 max-h-48 overflow-y-auto space-y-2">
+            ${currentUser.friends.map(friendId => {
+              const friend = users.find(u => u.id === friendId);
+              if (!friend) return '';
+              return `
+                <label class="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg">
+                  <input type="checkbox" value="${friend.id}" 
+                         class="w-4 h-4 text-purple-600 rounded border-gray-300">
+                  <img src="${friend.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(friend.username)}`}" 
+                       class="w-8 h-8 rounded-full">
+                  <span>${friend.displayName || friend.username}</span>
+                </label>
+              `;
+            }).join('')}
+          </div>
+        </div>
+        <div class="flex justify-end gap-3">
+          <button onclick="closeShareModal()" 
+                  class="px-4 py-2 text-gray-500 hover:text-gray-700">
+            Cancelar
+          </button>
+          <button onclick="confirmShare('${animeTitle}', '${coverImage}')" 
+                  class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+            Compartilhar
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function closeShareModal() {
+  const modal = document.getElementById('share-modal');
+  if (modal) {
+    modal.remove();
+  }
+}
+
+function confirmShare(animeTitle, coverImage) {
+  const selectedFriends = Array.from(document.querySelectorAll('#share-modal input[type="checkbox"]:checked'))
+    .map(cb => cb.value);
+
+  if (selectedFriends.length === 0) {
+    alert('Selecione pelo menos um amigo para compartilhar!');
+    return;
+  }
+
+  const chat = new Chat();
+  const sessionData = JSON.parse(localStorage.getItem('userSession'));
+  
+  // Criar mensagem especial para compartilhamento de anime
+  const message = {
+    type: 'anime_share',
+    animeTitle,
+    coverImage,
+    message: `Olha só este anime que legal: ${animeTitle}`
+  };
+
+  // Enviar para cada amigo selecionado
+  selectedFriends.forEach(friendId => {
+    chat.sendMessage(sessionData.userId, friendId, JSON.stringify(message));
+  });
+
+  closeShareModal();
+
+  // Mostrar notificação de sucesso
+  const notification = document.createElement('div');
+  notification.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+  notification.textContent = `Anime compartilhado com ${selectedFriends.length} amigo(s)!`;
+  document.body.appendChild(notification);
+  setTimeout(() => notification.remove(), 3000);
 }
 
 /**
@@ -836,7 +941,7 @@ function openChat(friendId) {
         </svg>
       </button>
     </div>
-    <div class="h-80 overflow-y-auto p-4 space-y-3" id="chat-messages-${friendId}">
+    <div class="h-80 overflow-y-auto p-4 space-y-3 scrollbar-thin" id="chat-messages-${friendId}">
       <!-- Mensagens serão inseridas aqui -->
     </div>
     <div class="p-3 border-t dark:border-gray-700">
@@ -878,11 +983,48 @@ function loadChatMessages(senderId, receiverId) {
     const isMine = msg.senderId === senderId;
     const user = isMine ? sender : receiver;
     const messageClasses = isMine ? 
-      'ml-auto bg-purple-500 text-white' : 
-      'mr-auto bg-blue-500 text-white';
+      'ml-auto' : 
+      'mr-auto';
 
     const avatar = user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.username || 'User')}`;
 
+    let messageContent;
+    try {
+      // Tenta parsear mensagem como JSON para verificar se é compartilhamento de anime
+      const parsedMessage = JSON.parse(msg.message);
+      if (parsedMessage.type === 'anime_share') {
+        return `
+          <div class="flex ${isMine ? 'justify-end' : 'justify-start'} items-end gap-2 mb-4">
+            ${!isMine ? `<img src="${avatar}" alt="${user?.username}" class="w-6 h-6 rounded-full object-cover">` : ''}
+            <div class="max-w-[80%] ${messageClasses} bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg overflow-hidden">
+              <div class="flex items-center gap-3 p-3">
+                <img src="${parsedMessage.coverImage}" 
+                     alt="${parsedMessage.animeTitle}" 
+                     class="w-12 h-16 object-cover rounded">
+                <div class="flex-1 text-white">
+                  <p class="text-sm font-medium">${parsedMessage.message}</p>
+                  <a href="animes.html?anime=${encodeURIComponent(parsedMessage.animeTitle)}" 
+                     class="text-xs text-purple-100 hover:text-white mt-1 inline-block
+                            transition-colors duration-200">
+                    Ver anime →
+                  </a>
+                </div>
+              </div>
+              <div class="px-3 py-1 bg-black/20">
+                <span class="text-xs text-purple-100">
+                  ${new Date(msg.timestamp).toLocaleTimeString()}
+                </span>
+              </div>
+            </div>
+            ${isMine ? `<img src="${avatar}" alt="${user?.username}" class="w-6 h-6 rounded-full object-cover">` : ''}
+          </div>
+        `;
+      }
+    } catch (e) {
+      // Se não for JSON, é uma mensagem normal
+    }
+
+    // Mensagem normal de texto
     return `
       <div class="flex ${isMine ? 'justify-end' : 'justify-start'} items-end gap-2">
         ${!isMine ? `
@@ -890,9 +1032,9 @@ function loadChatMessages(senderId, receiverId) {
                alt="${user?.username || 'User'}" 
                class="w-6 h-6 rounded-full object-cover">
         ` : ''}
-        <div class="max-w-[70%] ${messageClasses} rounded-lg p-2 break-words">
+        <div class="max-w-[70%] ${messageClasses} bg-purple-500 text-white rounded-lg p-2 break-words">
           <p class="text-sm">${msg.message}</p>
-          <span class="text-xs ${isMine ? 'text-purple-100' : 'text-blue-100'} block mt-1">
+          <span class="text-xs text-purple-100 block mt-1">
             ${new Date(msg.timestamp).toLocaleTimeString()}
           </span>
         </div>
