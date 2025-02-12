@@ -1,3 +1,101 @@
+document.addEventListener('DOMContentLoaded', function () {
+  // Obter ID do usuário da URL se existir
+  const urlParams = new URLSearchParams(window.location.search);
+  const profileId = urlParams.get('id');
+  
+  // Verificar sessão ativa
+  const sessionData = JSON.parse(localStorage.getItem('userSession'));
+  if (!sessionData) {
+    window.location.href = 'signin.html';
+    return;
+  }
+
+  // Carregar dados do usuário
+  const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+  let currentUser;
+  
+  // Se houver ID na URL, carregar perfil do usuário específico
+  if (profileId) {
+    currentUser = users.find(user => user.id === profileId);
+    if (!currentUser) {
+      alert('Usuário não encontrado');
+      window.location.href = 'profile.html';
+      return;
+    }
+
+    // Verificar se é amigo
+    const loggedUser = users.find(user => user.id === sessionData.userId);
+    const isFriend = loggedUser.friends?.includes(currentUser.id);
+    
+    if (!isFriend && currentUser.id !== sessionData.userId) {
+      alert('Você precisa ser amigo deste usuário para ver seu perfil');
+      window.location.href = 'profile.html';
+      return;
+    }
+
+    // Ajustar interface para perfil visitado
+    adjustInterfaceForVisitedProfile(currentUser, sessionData.userId === currentUser.id);
+  } else {
+    // Carregar próprio perfil
+    currentUser = users.find(user => user.id === sessionData.userId);
+  }
+
+  if (!currentUser) {
+    console.error('Usuário não encontrado');
+    return;
+  }
+
+  // Inicializar dados do perfil
+  initializeProfile(currentUser);
+  loadStatistics(currentUser);
+  loadAchievements(currentUser);
+  loadFavoriteAnimes(currentUser);
+  loadActivityTimeline(currentUser);
+  setupEventListeners(currentUser, sessionData.userId === currentUser.id);
+});
+
+/**
+ * Ajusta a interface baseado se é perfil próprio ou visitado
+ * @param {Object} profileUser - Dados do usuário do perfil
+ * @param {boolean} isOwnProfile - Se é o próprio perfil
+ */
+function adjustInterfaceForVisitedProfile(profileUser, isOwnProfile) {
+  const editButton = document.getElementById('edit-profile');
+  const logoutButton = document.getElementById('logout-button');
+  const changeAvatarButton = document.querySelector('#change-avatar');
+  const addFriendBtn = document.getElementById('add-friend-btn');
+
+  if (!isOwnProfile) {
+    // Ocultar botões de edição e logout
+    editButton.style.display = 'none';
+    logoutButton.style.display = 'none';
+    changeAvatarButton.style.display = 'none';
+    addFriendBtn.style.display = 'none';
+
+    // Adicionar botão de chat se não for o próprio perfil
+    const buttonContainer = document.querySelector('.flex.gap-3.mt-4');
+    buttonContainer.innerHTML = `
+      <button onclick="openChat('${profileUser.id}')"
+              class="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg 
+                     hover:bg-purple-700 transition-all hover:scale-105">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+        </svg>
+        Enviar Mensagem
+      </button>
+      <button onclick="window.history.back()"
+              class="flex items-center justify-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg 
+                     hover:bg-gray-700 transition-all hover:scale-105">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Voltar
+      </button>
+    `;
+  }
+}
+
 // Inicializa a página de perfil após carregamento do DOM
 document.addEventListener('DOMContentLoaded', function () {
   // Redireciona para login se não houver sessão ativa
@@ -443,148 +541,150 @@ function setupGenreSelection() {
  * Configura interações do usuário com elementos da página
  * @param {Object} user - Dados do usuário
  */
-function setupEventListeners(user) {
-  // Referências elementos UI
-  const editButton = document.getElementById('edit-profile');
-  const editModal = document.getElementById('edit-modal');
-  const editForm = document.getElementById('edit-profile-form');
-  const cancelButton = document.getElementById('cancel-edit');
-  const closeButton = document.getElementById('close-modal'); // Nova referência
+function setupEventListeners(user, isOwnProfile) {
+  if (isOwnProfile) {
+    // Referências elementos UI
+    const editButton = document.getElementById('edit-profile');
+    const editModal = document.getElementById('edit-modal');
+    const editForm = document.getElementById('edit-profile-form');
+    const cancelButton = document.getElementById('cancel-edit');
+    const closeButton = document.getElementById('close-modal'); // Nova referência
 
-  // Botão de editar perfil
-  editButton.addEventListener('click', () => {
-    editModal.classList.remove('hidden');
-    editModal.classList.add('flex');
+    // Botão de editar perfil
+    editButton.addEventListener('click', () => {
+      editModal.classList.remove('hidden');
+      editModal.classList.add('flex');
 
-    // Preenche o formulário com dados atuais
-    document.getElementById('edit-display-name').value = user.displayName || user.username;
-    document.getElementById('edit-email').value = user.email;
+      // Preenche o formulário com dados atuais
+      document.getElementById('edit-display-name').value = user.displayName || user.username;
+      document.getElementById('edit-email').value = user.email;
 
-    // Configura e marca os gêneros favoritos
-    setupGenreSelection();
-    const checkboxes = document.querySelectorAll('input[name="genres"]');
-    checkboxes.forEach(checkbox => {
-      checkbox.checked = user.favoriteGenres?.includes(checkbox.value) || false;
+      // Configura e marca os gêneros favoritos
+      setupGenreSelection();
+      const checkboxes = document.querySelectorAll('input[name="genres"]');
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = user.favoriteGenres?.includes(checkbox.value) || false;
+      });
     });
-  });
 
-  // Botão de cancelar edição
-  cancelButton.addEventListener('click', () => {
-    editModal.classList.remove('flex');
-    editModal.classList.add('hidden');
-  });
-
-  // Botão de fechar modal (X)
-  closeButton.addEventListener('click', () => {
-    editModal.classList.remove('flex');
-    editModal.classList.add('hidden');
-  });
-
-  // Fechar modal ao clicar fora
-  editModal.addEventListener('click', (e) => {
-    if (e.target === editModal) {
+    // Botão de cancelar edição
+    cancelButton.addEventListener('click', () => {
       editModal.classList.remove('flex');
       editModal.classList.add('hidden');
-    }
-  });
+    });
 
-  // Fechar modal com tecla ESC
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !editModal.classList.contains('hidden')) {
+    // Botão de fechar modal (X)
+    closeButton.addEventListener('click', () => {
       editModal.classList.remove('flex');
       editModal.classList.add('hidden');
-    }
-  });
+    });
 
-  // Adicionar manipulação de upload de avatar no modal
-  const avatarUploadBtn = document.getElementById('avatar-upload-btn');
-  const avatarInput = document.getElementById('edit-avatar');
-  const previewAvatar = document.getElementById('preview-avatar');
+    // Fechar modal ao clicar fora
+    editModal.addEventListener('click', (e) => {
+      if (e.target === editModal) {
+        editModal.classList.remove('flex');
+        editModal.classList.add('hidden');
+      }
+    });
 
-  // Inicializar preview com avatar atual
-  previewAvatar.src = user.avatar || "https://ui-avatars.com/api/?name=" + encodeURIComponent(user.username);
+    // Fechar modal com tecla ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !editModal.classList.contains('hidden')) {
+        editModal.classList.remove('flex');
+        editModal.classList.add('hidden');
+      }
+    });
 
-  avatarUploadBtn.addEventListener('click', () => {
-    avatarInput.click();
-  });
+    // Adicionar manipulação de upload de avatar no modal
+    const avatarUploadBtn = document.getElementById('avatar-upload-btn');
+    const avatarInput = document.getElementById('edit-avatar');
+    const previewAvatar = document.getElementById('preview-avatar');
 
-  avatarInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        previewAvatar.src = event.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  });
+    // Inicializar preview com avatar atual
+    previewAvatar.src = user.avatar || "https://ui-avatars.com/api/?name=" + encodeURIComponent(user.username);
 
-  // Formulário de edição
-  editForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+    avatarUploadBtn.addEventListener('click', () => {
+      avatarInput.click();
+    });
 
-    const displayName = document.getElementById('edit-display-name').value;
-    const email = document.getElementById('edit-email').value;
-    const selectedGenres = Array.from(document.querySelectorAll('input[name="genres"]:checked'))
-      .map(checkbox => checkbox.value);
-    const newAvatar = previewAvatar.src;
-
-    // Atualiza dados do usuário
-    const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
-    const userIndex = users.findIndex(u => u.id === user.id);
-
-    if (userIndex !== -1) {
-      users[userIndex] = {
-        ...users[userIndex],
-        displayName,
-        email,
-        favoriteGenres: selectedGenres,
-        avatar: newAvatar
-      };
-
-      localStorage.setItem('animuUsers', JSON.stringify(users));
-
-      // Atualizar a sessão com o novo avatar
-      const sessionData = JSON.parse(localStorage.getItem('userSession'));
-      sessionData.avatar = newAvatar;
-      localStorage.setItem('userSession', JSON.stringify(sessionData));
-
-      // Atualiza a página
-      window.location.reload();
-    }
-  });
-
-  // Botão de mudar avatar
-  const changeAvatarButton = document.getElementById('change-avatar');
-  changeAvatarButton.addEventListener('click', () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-
-    input.onchange = (e) => {
+    avatarInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = (event) => {
-          const avatar = event.target.result;
-          changeAvatar(avatar, user.id);
+          previewAvatar.src = event.target.result;
         };
         reader.readAsDataURL(file);
       }
-    };
+    });
 
-    input.click();
-  });
+    // Formulário de edição
+    editForm.addEventListener('submit', (e) => {
+      e.preventDefault();
 
-  // Adicionar handler para o botão de logout
-  const logoutButton = document.getElementById('logout-button');
-  logoutButton?.addEventListener('click', () => {
-    localStorage.removeItem('userSession');
-    window.location.href = './signin.html';
-  });
+      const displayName = document.getElementById('edit-display-name').value;
+      const email = document.getElementById('edit-email').value;
+      const selectedGenres = Array.from(document.querySelectorAll('input[name="genres"]:checked'))
+        .map(checkbox => checkbox.value);
+      const newAvatar = previewAvatar.src;
 
-  // Inicializar sistema de amizades
-  initializeFriendSystem(user);
+      // Atualiza dados do usuário
+      const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
+      const userIndex = users.findIndex(u => u.id === user.id);
+
+      if (userIndex !== -1) {
+        users[userIndex] = {
+          ...users[userIndex],
+          displayName,
+          email,
+          favoriteGenres: selectedGenres,
+          avatar: newAvatar
+        };
+
+        localStorage.setItem('animuUsers', JSON.stringify(users));
+
+        // Atualizar a sessão com o novo avatar
+        const sessionData = JSON.parse(localStorage.getItem('userSession'));
+        sessionData.avatar = newAvatar;
+        localStorage.setItem('userSession', JSON.stringify(sessionData));
+
+        // Atualiza a página
+        window.location.reload();
+      }
+    });
+
+    // Botão de mudar avatar
+    const changeAvatarButton = document.getElementById('change-avatar');
+    changeAvatarButton.addEventListener('click', () => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const avatar = event.target.result;
+            changeAvatar(avatar, user.id);
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+
+      input.click();
+    });
+
+    // Adicionar handler para o botão de logout
+    const logoutButton = document.getElementById('logout-button');
+    logoutButton?.addEventListener('click', () => {
+      localStorage.removeItem('userSession');
+      window.location.href = './signin.html';
+    });
+
+    // Inicializar sistema de amizades
+    initializeFriendSystem(user);
+  }
 }
 
 /**
@@ -634,19 +734,23 @@ function loadFriends(user) {
       <div class="friend-card group">
         <div class="flex items-center gap-3">
           <div class="relative">
-            <img src="${friend.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(friend.username)}`}" 
-                 alt="${friend.username}" 
-                 class="w-12 h-12 rounded-full object-cover transition-transform duration-300">
-            <div class="status-indicator ${friend.online ? 'status-online' : 'status-offline'}"></div>
+            <a href="profile.html?id=${friend.id}" class="block">
+              <img src="${friend.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(friend.username)}`}" 
+                   alt="${friend.username}" 
+                   class="w-12 h-12 rounded-full object-cover transition-transform duration-300">
+              <div class="status-indicator ${friend.online ? 'status-online' : 'status-offline'}"></div>
+            </a>
           </div>
           
           <div class="flex-1 min-w-0">
-            <h4 class="font-medium truncate">
-              ${friend.displayName || friend.username}
-            </h4>
-            <p class="text-xs text-gray-500">
-              ${friend.online ? 'Online' : 'Offline'}
-            </p>
+            <a href="profile.html?id=${friend.id}" class="hover:text-purple-600 transition-colors">
+              <h4 class="font-medium truncate">
+                ${friend.displayName || friend.username}
+              </h4>
+              <p class="text-xs text-gray-500">
+                ${friend.online ? 'Online' : 'Offline'}
+              </p>
+            </a>
           </div>
           
           <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
