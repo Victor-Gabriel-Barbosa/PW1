@@ -1,0 +1,104 @@
+<!-- 1) Crie uma página web onde a cor de um parágrafo
+possa ser alterada por meio de botões. Inicialmente, o
+texto do parágrafo deve estar na cor azul. Ao clicar no
+botão “Alterar para cor vermelha”, o texto deve mudar
+para a cor vermelha. Quando o botão “Alterar para cor
+azul” for clicado, o texto deve retornar à cor azul. -->
+
+<!-- 2) Desenvolva uma página onde, ao clicar em um
+botão, um novo item de uma lista (não ordenada) é
+adicionado. -->
+
+<!-- 3) Desenvolva uma página com três parágrafos
+diferentes. Crie botões para ocultar e exibir todos os
+parágrafos simultaneamente. -->
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mudança de Cores</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    #texto {
+      font-size: 24px;
+    }
+
+    p {
+      margin-bottom: 10px;
+    }
+
+    #lista {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    #lista li {
+      margin-bottom: 5px;
+    }
+
+    button {
+      margin-right: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <p id="texto" style="color: blue;">Este é um texto que mudará de cor</p>
+
+  <button onclick="mudarParaVermelho()">Alterar para cor vermelha</button>
+  <button onclick="mudarParaAzul()">Alterar para cor azul</button>
+
+  <ul id="lista">
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+  </ul>
+  <button onclick="adicionarItem()">Adicionar item</button>
+
+  <p>Parágrafo 1</p>
+  <p>Parágrafo 2</p>
+  <p>Parágrafo 3</p>
+
+  <button onclick="ocultarTodos()">Ocultar todos os parágrafos</button>
+  <button onclick="exibirTodos()">Exibir todos os parágrafos</button>
+
+
+  <script>
+    function mudarParaVermelho() {
+      document.getElementById("texto").style.color = "red";
+    }
+
+    function mudarParaAzul() {
+      document.getElementById("texto").style.color = "blue";
+    }
+
+    function adicionarItem() {
+      var lista = document.getElementById("lista");
+      var novoItem = document.createElement("li");
+      novoItem.textContent = "Novo item";
+      lista.appendChild(novoItem);
+    }
+
+    function ocultarTodos() {
+      var paragrafos = document.getElementsByTagName("p");
+      for (var i = 0; i < paragrafos.length; i++) {
+        paragrafos[i].style.display = "none";
+      }
+    }
+
+    function exibirTodos() {
+      var paragrafos = document.getElementsByTagName("p");
+      for (var i = 0; i < paragrafos.length; i++) {
+        paragrafos[i].style.display = "block";
+      }
+    }
+  </script>
+</body>
+
+</html>
