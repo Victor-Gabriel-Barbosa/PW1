@@ -8,6 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../src/css/animu.css">
+  <link rel="stylesheet" href="../src/css/animes.css">
   <link rel="stylesheet" href="../src/css/navbar.css">
   <link rel="icon" href="../src/data/favicon/favicon.ico" type="image/x-icon">
   <style>
@@ -33,66 +34,9 @@
     
     .grid-recommendations {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 1.5rem;
       min-height: 200px;
-    }
-    
-    .recommendation-card {
-      position: relative;
-      border-radius: 1rem;
-      overflow: hidden;
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      transform: translateY(0);
-      height: 100%;
-      min-height: 300px;
-      background: var(--background);
-    }
-    
-    .recommendation-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-    }
-    
-    .recommendation-card:hover .recommendation-image {
-      transform: scale(1.05);
-    }
-    
-    .recommendation-image {
-      aspect-ratio: 3/4;
-      object-fit: cover;
-      width: 100%;
-      opacity: 0;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      transform: scale(0.98);
-    }
-    
-    .recommendation-image.loaded {
-      opacity: 1;
-      transform: scale(1);
-    }
-    
-    .recommendation-info {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 1rem;
-      background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-      color: white;
-    }
-    
-    .recommendation-title {
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-    
-    .recommendation-match {
-      display: inline-block;
-      padding: 0.25rem 0.5rem;
-      background: rgba(139, 92, 246, 0.9);
-      border-radius: 1rem;
-      font-size: 0.875rem;
     }
     
     .filter-feedback-btn {
@@ -280,7 +224,7 @@
       margin-bottom: 3rem;
     }
     
-    .stat-card {
+    .stat-rec-card {
       background: var(--background);
       padding: 1.5rem;
       border-radius: 1rem;
@@ -289,22 +233,22 @@
       border: 2px solid rgba(139, 92, 246, 0.1);
     }
     
-    .stat-card:hover {
+    .stat-rec-card:hover {
       transform: translateY(-5px);
     }
     
-    .stat-icon {
+    .stat-rec-icon {
       font-size: 2rem;
       margin-bottom: 0.5rem;
     }
     
-    .stat-value {
+    .stat-rec-value {
       font-size: 2rem;
       font-weight: bold;
       color: #8b5cf6;
     }
     
-    .stat-label {
+    .stat-rec-label {
       font-size: 0.9rem;
       color: var(--text-color);
       opacity: 0.8;
@@ -470,27 +414,27 @@
         <div class="percentage">75%</div>
       </div>
       <h1 class="text-4xl font-bold mb-4 gradient-text">Suas Recomendações</h1>
-      <p class="text-xl mb-8 text-gray-600 dark:text-gray-300">
+      <p class="text-xl mb-8 text-gray-600">
         Descobrimos alguns tesouros baseados no seu perfil
       </p>
     </header>
 
     <!-- Cards de Estatísticas -->
     <div class="stats-grid mb-12">
-      <div class="stat-card">
-        <div class="stat-icon">🎯</div>
-        <div class="stat-value" id="match-accuracy">94%</div>
-        <div class="stat-label">Precisão</div>
+      <div class="stat-rec-card">
+        <div class="stat-rec-icon">🎯</div>
+        <div class="stat-rec-value" id="match-accuracy">94%</div>
+        <div class="stat-rec-label">Precisão</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon">🔥</div>
-        <div class="stat-value" id="watched-count">23</div>
-        <div class="stat-label">Assistidos</div>
+      <div class="stat-rec-card">
+        <div class="stat-rec-icon">🔥</div>
+        <div class="stat-rec-value" id="watched-count">23</div>
+        <div class="stat-rec-label">Assistidos</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon">⭐</div>
-        <div class="stat-value" id="avg-rating">4.8</div>
-        <div class="stat-label">Média</div>
+      <div class="stat-rec-card">
+        <div class="stat-rec-icon">⭐</div>
+        <div class="stat-rec-value" id="avg-rating">4.8</div>
+        <div class="stat-rec-label">Média</div>
       </div>
     </div>
 

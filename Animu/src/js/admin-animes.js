@@ -3,7 +3,7 @@ let alternativeTitles = [];
 let genres = [];
 let producers = [];
 let licensors = [];
-let isFormSaving = false; // Adicione esta variável no topo do arquivo junto com as outras
+let isFormSaving = false;
 
 // Armazena os valores iniciais dos campos quando o formulário é aberto
 let initialFormState = null;
@@ -97,15 +97,13 @@ function showAnimeForm() {
   document.getElementById('animeModal').classList.remove('hidden');
   
   // Reseta a posição de rolagem do formulário
-  if (modalContent) {
-    modalContent.scrollTop = 0;
-  }
+  if (modalContent) modalContent.scrollTop = 0;
 
   if (!currentAnimeId) {
     document.getElementById('modalTitle').textContent = 'Adicionar Novo Anime';
     document.getElementById('animeForm').reset();
     
-    // Limpar arrays
+    // Limpa arrays
     alternativeTitles = [];
     genres = [];
     producers = [];
@@ -150,17 +148,11 @@ function closeAnimeForm() {
   const form = document.getElementById('animeForm');
   
   // Não mostra o alerta se estiver salvando
-  if (!isFormSaving && isFormDirty(form)) {
-    if (!confirm('Existem alterações não salvas. Deseja realmente sair?')) {
-      return;
-    }
-  }
+  if ((!isFormSaving && isFormDirty(form)) && !confirm('Existem alterações não salvas. Deseja realmente sair?')) return;
 
   // Reseta a posição do scroll do formulário
   const modalContent = document.querySelector('.modal-content-scroll');
-  if (modalContent) {
-    modalContent.scrollTop = 0;
-  }
+  if (modalContent) modalContent.scrollTop = 0;
   
   document.getElementById('animeModal').classList.add('hidden');
   currentAnimeId = null;
@@ -243,12 +235,12 @@ function initializeCategorySelector() {
   const categories = categoryDisplay.getCategories();
   const genreInput = document.getElementById('genreInput');
   
-  // Transformar o input em um select
+  // Transforma o input em um select
   const select = document.createElement('select');
   select.id = 'genreInput';
   select.className = 'flex-1 p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white';
   
-  // Adicionar opção padrão
+  // Adiciona opção padrão
   select.innerHTML = `
     <option value="">Selecione uma categoria...</option>
     ${categories.map(category => `
@@ -345,7 +337,7 @@ function editAnime(index) {
       document.getElementById('ageRating').value = anime.ageRating || 'Livre';
       document.getElementById('seasonPeriod').value = anime.season?.period || 'inverno';
       
-      // Formatar a data para o formato yyyy-MM-dd
+      // Formata a data para o formato yyyy-MM-dd
       const releaseDate = anime.releaseDate ? new Date(anime.releaseDate).toISOString().split('T')[0] : '';
       document.getElementById('releaseDate').value = releaseDate;
       
@@ -474,9 +466,7 @@ document.getElementById('animeForm').addEventListener('submit', async function (
     }
 
     // Verifica espaço disponível
-    if (!checkStorageQuota(updatedAnimes)) {
-      throw new Error('Limite de armazenamento excedido. Tente remover alguns animes antigos.');
-    }
+    if (!checkStorageQuota(updatedAnimes)) throw new Error('Limite de armazenamento excedido. Tente remover alguns animes antigos.');
 
     localStorage.setItem('animeData', JSON.stringify(updatedAnimes));
     closeAnimeForm();
@@ -538,9 +528,7 @@ function importAnimes(event) {
           localStorage.setItem('animeData', JSON.stringify(animes));
           loadAnimesList();
           alert('Dados importados com sucesso!');
-        } else {
-          throw new Error('Formato inválido');
-        }
+        } else throw new Error('Formato inválido');
       } catch (error) {
         alert('Erro ao importar dados. Verifique se o arquivo está no formato correto.');
       }
@@ -627,9 +615,7 @@ function setupDropZone(dropzoneId, inputId, urlInputId, previewId, dropHandler) 
 
   fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
-    if (file) {
-      dropHandler(file, urlInput, document.getElementById(previewId));
-    }
+    if (file) dropHandler(file, urlInput, document.getElementById(previewId));
   });
 }
 
@@ -642,7 +628,7 @@ async function handleImageDrop(file, urlInput, previewElement) {
   try {
     const reader = new FileReader();
     reader.onloadend = async () => {
-      // Comprimir imagem antes de salvar
+      // Comprime imagem antes de salvar
       const compressedImage = await compressImage(reader.result);
       
       previewElement.src = compressedImage;
@@ -712,9 +698,7 @@ function handleYoutubeUrl(url, urlInput, previewElement) {
     previewElement.previousElementSibling.classList.add('hidden');
     document.getElementById('removeTrailer').classList.remove('hidden');
     urlInput.value = embedUrl;
-  } else {
-    alert('URL do YouTube inválida. Por favor, verifique a URL e tente novamente.');
-  }
+  } else alert('URL do YouTube inválida. Por favor, verifique a URL e tente novamente.');
 }
 
 // Renomeie a função para manter consistência
@@ -729,9 +713,7 @@ function extractYouTubeId(url) {
 
   for (const pattern of patterns) {
     const match = url.match(pattern);
-    if (match && match[1]) {
-      return match[1];
-    }
+    if (match && match[1]) return match[1];
   }
 
   return null;
@@ -739,9 +721,7 @@ function extractYouTubeId(url) {
 
 document.getElementById('trailerUrl').addEventListener('input', function(e) {
   const url = e.target.value.trim();
-  if (url) {
-    handleYoutubeUrl(url, e.target, document.getElementById('trailerPreview'));
-  }
+  if (url) handleYoutubeUrl(url, e.target, document.getElementById('trailerPreview'));
 });
 
 function setupMediaRemoval() {
@@ -870,9 +850,7 @@ function checkStorageQuota(data) {
   const currentData = JSON.stringify(data);
   const requiredSpace = currentData.length * 2; // Em bytes
 
-  if (requiredSpace > totalSpace) {
-    throw new Error('Tamanho dos dados excede o limite permitido');
-  }
+  if (requiredSpace > totalSpace) throw new Error('Tamanho dos dados excede o limite permitido');
 
   try {
     // Teste de escrita
@@ -880,9 +858,7 @@ function checkStorageQuota(data) {
     localStorage.removeItem('quotaTest');
     return true;
   } catch (e) {
-    if (e.name === 'QuotaExceededError') {
-      return false;
-    }
+    if (e.name === 'QuotaExceededError') return false;
     throw e;
   }
 }
@@ -894,9 +870,7 @@ function setupDateInput() {
   dateInput.max = today; // Impede seleção de datas futuras
   
   // Define a data padrão para hoje se não houver data selecionada
-  if (!dateInput.value) {
-    dateInput.value = today;
-  }
+  if (!dateInput.value) dateInput.value = today;
 }
 
 // Limpa todos os campos do formulário
@@ -910,7 +884,7 @@ function clearAnimeForm() {
     producers = [];
     licensors = [];
     
-    // Limpar previews e valores dos campos de imagem e trailer
+    // Limpa previews e valores dos campos de imagem e trailer
     const coverPreview = document.getElementById('coverImagePreview');
     const coverPrompt = coverPreview.previousElementSibling;
     const removeCoverBtn = document.getElementById('removeCoverImage');
@@ -931,7 +905,7 @@ function clearAnimeForm() {
     removeTrailerBtn.classList.add('hidden');
     document.getElementById('trailerUrl').value = '';
     
-    // Atualizar todas as listas
+    // Atualiza todas as listas
     updateAlternativeTitlesList();
     updateGenresList();
     updateProducersList();
@@ -944,25 +918,19 @@ function updateFormProgress() {
   const form = document.getElementById('animeForm');
   const requiredFields = form.querySelectorAll('[required]');
   const coverImage = document.getElementById('coverImage');
-  const totalFields = requiredFields.length + 2; // +1 para gêneros, +1 para imagem de capa
+  const totalFields = requiredFields.length + 2;
   let filledFields = 0;
 
   // Verifica campos obrigatórios
   requiredFields.forEach(field => {
-    if (field.value.trim() !== '') {
-      filledFields++;
-    }
+    if (field.value.trim() !== '') filledFields++;
   });
 
   // Verifica se há pelo menos um gênero
-  if (genres.length > 0) {
-    filledFields++;
-  }
+  if (genres.length > 0) filledFields++;
 
   // Verifica se há imagem de capa
-  if (coverImage.value.trim() !== '') {
-    filledFields++;
-  }
+  if (coverImage.value.trim() !== '') filledFields++;
 
   const progress = (filledFields / totalFields) * 100;
   const progressBar = document.getElementById('formProgress');
@@ -971,13 +939,9 @@ function updateFormProgress() {
   progressBar.style.width = `${progress}%`;
   
   // Atualiza a cor baseado no progresso
-  if (progress < 33) {
-    progressBar.style.background = 'var(--error-color, #EF4444)';
-  } else if (progress < 66) {
-    progressBar.style.background = 'var(--warning-color, #F59E0B)';
-  } else {
-    progressBar.style.background = 'var(--success-color, #10B981)';
-  }
+  if (progress < 33) progressBar.style.background = 'var(--error-color, #EF4444)';
+  else if (progress < 66) progressBar.style.background = 'var(--warning-color, #F59E0B)';
+  else progressBar.style.background = 'var(--success-color, #10B981)';
 }
 
 // Adiciona listeners para todos os eventos que podem modificar o formulário
@@ -1052,9 +1016,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Adiciona validação visual
     input.addEventListener('blur', () => {
       if (input.hasAttribute('required')) {
-        if (!input.value.trim()) {
-          input.classList.add('border-red-500');
-        } else {
+        if (!input.value.trim()) input.classList.add('border-red-500');
+        else {
           input.classList.remove('border-red-500');
           input.classList.add('border-green-500');
         }
@@ -1085,9 +1048,7 @@ function enableDragAndDrop(dropzoneId, inputId, acceptedTypes) {
     dropzone.classList.remove('dragover');
     
     const file = e.dataTransfer.files[0];
-    if (file && file.type.match(acceptedTypes)) {
-      handleFileUpload(file, inputId);
-    }
+    if (file && file.type.match(acceptedTypes)) handleFileUpload(file, inputId);
   });
 }
 
@@ -1152,18 +1113,14 @@ async function autoFillFromMal() {
     // Preenche produtores
     producers = [];
     anime.producers.forEach(producer => {
-      if (producer.name) {
-        producers.push(producer.name);
-      }
+      if (producer.name) producers.push(producer.name);
     });
     updateProducersList();
 
     // Preenche licenciadores
     licensors = [];
     anime.licensors.forEach(licensor => {
-      if (licensor.name) {
-        licensors.push(licensor.name);
-      }
+      if (licensor.name) licensors.push(licensor.name);
     });
     updateLicensorsList();
 
@@ -1176,12 +1133,8 @@ async function autoFillFromMal() {
 
     // Adiciona títulos alternativos
     alternativeTitles = [];
-    if (anime.title_japanese) {
-      alternativeTitles.push({ title: anime.title_japanese, type: 'japonês' });
-    }
-    if (anime.title_english && anime.title_english !== anime.title) {
-      alternativeTitles.push({ title: anime.title_english, type: 'inglês' });
-    }
+    if (anime.title_japanese) alternativeTitles.push({ title: anime.title_japanese, type: 'japonês' });
+    if (anime.title_english && anime.title_english !== anime.title) alternativeTitles.push({ title: anime.title_english, type: 'inglês' });
     updateAlternativeTitlesList();
 
     // Limpa gêneros existentes antes de adicionar novos
@@ -1191,9 +1144,7 @@ async function autoFillFromMal() {
     // Adiciona gêneros
     anime.genres.forEach(genre => {
       const translatedGenre = translateGenre(genre.name);
-      if (!genres.includes(translatedGenre)) {
-        genres.push(translatedGenre);
-      }
+      if (!genres.includes(translatedGenre)) genres.push(translatedGenre);
     });
     updateGenresList();
 
@@ -1264,9 +1215,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (url && !url.startsWith('https://myanimelist.net/anime/')) {
         // Tenta extrair e formatar a URL do MAL
         const malId = url.match(/(?:anime\/)?(\d+)/)?.[1];
-        if (malId) {
-          e.target.value = `https://myanimelist.net/anime/${malId}`;
-        }
+        if (malId) e.target.value = `https://myanimelist.net/anime/${malId}`;
       }
     });
   }
@@ -1339,9 +1288,8 @@ function splitTextIntoChunks(text, maxLength) {
   let currentChunk = '';
 
   for (const sentence of sentences) {
-    if ((currentChunk + sentence).length <= maxLength) {
-      currentChunk += sentence;
-    } else {
+    if ((currentChunk + sentence).length <= maxLength) currentChunk += sentence;
+    else {
       if (currentChunk) chunks.push(currentChunk.trim());
       currentChunk = sentence;
     }
@@ -1361,9 +1309,7 @@ async function translateText(text, targetLang) {
       // Adiciona um pequeno atraso para evitar sobrecarga da API
       await new Promise(resolve => setTimeout(resolve, 1000));
       return data.responseData.translatedText;
-    } else {
-      throw new Error(data.responseDetails || 'Erro na tradução');
-    }
+    } else throw new Error(data.responseDetails || 'Erro na tradução');
   } catch (error) {
     console.error('Erro na tradução:', error);
     throw error;
@@ -1431,14 +1377,10 @@ function updatePreview(inputId) {
 // Função auxiliar para verificar se o formulário foi modificado
 function isFormDirty(form) {
   // Verifica se o modal está visível
-  if (document.getElementById('animeModal').classList.contains('hidden')) {
-    return false;
-  }
+  if (document.getElementById('animeModal').classList.contains('hidden')) return false;
 
   // Se não houver estado inicial, não considera como modificado
-  if (!initialFormState) {
-    return false;
-  }
+  if (!initialFormState) return false;
 
   // Compara o estado atual com o estado inicial
   const currentState = getFormState();
@@ -1464,9 +1406,7 @@ function getFormState() {
 
   // Captura valores dos campos
   form.querySelectorAll('input, textarea, select').forEach(input => {
-    if (input.type !== 'file' && !input.classList.contains('hidden')) {
-      state.inputs[input.id] = input.value.trim();
-    }
+    if (input.type !== 'file' && !input.classList.contains('hidden')) state.inputs[input.id] = input.value.trim();
   });
 
   return JSON.stringify(state);

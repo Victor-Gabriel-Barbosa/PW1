@@ -163,43 +163,120 @@ function calculatePopularityScore(anime, comments) {
   return commentScore + ratingScore + watchCount;
 }
 
+// Melhorar cálculo de pontuação com dados do perfil
 function calculateWatchHistoryScore(anime, user, comments) {
-  if (!user.watchedAnimes?.length) return 50; // Valor padrão para usuários sem histórico
+  if (!user.watchedAnimes?.length) return 50;
 
   const watchedGenres = new Map();
   const watchedStudios = new Map();
+  const userComments = Object.values(comments)
+    .flat()
+    .filter(c => c.username === user.username);
   
-  // Analisa histórico de visualização
+  // Análise mais profunda do histórico
   user.watchedAnimes?.forEach(watchedTitle => {
     const watchedAnime = JSON.parse(localStorage.getItem('animeData'))
       .find(a => a.primaryTitle === watchedTitle);
     
     if (watchedAnime) {
-      // Contagem de gêneros assistidos
+      // Contagem ponderada de gêneros
       watchedAnime.genres?.forEach(genre => {
-        watchedGenres.set(genre, (watchedGenres.get(genre) || 0) + 1);
+        const currentCount = watchedGenres.get(genre) || 0;
+        const userRating = getUserRatingForAnime(watchedTitle, userComments);
+        const weight = userRating ? (userRating / 5) : 1;
+        watchedGenres.set(genre, currentCount + weight);
       });
       
-      // Contagem de estúdios assistidos
-      watchedStudios.set(watchedAnime.studio, (watchedStudios.get(watchedAnime.studio) || 0) + 1);
+      // Contagem ponderada de estúdios
+      const studioCount = watchedStudios.get(watchedAnime.studio) || 0;
+      watchedStudios.set(watchedAnime.studio, studioCount + 1);
     }
   });
 
-  // Calcula score baseado em padrões de visualização
   let score = 0;
   
-  // Pontos por gêneros frequentemente assistidos
+  // Pontuação por gêneros frequentes
   anime.genres?.forEach(genre => {
     const genreCount = watchedGenres.get(genre) || 0;
-    score += (genreCount / (user.watchedAnimes?.length || 1)) * 30;
+    score += (genreCount / user.watchedAnimes.length) * 40;
   });
   
-  // Pontos por estúdio favorito
+  // Pontuação por estúdio favorito
   const studioCount = watchedStudios.get(anime.studio) || 0;
-  score += (studioCount / (user.watchedAnimes?.length || 1)) * 20;
+  score += (studioCount / user.watchedAnimes.length) * 30;
 
-  // Garante que o score seja um número válido
-  return isNaN(score) ? 50 : Math.min(score, 100);
+  // Bônus por atividade recente
+  const recentActivity = calculateRecentActivityScore(user, anime.genres);
+  score += recentActivity * 30;
+
+  return Math.min(score, 100);
+}
+
+// Nova função para calcular pontuação baseada em atividade recente
+function calculateRecentActivityScore(user, animeGenres) {
+  const recentComments = getRecentComments(user.username);
+  const recentFavorites = getRecentFavorites(user);
+  let score = 0;
+
+  // Analisa comentários recentes
+  recentComments.forEach(comment => {
+    const commentedAnime = JSON.parse(localStorage.getItem('animeData'))
+      .find(a => a.primaryTitle === comment.animeTitle);
+    
+    if (commentedAnime) {
+      const matchingGenres = commentedAnime.genres
+        .filter(genre => animeGenres.includes(genre));
+      score += (matchingGenres.length / animeGenres.length) * 0.3;
+    }
+  });
+
+  // Analisa favoritos recentes
+  recentFavorites.forEach(favorite => {
+    const favoriteAnime = JSON.parse(localStorage.getItem('animeData'))
+      .find(a => a.primaryTitle === favorite);
+    
+    if (favoriteAnime) {
+      const matchingGenres = favoriteAnime.genres
+        .filter(genre => animeGenres.includes(genre));
+      score += (matchingGenres.length / animeGenres.length) * 0.4;
+    }
+  });
+
+  return Math.min(score, 1);
+}
+
+// Função auxiliar para obter comentários recentes
+function getRecentComments(username, days = 30) {
+  const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
+  const now = new Date();
+  const threshold = now.getTime() - (days * 24 * 60 * 60 * 1000);
+
+  return Object.entries(comments)
+    .flatMap(([animeTitle, animeComments]) =>
+      animeComments
+        .filter(c => c.username === username && new Date(c.timestamp).getTime() > threshold)
+        .map(c => ({ ...c, animeTitle }))
+    )
+    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+}
+
+// Função auxiliar para obter favoritos recentes
+function getRecentFavorites(user, days = 30) {
+  const favorites = user.favoriteAnimes || [];
+  const favoriteDates = user.favoriteDates || {};
+  const now = new Date();
+  const threshold = now.getTime() - (days * 24 * 60 * 60 * 1000);
+
+  return favorites.filter(anime => {
+    const date = favoriteDates[anime];
+    return date && new Date(date).getTime() > threshold;
+  });
+}
+
+// Função auxiliar para obter avaliação do usuário para um anime
+function getUserRatingForAnime(animeTitle, userComments) {
+  const comment = userComments.find(c => c.animeTitle === animeTitle);
+  return comment?.rating;
 }
 
 function calculateRatingScore(anime, comments) {
@@ -222,7 +299,6 @@ function renderRecommendations(recommendations, containerId) {
     return;
   }
 
-  // Adiciona classe de carregamento
   container.classList.add('loading');
 
   if (recommendations.length === 0) {
@@ -234,14 +310,9 @@ function renderRecommendations(recommendations, containerId) {
     return;
   }
 
-  // Debug
-  console.log(`Renderizando ${recommendations.length} recomendações para ${containerId}`);
+  const currentUser = JSON.parse(localStorage.getItem('userSession'));
 
   const recommendationsHTML = recommendations.map(anime => {
-    // Debug
-    console.log('Anime:', anime);
-
-    // Garante que o score seja um número válido
     let formattedScore = 'N/A';
     if (typeof anime.score === 'number') {
       formattedScore = anime.score.toFixed(1);
@@ -249,61 +320,54 @@ function renderRecommendations(recommendations, containerId) {
       formattedScore = parseFloat(anime.score).toFixed(1);
     }
 
-    // Debug dos valores
-    console.log('Anime:', anime.primaryTitle, 'Score original:', anime.score, 'Score formatado:', formattedScore);
-
     const { genreScore = 50, watchHistoryScore = 50, ratingScore = 50 } = anime.matchDetails || {};
-    
-    // Garante que matchScore seja um número válido
     const matchScore = isNaN(anime.matchScore) ? 50 : Math.round(anime.matchScore);
 
     return `
-      <div class="recommendation-card group">
-        <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" 
-           class="block h-full relative overflow-hidden rounded-lg">
-          <div class="relative h-full aspect-[3/4]">
-            <img src="${anime.coverImage}" 
-                 alt="${anime.primaryTitle}" 
-                 class="recommendation-image w-full h-full object-cover"
-                 onerror="this.src='../src/img/no-image.png'"
-                 loading="lazy">
-            <div class="recommendation-info absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent">
-              <h3 class="recommendation-title text-lg font-semibold mb-2 text-white line-clamp-2">
-                ${anime.primaryTitle}
-              </h3>
-              <div class="flex flex-col gap-1">
-                <div class="flex justify-between items-center">
-                  <span class="recommendation-match bg-purple-600 text-white px-2 py-1 rounded-full text-sm">
-                    ${matchScore}% Match
-                  </span>
-                  <span class="text-sm bg-black/50 px-2 py-1 rounded text-white">
-                    ⭐ ${formattedScore}
-                  </span>
-                </div>
-                <div class="flex gap-2 text-xs text-white/80">
-                  <span title="Compatibilidade de Gênero">🎭 ${Math.round(genreScore) || 0}%</span>
-                  <span title="Baseado no Histórico">📺 ${Math.round(watchHistoryScore) || 0}%</span>
-                  <span title="Avaliações">⭐ ${Math.round(ratingScore) || 0}%</span>
-                </div>
-              </div>
-            </div>
+      <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="anime-card">
+        <div class="image-wrapper">
+          <img 
+            src="${anime.coverImage}" 
+            alt="${anime.primaryTitle}" 
+            class="anime-image"
+            onerror="this.src='https://ui-avatars.com/api/?name=Anime&background=8B5CF6&color=fff'"
+            loading="lazy">
+          
+          <div class="quick-info">
+            <span class="info-pill">⭐ ${formattedScore}</span>
+            <span class="info-pill">${matchScore}% Match</span>
           </div>
-        </a>
-      </div>
+        </div>
+
+        <div class="anime-info">
+          <h3 class="anime-title line-clamp-2">${anime.primaryTitle}</h3>
+          <div class="anime-meta">
+            <div class="meta-items flex gap-2 text-xs">
+              <span title="Compatibilidade de Gênero" class="meta-item">
+                🎭 ${Math.round(genreScore) || 0}%
+              </span>
+              <span title="Baseado no Histórico" class="meta-item">
+                📺 ${Math.round(watchHistoryScore) || 0}%
+              </span>
+            </div>
+            <button 
+              class="meta-item favorite-count ${isAnimeFavorited(anime.primaryTitle) ? 'is-favorited' : ''}"
+              onclick="event.preventDefault(); toggleFavoriteFromCard('${anime.primaryTitle}')"
+              ${!currentUser ? 'title="Faça login para favoritar"' : ''}
+            >
+              <svg class="meta-icon heart-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+              <span class="favorite-number">${countAnimeFavorites(anime.primaryTitle)}</span>
+            </button>
+          </div>
+        </div>
+      </a>
     `;
   }).join('');
 
   container.innerHTML = recommendationsHTML;
   container.classList.remove('loading');
-
-  // Adiciona lazy loading para as imagens
-  container.querySelectorAll('.recommendation-image').forEach(img => {
-    img.addEventListener('load', () => {
-      img.classList.add('loaded');
-      // Debug
-      console.log('Imagem carregada:', img.alt);
-    });
-  });
 }
 
 // Configura filtros de visualização das recomendações

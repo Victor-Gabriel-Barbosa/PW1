@@ -122,7 +122,7 @@
 .anime-card .image-wrapper {
   position: relative;
   width: 100%;
-  padding-top: 140%; /* Aumentado de 130% para uma proporção mais vertical */
+  padding-top: 140%;
   overflow: hidden;
 }
 
