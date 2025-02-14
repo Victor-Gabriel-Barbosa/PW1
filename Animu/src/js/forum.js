@@ -8,25 +8,25 @@ const newTopicForm = document.getElementById('new-topic-form');
 const cancelTopicBtn = document.getElementById('cancel-topic');
 const forumTopicsContainer = document.getElementById('forum-topics');
 
-// Verificar se usuário está logado
+// Verifica se o usuário está logado
 function isUserLoggedIn() {
   const session = localStorage.getItem('userSession');
   return session !== null;
 }
 
-// Obter nome do usuário logado
+// Obtém o nome do usuário logado
 function getLoggedUsername() {
   const session = JSON.parse(localStorage.getItem('userSession'));
   return session ? session.username : null;
 }
 
-// Função para verificar se o usuário é admin
+// Verifica se o usuário é admin
 function isAdmin() {
   const session = JSON.parse(localStorage.getItem('userSession'));
   return session && session.isAdmin;
 }
 
-// Função para verificar se o usuário é o autor do comentário
+// Verifica se o usuário é o autor do comentário
 function isAuthor(authorName) {
   const session = JSON.parse(localStorage.getItem('userSession'));
   return session && session.username === authorName;
@@ -91,13 +91,10 @@ class TextFormatter {
 
   // Formata Markdown em tags HTML para renderizar na interface
   static formatMarkdown(text) {
-    // Negrito
-    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    // Itálico
-    text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
-    // Código
-    text = text.replace(/`(.*?)`/g, '<code>$1</code>');
-    return text;
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Negrito
+    text = text.replace(/\*(.*?)\*/g, '<em>$1</em>'); // Itálico
+    text = text.replace(/`(.*?)`/g, '<code>$1</code>'); // Código
+    return text; 
   }
 
   // Substitui códigos de emoji por emojis reais
@@ -124,9 +121,7 @@ class ForumModerator {
   static validateContent(content, type = 'conteúdo') {
     const plainContent = content.replace(/<[^>]*>/g, '').trim();
     
-    if (!plainContent) {
-      throw new Error(`O ${type} não pode estar vazio.`);
-    }
+    if (!plainContent) throw new Error(`O ${type} não pode estar vazio.`);
 
     const maxLengths = {
       título: FORUM_CONFIG.maxTitleLength,
@@ -135,9 +130,7 @@ class ForumModerator {
       tag: 30
     };
 
-    if (maxLengths[type] && plainContent.length > maxLengths[type]) {
-      throw new Error(`O ${type} excede o limite máximo de ${maxLengths[type]} caracteres.`);
-    }
+    if (maxLengths[type] && plainContent.length > maxLengths[type]) throw new Error(`O ${type} excede o limite máximo de ${maxLengths[type]} caracteres.`);
 
     return true;
   }
@@ -159,13 +152,13 @@ class ForumModerator {
     }).filter(Boolean); // Remove tags nulas
   }
 
-  // Função para verificar se o usuário está logado para postar
+  // Verifica se o usuário está logado para postar
   static canUserPost() {
     return !!JSON.parse(localStorage.getItem('userSession'));
   }
 }
 
-// Função para fechar o modal
+// Fecha o modal
 function closeModal() {
   newTopicModal.classList.add('hidden');
   newTopicForm.reset();
@@ -182,20 +175,18 @@ newTopicBtn?.addEventListener('click', () => {
   populateCategories();
 });
 
-// Fechar modal com o X
+// Fecha o modal com o X
 document.getElementById('close-modal-btn')?.addEventListener('click', closeModal);
 
-// Fechar modal com o botão Cancelar
+// Fecha o modal com o botão Cancelar
 document.getElementById('cancel-topic-btn')?.addEventListener('click', closeModal);
 
-// Fechar modal clicando fora dele
+// Fecha o modal clicando fora dele
 newTopicModal?.addEventListener('click', (e) => {
-  if (e.target === newTopicModal) {
-    closeModal();
-  }
+  if (e.target === newTopicModal) closeModal();
 });
 
-// Prevenir que cliques dentro do modal o fechem
+// Previne que cliques dentro do modal o fechem
 newTopicModal?.querySelector('.new-topic-modal')?.addEventListener('click', (e) => {
   e.stopPropagation();
 });
@@ -250,7 +241,7 @@ function getUserAvatar(username) {
   return user ? user.avatar : `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=8B5CF6&color=ffffff&size=100`;
 }
 
-// Atualizar a função renderReplies para incluir avatares
+// Atualiza a função renderReplies para incluir avatares
 function renderReplies(replies, topicId, userId) {
   return replies.map(reply => `
     <div class="mb-3 overflow-hidden" id="reply-${reply.id}">
@@ -458,55 +449,55 @@ function renderTopicCard(topic, userId) {
 function renderReplies(replies, topicId, userId) {
   return replies.map(reply => `
     <div class="mb-3 overflow-hidden" id="reply-${reply.id}">
-        <div class="flex items-start gap-3">
-            <img class="h-8 w-8 rounded-full object-cover"
-                 src="${getUserAvatar(reply.author)}"
-                 alt="${reply.author}">
-            <div class="flex-1">
-                <div class="flex justify-between items-start">
-                    <p class="text-sm">
-                        <span class="font-semibold">${reply.author}</span>
-                        em ${formatDate(reply.date)}
-                        ${reply.editedAt ? `<span class="text-xs">(editado)</span>` : ''}
-                    </p>
-                    <div class="flex items-center gap-2">
-                        ${(isAuthor(reply.author) || isAdmin()) ? `
-                            <button onclick="editReply(${topicId}, ${reply.id})" class="text-blue-600 hover:text-blue-800">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
-                                </svg>
-                            </button>
-                            <button onclick="deleteReply(${topicId}, ${reply.id})" class="text-red-600 hover:text-red-800">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                                </svg>
-                            </button>
-                        ` : ''}
-                        <button onclick="likeReply(${topicId}, ${reply.id})" 
-                                class="text-sm ${reply.likedBy && reply.likedBy.includes(userId) ? 'text-purple-600' : 'text-gray-400'} transition-colors">
-                            ${reply.likes || 0} ❤️
-                        </button>
-                    </div>
-                </div>
-                <div class="reply-content overflow-hidden mt-1">
-                    <p class="break-words">${reply.content}</p>
-                </div>
-                <div class="reply-edit-form hidden">
-                    <form onsubmit="saveReplyEdit(event, ${topicId}, ${reply.id})" class="flex gap-2 mt-2">
-                        <div class="flex-1">
-                            <textarea class="w-full p-2 border rounded-lg" 
-                                     maxlength="${FORUM_CONFIG.maxReplyLength}"
-                                     oninput="updateCharCount(this, 'reply-edit-count-${reply.id}')">${reply.content}</textarea>
-                            <small id="reply-edit-count-${reply.id}" class="text-right block mt-1">0/${FORUM_CONFIG.maxReplyLength}</small>
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <button type="submit" class="btn btn-primary">Salvar</button>
-                            <button type="button" onclick="cancelReplyEdit(${reply.id})" class="btn btn-cancel">Cancelar</button>
-                        </div>
-                    </form>
-                </div>
+      <div class="flex items-start gap-3">
+        <img class="h-8 w-8 rounded-full object-cover"
+             src="${getUserAvatar(reply.author)}"
+             alt="${reply.author}">
+        <div class="flex-1">
+          <div class="flex justify-between items-start">
+            <p class="text-sm">
+              <span class="font-semibold">${reply.author}</span>
+              em ${formatDate(reply.date)}
+              ${reply.editedAt ? `<span class="text-xs">(editado)</span>` : ''}
+            </p>
+            <div class="flex items-center gap-2">
+              ${(isAuthor(reply.author) || isAdmin()) ? `
+                <button onclick="editReply(${topicId}, ${reply.id})" class="text-blue-600 hover:text-blue-800">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                  </svg>
+                </button>
+                <button onclick="deleteReply(${topicId}, ${reply.id})" class="text-red-600 hover:text-red-800">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                  </svg>
+                </button>
+              ` : ''}
+              <button onclick="likeReply(${topicId}, ${reply.id})" 
+                      class="text-sm ${reply.likedBy && reply.likedBy.includes(userId) ? 'text-purple-600' : 'text-gray-400'} transition-colors">
+                ${reply.likes || 0} ❤️
+              </button>
             </div>
+          </div>
+          <div class="reply-content overflow-hidden mt-1">
+            <p class="break-words">${reply.content}</p>
+          </div>
+          <div class="reply-edit-form hidden">
+            <form onsubmit="saveReplyEdit(event, ${topicId}, ${reply.id})" class="flex gap-2 mt-2">
+              <div class="flex-1">
+                <textarea class="w-full p-2 border rounded-lg" 
+                          maxlength="${FORUM_CONFIG.maxReplyLength}"
+                          oninput="updateCharCount(this, 'reply-edit-count-${reply.id}')">${reply.content}</textarea>
+                <small id="reply-edit-count-${reply.id}" class="text-right block mt-1">0/${FORUM_CONFIG.maxReplyLength}</small>
+              </div>
+              <div class="flex flex-col gap-2">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <button type="button" onclick="cancelReplyEdit(${reply.id})" class="btn btn-cancel">Cancelar</button>
+              </div>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
   `).join('');
 }
@@ -580,7 +571,7 @@ function likeReply(topicId, replyId) {
   saveForumData(); 
 }
 
-// Função para adicionar uma resposta para um tópico
+// Adiciona uma resposta para um tópico
 function addReply(event, topicId) {
   event.preventDefault();
 
@@ -620,7 +611,7 @@ function addReply(event, topicId) {
   }
 }
 
-// Funções para edição e remoção de tópicos
+// Edição e remoção de tópicos
 function editTopic(topicId) {
   const topic = forumTopics.find(t => t.id === topicId);
   if (!topic || (!isAuthor(topic.author) && !isAdmin())) return;
@@ -668,7 +659,7 @@ function editTopic(topicId) {
   });
 }
 
-// Função para salvar a edição de um tópico
+// Salva a edição de um tópico
 function saveTopicEdit(event, topicId) {
   event.preventDefault();
 
@@ -678,14 +669,11 @@ function saveTopicEdit(event, topicId) {
   const form = event.target;
   const newTitle = form.querySelector('input').value.trim();
   const newContent = tinymce.get(`edit-content-${topicId}`).getContent();
-  const plainContent = newContent.replace(/<[^>]*>/g, '');
 
   try {
     ForumModerator.validateContent(newTitle, 'título');
     const plainContent = newContent.replace(/<[^>]*>/g, '');
-    if (plainContent.length > FORUM_CONFIG.maxContentLength) {
-      throw new Error(`O conteúdo excede o limite de ${FORUM_CONFIG.maxContentLength} caracteres.`);
-    }
+    if (plainContent.length > FORUM_CONFIG.maxContentLength) throw new Error(`O conteúdo excede o limite de ${FORUM_CONFIG.maxContentLength} caracteres.`);
 
     topic.title = TextFormatter.format(newTitle);
     topic.content = newContent; // Salva o HTML formatado
@@ -697,7 +685,7 @@ function saveTopicEdit(event, topicId) {
   }
 }
 
-// Função para cancelar a edição de um tópico
+// Cancela a edição de um tópico
 function cancelTopicEdit(topicId) {
   const topicElement = document.getElementById(`topic-${topicId}`);
   if (!topicElement) return;
@@ -711,7 +699,7 @@ function cancelTopicEdit(topicId) {
   editButton.disabled = false;
 }
 
-// Função para remoção um tópico 
+// Remove um tópico 
 function deleteTopic(topicId) {
   const topic = forumTopics.find(t => t.id === topicId);
   if (!topic || (!isAuthor(topic.author) && !isAdmin())) return;
@@ -723,9 +711,7 @@ function deleteTopic(topicId) {
 
       // Verificação após exclusão
       const topicStillExists = forumTopics.some(t => t.id === topicId);
-      if (topicStillExists) {
-        throw new Error('Falha ao excluir o tópico');
-      }
+      if (topicStillExists) throw new Error('Falha ao excluir o tópico');
 
       // Salva as alterações e atualiza a visualização
       saveForumData();
@@ -741,7 +727,7 @@ function deleteTopic(topicId) {
 }
 
 // Função para edição de resposta
-function editReply(topicId, replyId) {
+function editReply(replyId) {
   const replyElement = document.getElementById(`reply-${replyId}`);
   if (!replyElement) return;
 
@@ -754,7 +740,7 @@ function editReply(topicId, replyId) {
   editButton.disabled = true;
 }
 
-// Função para salvar a edição
+// Salvar a edição de uma resposta
 function saveReplyEdit(event, topicId, replyId) {
   event.preventDefault();
 
@@ -784,7 +770,7 @@ function saveReplyEdit(event, topicId, replyId) {
   }
 }
 
-// Nova função para cancelar a edição
+// Cancela a edição de uma resposta
 function cancelReplyEdit(replyId) {
   const replyElement = document.getElementById(`reply-${replyId}`);
   if (!replyElement) return;
@@ -798,7 +784,7 @@ function cancelReplyEdit(replyId) {
   editButton.disabled = false;
 }
 
-// Função para remoção de uma resposta
+// Remove uma resposta
 function deleteReply(topicId, replyId) {
   const topic = forumTopics.find(t => t.id === topicId);
   if (!topic) return;
@@ -847,7 +833,7 @@ function addTopic(event) {
     return;
   }
 
-  // Verificar limite de tópicos por usuário
+  // Verifica limite de tópicos por usuário
   const username = getLoggedUsername();
   const userTopics = forumTopics.filter(topic => topic.author === username);
   if (userTopics.length >= FORUM_CONFIG.maxTopicsPerUser) {
@@ -859,12 +845,10 @@ function addTopic(event) {
     ForumModerator.validateContent(title, 'título');
     ForumModerator.validateContent(content, 'conteúdo');
 
-    // Validar e filtrar tags impróprias
+    // Valida e filtra tags impróprias
     const validatedTags = ForumModerator.validateTags(rawTags);
 
-    if (rawTags.length !== validatedTags.length) {
-      alert('Algumas tags foram removidas por conterem palavras impróprias.');
-    }
+    if (rawTags.length !== validatedTags.length) alert('Algumas tags foram removidas por conterem palavras impróprias.');
 
     const newTopic = {
       id: Date.now(),
@@ -875,7 +859,7 @@ function addTopic(event) {
       author: getLoggedUsername(),
       date: new Date().toISOString(),
       likes: 0,
-      views: 0, // Inicializa as views como 0
+      views: 0,
       likedBy: [],
       replies: []
     };
@@ -912,28 +896,22 @@ function saveForumData() {
   localStorage.setItem('forumTopics', JSON.stringify(forumTopics));
 }
 
-// Modificar a função loadForumData para garantir que todos os tópicos tenham a propriedade views
+// Modifica a função loadForumData para garantir que todos os tópicos tenham a propriedade views
 function loadForumData() {
   try {
     const savedTopics = localStorage.getItem('forumTopics');
     forumTopics = savedTopics ? JSON.parse(savedTopics) : [];
 
-    // Garantir que é um array e que todos os tópicos têm a propriedade views
-    if (!Array.isArray(forumTopics)) {
-      forumTopics = [];
-    } else {
-      forumTopics = forumTopics.map(topic => ({
-        ...topic,
-        views: topic.views || 0
-      }));
-    }
+    // Garante que é um array e que todos os tópicos têm a propriedade views
+    if (!Array.isArray(forumTopics)) forumTopics = [];
+    else forumTopics = forumTopics.map(topic => ({ ...topic, views: topic.views || 0 }));
   } catch (error) {
     console.error('Erro ao carregar dados do fórum:', error);
     forumTopics = [];
   }
 }
 
-// Função para filtrar tópicos por categoria
+// Filtra tópicos por categoria
 function filterTopicsByCategory(categoryId) {
   // Remove a classe ativa de todos os botões
   document.querySelectorAll('.category-filter').forEach(btn => {
@@ -943,9 +921,7 @@ function filterTopicsByCategory(categoryId) {
   // Adiciona classe ativa ao botão selecionado
   if (categoryId) {
     const selectedButton = document.querySelector(`[data-category="${categoryId}"]`);
-    if (selectedButton) {
-      selectedButton.classList.add('active');
-    }
+    if (selectedButton) selectedButton.classList.add('active');
   }
 
   // Se não houver categoria selecionada, mostra todos os tópicos
@@ -980,8 +956,8 @@ function filterTopicsByCategory(categoryId) {
       <div class="category-section mb-8">
         <h3 class="text-2xl font-bold mb-4">${category.icon} ${category.name}</h3>
         ${filteredTopics.map(topic => renderTopicCard(topic,
-      isUserLoggedIn() ? JSON.parse(localStorage.getItem('userSession')).userId : null
-    )).join('')}
+          isUserLoggedIn() ? JSON.parse(localStorage.getItem('userSession')).userId : null
+        )).join('')}
       </div>
     `;
   }
@@ -1011,6 +987,7 @@ function incrementTopicViews(topicId) {
   }
 }
 
+ // Atualiza o contador de caracteres
 function updateCharCount(input, counterId) {
   const counter = document.getElementById(counterId);
   const max = input.getAttribute('maxlength');
@@ -1022,13 +999,13 @@ function updateCharCount(input, counterId) {
  * Carrega dados necessários e configura estado inicial
  */
 document.addEventListener('DOMContentLoaded', async () => {
-  // Garantir que forumTopics começa como array vazio
+  // Garante que forumTopics começa como array vazio
   forumTopics = [];
 
-  // Carregar lista de palavrões primeiro
+  // Carrega a lista de palavrões primeiro
   await loadBadWords();
 
-  // Carregar dados salvos
+  // Carrega ps dados salvos
   loadForumData();
 
   // Inicialização do TinyMCE
@@ -1060,17 +1037,14 @@ document.addEventListener('DOMContentLoaded', async () => {
           charCount.textContent = `${plainText.length}/${FORUM_CONFIG.maxContentLength}`;
           
           // Adiciona classe de aviso quando próximo do limite
-          if (plainText.length > FORUM_CONFIG.maxContentLength * 0.9) {
-            charCount.classList.add('text-red-500');
-          } else {
-            charCount.classList.remove('text-red-500');
-          }
+          if (plainText.length > FORUM_CONFIG.maxContentLength * 0.9) charCount.classList.add('text-red-500');
+          else charCount.classList.remove('text-red-500');
         }
       });
     }
   });
 
-  // Renderizar tópicos e popular categorias
+  // Renderiza tópicos e popula categorias
   renderTopics();
   populateCategories();
 });

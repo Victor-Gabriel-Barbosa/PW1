@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  // Salva os usuários no localStorage e atualiza a interface	
   function saveUsers(users) {
     try {
       localStorage.setItem('animuUsers', JSON.stringify(users));

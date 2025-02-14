@@ -227,11 +227,7 @@ function normalizeCategory(category) {
 
   category = category.toLowerCase().trim();
 
-  for (const [key, variants] of Object.entries(normalizations)) {
-    if (variants.includes(category)) {
-      return key;
-    }
-  }
+  for (const [key, variants] of Object.entries(normalizations)) if (variants.includes(category)) return key;
 
   return category;
 }
@@ -248,9 +244,7 @@ function renderAllAnimes() {
   const seasonYear = urlParams.get('year');
   const currentUser = JSON.parse(localStorage.getItem('userSession'));
 
-  if (commentsSection) {
-    commentsSection.style.display = 'none';
-  }
+  if (commentsSection) commentsSection.style.display = 'none';
 
   if (!container) return;
 
@@ -262,7 +256,6 @@ function renderAllAnimes() {
   if (seasonPeriod && seasonYear) {
     filteredAnimes = getSeasonalAnimes(seasonPeriod, seasonYear);
     pageTitle = `Melhores Animes - ${formatSeason({ period: seasonPeriod, year: seasonYear })}`;
-    // ...existing season selector code...
   } else if (statusFilter?.toLowerCase() === 'anunciado') {
     filteredAnimes = animes.filter(anime => anime.status?.toLowerCase() === 'anunciado')
       .sort((a, b) => new Date(a.releaseDate) - new Date(b.releaseDate));
@@ -372,9 +365,7 @@ function getAvailableSeasons() {
   const seasons = new Set();
 
   animes.forEach(anime => {
-    if (anime.season?.period && anime.season?.year) {
-      seasons.add(`${anime.season.period}-${anime.season.year}`);
-    }
+    if (anime.season?.period && anime.season?.year) seasons.add(`${anime.season.period}-${anime.season.year}`);
   });
 
   return Array.from(seasons)
@@ -438,7 +429,7 @@ function saveComment(animeTitle, comment, rating) {
       return null;
     }
 
-    // Validação do conteúdo usando o ForumModerator
+    // Valida o conteúdo usando o ForumModerator
     try {
       ForumModerator.validateContent(comment, 'comentário');
     } catch (error) {
@@ -447,9 +438,7 @@ function saveComment(animeTitle, comment, rating) {
     }
 
     const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
-    if (!comments[animeTitle]) {
-      comments[animeTitle] = [];
-    }
+    if (!comments[animeTitle]) comments[animeTitle] = [];
 
     const sliderRating = document.getElementById('rating-slider').value / 10;
 
@@ -464,7 +453,7 @@ function saveComment(animeTitle, comment, rating) {
     comments[animeTitle].unshift(newComment);
     localStorage.setItem('animeComments', JSON.stringify(comments));
 
-    // Atualizar a média de avaliações do anime
+    // Atualiza a média de avaliações do anime
     updateAnimeRating(animeTitle);
 
     // Após salvar o comentário, atualiza a popularidade de todos os animes
@@ -513,7 +502,7 @@ function formatDate(dateString) {
   });
 }
 
-// Substituir a função renderStars
+// Renderiza as estrelas
 function renderStars(rating) {
   const starsTotal = 10;
   const fillPercentage = (rating / starsTotal) * 100;
@@ -566,11 +555,11 @@ function voteComment(animeTitle, commentId, voteType) {
 
     if (!comment) return false;
 
-    // Inicializar arrays de votos se não existirem
+    // Inicializa arrays de votos se não existirem
     comment.likes = comment.likes || [];
     comment.dislikes = comment.dislikes || [];
 
-    // Verifica se o usuário já votou desta forma
+    // Verifica se o usuário já votou
     const hasVotedThisWay = voteType === 'like' ?
       comment.likes.includes(currentUser) :
       comment.dislikes.includes(currentUser);
@@ -579,14 +568,10 @@ function voteComment(animeTitle, commentId, voteType) {
     comment.likes = comment.likes.filter(user => user !== currentUser);
     comment.dislikes = comment.dislikes.filter(user => user !== currentUser);
 
-    // Se não tinha votado desta forma antes, adiciona o voto
-    // Se já tinha votado desta forma, o voto é apenas removido (toggle)
+    // Se não tinha votado, adiciona o voto, senão o voto é apenas removido (toggle)
     if (!hasVotedThisWay) {
-      if (voteType === 'like') {
-        comment.likes.push(currentUser);
-      } else if (voteType === 'dislike') {
-        comment.dislikes.push(currentUser);
-      }
+      if (voteType === 'like') comment.likes.push(currentUser);
+      else if (voteType === 'dislike') comment.dislikes.push(currentUser);
     }
 
     localStorage.setItem('animeComments', JSON.stringify(comments));
@@ -626,7 +611,7 @@ function editComment(animeTitle, commentId, newText, newRating) {
     const currentUser = JSON.parse(localStorage.getItem('userSession'))?.username;
     if (currentUser !== comment.username) return false;
 
-    // Validação do conteúdo usando o ForumModerator
+    // Valida o conteúdo usando o ForumModerator
     try {
       ForumModerator.validateContent(newText, 'comentário');
     } catch (error) {
@@ -724,7 +709,7 @@ function toggleEditMode(commentId) {
     editInput.addEventListener('input', function () {
       let value = parseFloat(this.value);
 
-      // Validação do valor
+      // Valida o valor
       if (isNaN(value)) value = 0;
       if (value < 0) value = 0;
       if (value > 10) value = 10;
@@ -753,9 +738,7 @@ function toggleEditMode(commentId) {
 
       if (newText) {
         const animeTitle = new URLSearchParams(window.location.search).get('anime');
-        if (editComment(decodeURIComponent(animeTitle), commentId, newText, newRating)) {
-          updateCommentsList(decodeURIComponent(animeTitle));
-        }
+        if (editComment(decodeURIComponent(animeTitle), commentId, newText, newRating))  updateCommentsList(decodeURIComponent(animeTitle));
       }
     });
   }
@@ -774,27 +757,20 @@ function updateEditRatingDisplay(value, updateInput = true) {
   emoji.classList.add('animate');
 
   // Define o emoji baseado no valor
-  if (value === 0) {
-    emoji.textContent = '😶';
-  } else if (value <= 20) {
-    emoji.textContent = '😭';
-  } else if (value <= 40) {
-    emoji.textContent = '☹️';
-  } else if (value <= 60) {
-    emoji.textContent = '😐';
-  } else if (value <= 80) {
-    emoji.textContent = '😊';
-  } else {
-    emoji.textContent = '🤩';
-  }
+  const emojiRanges = [
+    { max: 0, emoji: '😶' },
+    { max: 20, emoji: '😭' },
+    { max: 40, emoji: '☹️' },
+    { max: 60, emoji: '😐' },
+    { max: 80, emoji: '😊' },
+    { max: Infinity, emoji: '🤩' }
+  ];
 
-  // Atualiza valores
-  if (updateInput && display) {
-    display.value = rating.toFixed(1);
-  }
-  if (!updateInput && slider) {
-    slider.value = Math.round(value);
-  }
+  emoji.textContent = emojiRanges.find(range => value <= range.max).emoji;
+
+  // Atualiza os valores
+  if (updateInput && display) display.value = rating.toFixed(1);
+  if (!updateInput && slider) slider.value = Math.round(value);
 }
 
 // Recupera avatar do usuário ou gera placeholder
@@ -905,9 +881,7 @@ function updateCommentsList(animeTitle) {
 // Gerenciamento de exibição de avaliações
 function updateRatingDisplay(value) {
   const display = document.getElementById('rating-display');
-  if (display) {
-    display.textContent = parseFloat(value).toFixed(1);
-  }
+  if (display) display.textContent = parseFloat(value).toFixed(1);
 }
 
 // Exibe resultados de busca de animes
@@ -993,28 +967,19 @@ function updateRatingEmoji(value, updateInput = true) {
   emoji.classList.add('animate');
 
   // Define o emoji baseado no valor
-  if (value === 0) {
-    emoji.textContent = '😶';
-  } else if (value <= 20) {
-    emoji.textContent = '😭';
-  } else if (value <= 40) {
-    emoji.textContent = '☹️';
-  } else if (value <= 60) {
-    emoji.textContent = '😐';
-  } else if (value <= 80) {
-    emoji.textContent = '😊';
-  } else {
-    emoji.textContent = '🤩';
-  }
+  const emojiRanges = [
+    { max: 0, emoji: '😶' },
+    { max: 20, emoji: '😭' },
+    { max: 40, emoji: '☹️' },
+    { max: 60, emoji: '😐' },
+    { max: 80, emoji: '😊' },
+    { max: Infinity, emoji: '🤩' }
+  ];
+  emoji.textContent = emojiRanges.find(range => value <= range.max).emoji;
 
-  // Atualiza valores com precisão de uma casa decimal
-  if (updateInput && display) {
-    display.value = rating.toFixed(1);
-  }
-  if (!updateInput && slider) {
-    // Garante que o valor do slider seja um número inteiro
-    slider.value = Math.round(value);
-  }
+  // Atualiza os valores com precisão de uma casa decimal
+  if (updateInput && display) display.value = rating.toFixed(1);
+  if (!updateInput && slider)  slider.value = Math.round(value);
 }
 
 // Sistema de favoritos
@@ -1054,10 +1019,7 @@ function toggleFavorite(animeTitle) {
     users[userIndex].favoriteAnimes = users[userIndex].favoriteAnimes.filter(
       title => title !== animeTitle
     );
-  } else {
-    // Adiciona aos favoritos
-    users[userIndex].favoriteAnimes.push(animeTitle);
-  }
+  } else users[userIndex].favoriteAnimes.push(animeTitle); // Adiciona aos favoritos
 
   // Atualiza o localStorage
   localStorage.setItem('animuUsers', JSON.stringify(users));
@@ -1089,8 +1051,7 @@ function calculatePopularity(animeTitle) {
 
     const score = parseFloat(animeComments.reduce((sum, comment) => sum + (comment.rating || 0), 0) / animeComments.length);
     
-    // Fórmula para calcular popularidade:
-    // (média das notas * 0.6) + (número de comentários * 0.4) * 10
+    // Fórmula para calcular popularidade: (média das notas * 0.6) + (número de comentários * 0.4) * 10
     const popularityScore = (score * 0.6 + (animeComments.length * 0.4)) * 10;
     
     return Math.round(popularityScore);
@@ -1145,20 +1106,14 @@ function findRelatedAnimes(currentAnime, limit = 10) {
     
     // Pontos por gêneros em comum
     currentAnime.genres.forEach(genre => {
-      if (anime.genres.includes(genre)) {
-        similarityScore += 2;
-      }
+      if (anime.genres.includes(genre)) similarityScore += 2;
     });
     
     // Pontos por estúdio em comum
-    if (currentAnime.studio && anime.studio === currentAnime.studio) {
-      similarityScore += 1;
-    }
+    if (currentAnime.studio && anime.studio === currentAnime.studio) similarityScore += 1;
     
     // Pontos por fonte similar
-    if (currentAnime.source && anime.source === currentAnime.source) {
-      similarityScore += 1;
-    }
+    if (currentAnime.source && anime.source === currentAnime.source) similarityScore += 1;
     
     // Pontos por temporada similar
     if (currentAnime.season && anime.season &&
@@ -1248,12 +1203,12 @@ function renderRelatedAnimes(currentAnime) {
   `).join('');
 
   // Configuração do carrossel
-  let currentIndex = relatedAnimes.length; // Começar do conjunto do meio
+  let currentIndex = relatedAnimes.length; // Começa do conjunto do meio
   let isTransitioning = false;
   const track = carouselTrack;
   const slideWidth = track.querySelector('.anime-card').offsetWidth + 20; // 20 é o margin total
   
-  // Posicionar no conjunto do meio
+  // Posiciona no conjunto do meio
   track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
 
   function slide(direction) {
@@ -1288,7 +1243,7 @@ function renderRelatedAnimes(currentAnime) {
   // Auto-play do carrossel
   let autoplayInterval = setInterval(() => slide(1), 1500);
 
-  // Pausar auto-play quando o mouse estiver sobre o carrossel
+  // Pausa auto-play quando o mouse estiver sobre o carrossel
   const container = document.querySelector('#related-animes-section .carousel-container');
   container.addEventListener('mouseenter', () => clearInterval(autoplayInterval));
   container.addEventListener('mouseleave', () => {
@@ -1298,8 +1253,7 @@ function renderRelatedAnimes(currentAnime) {
 
 // Inicialização da página
 window.addEventListener('DOMContentLoaded', () => {
-  // Atualiza popularidade ao carregar
-  updateAllAnimesPopularity();
+  updateAllAnimesPopularity(); // Atualiza popularidade ao carregar
 
   const animeTitle = getUrlParameter('anime');
   const searchQuery = getUrlParameter('search');
@@ -1347,10 +1301,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Carrega comentários existentes
     updateCommentsList(decodeURIComponent(animeTitle));
-  } else {
-    // Se não houver parâmetros, mostra lista de todos os animes
-    renderAllAnimes();
-  }
+  } else renderAllAnimes(); // Se não houver parâmetros, mostra lista de todos os animes
 });
 
 // Evento para inicializar o slider de avaliação
@@ -1381,7 +1332,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ratingInput.addEventListener('input', function () {
       let value = parseFloat(this.value);
 
-      // Validação do valor
+      // Valida o valor
       if (isNaN(value)) value = 0;
       if (value < 0) value = 0;
       if (value > 10) value = 10;

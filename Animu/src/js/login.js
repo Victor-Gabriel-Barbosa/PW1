@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       };
     }
 
-    // Verificar tentativas de login
+    // Verifica tentativas de login
     checkLoginAttempts(username) {
       const attempts = this.loginAttempts[username];
       if (attempts) {
@@ -47,99 +47,79 @@ document.addEventListener('DOMContentLoaded', async function () {
           const remainingTime = Math.ceil((this.lockoutDuration - (Date.now() - attempts.lastAttempt)) / 1000 / 60);
           throw new Error(`Conta bloqueada. Tente novamente em ${remainingTime} minutos.`);
         }
-        if (Date.now() - attempts.lastAttempt >= this.lockoutDuration) {
-          delete this.loginAttempts[username];
-        }
+        if (Date.now() - attempts.lastAttempt >= this.lockoutDuration) delete this.loginAttempts[username];
       }
     }
 
     // Registrar tentativa de login
     recordLoginAttempt(username, success) {
-      if (!this.loginAttempts[username]) {
-        this.loginAttempts[username] = { count: 0, lastAttempt: Date.now() };
-      }
+      if (!this.loginAttempts[username]) this.loginAttempts[username] = { count: 0, lastAttempt: Date.now() };
       if (!success) {
         this.loginAttempts[username].count++;
         this.loginAttempts[username].lastAttempt = Date.now();
-      } else {
-        delete this.loginAttempts[username];
-      }
+      } else delete this.loginAttempts[username];
     }
 
-    // Carregar usuários do localStorage
+    // Carrega usuários do localStorage
     loadUsers() {
       return JSON.parse(localStorage.getItem('animuUsers') || '[]');
     }
 
-    // Salvar usuários no localStorage
+    // Salva usuários no localStorage
     saveUsers() {
       localStorage.setItem('animuUsers', JSON.stringify(this.users));
     }
 
-    // Validar registro de usuário
+    // Valida registro de usuário
     validateRegistration(username, email, password, confirmPassword) {
       // Validações básicas
-      if (username.length < 3) {
-        throw new Error('Nome de usuário deve ter pelo menos 3 caracteres.');
-      }
+      if (username.length < 3) throw new Error('Nome de usuário deve ter pelo menos 3 caracteres.');
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        throw new Error('Por favor, insira um e-mail válido.');
-      }
+      if (!emailRegex.test(email)) throw new Error('Por favor, insira um e-mail válido.');
 
-      if (password.length < 8) {
-        throw new Error('A senha deve ter pelo menos 8 caracteres.');
-      }
+      if (password.length < 8) throw new Error('A senha deve ter pelo menos 8 caracteres.');
 
-      if (password !== confirmPassword) {
-        throw new Error('As senhas não coincidem.');
-      }
+      if (password !== confirmPassword) throw new Error('As senhas não coincidem.');
 
       // Verificar usuário ou e-mail existente
-      const userExists = this.users.some(user =>
-        user.username === username || user.email === email
-      );
+      const userExists = this.users.some(user => user.username === username || user.email === email);
 
-      if (userExists) {
-        throw new Error('Usuário ou e-mail já cadastrado!');
-      }
+      if (userExists) throw new Error('Usuário ou e-mail já cadastrado!');
     }
 
     // Registro de usuário
     async registerUser(username, email, password, confirmPassword) {
       try {
-        // Validar registro
+        // Valida registro
         this.validateRegistration(username, email, password, confirmPassword);
 
-        // Validar força da senha
+        // Valida força da senha
         const passwordValidation = this.validatePasswordStrength(password);
-        if (!passwordValidation.isValid) {
-          throw new Error('Senha fraca. Requisitos:\n' + passwordValidation.errors.join('\n'));
-        }
+        if (!passwordValidation.isValid) throw new Error('Senha fraca. Requisitos:\n' + passwordValidation.errors.join('\n'));
 
         // Hash da senha
         const hashedPassword = await this.hashPassword(password);
 
-        // Gerar avatar
+        // Gera o avatar
         const avatar = this.generateAvatar(username);
 
-        // Criar novo usuário
+        // Cria novo usuário
         const newUser = {
           id: Date.now().toString(),
           username,
           email,
           password: hashedPassword,
-          avatar: avatar, // Armazenar avatar no objeto do usuário
+          avatar: avatar, // Armazena o avatar no objeto do usuário
           isAdmin: true,
           createdAt: new Date().toISOString()
         };
 
-        // Adicionar usuário
+        // Adiciona usuário
         this.users.push(newUser);
         this.saveUsers();
 
-        // Criar sessão do usuário automaticamente
+        // Cria sessão do usuário automaticamente
         const sessionData = {
           userId: newUser.id,
           username: newUser.username,
@@ -148,7 +128,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           loginTime: new Date().toISOString()
         };
 
-        // Salvar sessão
+        // Salva sessão
         localStorage.setItem('userSession', JSON.stringify(sessionData));
 
         return true;
@@ -158,7 +138,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       }
     }
 
-    // Salvar credenciais do usuário
+    // Salva credenciais do usuário
     saveCredentials(username, password) {
       const credentials = {
         username: username,
@@ -168,13 +148,13 @@ document.addEventListener('DOMContentLoaded', async function () {
       localStorage.setItem('savedCredentials', JSON.stringify(credentials));
     }
 
-    // Carregar credenciais salvas
+    // Carrega credenciais salvas
     loadSavedCredentials() {
       const saved = localStorage.getItem('savedCredentials');
       return saved ? JSON.parse(saved) : null;
     }
 
-    // Limpar credenciais salvas
+    // Limpa credenciais salvas
     clearSavedCredentials() {
       localStorage.removeItem('savedCredentials');
     }
@@ -207,9 +187,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         const hashedPassword = await this.hashPassword(password);
         const user = this.findUser(identifier);
 
-        if (!user) {
-          throw new Error('Usuário não encontrado.');
-        }
+        if (!user) throw new Error('Usuário não encontrado.');
 
         if (user.password !== hashedPassword) {
           this.recordLoginAttempt(identifier, false);
@@ -228,11 +206,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         localStorage.setItem('userSession', JSON.stringify(sessionData));
 
-        if (remember) {
-          this.saveCredentials(user.username, password);
-        } else {
-          this.clearSavedCredentials();
-        }
+        if (remember) this.saveCredentials(user.username, password);
+        else this.clearSavedCredentials();
 
         return true;
       } catch (error) {
@@ -251,16 +226,16 @@ document.addEventListener('DOMContentLoaded', async function () {
       const sessionData = JSON.parse(localStorage.getItem('userSession'));
 
       if (sessionData && userPanel) {
-        // Mostrar painel de usuário
+        // Mostra painel de usuário
         userPanel.classList.remove('hidden');
 
-        // Atualizar nome de usuário com link para o perfil
+        // Atualiza nome de usuário com link para o perfil
         userNameSpan.innerHTML = `<a href="perfil.html" class="hover:text-purple-600 transition-colors">${sessionData.username}</a>`;
 
-        // Mostrar link de logout
+        // Mostra link de logout
         logoutLink.classList.remove('hidden');
 
-        // Usar o avatar salvo no objeto de sessão
+        // Usa o avatar salvo no objeto de sessão
         if (userAvatar && sessionData.avatar) {
           userAvatar.src = sessionData.avatar;
           userAvatar.style.cursor = 'pointer';
@@ -271,28 +246,24 @@ document.addEventListener('DOMContentLoaded', async function () {
         return true;
       } else if (userNameSpan) {
         userNameSpan.innerHTML = '<a href="signin.html">Login</a>';
-        if (logoutLink) {
-          logoutLink.classList.add('hidden');
-        }
+        if (logoutLink) logoutLink.classList.add('hidden');
       }
 
       return false;
     }
 
-    // Gerar avatar único baseado no nome de usuário
+    // Gera avatar único baseado no nome de usuário
     generateAvatar(username) {
-      // Gerar cor baseada no hash do nome de usuário
+      // Gera cor baseada no hash do nome de usuário
       let hash = 0;
-      for (let i = 0; i < username.length; i++) {
-        hash = username.charCodeAt(i) + ((hash << 5) - hash);
-      }
+      for (let i = 0; i < username.length; i++) hash = username.charCodeAt(i) + ((hash << 5) - hash);
 
       // Gerar uma cor mais agradável usando HSL
       const hue = hash % 360;
       const saturation = 70; // Fixo em 70% para cores não muito saturadas
       const lightness = 60;  // Fixo em 60% para cores não muito claras ou escuras
 
-      // Converter HSL para HEX
+      // Converte HSL para HEX
       const color = this.hslToHex(hue, saturation, lightness);
 
       // Retorna URL do avatar usando a cor gerada
@@ -313,7 +284,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Logout
     logout() {
-      // Remover sessão
+      // Remove sessão
       localStorage.removeItem('userSession');
       this.clearSavedCredentials();
       // Recarrega a janela
@@ -348,17 +319,17 @@ document.addEventListener('DOMContentLoaded', async function () {
       // Adiciona estilo para a animação
       const style = document.createElement('style');
       style.textContent = `
-            @keyframes slideDown {
-                from {
-                    transform: translate(-50%, -100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translate(-50%, 0);
-                    opacity: 1;
-                }
-            }
-        `;
+        @keyframes slideDown {
+          from {
+            transform: translate(-50%, -100%);
+            opacity: 0;
+          }
+          to {
+            transform: translate(-50%, 0);
+            opacity: 1;
+          }
+        }
+      `;
       document.head.appendChild(style);
 
       document.body.appendChild(errorDiv);
@@ -376,7 +347,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       existingErrors.forEach(error => error.remove());
     }
 
-    // Migrar senhas antigas para hash
+    // Migra senhas antigas para hash
     async migrateOldPasswords() {
       let needsSave = false;
       for (let user of this.users) {
@@ -386,17 +357,15 @@ document.addEventListener('DOMContentLoaded', async function () {
           needsSave = true;
         }
       }
-      if (needsSave) {
-        this.saveUsers();
-      }
+      if (needsSave) this.saveUsers();
     }
   }
 
-  // Inicializar AuthManager
+  // Inicializa AuthManager
   const authManager = new AuthManager();
   await authManager.migrateOldPasswords(); // Migra senhas antigas
 
-  // Armazenar a página anterior quando o usuário acessa as páginas de login/registro
+  // Armazena a página anterior quando o usuário acessa as páginas de login/registro
   if (window.location.pathname.includes('signin.html') || window.location.pathname.includes('signup.html')) {
     const referrer = document.referrer;
     if (referrer &&
@@ -407,10 +376,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
 
   // Aguarda o DOM estar completamente carregado antes de atualizar o painel
-  document.addEventListener('DOMContentLoaded', () => {
-    // Atualizar painel de usuário ao carregar página
-    authManager.updateUserPanel();
-  });
+  document.addEventListener('DOMContentLoaded', () => { authManager.updateUserPanel(); });
 
   // Registro de usuário
   const registerForm = document.getElementById('register-form');
@@ -449,7 +415,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           `;
           document.body.appendChild(message);
 
-          // Redirecionar para a página anterior ou index.html após o registro
+          // Redireciona para a página anterior ou index.html após o registro
           setTimeout(() => {
             const previousPage = sessionStorage.getItem('previousPage');
             sessionStorage.removeItem('previousPage'); // Limpar depois de usar
@@ -470,9 +436,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       document.getElementById('username').value = savedCredentials.username;
       document.getElementById('password').value = savedCredentials.password;
       document.getElementById('remember-me').checked = true;
-    } else {
-      authManager.clearSavedCredentials(); // Limpa credenciais expiradas
-    }
+    } else authManager.clearSavedCredentials(); // Limpa credenciais expiradas
 
     loginForm.addEventListener('submit', async function (event) {
       event.preventDefault();
@@ -487,7 +451,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         await authManager.loginUser(username, password, remember);
         authManager.updateUserPanel();
 
-        // Redirecionar para a página anterior ou index.html
+        // Redireciona para a página anterior ou index.html
         const previousPage = sessionStorage.getItem('previousPage');
         sessionStorage.removeItem('previousPage'); // Limpar depois de usar
         window.location.href = previousPage || 'index.html';
@@ -499,7 +463,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
   }
 
-  // Adicionar botão/link de logout (se existir)
+  // Adiciona botão/link de logout (se existir)
   const logoutLink = document.getElementById('logout-link');
   if (logoutLink) {
     logoutLink.addEventListener('click', function (event) {
@@ -508,9 +472,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
   }
 
-  // Configurar toggle de visibilidade da senha
-  const passwordInput = document.getElementById('password');
-  const confirmPasswordInput = document.getElementById('confirm-password');
+  // Configura o toggle de visibilidade da senha
   const passwordToggles = document.querySelectorAll('.password-toggle');
 
   passwordToggles.forEach(toggle => {
@@ -527,21 +489,16 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
   });
 
-  // Configurar o botão de voltar
+  // Configura o botão de voltar
   const backButton = document.getElementById('back-button');
   if (backButton) {
     backButton.addEventListener('click', () => {
       if (document.referrer) {
         // Verifica se o referrer é uma URL do projeto Animu
         const referrer = new URL(document.referrer);
-        if (referrer.pathname.includes('/PW_1/Animu/')) {
-          window.history.back();
-        } else {
-          window.location.href = 'index.html';
-        }
-      } else {
-        window.location.href = 'index.html';
-      }
+        if (referrer.pathname.includes('/PW_1/Animu/')) window.history.back();
+        else window.location.href = 'index.html';
+      } else window.location.href = 'index.html';
     });
   }
 

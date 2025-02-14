@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
     content_css: (document.documentElement.classList.contains('dark') ? 'dark' : 'default'),
   });
 
-  // Após a inicialização do TinyMCE, adicione:
+  // Após a inicialização do TinyMCE
   const generateBtn = document.getElementById('generate-news-btn');
   generateBtn.addEventListener('click', generateNewsContent);
 
@@ -80,28 +80,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const data = await response.json();
       
-      if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-        throw new Error('Resposta inválida da API');
-      }
+      if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) throw new Error('Resposta inválida da API');
 
       const responseText = data.candidates[0].content.parts[0].text;
-      console.log('Resposta da API:', responseText); // Debug
 
-      // Procurar o JSON na resposta
+      // Procura o JSON na resposta
       const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) {
-        throw new Error('JSON não encontrado na resposta');
-      }
+      if (!jsonMatch) throw new Error('JSON não encontrado na resposta');
 
       try {
         const newsData = JSON.parse(jsonMatch[0]);
 
-        // Verificar se temos todos os campos necessários
-        if (!newsData.title || !newsData.content) {
-          throw new Error('Dados incompletos na resposta');
-        }
+        // Verifica se o JSON tem todos os campos necessários
+        if (!newsData.title || !newsData.content) throw new Error('Dados incompletos na resposta');
 
-        // Preencher campos do formulário
+        // Preenche os campos do formulário
         document.getElementById('title').value = newsData.title;
         document.getElementById('summary').value = newsData.summary || '';
         document.getElementById('category').value = newsData.category || 'Notícia';
@@ -136,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const news = JSON.parse(localStorage.getItem('news') || '[]');
     newsList.innerHTML = news.map(item => createNewsCard(item)).join('');
 
-    // Adicionar event listeners para edição e exclusão
+    // Adiciona event listeners para edição e exclusão
     document.querySelectorAll('.btn-edit').forEach(btn => {
       btn.addEventListener('click', () => editNews(btn.dataset.id));
     });
@@ -194,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('category').value = newsData.category;
       document.getElementById('tags').value = newsData.tags.join(', ');
       document.getElementById('image').value = newsData.image;
-      // Atualizar preview da imagem se existir
+      // Atualiza preview da imagem se existir
       if (newsData.image) {
         previewImage.src = newsData.image;
         imagePreview.classList.remove('hidden');
@@ -229,8 +222,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Validar conteúdo antes de submeter
     const content = tinymce.get('content').getContent();
     if (!content) {
-        alert('Por favor, preencha o conteúdo da notícia');
-        return;
+      alert('Por favor, preencha o conteúdo da notícia');
+      return;
     }
 
     const newsData = {
@@ -240,7 +233,7 @@ document.addEventListener('DOMContentLoaded', function () {
       tags: document.getElementById('tags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
       image: document.getElementById('image').value,
       summary: document.getElementById('summary').value,
-      content: content, // Pegar conteúdo do editor
+      content: content, // Pega conteúdo do editor
       date: editingId ? (await getExistingDate(editingId)) : new Date().toISOString()
     };
 
@@ -259,11 +252,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const news = JSON.parse(localStorage.getItem('news') || '[]');
     const index = news.findIndex(item => item.id === newsData.id);
 
-    if (index > -1) {
-      news[index] = newsData;
-    } else {
-      news.unshift(newsData); // Adiciona no início do array
-    }
+    if (index > -1) news[index] = newsData;
+    else news.unshift(newsData); // Adiciona no início do array
 
     localStorage.setItem('news', JSON.stringify(news));
     // Disparar evento para atualizar outras páginas
@@ -273,9 +263,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function editNews(id) {
     const news = JSON.parse(localStorage.getItem('news') || '[]');
     const newsData = news.find(item => item.id === id);
-    if (newsData) {
-      openModal(newsData);
-    }
+    if (newsData) openModal(newsData);
   }
 
   function deleteNews(id) {
@@ -293,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const imagePreview = document.querySelector('.image-preview');
   const previewImage = document.getElementById('preview-image');
   const removeImageBtn = document.getElementById('remove-image');
-  const imageInput = document.getElementById('image'); // Corrigido para usar o ID correto
+  const imageInput = document.getElementById('image');
 
   // Eventos de arrastar e soltar
   imageDropZone.addEventListener('dragover', (e) => {

@@ -4,10 +4,8 @@ class CategoryDisplay {
     this.subContainer = document.getElementById('subcategories');
     this.initialize();
     
-    // Adiciona listener para atualização de categorias
-    window.addEventListener('categoriesUpdated', () => {
-      this.renderCategories();
-    });
+    // Recarrega categorias quando houver atualizações
+    window.addEventListener('categoriesUpdated', () => this.renderCategories());
   }
 
   initialize() {
@@ -18,7 +16,7 @@ class CategoryDisplay {
   getCategories() {
     const savedCategories = JSON.parse(localStorage.getItem('animuCategories')) || [];
     
-    // Se não houver categorias salvas, retorna as categorias padrão
+    // Inicializa com categorias padrão se não houver dados salvos
     if (savedCategories.length === 0) {
       const defaultCategories = [
         {
@@ -43,10 +41,8 @@ class CategoryDisplay {
             end: '#45B7AF'
           }
         }
-        // ... outras categorias padrão se necessário
       ];
       
-      // Salva as categorias padrão no localStorage
       localStorage.setItem('animuCategories', JSON.stringify(defaultCategories));
       return defaultCategories;
     }
@@ -57,21 +53,23 @@ class CategoryDisplay {
   renderCategories() {
     const categories = this.getCategories();
     
+    // Renderiza categorias principais
     if (this.mainContainer && categories.length > 0) {
       this.mainContainer.innerHTML = categories
-        .filter(cat => !cat.isSubcategory) // Filtra apenas categorias principais
+        .filter(cat => !cat.isSubcategory)
         .map(category => this.createCategoryCard(category))
         .join('');
     }
 
+    // Renderiza subcategorias
     if (this.subContainer && categories.length > 0) {
       this.subContainer.innerHTML = categories
-        .filter(cat => cat.isSubcategory) // Filtra apenas subcategorias
+        .filter(cat => cat.isSubcategory)
         .map(category => this.createSubcategoryTag(category))
         .join('');
     }
 
-    // Se não houver categorias, mostra mensagem
+    // Exibe mensagem quando não há categorias
     if (categories.length === 0) {
       this.mainContainer.innerHTML = `
         <div class="col-span-full text-center py-8">
@@ -81,6 +79,7 @@ class CategoryDisplay {
     }
   }
 
+  // Gera card HTML para categoria principal com contagem de animes
   createCategoryCard(category) {
     const animeCount = this.countAnimesByCategory(category.name);
     return `
@@ -95,6 +94,7 @@ class CategoryDisplay {
     `;
   }
 
+  // Gera tag HTML para subcategoria com contagem de animes
   createSubcategoryTag(category) {
     const animeCount = this.countAnimesByCategory(category.name);
     return `
@@ -107,41 +107,37 @@ class CategoryDisplay {
     `;
   }
 
+  // Retorna quantidade de animes em uma categoria específica
   countAnimesByCategory(category) {
     const animes = JSON.parse(localStorage.getItem('animeData')) || [];
     return animes.filter(anime =>
-      anime.genres.some(genre =>
-        this.normalizeCategory(genre) === this.normalizeCategory(category)
-      )
+      anime.genres.some(genre => this.normalizeCategory(genre) === this.normalizeCategory(category))
     ).length;
   }
 
+  // Padroniza o formato do nome da categoria para comparações
   normalizeCategory(category) {
     return category.toLowerCase().trim();
   }
 
   setupEventListeners() {
-    // Delegação de eventos para categorias e subcategorias
+    // Gerencia cliques em categorias e subcategorias usando delegação de eventos
     document.addEventListener('click', (e) => {
       const categoryCard = e.target.closest('.category-card');
       const subcategoryTag = e.target.closest('.subcategory-tag');
 
-      if (categoryCard) {
-        const category = categoryCard.dataset.category;
-        this.filterByCategory(category);
-      } else if (subcategoryTag) {
-        const category = subcategoryTag.dataset.subcategory;
-        this.filterByCategory(category);
-      }
+      if (categoryCard) this.filterByCategory(categoryCard.dataset.category);
+      else if (subcategoryTag) this.filterByCategory(subcategoryTag.dataset.subcategory);
     });
   }
 
+  // Redireciona para página de animes filtrada por categoria
   filterByCategory(category) {
     window.location.href = `animes.html?anime=all&category=${encodeURIComponent(category)}`;
   }
 }
 
-// Inicialização quando o DOM estiver carregado
+// Inicializa o gerenciador de categorias
 document.addEventListener('DOMContentLoaded', () => {
   new CategoryDisplay();
 });

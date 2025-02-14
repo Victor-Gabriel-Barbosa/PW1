@@ -1,4 +1,4 @@
-// Configuração da barra de progresso
+// Configura barra de progresso
 const setupPageProgress = () => {
   const progressBar = document.createElement('div');
   progressBar.className = 'page-progress';
@@ -26,9 +26,7 @@ const setupPageProgress = () => {
       progress = startProgress + (targetProgress - startProgress) * easeInOut(timeProgress);
       progressBar.style.width = `${progress}%`;
 
-      if (timeProgress < 1) {
-        requestAnimationFrame(updateProgress);
-      }
+      if (timeProgress < 1) requestAnimationFrame(updateProgress);
     };
 
     requestAnimationFrame(updateProgress);
@@ -76,9 +74,7 @@ const setupPageProgress = () => {
   // Intercepta cliques em links
   document.addEventListener('click', (e) => {
     const link = e.target.closest('a');
-    if (link?.href && !link.target && link.href !== window.location.href) {
-      startProgress();
-    }
+    if (link?.href && !link.target && link.href !== window.location.href) startProgress();
   });
 
   // Intercepta requisições fetch
@@ -137,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Criar e adicionar o botão de voltar ao topo
+  // Cria e adiciona o botão de voltar ao topo
   const backToTopButton = document.createElement('button');
   backToTopButton.className = 'back-to-top';
   backToTopButton.innerHTML = `
@@ -149,11 +145,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Controla a visibilidade do botão
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 300) {
-      backToTopButton.classList.add('visible');
-    } else {
-      backToTopButton.classList.remove('visible');
-    }
+    if (window.scrollY > 300) backToTopButton.classList.add('visible');
+    else backToTopButton.classList.remove('visible');
   });
 
   // Adiciona o evento de clique para rolar suavemente ao topo
@@ -172,9 +165,7 @@ function initThemeSystem() {
   const body = document.body;
 
   // Se os elementos do tema não existirem, retorne sem fazer nada
-  if (!themeDropdownBtn || !themeMenu) {
-    return;
-  }
+  if (!themeDropdownBtn || !themeMenu) return;
 
   // Ícones para cada tema
   const themeIcons = {
@@ -203,9 +194,7 @@ function initThemeSystem() {
   // Carrega tema salvo ou usa preferência do sistema
   const savedTheme = localStorage.getItem('theme') || 'system';
   applyTheme(savedTheme);
-  if (themeOptions.length > 0) {
-    updateActiveTheme(savedTheme);
-  }
+  if (themeOptions.length > 0) updateActiveTheme(savedTheme);
   updateThemeIcon(savedTheme);
 
   // Toggle do menu dropdown com animação
@@ -264,23 +253,15 @@ function initThemeSystem() {
 
   // Atualiza tema quando muda preferência do sistema
   prefersDark.addEventListener('change', () => {
-    if (localStorage.getItem('theme') === 'system') {
-      applyTheme('system');
-    }
+    if (localStorage.getItem('theme') === 'system') applyTheme('system');
   });
 
   function applyTheme(theme) {
     if (theme === 'system') {
-      if (prefersDark.matches) {
-        body.classList.add('dark-mode');
-      } else {
-        body.classList.remove('dark-mode');
-      }
-    } else if (theme === 'dark') {
-      body.classList.add('dark-mode');
-    } else {
-      body.classList.remove('dark-mode');
-    }
+      if (prefersDark.matches) body.classList.add('dark-mode');
+      else body.classList.remove('dark-mode');
+    } else if (theme === 'dark') body.classList.add('dark-mode');
+    else body.classList.remove('dark-mode');
   }
 
   function updateActiveTheme(theme) {
@@ -314,9 +295,7 @@ function updateUserInterface() {
         userAvatar.onclick = () => window.location.href = 'profile.html';
         userAvatar.title = 'Ver perfil';
       }
-      if (logoutLink) {
-        logoutLink.classList.remove('hidden');
-      }
+      if (logoutLink) logoutLink.classList.remove('hidden');
     }
   }
 }
@@ -356,9 +335,7 @@ function countAnimeFavorites(animeTitle) {
   try {
     const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
     return users.reduce((count, user) => {
-      if (user.favoriteAnimes && user.favoriteAnimes.includes(animeTitle)) {
-        return count + 1;
-      }
+      if (user.favoriteAnimes && user.favoriteAnimes.includes(animeTitle)) return count + 1;
       return count;
     }, 0);
   } catch (e) {
@@ -403,10 +380,7 @@ function toggleFavorite(animeTitle) {
     users[userIndex].favoriteAnimes = users[userIndex].favoriteAnimes.filter(
       title => title !== animeTitle
     );
-  } else {
-    // Adiciona aos favoritos
-    users[userIndex].favoriteAnimes.push(animeTitle);
-  }
+  } else users[userIndex].favoriteAnimes.push(animeTitle); // Adiciona aos favoritos
 
   // Atualiza o localStorage
   localStorage.setItem('animuUsers', JSON.stringify(users));
@@ -483,11 +457,11 @@ function renderFeaturedAnimes() {
     </a>
   `).join('');
 
-  // Configuração do carrossel
+  // Configura o carrossel
   let currentIndex = featuredAnimes.length; // Começar do conjunto do meio
   const slideWidth = carouselTrack.querySelector('.anime-card').offsetWidth + 20; // 20 é o margin total
   
-  // Posicionar no conjunto do meio
+  // Posiciona no conjunto do meio
   carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
 
   // Botões de navegação
@@ -503,7 +477,7 @@ function renderFeaturedAnimes() {
     carouselTrack.style.transition = 'transform 0.5s ease-in-out';
     carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
 
-    // Verificar se precisa resetar a posição
+    // Verifica se precisa resetar a posição
     setTimeout(() => {
       if (currentIndex >= featuredAnimes.length * 2) {
         currentIndex = featuredAnimes.length;
@@ -524,7 +498,7 @@ function renderFeaturedAnimes() {
   // Auto-play do carrossel
   let autoplayInterval = setInterval(() => slide(1), 1500);
 
-  // Pausar auto-play quando o mouse estiver sobre o carrossel
+  // Pausa auto-play quando o mouse estiver sobre o carrossel
   const carouselContainer = document.querySelector('.carousel-container');
   carouselContainer.addEventListener('mouseenter', () => clearInterval(autoplayInterval));
   carouselContainer.addEventListener('mouseleave', () => {
@@ -550,9 +524,7 @@ function toggleFavoriteFromCard(animeTitle) {
   favoriteBtns.forEach(btn => {
     btn.classList.toggle('is-favorited', isFavorited);
     const countElement = btn.querySelector('.favorite-number');
-    if (countElement) {
-      countElement.textContent = newFavoriteCount;
-    }
+    if (countElement) countElement.textContent = newFavoriteCount;
   });
 }
 
@@ -594,7 +566,7 @@ function loadLatestReviews() {
   `).join('') || '<li class="inicio-card-item">Nenhum review disponível</li>';
 }
 
-// Função atualizada para incluir mais informações sobre categorias
+// Pega a descrição de uma categoria
 function getCategoryDescription(category) {
   const categoryInfo = {
     'Shounen': {
@@ -647,12 +619,8 @@ function getPopularCategories(limit = 3) {
   animes.forEach(anime => {
     anime.genres.forEach(genre => {
       categoryCount[genre] = (categoryCount[genre] || 0) + 1;
-      if (!categoryAnimes[genre]) {
-        categoryAnimes[genre] = [];
-      }
-      if (categoryAnimes[genre].length < 3) {
-        categoryAnimes[genre].push(anime.primaryTitle);
-      }
+      if (!categoryAnimes[genre]) categoryAnimes[genre] = [];
+      if (categoryAnimes[genre].length < 3) categoryAnimes[genre].push(anime.primaryTitle);
     });
   });
 
@@ -668,7 +636,7 @@ function getPopularCategories(limit = 3) {
     }));
 }
 
-// Função atualizada para renderizar categorias
+// Renderiza as categorias
 function renderPopularCategories() {
   const popularCategoriesList = document.getElementById('popular-categories');
   if (!popularCategoriesList) return;
@@ -694,7 +662,7 @@ function renderPopularCategories() {
   `).join('');
 }
 
-// Função para renderizar notícias na página inicial
+// Renderiza as notícias na página inicial
 function renderIndexNews() {
   const newsGrid = document.querySelector('.news-grid');
   if (!newsGrid) return;
@@ -881,9 +849,7 @@ function renderSeasonalAnimes() {
   // Pausar auto-play no hover
   const carouselContainer = document.querySelector('.seasonal-carousel');
   carouselContainer.addEventListener('mouseenter', () => clearInterval(autoplayInterval));
-  carouselContainer.addEventListener('mouseleave', () => {
-    autoplayInterval = setInterval(() => slide(1), 3000);
-  });
+  carouselContainer.addEventListener('mouseleave', () => { autoplayInterval = setInterval(() => slide(1), 3000); });
 }
 
 // Atualiza o link da temporada atual no card de Novidades

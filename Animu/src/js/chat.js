@@ -1,3 +1,4 @@
+// Classe de gerenciamento do Chat entre usuários
 class Chat {
   constructor() {
     this.messages = JSON.parse(localStorage.getItem('animuChats')) || {};
@@ -5,9 +6,7 @@ class Chat {
 
   sendMessage(senderId, receiverId, message) {
     const chatId = this.getChatId(senderId, receiverId);
-    if (!this.messages[chatId]) {
-      this.messages[chatId] = [];
-    }
+    if (!this.messages[chatId]) this.messages[chatId] = [];
 
     let messageContent;
     try {
