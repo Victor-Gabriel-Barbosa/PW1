@@ -251,11 +251,7 @@ class AnimeSearchBar {
     this.searchButton.addEventListener('click', () => this.handleSearch(true));
 
     // Fechar resultados ao clicar fora
-    document.addEventListener('click', (e) => {
-      if (!this.container.contains(e.target)) {
-        this.hideResults();
-      }
-    });
+    document.addEventListener('click', (e) => { if (!this.container.contains(e.target)) this.hideResults(); });
 
     // Adicionar evento para o botão de limpar
     this.clearButton.addEventListener('click', () => {
@@ -266,18 +262,13 @@ class AnimeSearchBar {
     });
 
     // Atualizar visibilidade do botão ao digitar
-    this.input.addEventListener('input', () => {
-      this.updateClearButtonVisibility();
-    });
+    this.input.addEventListener('input', () => { this.updateClearButtonVisibility(); });
   }
 
   // Novo método para controlar a visibilidade do botão de limpar
   updateClearButtonVisibility() {
-    if (this.input.value.length > 0) {
-      this.clearButton.style.display = 'block';
-    } else {
-      this.clearButton.style.display = 'none';
-    }
+    if (this.input.value.length > 0) this.clearButton.style.display = 'block';
+    else this.clearButton.style.display = 'none';
   }
 
   /**
@@ -285,15 +276,11 @@ class AnimeSearchBar {
    */
   setupFilterEvents() {
     // Toggle do menu de filtros
-    this.filterBtn.addEventListener('click', () => {
-      this.filterMenu.classList.toggle('show');
-    });
+    this.filterBtn.addEventListener('click', () => { this.filterMenu.classList.toggle('show'); });
 
     // Fechar filtros ao clicar fora
     document.addEventListener('click', (e) => {
-      if (!this.container.contains(e.target)) {
-        this.filterMenu.classList.remove('show');
-      }
+      if (!this.container.contains(e.target)) { this.filterMenu.classList.remove('show'); }
     });
 
     // Adicionar listeners para cada select de filtro
@@ -312,17 +299,14 @@ class AnimeSearchBar {
       });
     });
 
-    // Adicionar listener específico para o filtro de data
+    // Adiciona listener específico para o filtro de data
     const dateFilter = this.container.querySelector('#date-filter');
     const customDateFilter = this.container.querySelector('#custom-date-filter');
 
     if (dateFilter && customDateFilter) {
       dateFilter.addEventListener('change', () => {
-        if (dateFilter.value === 'custom') {
-          customDateFilter.classList.remove('hidden');
-        } else {
-          customDateFilter.classList.add('hidden');
-        }
+        if (dateFilter.value === 'custom') customDateFilter.classList.remove('hidden');
+        else customDateFilter.classList.add('hidden');
       });
 
       customDateFilter.addEventListener('change', () => {
@@ -346,17 +330,14 @@ class AnimeSearchBar {
       let touchStartY = 0;
       let touchEndY = 0;
 
-      this.filterMenu.addEventListener('touchstart', (e) => {
-        touchStartY = e.touches[0].clientY;
-      });
+      this.filterMenu.addEventListener('touchstart', (e) => { touchStartY = e.touches[0].clientY; });
 
       this.filterMenu.addEventListener('touchmove', (e) => {
         touchEndY = e.touches[0].clientY;
         const diffY = touchEndY - touchStartY;
 
-        if (diffY > 50) { // Se arrastar mais de 50px para baixo
-          this.filterMenu.classList.remove('show');
-        }
+        // Se arrastar mais de 50px para baixo
+        if (diffY > 50) this.filterMenu.classList.remove('show');
       });
     }
 
@@ -366,11 +347,9 @@ class AnimeSearchBar {
         const rect = this.input.getBoundingClientRect();
         const spaceBelow = window.innerHeight - rect.bottom;
 
-        if (spaceBelow < 300) { // Se houver pouco espaço abaixo
-          this.results.style.maxHeight = `${spaceBelow - 10}px`;
-        } else {
-          this.results.style.maxHeight = '400px';
-        }
+        // Se houver pouco espaço abaixo
+        if (spaceBelow < 300) this.results.style.maxHeight = `${spaceBelow - 10}px`;
+        else this.results.style.maxHeight = '400px';
       }
     });
   }
@@ -391,12 +370,10 @@ class AnimeSearchBar {
       const results = await this.searchAnimes(query);
 
       if (redirect) {
-        // Salvar resultados no localStorage e redirecionar
+        // Salva resultados no localStorage e redireciona
         localStorage.setItem('searchResults', JSON.stringify(results));
         window.location.href = `animes.html?search=${encodeURIComponent(query)}`;
-      } else {
-        this.displayResults(results);
-      }
+      } else this.displayResults(results);
     } catch (error) {
       console.error('Erro na busca:', error);
       this.displayError();
@@ -425,27 +402,19 @@ class AnimeSearchBar {
         if (normalizedTitle.includes(normalizedQuery)) score += 30;
 
         // Pontuação para palavras individuais no título
-        queryWords.forEach(word => {
-          if (normalizedTitle.includes(word)) score += 15;
-        });
+        queryWords.forEach(word => { if (normalizedTitle.includes(word)) score += 15; });
 
         // Pontuação para títulos alternativos
         anime.alternativeTitles.forEach(alt => {
           const normalizedAlt = this.normalizeText(alt.title);
           if (normalizedAlt.includes(normalizedQuery)) score += 20;
-          queryWords.forEach(word => {
-            if (normalizedAlt.includes(word)) score += 10;
-          });
+          queryWords.forEach(word => { if (normalizedAlt.includes(word)) score += 10; });
         });
 
         // Pontuação para gêneros
-        if (anime.genres.some(genre =>
-          this.normalizeText(genre).includes(normalizedQuery)
-        )) {
-          score += 5;
-        }
+        if (anime.genres.some(genre => this.normalizeText(genre).includes(normalizedQuery))) score += 5;
 
-        // Aplicar filtros
+        // Aplica filtros
         const passesFilters = this.applyFilters(anime);
 
         return {
@@ -596,15 +565,11 @@ class AnimeSearchBar {
 
   // Métodos auxiliares para controle de visibilidade
   showResults() {
-    if (this.results) {
-      this.results.style.display = 'block';
-    }
+    if (this.results) this.results.style.display = 'block';
   }
 
   hideResults() {
-    if (this.results) {
-      this.results.style.display = 'none';
-    }
+    if (this.results) this.results.style.display = 'none';
   }
 }
 

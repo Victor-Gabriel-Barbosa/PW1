@@ -300,21 +300,21 @@ document.addEventListener('DOMContentLoaded', async function () {
       errorDiv.className = 'error-message';
       errorDiv.textContent = message;
       errorDiv.style.cssText = `
-            background-color: #ff5757;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            animation: slideDown 0.3s ease-out;
-            max-width: 90%;
-            text-align: center;
-        `;
+        background-color: #ff5757;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        animation: slideDown 0.3s ease-out;
+        max-width: 90%;
+        text-align: center;
+      `;
 
       // Adiciona estilo para a animação
       const style = document.createElement('style');
@@ -418,7 +418,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           // Redireciona para a página anterior ou index.html após o registro
           setTimeout(() => {
             const previousPage = sessionStorage.getItem('previousPage');
-            sessionStorage.removeItem('previousPage'); // Limpar depois de usar
+            sessionStorage.removeItem('previousPage'); // Limpa depois de usar
             window.location.href = previousPage || 'index.html';
           }, 1500);
         }

@@ -1,3 +1,4 @@
+// Classe para gerenciamento das notícias
 class NewsManager {
   constructor() {
     // Carrega dados do localStorage e configura listeners globais
@@ -5,9 +6,7 @@ class NewsManager {
 
     // Listeners para sincronização de dados entre abas
     window.addEventListener('newsUpdated', () => this.refreshData());
-    window.addEventListener('storage', (e) => {
-      if (e.key === 'news') this.refreshData();
-    });
+    window.addEventListener('storage', (e) => { if (e.key === 'news') this.refreshData(); });
 
     // Identifica contexto da página atual
     this.currentPage = this.getCurrentPage();
@@ -46,15 +45,15 @@ class NewsManager {
     const urlParams = new URLSearchParams(window.location.search);
     const newsId = urlParams.get('id');
 
-    // Configurar navegação
+    // Configura a navegação
     this.setupNavigation();
 
-    // Mostrar view apropriada baseado na URL
+    // Mostra a view apropriada baseado na URL
     newsId ? this.switchToView('detail', newsId) : this.switchToView('grid');
   }
 
   setupNavigation() {
-    // Lidar com navegação do browser
+    // Lida com navegação do browser
     window.addEventListener('popstate', (event) => {
       const params = new URLSearchParams(window.location.search);
       const id = params.get('id');
@@ -65,24 +64,22 @@ class NewsManager {
   switchToView(viewName, params = null, updateHistory = true) {
     if (!this.views[viewName]) return;
 
-    // Esconder view atual
-    if (this.activeView) {
-      this.views[this.activeView].element.style.display = 'none';
-    }
+    // Esconde a view atual
+    if (this.activeView) this.views[this.activeView].element.style.display = 'none';
 
-    // Mostrar e inicializar nova view
+    // Mostra e inicializar nova view
     const view = this.views[viewName];
     view.element.style.display = 'block';
     view.init(params);
     this.activeView = viewName;
 
-    // Atualizar URL e histórico se necessário
+    // Atualiza URL e histórico se necessário
     if (updateHistory) {
       const url = viewName === 'detail' ? `news.html?id=${params}` : 'news.html';
       history.pushState({ view: viewName, params }, '', url);
     }
 
-    // Atualizar título e metadata
+    // Atualiza título e metadata
     if (viewName === 'grid') {
       document.title = view.title;
       this.updateMetaTags({
@@ -108,13 +105,9 @@ class NewsManager {
     const newsGrid = document.querySelector('.news-grid');
     if (!newsGrid) return;
 
-    // Se estiver na página de notícias, inicializar filtros
-    if (this.currentPage === 'news') {
-      this.initializeFilters();
-    } else {
-      // Na página inicial, mostrar apenas 4 notícias
-      this.renderNewsGrid(newsGrid, 4);
-    }
+    // Se estiver na página de notícias, inicializa filtros
+    if (this.currentPage === 'news') this.initializeFilters();
+    else this.renderNewsGrid(newsGrid, 4); // Na página inicial, mostrar apenas 4 notícias
   }
 
   initSingleNews() {
@@ -178,9 +171,7 @@ class NewsManager {
     if (!container) return;
 
     // Ordena as notícias por data, mais recentes primeiro
-    const sortedNews = newsData || [...this.newsData].sort((a, b) =>
-      new Date(b.date) - new Date(a.date)
-    );
+    const sortedNews = newsData || [...this.newsData].sort((a, b) => new Date(b.date) - new Date(a.date));
 
     const newsToShow = limit ? sortedNews.slice(0, limit) : sortedNews;
     container.innerHTML = newsToShow.map(news => this.createNewsCard(news)).join('');
@@ -191,14 +182,13 @@ class NewsManager {
     this.newsData = JSON.parse(localStorage.getItem('news') || '[]');
     const newsGrid = document.querySelector('.news-grid');
     if (newsGrid) {
-      // Se estiver na página inicial, mostrar apenas 4 notícias
-      // Se estiver na página de notícias, mostrar todas
+      // Se estiver na página inicial, mostra apenas 4 notícias, senão mostra todas
       const limit = window.location.pathname.includes('index.html') ? 4 : null;
       this.renderNewsGrid(newsGrid, limit);
     }
   }
 
-  // Adicionar novos métodos para gerenciar filtros e paginação
+  // Adiciona novos métodos para gerenciar filtros e paginação
   initializeFilters() {
     // Configuração inicial dos filtros e paginação
     this.currentPage = 1;
@@ -227,11 +217,8 @@ class NewsManager {
   }
 
   changePage(direction) {
-    if (direction === 'prev' && this.currentPage > 1) {
-      this.currentPage--;
-    } else if (direction === 'next') {
-      this.currentPage++;
-    }
+    if (direction === 'prev' && this.currentPage > 1) this.currentPage--;
+    else if (direction === 'next') this.currentPage++;
     this.updateNews();
   }
 
@@ -242,8 +229,7 @@ class NewsManager {
 
     // Aplica filtros de busca e categoria
     let filteredNews = this.newsData.filter(news => {
-      const matchesSearch = news.title.toLowerCase().includes(searchTerm) ||
-        news.summary.toLowerCase().includes(searchTerm);
+      const matchesSearch = news.title.toLowerCase().includes(searchTerm) || news.summary.toLowerCase().includes(searchTerm);
       const matchesCategory = !selectedCategory || news.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
@@ -260,15 +246,13 @@ class NewsManager {
     const filteredNews = this.filterAndSortNews();
     const totalPages = Math.ceil(filteredNews.length / this.itemsPerPage);
 
-    // Ajustar página atual se necessário
-    if (this.currentPage > totalPages) {
-      this.currentPage = totalPages || 1;
-    }
+    // Ajusta página atual se necessário
+    if (this.currentPage > totalPages) this.currentPage = totalPages || 1;
 
     const start = (this.currentPage - 1) * this.itemsPerPage;
     const paginatedNews = filteredNews.slice(start, start + this.itemsPerPage);
 
-    // Renderizar notícias e atualizar controles
+    // Renderiza notícias e atualiza controles
     this.renderNewsGrid(this.newsGrid, null, paginatedNews);
     this.updatePaginationControls(totalPages);
   }
@@ -334,7 +318,7 @@ class NewsManager {
   }
 
   formatContent(content) {
-    // Converter quebras de linha em parágrafos
+    // Converte quebras de linha em parágrafos
     return content.split('\n')
       .filter(paragraph => paragraph.trim())
       .map(paragraph => `<p>${paragraph}</p>`)
@@ -374,7 +358,7 @@ class NewsManager {
   }
 
   updateMetaTags(news) {
-    // Atualizar meta tags para SEO e compartilhamento
+    // Atualiza meta tags para SEO e compartilhamento
     const meta = {
       description: news.summary,
       image: news.image,

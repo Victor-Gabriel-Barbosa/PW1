@@ -1,16 +1,16 @@
 // Redireciona para login se não houver sessão ativa
 document.addEventListener('DOMContentLoaded', function() {
-  // Verificar se o usuário está logado
+  // Verifica se o usuário está logado
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
   if (!sessionData) {
     window.location.href = 'signin.html';
     return;
   }
 
-  // Inicializar recomendações
+  // Inicializa recomendações
   initializeRecommendations();
 
-  // Atualizar avatar e nome do usuário
+  // Atualiza avatar e nome do usuário
   updateUserInfo();
 });
 
@@ -27,10 +27,6 @@ function initializeRecommendations() {
     console.error('Nenhum anime encontrado no localStorage');
     return;
   }
-
-  // Debug
-  console.log('Usuário:', user);
-  console.log('Total de animes:', animes.length);
 
   // Atualiza estatísticas
   updateStats(user);
@@ -58,9 +54,8 @@ function loadGenreBasedRecommendations(user) {
   const watchedAnimes = user.watchedAnimes || [];
   const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
 
-  // Calcular pontuação baseada em múltiplos fatores
-  const recommendations = animes
-    .map(anime => {
+  // Calcula pontuação baseada em múltiplos fatores
+  const recommendations = animes.map(anime => {
       const genreScore = calculateGenreMatchScore(anime.genres, favoriteGenres);
       const watchHistoryScore = calculateWatchHistoryScore(anime, user, comments);
       const ratingScore = calculateRatingScore(anime, comments);
@@ -89,7 +84,7 @@ function loadSimilarAnimeRecommendations(user) {
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
   const watchedAnimes = user.watchedAnimes || [];
   
-  // Encontrar animes similares baseado nos já assistidos
+  // Encontra animes similares baseado nos já assistidos
   const recommendations = animes
     .filter(anime => !watchedAnimes.includes(anime.primaryTitle))
     .map(anime => {
@@ -125,11 +120,9 @@ function loadTrendingRecommendations() {
 
 // Calcula porcentagem de compatibilidade entre gêneros do anime e preferências do usuário
 function calculateGenreMatchScore(animeGenres, userGenres) {
-  if (!userGenres?.length || !animeGenres?.length) return 50; // Valor padrão em vez de 0
+  if (!userGenres?.length || !animeGenres?.length) return 50;
   
-  const matchingGenres = animeGenres.filter(genre => 
-    userGenres.includes(genre)
-  );
+  const matchingGenres = animeGenres.filter(genre => userGenres.includes(genre));
   
   const matchScore = (matchingGenres.length / userGenres.length) * 100;
   return isNaN(matchScore) ? 50 : Math.min(matchScore, 100);
@@ -139,9 +132,7 @@ function calculateGenreMatchScore(animeGenres, userGenres) {
 function calculateSimilarityScore(anime, watchedAnimes, allAnimes) {
   if (!watchedAnimes.length) return 0;
 
-  const watchedAnimeObjects = allAnimes.filter(a => 
-    watchedAnimes.includes(a.primaryTitle)
-  );
+  const watchedAnimeObjects = allAnimes.filter(a => watchedAnimes.includes(a.primaryTitle));
 
   let totalScore = 0;
   watchedAnimeObjects.forEach(watched => {
@@ -163,7 +154,7 @@ function calculatePopularityScore(anime, comments) {
   return commentScore + ratingScore + watchCount;
 }
 
-// Melhorar cálculo de pontuação com dados do perfil
+// Calcula a pontuação com dados do perfil
 function calculateWatchHistoryScore(anime, user, comments) {
   if (!user.watchedAnimes?.length) return 50;
 
@@ -175,8 +166,7 @@ function calculateWatchHistoryScore(anime, user, comments) {
   
   // Análise mais profunda do histórico
   user.watchedAnimes?.forEach(watchedTitle => {
-    const watchedAnime = JSON.parse(localStorage.getItem('animeData'))
-      .find(a => a.primaryTitle === watchedTitle);
+    const watchedAnime = JSON.parse(localStorage.getItem('animeData')).find(a => a.primaryTitle === watchedTitle);
     
     if (watchedAnime) {
       // Contagem ponderada de gêneros
@@ -212,7 +202,7 @@ function calculateWatchHistoryScore(anime, user, comments) {
   return Math.min(score, 100);
 }
 
-// Nova função para calcular pontuação baseada em atividade recente
+// Calcula pontuação baseada em atividade recente
 function calculateRecentActivityScore(user, animeGenres) {
   const recentComments = getRecentComments(user.username);
   const recentFavorites = getRecentFavorites(user);
@@ -220,24 +210,20 @@ function calculateRecentActivityScore(user, animeGenres) {
 
   // Analisa comentários recentes
   recentComments.forEach(comment => {
-    const commentedAnime = JSON.parse(localStorage.getItem('animeData'))
-      .find(a => a.primaryTitle === comment.animeTitle);
+    const commentedAnime = JSON.parse(localStorage.getItem('animeData')).find(a => a.primaryTitle === comment.animeTitle);
     
     if (commentedAnime) {
-      const matchingGenres = commentedAnime.genres
-        .filter(genre => animeGenres.includes(genre));
+      const matchingGenres = commentedAnime.genres.filter(genre => animeGenres.includes(genre));
       score += (matchingGenres.length / animeGenres.length) * 0.3;
     }
   });
 
   // Analisa favoritos recentes
   recentFavorites.forEach(favorite => {
-    const favoriteAnime = JSON.parse(localStorage.getItem('animeData'))
-      .find(a => a.primaryTitle === favorite);
+    const favoriteAnime = JSON.parse(localStorage.getItem('animeData')).find(a => a.primaryTitle === favorite);
     
     if (favoriteAnime) {
-      const matchingGenres = favoriteAnime.genres
-        .filter(genre => animeGenres.includes(genre));
+      const matchingGenres = favoriteAnime.genres.filter(genre => animeGenres.includes(genre));
       score += (matchingGenres.length / animeGenres.length) * 0.4;
     }
   });
@@ -245,7 +231,7 @@ function calculateRecentActivityScore(user, animeGenres) {
   return Math.min(score, 1);
 }
 
-// Função auxiliar para obter comentários recentes
+// Obtém comentários recentes
 function getRecentComments(username, days = 30) {
   const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
   const now = new Date();
@@ -260,7 +246,7 @@ function getRecentComments(username, days = 30) {
     .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 }
 
-// Função auxiliar para obter favoritos recentes
+// Obtém favoritos recentes
 function getRecentFavorites(user, days = 30) {
   const favorites = user.favoriteAnimes || [];
   const favoriteDates = user.favoriteDates || {};
@@ -273,7 +259,7 @@ function getRecentFavorites(user, days = 30) {
   });
 }
 
-// Função auxiliar para obter avaliação do usuário para um anime
+// Obtém avaliação do usuário para um anime
 function getUserRatingForAnime(animeTitle, userComments) {
   const comment = userComments.find(c => c.animeTitle === animeTitle);
   return comment?.rating;
@@ -314,11 +300,8 @@ function renderRecommendations(recommendations, containerId) {
 
   const recommendationsHTML = recommendations.map(anime => {
     let formattedScore = 'N/A';
-    if (typeof anime.score === 'number') {
-      formattedScore = anime.score.toFixed(1);
-    } else if (typeof anime.score === 'string' && !isNaN(parseFloat(anime.score))) {
-      formattedScore = parseFloat(anime.score).toFixed(1);
-    }
+    if (typeof anime.score === 'number') formattedScore = anime.score.toFixed(1);
+    else if (typeof anime.score === 'string' && !isNaN(parseFloat(anime.score))) formattedScore = parseFloat(anime.score).toFixed(1);
 
     const { genreScore = 50, watchHistoryScore = 50, ratingScore = 50 } = anime.matchDetails || {};
     const matchScore = isNaN(anime.matchScore) ? 50 : Math.round(anime.matchScore);
@@ -402,15 +385,9 @@ function setupFilters() {
       // Recarrega as recomendações da seção ativa
       const user = getCurrentUser();
       if (user) {
-        if (filter === 'all' || filter === 'genres') {
-          loadGenreBasedRecommendations(user);
-        }
-        if (filter === 'all' || filter === 'similar') {
-          loadSimilarAnimeRecommendations(user);
-        }
-        if (filter === 'all' || filter === 'trending') {
-          loadTrendingRecommendations();
-        }
+        if (filter === 'all' || filter === 'genres') loadGenreBasedRecommendations(user);
+        if (filter === 'all' || filter === 'similar') loadSimilarAnimeRecommendations(user);
+        if (filter === 'all' || filter === 'trending') loadTrendingRecommendations();
       }
     });
   });
@@ -481,7 +458,7 @@ function updateStats(user) {
   document.getElementById('watched-count').textContent = watchedCount;
   document.getElementById('avg-rating').textContent = averageRating;
 
-  // Atualizar barras de gêneros favoritos
+  // Atualiza barras de gêneros favoritos
   const genres = user.favoriteGenres || [];
   const genrePreferences = document.querySelector('.insight-content');
   
@@ -500,7 +477,7 @@ function updateStats(user) {
   }
 }
 
-// Função para atualizar informações do usuário na interface
+// Atualiza informações do usuário na interface
 function updateUserInfo() {
   const user = getCurrentUser();
   if (!user) return;
@@ -515,8 +492,6 @@ function updateUserInfo() {
     logoutLink.classList.remove('hidden');
   }
 
-  // Verificar se é admin
-  if (user.isAdmin) {
-    document.getElementById('admin-panel')?.classList.remove('hidden');
-  }
+  // Verifica se é admin
+  if (user.isAdmin) document.getElementById('admin-panel')?.classList.remove('hidden');
 }

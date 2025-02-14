@@ -1,3 +1,5 @@
+
+// Variáveis auxiliares
 let currentAnimeId = null;
 let alternativeTitles = [];
 let genres = [];
@@ -138,9 +140,7 @@ function showAnimeForm() {
   }
 
   // Captura o estado inicial do formulário após o preenchimento
-  setTimeout(() => {
-    initialFormState = getFormState();
-  }, 100);
+  setTimeout(() => { initialFormState = getFormState(); }, 100);
 }
 
 // Fecha formulário
@@ -250,12 +250,12 @@ function initializeCategorySelector() {
     `).join('')}
   `;
   
-  // Substituir o input pelo select
+  // Substitui o input pelo select
   genreInput.parentNode.replaceChild(select, genreInput);
 }
 
-// Funções para produtores
-function addProducer() {
+// Adiciona produtor ao array
+function addProducer() { 
   const input = document.getElementById('producerInput');
   const producer = input.value.trim();
 
@@ -266,6 +266,7 @@ function addProducer() {
   }
 }
 
+// Atualiza lista visual de produtores
 function updateProducersList() {
   const container = document.getElementById('producersList');
   container.innerHTML = producers.map((producer, index) => `
@@ -280,13 +281,14 @@ function updateProducersList() {
   `).join('');
 }
 
+// Remove produtor do array
 function removeProducer(index) {
   producers.splice(index, 1);
   updateProducersList();
 }
 
-// Funções para licenciadores
-function addLicensor() {
+// Adiciona licenciante ao array
+function addLicensor() { 
   const input = document.getElementById('licensorInput');
   const licensor = input.value.trim();
 
@@ -297,7 +299,8 @@ function addLicensor() {
   }
 }
 
-function updateLicensorsList() {
+// Atualiza lista visual de licenciador
+function updateLicensorsList() { 
   const container = document.getElementById('licensorsList');
   container.innerHTML = licensors.map((licensor, index) => `
     <div class="tag">
@@ -310,6 +313,7 @@ function updateLicensorsList() {
   `).join('');
 }
 
+// Remove licenciador do array
 function removeLicensor(index) {
   licensors.splice(index, 1);
   updateLicensorsList();
@@ -411,11 +415,9 @@ document.getElementById('animeForm').addEventListener('submit', async function (
     const animes = JSON.parse(localStorage.getItem('animeData')) || [];
     const now = new Date().toISOString();
 
-    // Comprimir imagem se existir
+    // Comprime imagem se existir
     let processedCoverImage = coverImage;
-    if (coverImage.startsWith('data:image')) {
-      processedCoverImage = await compressImage(coverImage, 800, 0.7);
-    }
+    if (coverImage.startsWith('data:image')) processedCoverImage = await compressImage(coverImage, 800, 0.7);
 
     // Formata os dados
     const formData = {
@@ -537,6 +539,16 @@ function importAnimes(event) {
   }
 }
 
+/**
+ * Configura uma área de arrastar e soltar (drop zone) para manipular arquivos e URLs.
+ * 
+ * @param {string} dropzoneId - ID do elemento HTML que servirá como zona de arrastar e soltar
+ * @param {string} inputId - ID do input de arquivo associado
+ * @param {string} urlInputId - ID do input que armazenará a URL
+ * @param {string} previewId - ID do elemento que mostrará a prévia
+ * @param {Function} dropHandler - Função que manipula o arquivo/URL quando solto na zona
+ *                                Recebe (file|text, urlInput, previewElement) como parâmetros
+ */
 function setupDropZone(dropzoneId, inputId, urlInputId, previewId, dropHandler) {
   const dropZone = document.getElementById(dropzoneId);
   const fileInput = document.getElementById(inputId);
@@ -546,21 +558,18 @@ function setupDropZone(dropzoneId, inputId, urlInputId, previewId, dropHandler) 
     dropZone.addEventListener(eventName, preventDefaults, false);
   });
 
+  // Previne comportamento padrão de arrastar e soltar
   function preventDefaults(e) {
     e.preventDefault();
     e.stopPropagation();
   }
 
   ['dragenter', 'dragover'].forEach(eventName => {
-    dropZone.addEventListener(eventName, () => {
-      dropZone.classList.add('drag-over');
-    });
+    dropZone.addEventListener(eventName, () => { dropZone.classList.add('drag-over'); });
   });
 
   ['dragleave', 'drop'].forEach(eventName => {
-    dropZone.addEventListener(eventName, () => {
-      dropZone.classList.remove('drag-over');
-    });
+    dropZone.addEventListener(eventName, () => { dropZone.classList.remove('drag-over'); });
   });
 
   dropZone.addEventListener('dragover', (e) => {
@@ -579,9 +588,8 @@ function setupDropZone(dropzoneId, inputId, urlInputId, previewId, dropHandler) 
     const file = dt.files[0];
 
     // Verifica se é um arquivo ou texto (URL)
-    if (file) {
-      dropHandler(file, urlInput, document.getElementById(previewId));
-    } else {
+    if (file) dropHandler(file, urlInput, document.getElementById(previewId));
+    else {
       // Tenta pegar o texto arrastado (URL)
       const text = dt.getData('text');
       if (text) {
@@ -609,9 +617,7 @@ function setupDropZone(dropzoneId, inputId, urlInputId, previewId, dropHandler) 
     }
   });
 
-  dropZone.addEventListener('click', () => {
-    fileInput.click();
-  });
+  dropZone.addEventListener('click', () => { fileInput.click(); });
 
   fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
@@ -619,7 +625,16 @@ function setupDropZone(dropzoneId, inputId, urlInputId, previewId, dropHandler) 
   });
 }
 
-async function handleImageDrop(file, urlInput, previewElement) {
+/**
+ * Processa e comprime uma imagem quando ela é arrastada/soltada, exibindo preview
+ * 
+ * @param {File} file - O arquivo de imagem a ser processado
+ * @param {HTMLInputElement} urlInput - Input onde será armazenada a URL da imagem em base64
+ * @param {HTMLImageElement} previewElement - Elemento de imagem onde será exibido o preview
+ * @returns {Promise<void>}
+ * @throws {Error} Lança erro se houver falha no processamento da imagem
+ */
+async function handleImageDrop(file, urlInput, previewElement) { 
   if (!file.type?.startsWith('image/')) {
     alert('Por favor, selecione apenas arquivos de imagem.');
     return;
@@ -644,6 +659,14 @@ async function handleImageDrop(file, urlInput, previewElement) {
   }
 }
 
+/**
+ * Manipula o upload de vídeo, seja por arquivo ou URL do YouTube
+ * 
+ * @param {(File|string)} file - O arquivo de vídeo ou URL do YouTube a ser processado
+ * @param {HTMLInputElement} urlInput - O elemento de input que contém ou receberá a URL
+ * @param {HTMLElement} previewElement - O elemento onde o preview do vídeo será exibido
+ * @returns {void}
+ */
 function handleVideoDrop(file, urlInput, previewElement) {
   // Se for um arquivo de vídeo
   if (file instanceof File && file.type.startsWith('video/')) {
@@ -658,6 +681,15 @@ function handleVideoDrop(file, urlInput, previewElement) {
   }
 }
 
+/**
+ * Processa um arquivo de vídeo, exibindo uma prévia e armazenando seu conteúdo
+ * 
+ * @param {File} file - O arquivo de vídeo a ser processado
+ * @param {HTMLInputElement} urlInput - O elemento de input onde será armazenada a URL do vídeo
+ * @param {HTMLElement} previewElement - O elemento onde será exibida a prévia do vídeo
+ * @throws {Error} Lança um erro se houver falha no processamento do vídeo
+ * @returns {void}
+ */
 function handleVideoFile(file, urlInput, previewElement) {
   try {
     const reader = new FileReader();
@@ -680,6 +712,14 @@ function handleVideoFile(file, urlInput, previewElement) {
   }
 }
 
+/**
+ * Processa e valida uma URL do YouTube, gerando uma visualização incorporada do vídeo
+ * @param {string} url - A URL do vídeo do YouTube a ser processada
+ * @param {HTMLInputElement} urlInput - Elemento de input que contém a URL
+ * @param {HTMLElement} previewElement - Elemento onde será exibida a prévia do vídeo
+ * @throws {alert} - Exibe um alerta se a URL for inválida
+ * @returns {void}
+ */
 function handleYoutubeUrl(url, urlInput, previewElement) {
   const videoId = extractYouTubeId(url); // Atualizado para usar o mesmo nome
   if (videoId) {
@@ -701,11 +741,15 @@ function handleYoutubeUrl(url, urlInput, previewElement) {
   } else alert('URL do YouTube inválida. Por favor, verifique a URL e tente novamente.');
 }
 
-// Renomeie a função para manter consistência
+/**
+ * Extrai o ID de um vídeo do YouTube a partir de uma URL
+ * 
+ * @param {string} url - A URL do YouTube ou ID do vídeo para extrair
+ * @returns {string|null} O ID do vídeo do YouTube se encontrado, ou null se não for possível extrair
+ */
 function extractYouTubeId(url) {
   if (!url) return null;
   
-  // Suporta vários formatos de URL do YouTube
   const patterns = [
     /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i,
     /^[a-zA-Z0-9_-]{11}$/ // ID direto do YouTube
@@ -724,14 +768,13 @@ document.getElementById('trailerUrl').addEventListener('input', function(e) {
   if (url) handleYoutubeUrl(url, e.target, document.getElementById('trailerPreview'));
 });
 
+// Setup para remover imagem de capa
 function setupMediaRemoval() {
-  // Setup para remover imagem de capa
   const removeCoverBtn = document.getElementById('removeCoverImage');
   removeCoverBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
     const coverPreview = document.getElementById('coverImagePreview');
     const coverPrompt = document.getElementById('coverImageDropzone').querySelector('.drop-zone-prompt');
-    
     coverPreview.src = '';
     coverPreview.classList.add('hidden');
     removeCoverBtn.classList.add('hidden');
@@ -1373,8 +1416,8 @@ function updatePreview(inputId) {
   }
 }
 
-// Função auxiliar para verificar se o formulário foi modificado
-function isFormDirty(form) {
+// Verifica se o formulário foi modificado
+function isFormDirty(_form) {
   // Verifica se o modal está visível
   if (document.getElementById('animeModal').classList.contains('hidden')) return false;
 
@@ -1404,8 +1447,7 @@ function getFormState() {
   };
 
   // Captura valores dos campos
-  form.querySelectorAll('input, textarea, select').forEach(input => {
-    if (input.type !== 'file' && !input.classList.contains('hidden')) state.inputs[input.id] = input.value.trim();
+  form.querySelectorAll('input, textarea, select').forEach(input => {if (input.type !== 'file' && !input.classList.contains('hidden')) state.inputs[input.id] = input.value.trim();
   });
 
   return JSON.stringify(state);

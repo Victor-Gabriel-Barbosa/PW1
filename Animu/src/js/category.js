@@ -1,4 +1,5 @@
-class CategoryDisplay {
+// Classe para gerenciamento das categorias
+class CategoryDisplay { 
   constructor() {
     this.mainContainer = document.getElementById('main-categories');
     this.subContainer = document.getElementById('subcategories');
@@ -138,6 +139,4 @@ class CategoryDisplay {
 }
 
 // Inicializa o gerenciador de categorias
-document.addEventListener('DOMContentLoaded', () => {
-  new CategoryDisplay();
-});
+document.addEventListener('DOMContentLoaded', () => { new CategoryDisplay(); });

@@ -1,3 +1,4 @@
+// Classe para gerenciamento da barra de navegação e barra lateral
 class Navbar {
   constructor() {
     // Template HTML principal da navbar com menu lateral e painel de usuário
@@ -251,11 +252,8 @@ class Navbar {
       if (isAdminPage && isAdminLink) {
         // Remove o './' do início do href para comparação
         const cleanHref = href.replace('./', '');
-        if (currentPage === cleanHref) {
-          link.classList.add('active');
-        } else {
-          link.classList.remove('active');
-        }
+        if (currentPage === cleanHref) link.classList.add('active');
+        else link.classList.remove('active');
       }
       // Verifica páginas normais
       else if (!isAdminPage && !isAdminLink) {
@@ -263,9 +261,7 @@ class Navbar {
           (currentPage.includes('anime') && href === 'animes.html') ||
           (currentPage === '' && href === 'index.html')) {
           link.classList.add('active');
-        } else {
-          link.classList.remove('active');
-        }
+        } else link.classList.remove('active');
       }
     });
   }
@@ -278,7 +274,7 @@ class Navbar {
       const adminOptions = document.getElementById('admin-options');
       const userPanel = document.getElementById('user-panel');
 
-      // Atualizar avatar se disponível
+      // Atualiza o avatar se disponível
       if (userSession.avatar && userPanel) {
         const avatarImg = userPanel.querySelector('img');
         if (avatarImg) {
@@ -286,15 +282,13 @@ class Navbar {
         }
       }
 
-      // Mostrar opções de admin no menu lateral se o usuário for admin
+      // Mostra as opções de admin no menu lateral se o usuário for admin
       if (adminOptions && userSession.isAdmin) {
         console.log('Usuário é admin, mostrando opções de admin');
         adminOptions.classList.remove('hidden');
-        // Adicionar classe específica para links de admin
+        // Adiciona classe específica para links de admin
         const adminLinks = adminOptions.querySelectorAll('.nav-link');
-        adminLinks.forEach(link => {
-          link.classList.add('admin-link');
-        });
+        adminLinks.forEach(link => { link.classList.add('admin-link'); });
       }
     }
   }
@@ -314,9 +308,7 @@ class Navbar {
 
       // Fecha o menu ao clicar em qualquer lugar fora
       document.addEventListener('click', (e) => {
-        if (!adminButton.contains(e.target) && !adminMenu.contains(e.target)) {
-          adminMenu.classList.add('hidden');
-        }
+        if (!adminButton.contains(e.target) && !adminMenu.contains(e.target)) adminMenu.classList.add('hidden');
       });
 
       // Previne que cliques dentro do menu o fechem
@@ -364,15 +356,11 @@ class Navbar {
       });
 
       document.addEventListener('click', (e) => {
-        if (!dropdownBtn.contains(e.target) && !dropdown.contains(e.target)) {
-          dropdown.classList.add('hidden');
-        }
+        if (!dropdownBtn.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.add('hidden');
       });
     }
 
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', this.handleLogout);
-    }
+    if (logoutBtn) logoutBtn.addEventListener('click', this.handleLogout);
   }
 
   // Inicializa o dropdown de autenticação
@@ -387,9 +375,7 @@ class Navbar {
       });
 
       document.addEventListener('click', (e) => {
-        if (!authBtn.contains(e.target) && !authDropdown.contains(e.target)) {
-          authDropdown.classList.add('hidden');
-        }
+        if (!authBtn.contains(e.target) && !authDropdown.contains(e.target)) authDropdown.classList.add('hidden');
       });
     }
   }
@@ -404,23 +390,17 @@ class Navbar {
   setupKeyboardNav() {
     document.addEventListener('keydown', (e) => {
       // ESC fecha menus
-      if (e.key === 'Escape') {
-        this.closeAllMenus();
-      }
+      if (e.key === 'Escape') this.closeAllMenus();
 
       // Alt + M toggle menu lateral
-      if (e.key === 'm' && e.altKey) {
-        document.getElementById('menu-toggle').click();
-      }
+      if (e.key === 'm' && e.altKey) document.getElementById('menu-toggle').click();
     });
 
     // Navegação por Tab nos menus
     const menuItems = document.querySelectorAll('.nav-link, .dropdown-item');
     menuItems.forEach(item => {
       item.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          e.target.click();
-        }
+        if (e.key === 'Enter') e.target.click();
       });
     });
   }
@@ -429,9 +409,7 @@ class Navbar {
     let touchStartX = 0;
     let touchEndX = 0;
     
-    document.addEventListener('touchstart', (e) => {
-      touchStartX = e.touches[0].clientX;
-    }, false);
+    document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, false);
 
     document.addEventListener('touchend', (e) => {
       touchEndX = e.changedTouches[0].clientX;
@@ -443,26 +421,20 @@ class Navbar {
       const sideMenu = document.getElementById('side-menu');
       
       if (Math.abs(swipeDistance) > 50) { // Mínimo de 50px
-        if (swipeDistance > 0) { // Swipe direita
-          sideMenu.classList.add('open');
-        } else { // Swipe esquerda
-          sideMenu.classList.remove('open');
-        }
+        if (swipeDistance > 0)  sideMenu.classList.add('open'); // Swipe direita
+        else sideMenu.classList.remove('open'); // Swipe esquerda
       }
     }
   }
 
   setupConnectionObserver() {
     // Monitora estado da conexão
-    window.addEventListener('online', () => {
-      this.updateConnectionStatus(true);
-    });
+    window.addEventListener('online', () => { this.updateConnectionStatus(true); });
     
-    window.addEventListener('offline', () => {
-      this.updateConnectionStatus(false);
-    });
+    window.addEventListener('offline', () => { this.updateConnectionStatus(false); });
   }
 
+  // Atualiza o estado da conexão e estiliza links de acordo
   updateConnectionStatus(isOnline) {
     const navLinks = document.querySelectorAll('.nav-link');
     
@@ -484,12 +456,11 @@ class Navbar {
     document.getElementById('side-menu').classList.remove('open');
     
     // Fecha dropdowns
-    document.querySelectorAll('.user-dropdown, .theme-menu')
-      .forEach(menu => menu.classList.add('hidden'));
+    document.querySelectorAll('.user-dropdown, .theme-menu').forEach(menu => menu.classList.add('hidden'));
   }
 }
 
-// Inicialização quando DOM estiver pronto
+// Inicializa quando DOM estiver pronto
 document.addEventListener('DOMContentLoaded', () => {
   const navbar = new Navbar();
   navbar.init();

@@ -1,20 +1,20 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // Obter ID do usuário da URL se existir
+  // Obtém ID do usuário da URL se existir
   const urlParams = new URLSearchParams(window.location.search);
   const profileId = urlParams.get('id');
   
-  // Verificar sessão ativa
+  // Verifica sessão ativa
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
   if (!sessionData) {
     window.location.href = 'signin.html';
     return;
   }
 
-  // Carregar dados do usuário
+  // Carrega dados do usuário
   const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
   let currentUser;
   
-  // Se houver ID na URL, carregar perfil do usuário específico
+  // Se houver ID na URL, carrega o perfil do usuário específico
   if (profileId) {
     currentUser = users.find(user => user.id === profileId);
     if (!currentUser) {
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    // Verificar se é amigo
+    // Verifica se é amigo
     const loggedUser = users.find(user => user.id === sessionData.userId);
     const isFriend = loggedUser.friends?.includes(currentUser.id);
     
@@ -33,19 +33,16 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    // Ajustar interface para perfil visitado
+    // Ajusta interface para perfil visitado
     adjustInterfaceForVisitedProfile(currentUser, sessionData.userId === currentUser.id);
-  } else {
-    // Carregar próprio perfil
-    currentUser = users.find(user => user.id === sessionData.userId);
-  }
+  } else currentUser = users.find(user => user.id === sessionData.userId); // Carrega o próprio perfil 
 
   if (!currentUser) {
     console.error('Usuário não encontrado');
     return;
   }
 
-  // Inicializar dados do perfil
+  // Inicializa os dados do perfil
   initializeProfile(currentUser);
   loadStatistics(currentUser);
   loadAchievements(currentUser);
@@ -66,13 +63,13 @@ function adjustInterfaceForVisitedProfile(profileUser, isOwnProfile) {
   const addFriendBtn = document.getElementById('add-friend-btn');
 
   if (!isOwnProfile) {
-    // Ocultar botões de edição e logout
+    // Oculta botões de edição e logout
     editButton.style.display = 'none';
     logoutButton.style.display = 'none';
     changeAvatarButton.style.display = 'none';
     addFriendBtn.style.display = 'none';
 
-    // Adicionar botão de chat se não for o próprio perfil
+    // Adiciona botão de chat se não for o próprio perfil
     const buttonContainer = document.querySelector('.flex.gap-3.mt-4');
     buttonContainer.innerHTML = `
       <button onclick="openChat('${profileUser.id}')"
@@ -105,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return;
   }
 
-  // Carregar dados do usuário
+  // Carrega os dados do usuário
   const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
   const currentUser = users.find(user => user.id === sessionData.userId);
 
@@ -114,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return;
   }
 
-  // Inicializar dados do perfil
+  // Inicializa os dados do perfil
   initializeProfile(currentUser);
   loadStatistics(currentUser);
   loadAchievements(currentUser);
@@ -128,19 +125,17 @@ document.addEventListener('DOMContentLoaded', function () {
  * @param {Object} user - Dados do usuário
  */
 function initializeProfile(user) {
-  // Atualizar informações básicas
+  // Atualiza informações básicas
   document.getElementById('profile-username').textContent = user.username;
   document.getElementById('profile-email').textContent = user.email;
   document.getElementById('display-name').textContent = user.displayName || user.username;
   document.getElementById('profile-joined').textContent = `Membro desde: ${new Date(user.createdAt).toLocaleDateString('pt-BR')}`;
 
-  // Usar o avatar da sessão do usuário
+  // Usa o avatar da sessão do usuário
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
-  if (sessionData && sessionData.avatar) {
-    document.getElementById('profile-avatar').src = sessionData.avatar;
-  }
+  if (sessionData && sessionData.avatar) document.getElementById('profile-avatar').src = sessionData.avatar;
 
-  // Atualizar gêneros favoritos
+  // Atualiza gêneros favoritos
   const favoriteGenres = document.getElementById('favorite-genres');
   favoriteGenres.innerHTML = user.favoriteGenres?.map(genre => `<span class="genre">${genre}</span>`).join('') || 'Nenhum gênero favorito';
 }
@@ -165,8 +160,7 @@ function loadStatistics(user) {
 
   document.getElementById('stats-animes').textContent = user.watchedAnimes?.length || 0;
   document.getElementById('stats-reviews').textContent = userComments.length + userTopics.length;
-  document.getElementById('stats-likes').textContent =
-    userComments.reduce((sum, comment) => sum + (comment.likes?.length || 0), 0) + forumLikes;
+  document.getElementById('stats-likes').textContent = userComments.reduce((sum, comment) => sum + (comment.likes?.length || 0), 0) + forumLikes;
   document.getElementById('stats-favorites').textContent = user.favoriteAnimes?.length || 0;
 }
 
@@ -301,7 +295,7 @@ function shareAnime(event, animeTitle, coverImage) {
     return;
   }
 
-  // Criar modal de seleção de amigos
+  // Cria modal de seleção de amigos
   const modalHtml = `
     <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" id="share-modal">
       <div class="rounded-lg p-6 max-w-md w-full mx-4" style="background:var(--background)">
@@ -343,14 +337,11 @@ function shareAnime(event, animeTitle, coverImage) {
 
 function closeShareModal() {
   const modal = document.getElementById('share-modal');
-  if (modal) {
-    modal.remove();
-  }
+  if (modal) modal.remove();
 }
 
 function confirmShare(animeTitle, coverImage) {
-  const selectedFriends = Array.from(document.querySelectorAll('#share-modal input[type="checkbox"]:checked'))
-    .map(cb => cb.value);
+  const selectedFriends = Array.from(document.querySelectorAll('#share-modal input[type="checkbox"]:checked')).map(cb => cb.value);
 
   if (selectedFriends.length === 0) {
     alert('Selecione pelo menos um amigo para compartilhar!');
@@ -360,7 +351,7 @@ function confirmShare(animeTitle, coverImage) {
   const chat = new Chat();
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
   
-  // Criar mensagem especial para compartilhamento de anime
+  // Cria mensagem especial para compartilhamento de anime
   const message = {
     type: 'anime_share',
     animeTitle,
@@ -368,14 +359,12 @@ function confirmShare(animeTitle, coverImage) {
     message: `Olha só este anime que legal: ${animeTitle}`
   };
 
-  // Enviar para cada amigo selecionado
-  selectedFriends.forEach(friendId => {
-    chat.sendMessage(sessionData.userId, friendId, JSON.stringify(message));
-  });
+  // Envia para cada amigo selecionado
+  selectedFriends.forEach(friendId => { chat.sendMessage(sessionData.userId, friendId, JSON.stringify(message)); });
 
   closeShareModal();
 
-  // Mostrar notificação de sucesso
+  // Mostra notificação de sucesso
   const notification = document.createElement('div');
   notification.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
   notification.textContent = `Anime compartilhado com ${selectedFriends.length} amigo(s)!`;
@@ -493,7 +482,7 @@ function getActivityContent(activity) {
  * @param {string} userId - ID do usuário
  */
 function changeAvatar(avatar, userId) {
-  // Atualizar no localStorage
+  // Atualiza no localStorage
   const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
   const userIndex = users.findIndex(u => u.id === userId);
 
@@ -502,18 +491,16 @@ function changeAvatar(avatar, userId) {
     localStorage.setItem('animuUsers', JSON.stringify(users));
   }
 
-  // Atualizar na sessão atual
+  // Atualiza na sessão atual
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
   sessionData.avatar = avatar;
   localStorage.setItem('userSession', JSON.stringify(sessionData));
 
-  // Atualizar a imagem na interface
+  // Atualiza a imagem na interface
   document.getElementById('profile-avatar').src = avatar;
 }
 
-/**
- * Inicializa seletor de gêneros para edição do perfil
- */
+// Inicializa seletor de gêneros para edição do perfil
 function setupGenreSelection() {
   // Obtém todas as categorias do CategoryDisplay
   const categoryDisplay = new CategoryDisplay();
@@ -525,8 +512,8 @@ function setupGenreSelection() {
   const genreContainer = document.getElementById('edit-genres');
   genreContainer.innerHTML = genres.map(genre => `
     <label class="inline-flex items-center p-2.5 border border-gray-200 dark:border-gray-600 
-                rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/30 cursor-pointer
-                transition-colors duration-200">
+                  rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/30 cursor-pointer
+                  transition-colors duration-200">
       <input type="checkbox" name="genres" value="${genre}" 
              class="w-4 h-4 text-purple-600 dark:text-purple-400 
                     border-gray-300 dark:border-gray-600 
@@ -543,12 +530,12 @@ function setupGenreSelection() {
  */
 function setupEventListeners(user, isOwnProfile) {
   if (isOwnProfile) {
-    // Referências elementos UI
+    // Referências dos elementos UI
     const editButton = document.getElementById('edit-profile');
     const editModal = document.getElementById('edit-modal');
     const editForm = document.getElementById('edit-profile-form');
     const cancelButton = document.getElementById('cancel-edit');
-    const closeButton = document.getElementById('close-modal'); // Nova referência
+    const closeButton = document.getElementById('close-modal');
 
     // Botão de editar perfil
     editButton.addEventListener('click', () => {
@@ -562,9 +549,7 @@ function setupEventListeners(user, isOwnProfile) {
       // Configura e marca os gêneros favoritos
       setupGenreSelection();
       const checkboxes = document.querySelectorAll('input[name="genres"]');
-      checkboxes.forEach(checkbox => {
-        checkbox.checked = user.favoriteGenres?.includes(checkbox.value) || false;
-      });
+      checkboxes.forEach(checkbox => { checkbox.checked = user.favoriteGenres?.includes(checkbox.value) || false; });
     });
 
     // Botão de cancelar edição
@@ -579,7 +564,7 @@ function setupEventListeners(user, isOwnProfile) {
       editModal.classList.add('hidden');
     });
 
-    // Fechar modal ao clicar fora
+    // Fecha o modal ao clicar fora
     editModal.addEventListener('click', (e) => {
       if (e.target === editModal) {
         editModal.classList.remove('flex');
@@ -587,7 +572,7 @@ function setupEventListeners(user, isOwnProfile) {
       }
     });
 
-    // Fechar modal com tecla ESC
+    // Fecha o modal com tecla ESC
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !editModal.classList.contains('hidden')) {
         editModal.classList.remove('flex');
@@ -595,7 +580,7 @@ function setupEventListeners(user, isOwnProfile) {
       }
     });
 
-    // Adicionar manipulação de upload de avatar no modal
+    // Adiciona manipulação de upload de avatar no modal
     const avatarUploadBtn = document.getElementById('avatar-upload-btn');
     const avatarInput = document.getElementById('edit-avatar');
     const previewAvatar = document.getElementById('preview-avatar');
@@ -603,17 +588,13 @@ function setupEventListeners(user, isOwnProfile) {
     // Inicializar preview com avatar atual
     previewAvatar.src = user.avatar || "https://ui-avatars.com/api/?name=" + encodeURIComponent(user.username);
 
-    avatarUploadBtn.addEventListener('click', () => {
-      avatarInput.click();
-    });
+    avatarUploadBtn.addEventListener('click', () => { avatarInput.click(); });
 
     avatarInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = (event) => {
-          previewAvatar.src = event.target.result;
-        };
+        reader.onload = (event) => { previewAvatar.src = event.target.result; };
         reader.readAsDataURL(file);
       }
     });
@@ -624,8 +605,7 @@ function setupEventListeners(user, isOwnProfile) {
 
       const displayName = document.getElementById('edit-display-name').value;
       const email = document.getElementById('edit-email').value;
-      const selectedGenres = Array.from(document.querySelectorAll('input[name="genres"]:checked'))
-        .map(checkbox => checkbox.value);
+      const selectedGenres = Array.from(document.querySelectorAll('input[name="genres"]:checked')).map(checkbox => checkbox.value);
       const newAvatar = previewAvatar.src;
 
       // Atualiza dados do usuário
@@ -643,7 +623,7 @@ function setupEventListeners(user, isOwnProfile) {
 
         localStorage.setItem('animuUsers', JSON.stringify(users));
 
-        // Atualizar a sessão com o novo avatar
+        // Atualiza a sessão com o novo avatar
         const sessionData = JSON.parse(localStorage.getItem('userSession'));
         sessionData.avatar = newAvatar;
         localStorage.setItem('userSession', JSON.stringify(sessionData));
@@ -675,33 +655,27 @@ function setupEventListeners(user, isOwnProfile) {
       input.click();
     });
 
-    // Adicionar handler para o botão de logout
+    // Adiciona handler para o botão de logout
     const logoutButton = document.getElementById('logout-button');
     logoutButton?.addEventListener('click', () => {
       localStorage.removeItem('userSession');
       window.location.href = './signin.html';
     });
 
-    // Inicializar sistema de amizades
+    // Inicializa sistema de amizades
     initializeFriendSystem(user);
   }
 }
 
-/**
- * Sistema de Amizades
- */
-
+// Sistema de Amizades
 function initializeFriendSystem(currentUser) {
-  // Removemos a criação do botão via JavaScript
   loadFriends(currentUser);
   loadFriendRequests(currentUser);
   setupFriendSearchListener();
   
   // Adiciona o evento de click ao botão existente no HTML
   const addFriendBtn = document.getElementById('add-friend-btn');
-  if (addFriendBtn) {
-    addFriendBtn.addEventListener('click', showAddFriendModal);
-  }
+  if (addFriendBtn) addFriendBtn.addEventListener('click', showAddFriendModal);
 }
 
 function loadFriends(user) {
@@ -856,7 +830,7 @@ function setupFriendSearchListener() {
     const filteredUsers = users.filter(user => 
       user.id !== currentUser.userId &&
       (user.username.toLowerCase().includes(query) || 
-       (user.displayName && user.displayName.toLowerCase().includes(query)))
+      (user.displayName && user.displayName.toLowerCase().includes(query)))
     );
 
     // Verifica se o usuário já é amigo ou se já existe uma solicitação pendente
@@ -895,6 +869,7 @@ function setupFriendSearchListener() {
   });
 }
 
+// Envia pedido de amizade
 function sendFriendRequest(targetUserId) {
   const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
   const currentUser = JSON.parse(localStorage.getItem('userSession'));
@@ -907,10 +882,7 @@ function sendFriendRequest(targetUserId) {
   const currentUserData = users[currentUserIndex];
 
   // Verifica se já existe uma solicitação ou se já são amigos
-  if (targetUser.friendRequests?.includes(currentUser.userId) || 
-      targetUser.friends?.includes(currentUser.userId)) {
-    return;
-  }
+  if (targetUser.friendRequests?.includes(currentUser.userId) || targetUser.friends?.includes(currentUser.userId)) return;
 
   // Nova verificação: se o usuário atual tem uma solicitação pendente do usuário alvo
   if (currentUserData.friendRequests?.includes(targetUserId)) {
@@ -923,9 +895,7 @@ function sendFriendRequest(targetUserId) {
   }
 
   // Inicializa o array de solicitações se não existir
-  if (!users[targetUserIndex].friendRequests) {
-    users[targetUserIndex].friendRequests = [];
-  }
+  if (!users[targetUserIndex].friendRequests) users[targetUserIndex].friendRequests = [];
 
   // Adiciona a solicitação
   users[targetUserIndex].friendRequests.push(currentUser.userId);
@@ -945,11 +915,10 @@ function sendFriendRequest(targetUserId) {
   document.body.appendChild(notification);
 
   // Remove a notificação após 3 segundos
-  setTimeout(() => {
-    notification.remove();
-  }, 3000);
+  setTimeout(() => { notification.remove(); }, 3000);
 }
 
+// Aceita pedido de amizade
 function acceptFriendRequest(requesterId) {
   const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
   const currentUser = JSON.parse(localStorage.getItem('userSession'));
@@ -970,6 +939,7 @@ function acceptFriendRequest(requesterId) {
   window.location.reload();
 }
 
+// Rejeita pedido de amizade
 function rejectFriendRequest(requesterId) {
   const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
   const currentUser = JSON.parse(localStorage.getItem('userSession'));
@@ -983,6 +953,7 @@ function rejectFriendRequest(requesterId) {
   loadFriendRequests(users[currentUserIndex]);
 }
 
+// Remove amigo
 function removeFriend(friendId) {
   if (!confirm('Tem certeza que deseja remover este amigo?')) return;
 
@@ -1013,6 +984,7 @@ function debounce(func, wait) {
   };
 }
 
+// Abre chat com amigo
 function openChat(friendId) {
   const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
   const currentUser = JSON.parse(localStorage.getItem('userSession'));
@@ -1066,20 +1038,20 @@ function openChat(friendId) {
   loadChatMessages(currentUser.userId, friendId);
 }
 
+// Fecha o chat com amigo
 function closeChat(friendId) {
   const chatWindow = document.getElementById(`chat-${friendId}`);
-  if (chatWindow) {
-    chatWindow.remove();
-  }
+  if (chatWindow) chatWindow.remove();
 }
 
+// Carrega mensagens do chat
 function loadChatMessages(senderId, receiverId) {
   const chat = new Chat();
   const messages = chat.getMessages(senderId, receiverId);
   const container = document.getElementById(`chat-messages-${receiverId}`);
   const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
   
-  // Buscar dados dos usuários para os avatares
+  // Busca os dados dos usuários para os avatares
   const sender = users.find(u => u.id === senderId);
   const receiver = users.find(u => u.id === receiverId);
 
@@ -1092,9 +1064,8 @@ function loadChatMessages(senderId, receiverId) {
 
     const avatar = user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.username || 'User')}`;
 
-    let messageContent;
     try {
-      // Tenta parsear mensagem como JSON para verificar se é compartilhamento de anime
+      // Tenta passar mensagem como JSON para verificar se é compartilhamento de anime
       const parsedMessage = JSON.parse(msg.message);
       if (parsedMessage.type === 'anime_share') {
         return `
@@ -1125,7 +1096,7 @@ function loadChatMessages(senderId, receiverId) {
         `;
       }
     } catch (e) {
-      // Se não for JSON, é uma mensagem normal
+      console.error(e);
     }
 
     // Mensagem normal de texto
@@ -1154,6 +1125,7 @@ function loadChatMessages(senderId, receiverId) {
   container.scrollTop = container.scrollHeight;
 }
 
+// Envia mensagem para amigo
 function sendMessage(event, senderId, receiverId) {
   event.preventDefault();
   const input = event.target.querySelector('input');
