@@ -1,3 +1,4 @@
+// Classe para gerenciamento de categorias
 class CategoryManager {
   constructor() {
     // Adiciona variáveis para controlar o estado do formulário
@@ -199,8 +200,6 @@ class CategoryManager {
     showFormButton.addEventListener('click', () => {
       formContainer.innerHTML = this.generateForm();
       modal.classList.remove('hidden');
-      // Remove a linha que bloqueia o scroll do body
-      // document.body.style.overflow = 'hidden';
 
       // Inicializa todos os componentes do formulário
       this.initializeForm();
@@ -217,42 +216,30 @@ class CategoryManager {
 
       // Configura o botão cancelar
       const cancelButton = document.getElementById('btn-cancel');
-      if (cancelButton) {
-        cancelButton.addEventListener('click', () => this.closeModal());
-      }
+      if (cancelButton) cancelButton.addEventListener('click', () => this.closeModal());
     });
   }
 
   closeModal() {
     // Verifica se há mudanças não salvas
-    if (!this.isFormSaving && this.isFormDirty()) {
-      if (!confirm('Existem alterações não salvas. Deseja realmente sair?')) {
-        return;
-      }
-    }
+    if ((!this.isFormSaving && this.isFormDirty()) && !confirm('Existem alterações não salvas. Deseja realmente sair?')) return;
 
     const modal = document.getElementById('category-modal');
     const formContainer = document.getElementById('category-form-container');
     
     modal.classList.add('hidden');
     formContainer.innerHTML = '';
-    // Remove a linha que restaura o scroll do body
-    // document.body.style.overflow = ''; // Restaura a rolagem do body
   }
 
   initializeForm() {
     const form = document.getElementById('category-form');
-    if (form) {
-      form.addEventListener('submit', (e) => this.handleFormSubmit(e));
-    }
+    if (form) form.addEventListener('submit', (e) => this.handleFormSubmit(e));
   }
 
   setupPreviewUpdates() {
     ['category-name', 'category-icon', 'category-description', 'gradient-start', 'gradient-end'].forEach(id => {
       const element = document.getElementById(id);
-      if (element) {
-        element.addEventListener('input', () => this.updatePreview());
-      }
+      if (element) element.addEventListener('input', () => this.updatePreview());
     });
   }
 
@@ -286,9 +273,7 @@ class CategoryManager {
 
       // Fecha picker ao clicar fora
       document.addEventListener('click', (e) => {
-        if (!picker.contains(e.target) && !pickerBtn.contains(e.target)) {
-          picker.classList.add('hidden');
-        }
+        if (!picker.contains(e.target) && !pickerBtn.contains(e.target)) picker.classList.add('hidden');
       });
     }
   }
@@ -325,9 +310,7 @@ class CategoryManager {
             hexInput.style.color = this.getContrastColor(value);
             hexInput.classList.remove('error');
             this.updatePreview();
-          } else {
-            hexInput.classList.add('error');
-          }
+          } else hexInput.classList.add('error');
         });
 
         // Corrige valor ao perder foco
@@ -375,9 +358,7 @@ class CategoryManager {
     // Contador para descrição
     const descInput = document.getElementById('category-description');
     const descCount = document.getElementById('desc-count');
-    if (descInput && descCount) {
-      this.setupCounter(descInput, descCount, 100);
-    }
+    if (descInput && descCount) this.setupCounter(descInput, descCount, 100);
   }
 
   setupCounter(input, counter, max) {
@@ -514,9 +495,7 @@ class CategoryManager {
     if (categories.some(cat => 
       cat.id !== categoryData.id && 
       cat.name.toLowerCase() === categoryData.name.toLowerCase()
-    )) {
-      throw new Error('Já existe uma categoria com este nome');
-    }
+    )) throw new Error('Já existe uma categoria com este nome');
 
     // Atualiza a categoria
     const updatedCategories = categories.map(cat =>
@@ -639,11 +618,11 @@ class CategoryManager {
     // Adiciona evento ao botão cancelar
     const cancelButton = document.getElementById('btn-cancel');
     if (cancelButton) {
-        cancelButton.addEventListener('click', () => {
-            formContainer.innerHTML = '';
-            formContainer.classList.add('hidden');
-            showFormButton.classList.remove('hidden');
-        });
+      cancelButton.addEventListener('click', () => {
+          formContainer.innerHTML = '';
+          formContainer.classList.add('hidden');
+          showFormButton.classList.remove('hidden');
+      });
     }
 
     // Agora preenche o formulário com os dados da categoria
@@ -657,9 +636,7 @@ class CategoryManager {
     
     // Define o tipo de categoria
     const radioButtons = document.querySelectorAll('input[name="category-type"]');
-    for (const radio of radioButtons) {
-      radio.checked = (radio.value === 'sub') === category.isSubcategory;
-    }
+    for (const radio of radioButtons) radio.checked = (radio.value === 'sub') === category.isSubcategory;
 
     // Atualiza preview
     this.updatePreview();
@@ -681,9 +658,7 @@ class CategoryManager {
   }
 
   async deleteCategory(categoryId) {
-    if (!confirm('Tem certeza que deseja excluir esta categoria?')) {
-      return;
-    }
+    if (!confirm('Tem certeza que deseja excluir esta categoria?')) return;
 
     try {
       const categories = this.getCategories();
@@ -712,7 +687,7 @@ class CategoryManager {
     return true;
   }
 
-  // Adicione este novo método para limpar o formulário
+  // Limpa o formulário
   clearForm() {
     if (confirm('Tem certeza que deseja limpar todos os campos do formulário?')) {
       document.getElementById('category-form').reset();
@@ -734,19 +709,13 @@ class CategoryManager {
       'category-description': ''
     };
 
-    // Os campos de cor não são incluídos pois já vêm com valores padrão
-    // 'gradient-start': '#6366F1'
-    // 'gradient-end': '#8B5CF6'
-
     // Verifica cada campo obrigatório
     let filledFields = 0;
     const totalFields = Object.keys(requiredFields).length;
 
     Object.entries(requiredFields).forEach(([fieldId, defaultValue]) => {
       const field = document.getElementById(fieldId);
-      if (field && field.value.trim() !== defaultValue) {
-        filledFields++;
-      }
+      if (field && field.value.trim() !== defaultValue) filledFields++;
     });
 
     // Calcula o progresso
@@ -758,13 +727,9 @@ class CategoryManager {
       progressBar.style.width = `${progress}%`;
       
       // Atualiza a cor baseado no progresso
-      if (progress < 33) {
-        progressBar.style.background = 'var(--error-color, #EF4444)';
-      } else if (progress < 66) {
-        progressBar.style.background = 'var(--warning-color, #F59E0B)';
-      } else {
-        progressBar.style.background = 'var(--success-color, #10B981)';
-      }
+      if (progress < 33) progressBar.style.background = 'var(--error-color, #EF4444)';
+      else if (progress < 66) progressBar.style.background = 'var(--warning-color, #F59E0B)';
+      else progressBar.style.background = 'var(--success-color, #10B981)';
     }
   }
 
@@ -788,14 +753,10 @@ class CategoryManager {
     const modal = document.getElementById('category-modal');
     
     // Se o modal estiver fechado, não considera como modificado
-    if (modal.classList.contains('hidden')) {
-      return false;
-    }
+    if (modal.classList.contains('hidden')) return false;
 
     // Se não houver estado inicial, não considera como modificado
-    if (!this.initialFormState) {
-      return false;
-    }
+    if (!this.initialFormState) return false;
 
     // Compara o estado atual com o estado inicial
     const currentState = this.getFormState();
@@ -817,16 +778,12 @@ class CategoryManager {
 
     // Captura valores dos campos
     form.querySelectorAll('input, textarea, select').forEach(input => {
-      if (input.type !== 'color' && !input.classList.contains('hidden')) {
-        state.inputs[input.id] = input.value.trim();
-      }
+      if (input.type !== 'color' && !input.classList.contains('hidden')) state.inputs[input.id] = input.value.trim();
     });
 
     // Captura o tipo de categoria selecionado
     const categoryType = form.querySelector('input[name="category-type"]:checked');
-    if (categoryType) {
-      state.inputs.categoryType = categoryType.value;
-    }
+    if (categoryType) state.inputs.categoryType = categoryType.value;
 
     return JSON.stringify(state);
   }
@@ -836,7 +793,5 @@ class CategoryManager {
 document.addEventListener('DOMContentLoaded', () => {
   // Verifica se o usuário tem permissão de admin
   const manager = new CategoryManager();
-  if (manager.checkAdminAccess()) {
-    window.categoryManager = manager; // Torna acessível globalmente para os event handlers
-  }
+  if (manager.checkAdminAccess()) window.categoryManager = manager; // Torna acessível globalmente para os event handlers
 });

@@ -1164,7 +1164,6 @@ async function autoFillFromMal() {
   }
 }
 
-// Função de tradução de fonte
 function translateSource(source) {
   const sourceMap = {
     'Manga': 'Manga',
