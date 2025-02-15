@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
 
       const data = await response.json();
-      
+
       if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) throw new Error('Resposta inválida da API');
 
       const responseText = data.candidates[0].content.parts[0].text;

@@ -160,10 +160,10 @@ class Navbar {
 
     // Adiciona suporte a navegação por teclado
     this.setupKeyboardNav();
-    
+
     // Adiciona suporte a gestos touch
     this.setupTouchGestures();
-    
+
     // Adiciona observador de conexão
     this.setupConnectionObserver();
   }
@@ -408,7 +408,7 @@ class Navbar {
   setupTouchGestures() {
     let touchStartX = 0;
     let touchEndX = 0;
-    
+
     document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, false);
 
     document.addEventListener('touchend', (e) => {
@@ -419,9 +419,9 @@ class Navbar {
     this.handleSwipe = () => {
       const swipeDistance = touchEndX - touchStartX;
       const sideMenu = document.getElementById('side-menu');
-      
+
       if (Math.abs(swipeDistance) > 50) { // Mínimo de 50px
-        if (swipeDistance > 0)  sideMenu.classList.add('open'); // Swipe direita
+        if (swipeDistance > 0) sideMenu.classList.add('open'); // Swipe direita
         else sideMenu.classList.remove('open'); // Swipe esquerda
       }
     }
@@ -430,14 +430,14 @@ class Navbar {
   setupConnectionObserver() {
     // Monitora estado da conexão
     window.addEventListener('online', () => { this.updateConnectionStatus(true); });
-    
+
     window.addEventListener('offline', () => { this.updateConnectionStatus(false); });
   }
 
   // Atualiza o estado da conexão e estiliza links de acordo
   updateConnectionStatus(isOnline) {
     const navLinks = document.querySelectorAll('.nav-link');
-    
+
     navLinks.forEach(link => {
       if (!isOnline) {
         link.setAttribute('data-offline', 'true');
@@ -454,7 +454,7 @@ class Navbar {
   closeAllMenus() {
     // Fecha menu lateral
     document.getElementById('side-menu').classList.remove('open');
-    
+
     // Fecha dropdowns
     document.querySelectorAll('.user-dropdown, .theme-menu').forEach(menu => menu.classList.add('hidden'));
   }

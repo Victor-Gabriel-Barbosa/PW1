@@ -11,7 +11,6 @@ class Chat {
     let messageContent;
     try {
       // Verifica se é uma mensagem especial (objeto JSON)
-      const parsed = JSON.parse(message);
       messageContent = message;
     } catch (e) {
       // Mensagem normal de texto

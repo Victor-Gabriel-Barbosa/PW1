@@ -1,5 +1,5 @@
 // Redireciona para login se não houver sessão ativa
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   // Verifica se o usuário está logado
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
   if (!sessionData) {
@@ -56,22 +56,22 @@ function loadGenreBasedRecommendations(user) {
 
   // Calcula pontuação baseada em múltiplos fatores
   const recommendations = animes.map(anime => {
-      const genreScore = calculateGenreMatchScore(anime.genres, favoriteGenres);
-      const watchHistoryScore = calculateWatchHistoryScore(anime, user, comments);
-      const ratingScore = calculateRatingScore(anime, comments);
-      
-      const totalScore = (genreScore * 0.5) + (watchHistoryScore * 0.3) + (ratingScore * 0.2);
-      
-      return { 
-        ...anime, 
-        matchScore: totalScore,
-        matchDetails: {
-          genreScore,
-          watchHistoryScore,
-          ratingScore
-        }
-      };
-    })
+    const genreScore = calculateGenreMatchScore(anime.genres, favoriteGenres);
+    const watchHistoryScore = calculateWatchHistoryScore(anime, user, comments);
+    const ratingScore = calculateRatingScore(anime, comments);
+
+    const totalScore = (genreScore * 0.5) + (watchHistoryScore * 0.3) + (ratingScore * 0.2);
+
+    return {
+      ...anime,
+      matchScore: totalScore,
+      matchDetails: {
+        genreScore,
+        watchHistoryScore,
+        ratingScore
+      }
+    };
+  })
     .filter(anime => !watchedAnimes.includes(anime.primaryTitle))
     .sort((a, b) => b.matchScore - a.matchScore)
     .slice(0, 8);
@@ -83,7 +83,7 @@ function loadGenreBasedRecommendations(user) {
 function loadSimilarAnimeRecommendations(user) {
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
   const watchedAnimes = user.watchedAnimes || [];
-  
+
   // Encontra animes similares baseado nos já assistidos
   const recommendations = animes
     .filter(anime => !watchedAnimes.includes(anime.primaryTitle))
@@ -101,7 +101,7 @@ function loadSimilarAnimeRecommendations(user) {
 function loadTrendingRecommendations() {
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
   const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
-  
+
   if (animes.length === 0) {
     console.warn('Nenhum anime encontrado no localStorage');
     return;
@@ -121,9 +121,9 @@ function loadTrendingRecommendations() {
 // Calcula porcentagem de compatibilidade entre gêneros do anime e preferências do usuário
 function calculateGenreMatchScore(animeGenres, userGenres) {
   if (!userGenres?.length || !animeGenres?.length) return 50;
-  
+
   const matchingGenres = animeGenres.filter(genre => userGenres.includes(genre));
-  
+
   const matchScore = (matchingGenres.length / userGenres.length) * 100;
   return isNaN(matchScore) ? 50 : Math.min(matchScore, 100);
 }
@@ -150,7 +150,7 @@ function calculatePopularityScore(anime, comments) {
   const commentScore = animeComments.length * 10;
   const ratingScore = (anime.score || 0) * 10;
   const watchCount = animeComments.length * 5; // Adiciona peso para quantidade de visualizações
-  
+
   return commentScore + ratingScore + watchCount;
 }
 
@@ -163,11 +163,11 @@ function calculateWatchHistoryScore(anime, user, comments) {
   const userComments = Object.values(comments)
     .flat()
     .filter(c => c.username === user.username);
-  
+
   // Análise mais profunda do histórico
   user.watchedAnimes?.forEach(watchedTitle => {
     const watchedAnime = JSON.parse(localStorage.getItem('animeData')).find(a => a.primaryTitle === watchedTitle);
-    
+
     if (watchedAnime) {
       // Contagem ponderada de gêneros
       watchedAnime.genres?.forEach(genre => {
@@ -176,7 +176,7 @@ function calculateWatchHistoryScore(anime, user, comments) {
         const weight = userRating ? (userRating / 5) : 1;
         watchedGenres.set(genre, currentCount + weight);
       });
-      
+
       // Contagem ponderada de estúdios
       const studioCount = watchedStudios.get(watchedAnime.studio) || 0;
       watchedStudios.set(watchedAnime.studio, studioCount + 1);
@@ -184,13 +184,13 @@ function calculateWatchHistoryScore(anime, user, comments) {
   });
 
   let score = 0;
-  
+
   // Pontuação por gêneros frequentes
   anime.genres?.forEach(genre => {
     const genreCount = watchedGenres.get(genre) || 0;
     score += (genreCount / user.watchedAnimes.length) * 40;
   });
-  
+
   // Pontuação por estúdio favorito
   const studioCount = watchedStudios.get(anime.studio) || 0;
   score += (studioCount / user.watchedAnimes.length) * 30;
@@ -211,7 +211,7 @@ function calculateRecentActivityScore(user, animeGenres) {
   // Analisa comentários recentes
   recentComments.forEach(comment => {
     const commentedAnime = JSON.parse(localStorage.getItem('animeData')).find(a => a.primaryTitle === comment.animeTitle);
-    
+
     if (commentedAnime) {
       const matchingGenres = commentedAnime.genres.filter(genre => animeGenres.includes(genre));
       score += (matchingGenres.length / animeGenres.length) * 0.3;
@@ -221,7 +221,7 @@ function calculateRecentActivityScore(user, animeGenres) {
   // Analisa favoritos recentes
   recentFavorites.forEach(favorite => {
     const favoriteAnime = JSON.parse(localStorage.getItem('animeData')).find(a => a.primaryTitle === favorite);
-    
+
     if (favoriteAnime) {
       const matchingGenres = favoriteAnime.genres.filter(genre => animeGenres.includes(genre));
       score += (matchingGenres.length / animeGenres.length) * 0.4;
@@ -268,12 +268,12 @@ function getUserRatingForAnime(animeTitle, userComments) {
 function calculateRatingScore(anime, comments) {
   const animeComments = comments[anime.primaryTitle] || [];
   const ratings = animeComments.map(c => c.rating).filter(Boolean);
-  
+
   if (ratings.length === 0) return 50; // Score neutro para animes sem avaliações
 
   const avgRating = ratings.reduce((sum, rating) => sum + Number(rating), 0) / ratings.length;
   const normalizedScore = (avgRating / 5) * 100;
-  
+
   return isNaN(normalizedScore) ? 50 : Math.min(normalizedScore, 100);
 }
 
@@ -394,7 +394,7 @@ function setupFilters() {
 }
 
 // Atualiza recomendações quando o tema é alterado
-document.addEventListener('themeChanged', function() {
+document.addEventListener('themeChanged', function () {
   const user = getCurrentUser();
   if (user) {
     loadGenreBasedRecommendations(user);
@@ -417,7 +417,7 @@ function setupAutoRefresh() {
 setupAutoRefresh();
 
 // Captura erros globais da página
-window.addEventListener('error', function(e) {
+window.addEventListener('error', function (e) {
   console.error('Erro na página de recomendações:', e.error);
 });
 
@@ -426,11 +426,11 @@ function updateStats(user) {
   const watchedCount = user.watchedAnimes?.length || 0;
   const animes = JSON.parse(localStorage.getItem('animeData')) || [];
   const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
-  
+
   // Calcula precisão média das recomendações
   let totalMatchScore = 0;
   let matchCount = 0;
-  
+
   animes.forEach(anime => {
     if (user.favoriteGenres?.some(genre => anime.genres.includes(genre))) {
       totalMatchScore += calculateGenreMatchScore(anime.genres, user.favoriteGenres);
@@ -439,11 +439,11 @@ function updateStats(user) {
   });
 
   const averageMatch = matchCount > 0 ? Math.round(totalMatchScore / matchCount) : 0;
-  
+
   // Calcula média de avaliações
   let totalRating = 0;
   let ratingCount = 0;
-  
+
   Object.values(comments).flat().forEach(comment => {
     if (comment.rating) {
       totalRating += comment.rating;
@@ -461,7 +461,7 @@ function updateStats(user) {
   // Atualiza barras de gêneros favoritos
   const genres = user.favoriteGenres || [];
   const genrePreferences = document.querySelector('.insight-content');
-  
+
   if (genrePreferences && genres.length > 0) {
     const genreHTML = genres.slice(0, 3).map((genre, index) => {
       const percent = 100 - (index * 15); // Diminui 15% para cada posição
@@ -472,7 +472,7 @@ function updateStats(user) {
         </div>
       `;
     }).join('');
-    
+
     genrePreferences.innerHTML = `<div class="insight-stat">${genreHTML}</div>`;
   }
 }

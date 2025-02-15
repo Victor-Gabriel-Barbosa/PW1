@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupMediaRemoval();
   initializeCategorySelector();
   setupDateInput();
-  updateFormProgress(); 
+  updateFormProgress();
 
   // Adiciona alerta ao tentar sair da página
   window.addEventListener('beforeunload', function (e) {
@@ -82,14 +82,10 @@ function loadAnimesList() {
 // Retorna classe CSS baseada no status do anime
 function getStatusClass(status) {
   switch (status?.toLowerCase()) {
-    case 'em exibição':
-      return 'bg-green-100 text-green-800';
-    case 'finalizado':
-      return 'bg-blue-100 text-blue-800';
-    case 'anunciado':
-      return 'bg-yellow-100 text-yellow-800';
-    default:
-      return 'bg-gray-100 text-gray-800';
+    case 'em exibição': return 'bg-green-100 text-green-800';
+    case 'finalizado': return 'bg-blue-100 text-blue-800';
+    case 'anunciado': return 'bg-yellow-100 text-yellow-800';
+    default: return 'bg-gray-100 text-gray-800';
   }
 }
 
@@ -97,41 +93,41 @@ function getStatusClass(status) {
 function showAnimeForm() {
   const modalContent = document.querySelector('.admin-form-container');
   document.getElementById('animeModal').classList.remove('hidden');
-  
+
   // Reseta a posição de rolagem do formulário
   if (modalContent) modalContent.scrollTop = 0;
 
   if (!currentAnimeId) {
     document.getElementById('modalTitle').textContent = 'Adicionar Novo Anime';
     document.getElementById('animeForm').reset();
-    
+
     // Limpa arrays
     alternativeTitles = [];
     genres = [];
     producers = [];
     licensors = [];
-    
+
     // Limpa os previews e valores dos campos de imagem e trailer
     const coverPreview = document.getElementById('coverImagePreview');
     const coverPrompt = coverPreview.previousElementSibling;
     const removeCoverBtn = document.getElementById('removeCoverImage');
-    
+
     coverPreview.src = '';
     coverPreview.classList.add('hidden');
     coverPrompt.classList.remove('hidden');
-    removeCoverBtn.classList.add('hidden'); 
+    removeCoverBtn.classList.add('hidden');
     document.getElementById('coverImage').value = '';
-    
+
     const trailerPreview = document.getElementById('trailerPreview');
     const trailerPrompt = trailerPreview.previousElementSibling;
     const removeTrailerBtn = document.getElementById('removeTrailer');
-    
+
     trailerPreview.innerHTML = '';
     trailerPreview.classList.add('hidden');
     trailerPrompt.classList.remove('hidden');
     removeTrailerBtn.classList.add('hidden');
     document.getElementById('trailerUrl').value = '';
-    
+
     // Atualiza todas as listas
     updateAlternativeTitlesList();
     updateGenresList();
@@ -146,14 +142,14 @@ function showAnimeForm() {
 // Fecha formulário
 function closeAnimeForm() {
   const form = document.getElementById('animeForm');
-  
+
   // Não mostra o alerta se estiver salvando
   if ((!isFormSaving && isFormDirty(form)) && !confirm('Existem alterações não salvas. Deseja realmente sair?')) return;
 
   // Reseta a posição do scroll do formulário
   const modalContent = document.querySelector('.modal-content-scroll');
   if (modalContent) modalContent.scrollTop = 0;
-  
+
   document.getElementById('animeModal').classList.add('hidden');
   currentAnimeId = null;
   isFormSaving = false; // Reseta a flag
@@ -234,12 +230,12 @@ function initializeCategorySelector() {
   const categoryDisplay = new CategoryDisplay();
   const categories = categoryDisplay.getCategories();
   const genreInput = document.getElementById('genreInput');
-  
+
   // Transforma o input em um select
   const select = document.createElement('select');
   select.id = 'genreInput';
   select.className = 'flex-1 p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white';
-  
+
   // Adiciona opção padrão
   select.innerHTML = `
     <option value="">Selecione uma categoria...</option>
@@ -249,13 +245,13 @@ function initializeCategorySelector() {
       </option>
     `).join('')}
   `;
-  
+
   // Substitui o input pelo select
   genreInput.parentNode.replaceChild(select, genreInput);
 }
 
 // Adiciona produtor ao array
-function addProducer() { 
+function addProducer() {
   const input = document.getElementById('producerInput');
   const producer = input.value.trim();
 
@@ -288,7 +284,7 @@ function removeProducer(index) {
 }
 
 // Adiciona licenciante ao array
-function addLicensor() { 
+function addLicensor() {
   const input = document.getElementById('licensorInput');
   const licensor = input.value.trim();
 
@@ -300,7 +296,7 @@ function addLicensor() {
 }
 
 // Atualiza lista visual de licenciador
-function updateLicensorsList() { 
+function updateLicensorsList() {
   const container = document.getElementById('licensorsList');
   container.innerHTML = licensors.map((licensor, index) => `
     <div class="tag">
@@ -340,11 +336,11 @@ function editAnime(index) {
       document.getElementById('status').value = anime.status || 'Em Exibição';
       document.getElementById('ageRating').value = anime.ageRating || 'Livre';
       document.getElementById('seasonPeriod').value = anime.season?.period || 'inverno';
-      
+
       // Formata a data para o formato yyyy-MM-dd
       const releaseDate = anime.releaseDate ? new Date(anime.releaseDate).toISOString().split('T')[0] : '';
       document.getElementById('releaseDate').value = releaseDate;
-      
+
       document.getElementById('studio').value = anime.studio || '';
       document.getElementById('source').value = anime.source || '';
       document.getElementById('trailerUrl').value = anime.trailerUrl || '';
@@ -547,7 +543,6 @@ function importAnimes(event) {
  * @param {string} urlInputId - ID do input que armazenará a URL
  * @param {string} previewId - ID do elemento que mostrará a prévia
  * @param {Function} dropHandler - Função que manipula o arquivo/URL quando solto na zona
- *                                Recebe (file|text, urlInput, previewElement) como parâmetros
  */
 function setupDropZone(dropzoneId, inputId, urlInputId, previewId, dropHandler) {
   const dropZone = document.getElementById(dropzoneId);
@@ -634,7 +629,7 @@ function setupDropZone(dropzoneId, inputId, urlInputId, previewId, dropHandler) 
  * @returns {Promise<void>}
  * @throws {Error} Lança erro se houver falha no processamento da imagem
  */
-async function handleImageDrop(file, urlInput, previewElement) { 
+async function handleImageDrop(file, urlInput, previewElement) {
   if (!file.type?.startsWith('image/')) {
     alert('Por favor, selecione apenas arquivos de imagem.');
     return;
@@ -645,7 +640,7 @@ async function handleImageDrop(file, urlInput, previewElement) {
     reader.onloadend = async () => {
       // Comprime imagem antes de salvar
       const compressedImage = await compressImage(reader.result);
-      
+
       previewElement.src = compressedImage;
       previewElement.classList.remove('hidden');
       previewElement.previousElementSibling.classList.add('hidden');
@@ -676,9 +671,7 @@ function handleVideoDrop(file, urlInput, previewElement) {
 
   // Se for uma URL
   let url = typeof file === 'string' ? file : '';
-  if (url) {
-    handleYoutubeUrl(url, urlInput, previewElement);
-  }
+  if (url) handleYoutubeUrl(url, urlInput, previewElement);
 }
 
 /**
@@ -741,15 +734,10 @@ function handleYoutubeUrl(url, urlInput, previewElement) {
   } else alert('URL do YouTube inválida. Por favor, verifique a URL e tente novamente.');
 }
 
-/**
- * Extrai o ID de um vídeo do YouTube a partir de uma URL
- * 
- * @param {string} url - A URL do YouTube ou ID do vídeo para extrair
- * @returns {string|null} O ID do vídeo do YouTube se encontrado, ou null se não for possível extrair
- */
+// Extrai o ID de um vídeo do YouTube a partir de uma URL
 function extractYouTubeId(url) {
   if (!url) return null;
-  
+
   const patterns = [
     /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i,
     /^[a-zA-Z0-9_-]{11}$/ // ID direto do YouTube
@@ -763,7 +751,7 @@ function extractYouTubeId(url) {
   return null;
 }
 
-document.getElementById('trailerUrl').addEventListener('input', function(e) {
+document.getElementById('trailerUrl').addEventListener('input', function (e) {
   const url = e.target.value.trim();
   if (url) handleYoutubeUrl(url, e.target, document.getElementById('trailerPreview'));
 });
@@ -790,17 +778,17 @@ function setupMediaRemoval() {
     const trailerPreview = document.getElementById('trailerPreview');
     const trailerDropzone = document.getElementById('trailerDropzone');
     const trailerContent = trailerDropzone.querySelector('.drop-zone-content');
-    
+
     // Limpa o preview e esconde
     trailerPreview.innerHTML = '';
     trailerPreview.classList.add('hidden');
-    
+
     // Mostra o conteúdo original
     trailerContent.classList.remove('hidden');
-    
+
     // Esconde o botão de remover
     removeTrailerBtn.classList.add('hidden');
-    
+
     // Limpa os campos de input
     document.getElementById('trailerUrl').value = '';
     document.getElementById('trailerInput').value = '';
@@ -808,12 +796,13 @@ function setupMediaRemoval() {
   });
 }
 
+// Atualiza os previews da capa e trailer do anime no formulário
 function updateMediaPreviews(anime) {
   // Preview da imagem de capa
   const coverPreview = document.getElementById('coverImagePreview');
   const coverPrompt = coverPreview.previousElementSibling;
   const removeCoverBtn = document.getElementById('removeCoverImage');
-  
+
   if (anime.coverImage && anime.coverImage.trim()) {
     coverPreview.src = anime.coverImage;
     coverPreview.classList.remove('hidden');
@@ -830,18 +819,17 @@ function updateMediaPreviews(anime) {
   const trailerPreview = document.getElementById('trailerPreview');
   const trailerPrompt = trailerPreview.previousElementSibling;
   const removeTrailerBtn = document.getElementById('removeTrailer');
-  
+
   if (anime.trailerUrl && anime.trailerUrl.trim()) {
     let trailerContent = '';
-    if (anime.trailerUrl.includes('data:video')) {
-      trailerContent = `<video controls class="max-h-48 mx-auto"><source src="${anime.trailerUrl}"></video>`;
-    } else {
+    if (anime.trailerUrl.includes('data:video')) trailerContent = `<video controls class="max-h-48 mx-auto"><source src="${anime.trailerUrl}"></video>`;
+    else {
       const videoId = extractYouTubeId(anime.trailerUrl);
       if (videoId) {
         trailerContent = `<iframe width="280" height="157" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
       }
     }
-    
+
     if (trailerContent) {
       trailerPreview.innerHTML = trailerContent;
       trailerPreview.classList.remove('hidden');
@@ -880,7 +868,7 @@ async function compressImage(imageDataUrl, maxWidth = 800, quality = 0.8) {
 
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, width, height);
-      
+
       resolve(canvas.toDataURL('image/jpeg', quality));
     };
     img.src = imageDataUrl;
@@ -906,12 +894,13 @@ function checkStorageQuota(data) {
   }
 }
 
-// Adicionar ao início do arquivo ou após o DOMContentLoaded
+
+// Configura o campo de entrada de data com a data atual como máxima e padrão
 function setupDateInput() {
   const dateInput = document.getElementById('releaseDate');
   const today = new Date().toISOString().split('T')[0];
   dateInput.max = today; // Impede seleção de datas futuras
-  
+
   // Define a data padrão para hoje se não houver data selecionada
   if (!dateInput.value) dateInput.value = today;
 }
@@ -920,34 +909,34 @@ function setupDateInput() {
 function clearAnimeForm() {
   if (confirm('Tem certeza que deseja limpar todos os campos do formulário?')) {
     document.getElementById('animeForm').reset();
-    
-    // Limpar arrays
+
+    // Limpa arrays
     alternativeTitles = [];
     genres = [];
     producers = [];
     licensors = [];
-    
+
     // Limpa previews e valores dos campos de imagem e trailer
     const coverPreview = document.getElementById('coverImagePreview');
     const coverPrompt = coverPreview.previousElementSibling;
     const removeCoverBtn = document.getElementById('removeCoverImage');
-    
+
     coverPreview.src = '';
     coverPreview.classList.add('hidden');
     coverPrompt.classList.remove('hidden');
     removeCoverBtn.classList.add('hidden');
     document.getElementById('coverImage').value = '';
-    
+
     const trailerPreview = document.getElementById('trailerPreview');
     const trailerPrompt = trailerPreview.previousElementSibling;
     const removeTrailerBtn = document.getElementById('removeTrailer');
-    
+
     trailerPreview.innerHTML = '';
     trailerPreview.classList.add('hidden');
     trailerPrompt.classList.remove('hidden');
     removeTrailerBtn.classList.add('hidden');
     document.getElementById('trailerUrl').value = '';
-    
+
     // Atualiza todas as listas
     updateAlternativeTitlesList();
     updateGenresList();
@@ -965,9 +954,7 @@ function updateFormProgress() {
   let filledFields = 0;
 
   // Verifica campos obrigatórios
-  requiredFields.forEach(field => {
-    if (field.value.trim() !== '') filledFields++;
-  });
+  requiredFields.forEach(field => { if (field.value.trim() !== '') filledFields++; });
 
   // Verifica se há pelo menos um gênero
   if (genres.length > 0) filledFields++;
@@ -977,10 +964,10 @@ function updateFormProgress() {
 
   const progress = (filledFields / totalFields) * 100;
   const progressBar = document.getElementById('formProgress');
-  
+
   // Atualiza a largura da barra
   progressBar.style.width = `${progress}%`;
-  
+
   // Atualiza a cor baseado no progresso
   if (progress < 33) progressBar.style.background = 'var(--error-color, #EF4444)';
   else if (progress < 66) progressBar.style.background = 'var(--warning-color, #F59E0B)';
@@ -988,9 +975,9 @@ function updateFormProgress() {
 }
 
 // Adiciona listeners para todos os eventos que podem modificar o formulário
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('animeForm');
-  
+
   // Monitora mudanças em inputs, textareas e selects
   form.querySelectorAll('input, textarea, select').forEach(element => {
     element.addEventListener('input', updateFormProgress);
@@ -1000,9 +987,9 @@ document.addEventListener('DOMContentLoaded', function() {
   // Monitora mudanças nos arrays de dados
   const originalPush = Array.prototype.push;
   const arrays = [alternativeTitles, genres, producers, licensors];
-  
+
   arrays.forEach(array => {
-    array.push = function(...args) {
+    array.push = function (...args) {
       originalPush.apply(this, args);
       updateFormProgress();
     };
@@ -1012,9 +999,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const removeButtons = ['removeCoverImage', 'removeTrailer'];
   removeButtons.forEach(btnId => {
     const btn = document.getElementById(btnId);
-    if (btn) {
-      btn.addEventListener('click', updateFormProgress);
-    }
+    if (btn) btn.addEventListener('click', updateFormProgress);
   });
 
   // Atualização inicial
@@ -1055,7 +1040,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   inputs.forEach(input => {
     input.addEventListener('input', updateFormProgress);
-    
+
     // Adiciona validação visual
     input.addEventListener('blur', () => {
       if (input.hasAttribute('required')) {
@@ -1076,26 +1061,24 @@ document.addEventListener('DOMContentLoaded', () => {
 // Configuração de drag and drop para arquivos
 function enableDragAndDrop(dropzoneId, inputId, acceptedTypes) {
   const dropzone = document.getElementById(dropzoneId);
-  
+
   dropzone.addEventListener('dragover', (e) => {
     e.preventDefault();
     dropzone.classList.add('dragover');
   });
 
-  dropzone.addEventListener('dragleave', () => {
-    dropzone.classList.remove('dragover');
-  });
+  dropzone.addEventListener('dragleave', () => { dropzone.classList.remove('dragover'); });
 
   dropzone.addEventListener('drop', (e) => {
     e.preventDefault();
     dropzone.classList.remove('dragover');
-    
+
     const file = e.dataTransfer.files[0];
     if (file && file.type.match(acceptedTypes)) handleFileUpload(file, inputId);
   });
 }
 
-// Função auxiliar para lidar com upload de arquivos
+// Processa o upload de arquivos e atualiza a visualização
 function handleFileUpload(file, inputId) {
   console.log(`Upload do arquivo ${file.name} para o campo ${inputId}`);
   const reader = new FileReader();
@@ -1106,6 +1089,7 @@ function handleFileUpload(file, inputId) {
   reader.readAsDataURL(file);
 }
 
+// Atualiza a prévia da imagem de capa do anime
 function updateCoverImagePreview() {
   const coverImage = document.getElementById('coverImage').value;
   const coverPreview = document.getElementById('coverImagePreview');
@@ -1125,11 +1109,12 @@ function updateCoverImagePreview() {
   }
 }
 
-// Modifica a função autoFillFromMal para usar async/await corretamente
+
+// Preenche automaticamente os dados do anime a partir da URL do MyAnimeList
 async function autoFillFromMal() {
   const malUrl = document.getElementById('malUrl').value;
   const animeId = malUrl.match(/anime\/(\d+)/)?.[1];
-  
+
   if (!animeId) {
     alert('URL do MyAnimeList inválida');
     return;
@@ -1155,16 +1140,12 @@ async function autoFillFromMal() {
 
     // Preenche produtores
     producers = [];
-    anime.producers.forEach(producer => {
-      if (producer.name) producers.push(producer.name);
-    });
+    anime.producers.forEach(producer => { if (producer.name) producers.push(producer.name); });
     updateProducersList();
 
     // Preenche licenciadores
     licensors = [];
-    anime.licensors.forEach(licensor => {
-      if (licensor.name) licensors.push(licensor.name);
-    });
+    anime.licensors.forEach(licensor => { if (licensor.name) licensors.push(licensor.name); });
     updateLicensorsList();
 
     // Preenche o trailer se disponível
@@ -1207,6 +1188,7 @@ async function autoFillFromMal() {
   }
 }
 
+// Converte o tipo de fonte do anime para um formato padronizado
 function translateSource(source) {
   const sourceMap = {
     'Manga': 'Manga',
@@ -1226,6 +1208,7 @@ function translateSource(source) {
   return sourceMap[source] || 'Outro';
 }
 
+// Converte o rating internacional para o formato brasileiro de classificação indicativa
 function translateRating(rating) {
   const ratingMap = {
     'G - All Ages': 'Livre',
@@ -1238,6 +1221,7 @@ function translateRating(rating) {
   return ratingMap[rating] || 'Livre';
 }
 
+// Traduz a estação do ano do inglês para português
 function translateSeason(season) {
   const seasonMap = {
     'winter': 'inverno',
@@ -1249,10 +1233,10 @@ function translateSeason(season) {
 }
 
 // Adiciona um evento de entrada direta para o campo malUrl
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   const malUrlInput = document.getElementById('malUrl');
   if (malUrlInput) {
-    malUrlInput.addEventListener('input', function(e) {
+    malUrlInput.addEventListener('input', function (e) {
       const url = e.target.value.trim();
       if (url && !url.startsWith('https://myanimelist.net/anime/')) {
         // Tenta extrair e formatar a URL do MAL
@@ -1267,7 +1251,7 @@ document.addEventListener('DOMContentLoaded', function() {
 async function translateSynopsis() {
   const synopsisElement = document.getElementById('synopsis');
   const text = synopsisElement.value.trim();
-  
+
   if (!text) {
     alert('Por favor, insira um texto para traduzir.');
     return;
@@ -1288,7 +1272,7 @@ async function translateSynopsis() {
       const translatedChunk = await translateText(chunk, 'pt');
       translatedText += translatedChunk + ' ';
       // Atualiza o progresso na interface
-      synopsisElement.value = 'Traduzindo... ' + 
+      synopsisElement.value = 'Traduzindo... ' +
         Math.round((chunks.indexOf(chunk) + 1) / chunks.length * 100) + '%';
     }
 
@@ -1323,7 +1307,12 @@ async function translateSynopsis() {
   }
 }
 
-// Função auxiliar para dividir texto em partes menores
+/**
+ * Divide um texto em partes menores, mantendo sentenças completas.
+ * @param {string} text - O texto a ser dividido
+ * @param {number} maxLength - Tamanho máximo de cada parte
+ * @returns {string[]} Array com as partes do texto dividido
+ */
 function splitTextIntoChunks(text, maxLength) {
   const chunks = [];
   const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
@@ -1341,12 +1330,19 @@ function splitTextIntoChunks(text, maxLength) {
   return chunks;
 }
 
-// Função que faz a chamada à API de tradução
+
+/**
+ * Traduz um texto do inglês para o idioma de destino usando a API MyMemory.
+ * @param {string} text - O texto em inglês para ser traduzido
+ * @param {string} targetLang - O código do idioma de destino (ex: 'pt', 'es', 'fr')
+ * @returns {Promise<string>} O texto traduzido
+ * @throws {Error} Se houver erro na tradução
+ */
 async function translateText(text, targetLang) {
   try {
     const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang}`);
     const data = await response.json();
-    
+
     if (data.responseStatus === 200 && data.responseData.translatedText) {
       // Adiciona um pequeno atraso para evitar sobrecarga da API
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -1358,28 +1354,28 @@ async function translateText(text, targetLang) {
   }
 }
 
-// Função auxiliar para detectar o idioma do texto
+// Detecta o idioma do texto
 function detectLanguage(text) {
   // Lista de palavras comuns em japonês (caracteres específicos)
   const japanesePattern = /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/;
-  
+
   // Lista de palavras comuns em português
   const portugueseWords = /\b(e|ou|mas|porque|que|quando|onde|como|se|para|com|em|no|na|os|as|um|uma)\b/i;
-  
+
   if (japanesePattern.test(text)) return 'ja';
   if (portugueseWords.test(text)) return 'pt';
-  return 'en'; // assume inglês como padrão
+  return 'en'; // Assume inglês como padrão
 }
 
 // Atualiza a visualização de acordo com o tipo de mídia
 function updatePreview(inputId) {
   const input = document.getElementById(inputId);
-  const preview = input.id === 'coverImage' ? 
-    document.getElementById('coverImagePreview') : 
+  const preview = input.id === 'coverImage' ?
+    document.getElementById('coverImagePreview') :
     document.getElementById('trailerPreview');
   const prompt = preview.previousElementSibling;
-  const removeBtn = input.id === 'coverImage' ? 
-    document.getElementById('removeCoverImage') : 
+  const removeBtn = input.id === 'coverImage' ?
+    document.getElementById('removeCoverImage') :
     document.getElementById('removeTrailer');
 
   if (!input.value) {
@@ -1447,7 +1443,8 @@ function getFormState() {
   };
 
   // Captura valores dos campos
-  form.querySelectorAll('input, textarea, select').forEach(input => {if (input.type !== 'file' && !input.classList.contains('hidden')) state.inputs[input.id] = input.value.trim();
+  form.querySelectorAll('input, textarea, select').forEach(input => {
+    if (input.type !== 'file' && !input.classList.contains('hidden')) state.inputs[input.id] = input.value.trim();
   });
 
   return JSON.stringify(state);

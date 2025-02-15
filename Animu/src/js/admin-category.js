@@ -9,14 +9,10 @@ class CategoryManager {
     this.loadCategories();
 
     // Adiciona o event listener para atualização de categorias
-    window.addEventListener('categoriesUpdated', () => {
-      this.loadCategories();
-    });
+    window.addEventListener('categoriesUpdated', () => { this.loadCategories(); });
 
     // Adiciona event listener para fechar o modal com Esc
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') this.closeModal();
-    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') this.closeModal(); });
 
     // Fecha o modal ao clicar fora dele
     document.getElementById('category-modal').addEventListener('click', (e) => {
@@ -207,12 +203,10 @@ class CategoryManager {
       this.setupEmojiPicker();
       this.setupColorInputs();
       this.setupCharacterCounters();
-      this.setupProgressTracking(); // Adiciona esta linha
+      this.setupProgressTracking();
 
       // Captura o estado inicial do formulário após o preenchimento
-      setTimeout(() => {
-        this.initialFormState = this.getFormState();
-      }, 100);
+      setTimeout(() => { this.initialFormState = this.getFormState(); }, 100);
 
       // Configura o botão cancelar
       const cancelButton = document.getElementById('btn-cancel');
@@ -226,7 +220,7 @@ class CategoryManager {
 
     const modal = document.getElementById('category-modal');
     const formContainer = document.getElementById('category-form-container');
-    
+
     modal.classList.add('hidden');
     formContainer.innerHTML = '';
   }
@@ -243,6 +237,7 @@ class CategoryManager {
     });
   }
 
+  // Preenche o picker com emojis comuns e gerencia eventos de clique.
   setupEmojiPicker() {
     const commonEmojis = ['⚔️', '🎭', '😄', '🔮', '🤖', '💝', '👻', '🎮', '🌟', '🎬', '🎨', '🎵', '👊', '🏃', '💫', '🌍'];
     const picker = document.getElementById('emoji-picker');
@@ -258,9 +253,7 @@ class CategoryManager {
       `).join('');
 
       // Toggle do picker
-      pickerBtn.addEventListener('click', () => {
-        picker.classList.toggle('hidden');
-      });
+      pickerBtn.addEventListener('click', () => { picker.classList.toggle('hidden'); });
 
       // Seleciona emoji
       picker.addEventListener('click', (e) => {
@@ -272,9 +265,7 @@ class CategoryManager {
       });
 
       // Fecha picker ao clicar fora
-      document.addEventListener('click', (e) => {
-        if (!picker.contains(e.target) && !pickerBtn.contains(e.target)) picker.classList.add('hidden');
-      });
+      document.addEventListener('click', (e) => { if (!picker.contains(e.target) && !pickerBtn.contains(e.target)) picker.classList.add('hidden'); });
     }
   }
 
@@ -296,7 +287,7 @@ class CategoryManager {
         // Atualiza color quando hex muda
         hexInput.addEventListener('input', (e) => {
           let value = e.target.value;
-          
+
           // Adiciona # se não existir
           if (value[0] !== '#') {
             value = '#' + value;
@@ -331,18 +322,19 @@ class CategoryManager {
     });
   }
 
+  // Calcula a cor contrastante (preto ou branco) para uma cor hexadecimal fornecida
   getContrastColor(hexcolor) {
     // Remove o # se existir
     hexcolor = hexcolor.replace('#', '');
-    
+
     // Converte para RGB
-    const r = parseInt(hexcolor.substr(0,2), 16);
-    const g = parseInt(hexcolor.substr(2,2), 16);
-    const b = parseInt(hexcolor.substr(4,2), 16);
-    
+    const r = parseInt(hexcolor.substr(0, 2), 16);
+    const g = parseInt(hexcolor.substr(2, 2), 16);
+    const b = parseInt(hexcolor.substr(4, 2), 16);
+
     // Calcula a luminância relativa
     const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    
+
     // Retorna branco para cores escuras e preto para cores claras
     return luminance > 0.5 ? '#000000' : '#FFFFFF';
   }
@@ -382,7 +374,7 @@ class CategoryManager {
 
     // Atualiza preview modo claro
     this.updatePreviewElement('light', { name, icon, description, gradientStart, gradientEnd, isSubcategory });
-    
+
     // Atualiza preview modo escuro
     this.updatePreviewElement('dark', { name, icon, description, gradientStart, gradientEnd, isSubcategory });
   }
@@ -395,7 +387,7 @@ class CategoryManager {
     preview.querySelector('.category-icon').textContent = icon;
     preview.querySelector('h3').textContent = name;
     preview.querySelector('p').textContent = description;
-    
+
     // Ajusta estilo baseado no tipo
     if (isSubcategory) {
       preview.classList.add('subcategory-preview');
@@ -408,6 +400,7 @@ class CategoryManager {
     }
   }
 
+  // Gerencia o envio do formulário de categoria, validando os dados e salvando/atualizando no sistema
   async handleFormSubmit(e) {
     e.preventDefault();
     this.isFormSaving = true; // Define a flag antes de salvar
@@ -452,9 +445,10 @@ class CategoryManager {
     }
   }
 
+  // Salva uma nova categoria no localStorage e atualiza a interface
   async saveCategory(categoryData) {
     const categories = this.getCategories();
-    
+
     // Adiciona campo isSubcategory e normaliza os dados
     const newCategory = {
       ...categoryData,
@@ -466,9 +460,7 @@ class CategoryManager {
     };
 
     // Verifica se já existe uma categoria com o mesmo nome
-    if (categories.some(cat => cat.name.toLowerCase() === newCategory.name.toLowerCase())) {
-      throw new Error('Já existe uma categoria com este nome');
-    }
+    if (categories.some(cat => cat.name.toLowerCase() === newCategory.name.toLowerCase())) throw new Error('Já existe uma categoria com este nome');
 
     // Se não existirem categorias ainda, cria um array
     const updatedCategories = categories.length ? categories : [];
@@ -477,10 +469,10 @@ class CategoryManager {
     // Salva no localStorage
     try {
       localStorage.setItem('animuCategories', JSON.stringify(updatedCategories));
-      
+
       // Atualiza a lista de categorias na página
       this.loadCategories();
-      
+
       // Força a atualização da página de categorias se ela estiver aberta em outra aba
       window.dispatchEvent(new Event('categoriesUpdated'));
     } catch (error) {
@@ -488,12 +480,13 @@ class CategoryManager {
     }
   }
 
+  // Atualiza uma categoria existente na lista de categoria
   async updateCategory(categoryData) {
     const categories = this.getCategories();
-    
+
     // Verifica se existe outra categoria com o mesmo nome (exceto a própria)
-    if (categories.some(cat => 
-      cat.id !== categoryData.id && 
+    if (categories.some(cat =>
+      cat.id !== categoryData.id &&
       cat.name.toLowerCase() === categoryData.name.toLowerCase()
     )) throw new Error('Já existe uma categoria com este nome');
 
@@ -554,9 +547,9 @@ class CategoryManager {
                     </div>
                   </td>
                   <td>
-                    ${category.isSubcategory ? 
-                      '<span class="px-2 py-1 text-xs text-white bg-purple-100 dark:bg-purple-900 rounded-full">Subcategoria</span>' : 
-                      '<span class="px-2 py-1 text-xs text-white bg-blue-100 dark:bg-blue-900 rounded-full">Principal</span>'}
+                    ${category.isSubcategory ?
+          '<span class="px-2 py-1 text-xs text-white bg-purple-100 dark:bg-purple-900 rounded-full">Subcategoria</span>' :
+          '<span class="px-2 py-1 text-xs text-white bg-blue-100 dark:bg-blue-900 rounded-full">Principal</span>'}
                   </td>
                   <td>
                     ${category.description}
@@ -588,10 +581,11 @@ class CategoryManager {
     }
   }
 
+  // Abre um modal e preenche um formulário para editar uma categoria existente
   async editCategory(categoryId) {
     const categories = this.getCategories();
     const category = categories.find(cat => cat.id === categoryId);
-    
+
     if (!category) return;
 
     // Mostra o modal
@@ -602,7 +596,7 @@ class CategoryManager {
     // Primeiro, gera o formulário
     const formContainer = document.getElementById('category-form-container');
     const showFormButton = document.getElementById('btn-show-form');
-    
+
     // Primeiro, gera o formulário
     formContainer.innerHTML = this.generateForm();
     formContainer.classList.remove('hidden');
@@ -619,9 +613,9 @@ class CategoryManager {
     const cancelButton = document.getElementById('btn-cancel');
     if (cancelButton) {
       cancelButton.addEventListener('click', () => {
-          formContainer.innerHTML = '';
-          formContainer.classList.add('hidden');
-          showFormButton.classList.remove('hidden');
+        formContainer.innerHTML = '';
+        formContainer.classList.add('hidden');
+        showFormButton.classList.remove('hidden');
       });
     }
 
@@ -633,7 +627,7 @@ class CategoryManager {
     document.getElementById('gradient-end').value = category.gradient.end;
     document.getElementById('gradient-start-hex').value = category.gradient.start;
     document.getElementById('gradient-end-hex').value = category.gradient.end;
-    
+
     // Define o tipo de categoria
     const radioButtons = document.querySelectorAll('input[name="category-type"]');
     for (const radio of radioButtons) radio.checked = (radio.value === 'sub') === category.isSubcategory;
@@ -654,9 +648,10 @@ class CategoryManager {
     formContainer.scrollIntoView({ behavior: 'smooth' });
 
     // Após preencher o formulário com os dados da categoria
-    this.updateFormProgress(); // Adiciona esta linha para atualizar o progresso inicial
+    this.updateFormProgress();
   }
 
+  // Exclui uma categoria do sistema após confirmação do usuário
   async deleteCategory(categoryId) {
     if (!confirm('Tem certeza que deseja excluir esta categoria?')) return;
 
@@ -694,14 +689,14 @@ class CategoryManager {
       this.updatePreview();
       document.getElementById('name-count').textContent = '0';
       document.getElementById('desc-count').textContent = '0';
-      this.updateFormProgress(); // Adiciona esta linha
+      this.updateFormProgress();
     }
   }
 
   updateFormProgress() {
     const form = document.getElementById('category-form');
     if (!form) return;
-    
+
     // Define os campos obrigatórios e seus valores padrão
     const requiredFields = {
       'category-name': '',
@@ -725,7 +720,7 @@ class CategoryManager {
     const progressBar = document.getElementById('formProgress');
     if (progressBar) {
       progressBar.style.width = `${progress}%`;
-      
+
       // Atualiza a cor baseado no progresso
       if (progress < 33) progressBar.style.background = 'var(--error-color, #EF4444)';
       else if (progress < 66) progressBar.style.background = 'var(--warning-color, #F59E0B)';
@@ -751,7 +746,7 @@ class CategoryManager {
   // Verifica se o formulário foi modificado
   isFormDirty() {
     const modal = document.getElementById('category-modal');
-    
+
     // Se o modal estiver fechado, não considera como modificado
     if (modal.classList.contains('hidden')) return false;
 

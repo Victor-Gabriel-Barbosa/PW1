@@ -94,7 +94,7 @@ class TextFormatter {
     text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Negrito
     text = text.replace(/\*(.*?)\*/g, '<em>$1</em>'); // Itálico
     text = text.replace(/`(.*?)`/g, '<code>$1</code>'); // Código
-    return text; 
+    return text;
   }
 
   // Substitui códigos de emoji por emojis reais
@@ -120,7 +120,7 @@ class TextFormatter {
 class ForumModerator {
   static validateContent(content, type = 'conteúdo') {
     const plainContent = content.replace(/<[^>]*>/g, '').trim();
-    
+
     if (!plainContent) throw new Error(`O ${type} não pode estar vazio.`);
 
     const maxLengths = {
@@ -568,7 +568,7 @@ function likeReply(topicId, replyId) {
   }
 
   renderTopics();
-  saveForumData(); 
+  saveForumData();
 }
 
 // Adiciona uma resposta para um tópico
@@ -865,7 +865,7 @@ function addTopic(event) {
     };
 
     forumTopics.unshift(newTopic);
-    saveForumData(); 
+    saveForumData();
     renderTopics();
     newTopicModal.classList.add('hidden');
     event.target.reset();
@@ -956,8 +956,8 @@ function filterTopicsByCategory(categoryId) {
       <div class="category-section mb-8">
         <h3 class="text-2xl font-bold mb-4">${category.icon} ${category.name}</h3>
         ${filteredTopics.map(topic => renderTopicCard(topic,
-          isUserLoggedIn() ? JSON.parse(localStorage.getItem('userSession')).userId : null
-        )).join('')}
+      isUserLoggedIn() ? JSON.parse(localStorage.getItem('userSession')).userId : null
+    )).join('')}
       </div>
     `;
   }
@@ -987,7 +987,7 @@ function incrementTopicViews(topicId) {
   }
 }
 
- // Atualiza o contador de caracteres
+// Atualiza o contador de caracteres
 function updateCharCount(input, counterId) {
   const counter = document.getElementById(counterId);
   const max = input.getAttribute('maxlength');
@@ -1035,7 +1035,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const charCount = document.getElementById('content-char-count');
         if (charCount) {
           charCount.textContent = `${plainText.length}/${FORUM_CONFIG.maxContentLength}`;
-          
+
           // Adiciona classe de aviso quando próximo do limite
           if (plainText.length > FORUM_CONFIG.maxContentLength * 0.9) charCount.classList.add('text-red-500');
           else charCount.classList.remove('text-red-500');

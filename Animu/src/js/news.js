@@ -382,8 +382,7 @@ class NewsManager {
   }
 
   updateMetaTag(name, content) {
-    let meta = document.querySelector(`meta[name="${name}"]`) ||
-      document.querySelector(`meta[property="${name}"]`);
+    let meta = document.querySelector(`meta[name="${name}"]`) || document.querySelector(`meta[property="${name}"]`);
 
     if (!meta) {
       meta = document.createElement('meta');
@@ -419,9 +418,7 @@ class NewsManager {
     };
 
     // Adiciona listeners aos botões
-    Object.entries(shareHandlers).forEach(([network, handler]) => {
-      document.querySelector(`.share-btn.${network}`).addEventListener('click', handler);
-    });
+    Object.entries(shareHandlers).forEach(([network, handler]) => { document.querySelector(`.share-btn.${network}`).addEventListener('click', handler); });
   }
 
   showGridView(updateHistory = true) {

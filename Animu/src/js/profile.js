@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Obtém ID do usuário da URL se existir
   const urlParams = new URLSearchParams(window.location.search);
   const profileId = urlParams.get('id');
-  
+
   // Verifica sessão ativa
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
   if (!sessionData) {
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Carrega dados do usuário
   const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
   let currentUser;
-  
+
   // Se houver ID na URL, carrega o perfil do usuário específico
   if (profileId) {
     currentUser = users.find(user => user.id === profileId);
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Verifica se é amigo
     const loggedUser = users.find(user => user.id === sessionData.userId);
     const isFriend = loggedUser.friends?.includes(currentUser.id);
-    
+
     if (!isFriend && currentUser.id !== sessionData.userId) {
       alert('Você precisa ser amigo deste usuário para ver seu perfil');
       window.location.href = 'profile.html';
@@ -285,11 +285,11 @@ function loadFavoriteAnimes(user) {
 function shareAnime(event, animeTitle, coverImage) {
   event.preventDefault();
   event.stopPropagation();
-  
+
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
   const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
   const currentUser = users.find(u => u.id === sessionData.userId);
-  
+
   if (!currentUser || !currentUser.friends || currentUser.friends.length === 0) {
     alert('Você precisa ter amigos para compartilhar animes!');
     return;
@@ -304,9 +304,9 @@ function shareAnime(event, animeTitle, coverImage) {
           <label class="text-sm text-gray-500">Selecione os amigos:</label>
           <div class="mt-2 max-h-48 overflow-y-auto space-y-2">
             ${currentUser.friends.map(friendId => {
-              const friend = users.find(u => u.id === friendId);
-              if (!friend) return '';
-              return `
+    const friend = users.find(u => u.id === friendId);
+    if (!friend) return '';
+    return `
                 <label class="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg">
                   <input type="checkbox" value="${friend.id}" 
                          class="w-4 h-4 text-purple-600 rounded border-gray-300">
@@ -315,7 +315,7 @@ function shareAnime(event, animeTitle, coverImage) {
                   <span>${friend.displayName || friend.username}</span>
                 </label>
               `;
-            }).join('')}
+  }).join('')}
           </div>
         </div>
         <div class="flex justify-end gap-3">
@@ -350,7 +350,7 @@ function confirmShare(animeTitle, coverImage) {
 
   const chat = new Chat();
   const sessionData = JSON.parse(localStorage.getItem('userSession'));
-  
+
   // Cria mensagem especial para compartilhamento de anime
   const message = {
     type: 'anime_share',
@@ -372,10 +372,7 @@ function confirmShare(animeTitle, coverImage) {
   setTimeout(() => notification.remove(), 3000);
 }
 
-/**
- * Gera linha do tempo com atividades recentes do usuário
- * @param {Object} user - Dados do usuário
- */
+// Gera linha do tempo com atividades recentes do usuário
 function loadActivityTimeline(user) {
   // Agrupa diferentes tipos de atividades
   const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
@@ -505,7 +502,7 @@ function setupGenreSelection() {
   // Obtém todas as categorias do CategoryDisplay
   const categoryDisplay = new CategoryDisplay();
   const categories = categoryDisplay.getCategories();
-  
+
   // Extrai os nomes das categorias
   const genres = categories.map(category => category.name);
 
@@ -672,7 +669,7 @@ function initializeFriendSystem(currentUser) {
   loadFriends(currentUser);
   loadFriendRequests(currentUser);
   setupFriendSearchListener();
-  
+
   // Adiciona o evento de click ao botão existente no HTML
   const addFriendBtn = document.getElementById('add-friend-btn');
   if (addFriendBtn) addFriendBtn.addEventListener('click', showAddFriendModal);
@@ -827,19 +824,19 @@ function setupFriendSearchListener() {
 
     const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
     const currentUser = JSON.parse(localStorage.getItem('userSession'));
-    const filteredUsers = users.filter(user => 
+    const filteredUsers = users.filter(user =>
       user.id !== currentUser.userId &&
-      (user.username.toLowerCase().includes(query) || 
-      (user.displayName && user.displayName.toLowerCase().includes(query)))
+      (user.username.toLowerCase().includes(query) ||
+        (user.displayName && user.displayName.toLowerCase().includes(query)))
     );
 
     // Verifica se o usuário já é amigo ou se já existe uma solicitação pendente
-    resultsContainer.innerHTML = filteredUsers.length ? 
+    resultsContainer.innerHTML = filteredUsers.length ?
       filteredUsers.map(user => {
         const targetUser = users.find(u => u.id === user.id);
         const isAlreadyFriend = targetUser.friends?.includes(currentUser.userId);
         const hasPendingRequest = targetUser.friendRequests?.includes(currentUser.userId);
-        
+
         return `
           <div class="flex items-center justify-between p-2">
             <div class="flex items-center gap-2">
@@ -848,18 +845,18 @@ function setupFriendSearchListener() {
                    class="w-8 h-8 rounded-full">
               <span>${user.displayName || user.username}</span>
             </div>
-            ${isAlreadyFriend ? 
-              '<span class="text-sm text-gray-500">Já é amigo</span>' :
-              hasPendingRequest ?
+            ${isAlreadyFriend ?
+            '<span class="text-sm text-gray-500">Já é amigo</span>' :
+            hasPendingRequest ?
               '<span class="text-sm text-gray-500">Solicitação pendente</span>' :
               `<button onclick="sendFriendRequest('${user.id}')" 
                       class="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded-lg transition-colors">
                 Adicionar
               </button>`
-            }
+          }
           </div>
         `;
-      }).join('') : 
+      }).join('') :
       '<div class="text-center text-gray-500 dark:text-gray-400 py-8">Nenhum usuário encontrado</div>';
   }, 300));
 
@@ -1050,7 +1047,7 @@ function loadChatMessages(senderId, receiverId) {
   const messages = chat.getMessages(senderId, receiverId);
   const container = document.getElementById(`chat-messages-${receiverId}`);
   const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
-  
+
   // Busca os dados dos usuários para os avatares
   const sender = users.find(u => u.id === senderId);
   const receiver = users.find(u => u.id === receiverId);
@@ -1058,8 +1055,8 @@ function loadChatMessages(senderId, receiverId) {
   container.innerHTML = messages.map(msg => {
     const isMine = msg.senderId === senderId;
     const user = isMine ? sender : receiver;
-    const messageClasses = isMine ? 
-      'ml-auto' : 
+    const messageClasses = isMine ?
+      'ml-auto' :
       'mr-auto';
 
     const avatar = user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.username || 'User')}`;
@@ -1135,7 +1132,7 @@ function sendMessage(event, senderId, receiverId) {
 
   const chat = new Chat();
   chat.sendMessage(senderId, receiverId, message);
-  
+
   loadChatMessages(senderId, receiverId);
   input.value = '';
 }
