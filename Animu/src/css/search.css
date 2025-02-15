@@ -66,6 +66,35 @@
   max-height: 400px;
   overflow-y: auto;
   display: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) transparent;
+}
+
+/* Estilização da barra de rolagem para WebKit */
+.search-results::-webkit-scrollbar {
+  width: 6px;
+  background: transparent;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 3px;
+  opacity: 0.8;
+}
+
+.search-results::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color);
+  opacity: 1;
+}
+
+/* Ajuste para Firefox */
+.search-results {
+  scrollbar-width: none;
+}
+
+.search-results:hover {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) transparent;
 }
 
 .search-result-item {

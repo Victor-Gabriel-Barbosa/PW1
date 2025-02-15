@@ -120,10 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
   setupEventListeners(currentUser);
 });
 
-/**
- * Exibe informações básicas do perfil do usuário
- * @param {Object} user - Dados do usuário
- */
+// Exibe informações básicas do perfil do usuário
 function initializeProfile(user) {
   // Atualiza informações básicas
   document.getElementById('profile-username').textContent = user.username;
@@ -140,10 +137,7 @@ function initializeProfile(user) {
   favoriteGenres.innerHTML = user.favoriteGenres?.map(genre => `<span class="genre">${genre}</span>`).join('') || 'Nenhum gênero favorito';
 }
 
-/**
- * Calcula e exibe métricas de engajamento do usuário
- * @param {Object} user - Dados do usuário
- */
+// Calcula e exibe métricas de engajamento do usuário
 function loadStatistics(user) {
   // Obtém dados de interações do usuário
   const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
@@ -164,10 +158,7 @@ function loadStatistics(user) {
   document.getElementById('stats-favorites').textContent = user.favoriteAnimes?.length || 0;
 }
 
-/**
- * Gerencia sistema de conquistas baseado nas atividades do usuário
- * @param {Object} user - Dados do usuário
- */
+// Gerencia sistema de conquistas baseado nas atividades do usuário
 function loadAchievements(user) {
   // Coleta métricas para cálculo de conquistas
   const comments = JSON.parse(localStorage.getItem('animeComments')) || {};
@@ -335,11 +326,17 @@ function shareAnime(event, animeTitle, coverImage) {
   document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
 
+// Remove o modal de compartilhamento da página
 function closeShareModal() {
   const modal = document.getElementById('share-modal');
   if (modal) modal.remove();
 }
 
+/**
+ * Compartilha um anime com amigos selecionados e exibe notificação de confirmação
+ * @param {string} animeTitle - O título do anime a ser compartilhado
+ * @param {string} coverImage - A URL da imagem de capa do anime
+ */
 function confirmShare(animeTitle, coverImage) {
   const selectedFriends = Array.from(document.querySelectorAll('#share-modal input[type="checkbox"]:checked')).map(cb => cb.value);
 
@@ -468,8 +465,7 @@ function getActivityContent(activity) {
       return `Adicionou <a href="animes.html?anime=${encodeURIComponent(activity.animeTitle)}" 
               class="text-purple-600 hover:underline">${activity.animeTitle}</a> aos favoritos`;
 
-    default:
-      return '';
+    default: return '';
   }
 }
 
@@ -675,6 +671,7 @@ function initializeFriendSystem(currentUser) {
   if (addFriendBtn) addFriendBtn.addEventListener('click', showAddFriendModal);
 }
 
+// Carrega e exibe a lista de amigos do usuário na interface
 function loadFriends(user) {
   const friendsList = document.getElementById('friends-list');
   const friends = user.friends || [];
@@ -749,6 +746,7 @@ function loadFriends(user) {
   }).join('');
 }
 
+// Carrega e exibe solicitações de amizade pendentes para um usuário
 function loadFriendRequests(user) {
   const requestsContainer = document.getElementById('friend-requests');
   const requests = user.friendRequests || [];
@@ -801,6 +799,7 @@ function loadFriendRequests(user) {
   }).join('');
 }
 
+// Exibe o modal para adicionar amigos, limpando os campos de busca
 function showAddFriendModal() {
   const modal = document.getElementById('add-friend-modal');
   modal.classList.remove('hidden');
@@ -809,6 +808,7 @@ function showAddFriendModal() {
   document.getElementById('friend-search-results').innerHTML = '';
 }
 
+// Configura o sistema de busca de amigos com feedback em tempo real
 function setupFriendSearchListener() {
   const searchInput = document.getElementById('friend-search');
   const resultsContainer = document.getElementById('friend-search-results');
@@ -915,7 +915,7 @@ function sendFriendRequest(targetUserId) {
   setTimeout(() => { notification.remove(); }, 3000);
 }
 
-// Aceita pedido de amizade
+// Aceita uma solicitação de amizade e atualiza as listas de amigos dos usuários envolvidos
 function acceptFriendRequest(requesterId) {
   const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
   const currentUser = JSON.parse(localStorage.getItem('userSession'));
@@ -936,7 +936,7 @@ function acceptFriendRequest(requesterId) {
   window.location.reload();
 }
 
-// Rejeita pedido de amizade
+// Rejeita uma solicitação de amizade removendo o ID do solicitante da lista de pedidos pendentes
 function rejectFriendRequest(requesterId) {
   const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
   const currentUser = JSON.parse(localStorage.getItem('userSession'));
@@ -950,7 +950,7 @@ function rejectFriendRequest(requesterId) {
   loadFriendRequests(users[currentUserIndex]);
 }
 
-// Remove amigo
+// Remove um amigo da lista de amigos do usuário atual e da lista do amigo removido
 function removeFriend(friendId) {
   if (!confirm('Tem certeza que deseja remover este amigo?')) return;
 
@@ -969,6 +969,12 @@ function removeFriend(friendId) {
   window.location.reload();
 }
 
+/**
+ * Cria uma versão limitada de uma função que só pode ser chamada uma vez dentro de um período de espera.
+ * @param {Function} func - A função a ser executada após o período de espera
+ * @param {number} wait - O número de milissegundos para aguardar
+ * @returns {Function} Uma nova função que implementa o comportamento debounce
+ */
 function debounce(func, wait) {
   let timeout;
   return function executedFunction(...args) {
@@ -981,7 +987,7 @@ function debounce(func, wait) {
   };
 }
 
-// Abre chat com amigo
+// Abre uma janela de chat com um amigo específico
 function openChat(friendId) {
   const users = JSON.parse(localStorage.getItem('animuUsers')) || [];
   const currentUser = JSON.parse(localStorage.getItem('userSession'));
@@ -1035,13 +1041,18 @@ function openChat(friendId) {
   loadChatMessages(currentUser.userId, friendId);
 }
 
-// Fecha o chat com amigo
+
+// Remove a janela de chat com um amigo específico
 function closeChat(friendId) {
   const chatWindow = document.getElementById(`chat-${friendId}`);
   if (chatWindow) chatWindow.remove();
 }
 
-// Carrega mensagens do chat
+/**
+ * Carrega e exibe as mensagens do chat entre dois usuários, incluindo suporte para compartilhamento de animes
+ * @param {string|number} senderId - ID do usuário que está enviando as mensagens
+ * @param {string|number} receiverId - ID do usuário que está recebendo as mensagens
+ */
 function loadChatMessages(senderId, receiverId) {
   const chat = new Chat();
   const messages = chat.getMessages(senderId, receiverId);
@@ -1122,7 +1133,13 @@ function loadChatMessages(senderId, receiverId) {
   container.scrollTop = container.scrollHeight;
 }
 
-// Envia mensagem para amigo
+
+/**
+ * Envia uma mensagem do remetente para o destinatário no chat.
+ * @param {Event} event - O evento do formulário
+ * @param {string} senderId - ID do usuário que envia a mensagem
+ * @param {string} receiverId - ID do usuário que recebe a mensagem
+ */
 function sendMessage(event, senderId, receiverId) {
   event.preventDefault();
   const input = event.target.querySelector('input');
