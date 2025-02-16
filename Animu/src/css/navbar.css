@@ -32,16 +32,27 @@
   transform: scale(1.05);
 }
 
+.logo-link:hover .logo-icon {
+  animation: logoSpin 0.6s ease-in-out;
+}
+
+.logo-link:hover .logo-text {
+  background-size: 200% auto;
+  animation: shimmer 2s linear infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: 200% center;
+  }
+}
+
 .logo-icon {
   width: 28px;
   height: 28px;
-  fill: var(--primary-color);
-  animation: logoSpin 20s linear infinite;
-  transition: animation-duration 0.3s ease;
-}
-
-.logo-link:hover .logo-icon {
-  animation-duration: 2s; 
+  object-fit: contain; 
+  background-color: var(--primary-color);
+  border-radius: 50%;
 }
 
 .logo-text {
@@ -572,21 +583,16 @@ body.menu-open {
 
 .dropdown-theme-section {
   padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.theme-label {
-  display: block;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-bottom: 8px;
-}
-
+/* Ajuste do espaçamento no dropdown de temas */
 .theme-option {
   display: flex;
   align-items: center;
-  gap: 12px;
   width: 100%;
-  padding: 8px;
   border: none;
   background: transparent;
   color: var(--text-color);
@@ -594,16 +600,6 @@ body.menu-open {
   border-radius: 6px;
   transition: all 0.2s ease;
   font-size: 0.95rem;
-}
-
-.theme-option:hover {
-  background: var(--card-shadow);
-}
-
-.theme-option svg {
-  width: 20px;
-  height: 20px;
-  fill: currentColor;
 }
 
 /* Ajustes responsivos por breakpoint */
