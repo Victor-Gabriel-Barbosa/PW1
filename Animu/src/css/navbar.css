@@ -895,3 +895,153 @@ body.menu-open {
   from { transform: translateX(-100%); }
   to { transform: translateX(100%); }
 }
+
+/* Novos ajustes responsivos */
+@media (max-width: 360px) {
+  .container {
+    padding: 0 4px !important;
+    height: 44px;
+  }
+
+  .search-container {
+    max-width: calc(100vw - 140px);
+  }
+
+  .logo-text {
+    display: none;
+  }
+
+  .nav-menu-container {
+    top: 6px;
+    left: 6px;
+    gap: 4px;
+  }
+
+  .side-menu {
+    width: 100vw;
+    top: 44px;
+    height: calc(100vh - 44px);
+  }
+
+  .side-menu.open {
+    width: 100vw;
+  }
+}
+
+@media (min-width: 361px) and (max-width: 480px) {
+  .container {
+    height: 48px;
+  }
+
+  .search-container {
+    max-width: calc(100vw - 160px);
+  }
+
+  .logo-text {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Ajustes para o menu em modo mobile */
+  .side-menu {
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .side-menu.open {
+    transform: translateX(0);
+  }
+
+  /* Melhoria na animação de entrada dos links */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .side-menu.open .nav-link {
+    animation: fadeInUp 0.3s ease forwards;
+    animation-delay: calc(var(--link-index) * 0.05s);
+  }
+
+  /* Overlay com blur mais suave */
+  .menu-overlay.show {
+    backdrop-filter: blur(3px);
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  /* Ajuste do header em mobile */
+  nav {
+    backdrop-filter: blur(8px);
+    height: 48px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .side-menu:not(.open) {
+    width: 60px;
+  }
+
+  .side-menu:not(.open) .nav-link {
+    padding: 12px;
+  }
+
+  .logo-text {
+    font-size: 1.25rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  .side-menu {
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .side-menu:hover:not(.open) {
+    width: 240px;
+  }
+
+  .side-menu:hover:not(.open) .nav-link span {
+    display: inline;
+    opacity: 1;
+    transition: opacity 0.2s ease 0.1s;
+  }
+}
+
+/* Otimizações de performance */
+.side-menu,
+.nav-link,
+.logo-link {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Melhorias na acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+  .side-menu,
+  .nav-link,
+  .logo-link,
+  .menu-overlay {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Suporte a dispositivos com notch */
+@supports (padding-top: env(safe-area-inset-top)) {
+  nav {
+    padding-top: env(safe-area-inset-top);
+    height: calc(48px + env(safe-area-inset-top));
+  }
+
+  .side-menu {
+    height: calc(100vh - 48px - env(safe-area-inset-top));
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
