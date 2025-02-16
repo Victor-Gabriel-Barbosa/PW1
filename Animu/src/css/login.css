@@ -330,7 +330,6 @@
   transform: translateX(-3px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   background: var(--accent-color);
-  color: white;
 }
 
 .back-button i {
