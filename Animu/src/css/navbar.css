@@ -75,18 +75,6 @@
   }
 }
 
-.logo-container a {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--primary-color);
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.logo-container a:hover {
-  color: var(--text-color);
-}
-
 /* Navegação Principal */
 nav {
   background-color: rgba(var(--background-rgb), 0.85);
@@ -273,27 +261,27 @@ nav .ml-10 a.active {
 }
 
 .side-menu:not(.open) .nav-link {
-  padding: 10px;  /* Mesmo padding do estado expandido */
-  justify-content: flex-start; /* Alinha à esquerda em vez de center */
+  padding: 10px;  
+  justify-content: flex-start; 
   width: 65px;
-  margin: 2px 0;  /* Mesma margem do estado expandido */
+  margin: 2px 0;  
 }
 
 .side-menu:not(.open) .nav-link svg {
-  margin-left: 12px; /* Mantém a mesma margem do estado expandido */
-  width: 22px; /* Reduzido de 24px */
-  height: 22px; /* Reduzido de 24px */
-  min-width: 22px; /* Reduzido de 24px */
+  margin-left: 12px;
+  width: 22px;
+  height: 22px; 
+  min-width: 22px;
 }
 
 .side-menu .nav-link {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px;  /* Padding unificado */
+  padding: 10px;
   width: 100%;
-  font-size: 0.8125rem; /* Reduzido de 0.875rem para 0.8125rem */
-  margin: 2px 0;  /* Margem unificada */
+  font-size: 0.8125rem;
+  margin: 2px 0; 
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
@@ -303,7 +291,7 @@ nav .ml-10 a.active {
   display: none;
 }
 
-/* Novo efeito de hover com gradiente */
+/* Efeito de hover com gradiente */
 .side-menu .nav-link::before {
   content: '';
   position: absolute;
@@ -347,7 +335,7 @@ nav .ml-10 a.active {
   z-index: 1;
 }
 
-/* Atualização do efeito dos ícones - versão simplificada */
+/* Atualização do efeito dos ícones */
 .side-menu .nav-link svg {
   fill: var(--text-color);
   opacity: 0.7;
@@ -407,33 +395,6 @@ nav .ml-10 a.active {
 
 .side-menu .nav-link:hover {
   color: var(--primary-color);
-}
-
-.side-menu .nav-link svg {
-  fill: var(--text-color);
-  opacity: 0.7;
-  transition: fill 0.3s ease, opacity 0.3s ease;
-  min-width: 20px; 
-  height: 20px; 
-  width: 20px;
-}
-
-.side-menu .nav-link:hover svg {
-  fill: var(--primary-color);
-  opacity: 1;
-}
-
-.side-menu .nav-link.active {
-  color: var(--primary-color);
-}
-
-.side-menu .nav-link.active::before {
-  transform: translateX(0);
-}
-
-.side-menu .nav-link.active svg {
-  fill: var(--primary-color);
-  opacity: 1;
 }
 
 /* Seção Admin */
@@ -619,7 +580,7 @@ body.menu-open {
   .side-menu {
     top: 48px;
     height: calc(100vh - 48px);
-    width: min(250px, 75vw); /* Reduzido de 280px */
+    width: min(250px, 75vw); 
     transform: translateX(-100%);
     box-shadow: none;
     transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
@@ -653,7 +614,7 @@ body.menu-open {
   .side-menu {
     top: 48px;
     height: calc(100vh - 48px);
-    width: min(350px, 85vw); /* Aumentado de 300px para 350px */
+    width: min(350px, 85vw); 
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: none;
@@ -665,7 +626,7 @@ body.menu-open {
   .side-menu.open {
     transform: translateX(0);
     box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
-    width: min(350px, 85vw); /* Mantendo consistência */
+    width: min(350px, 85vw); 
   }
 
   .side-menu:not(.open) {
@@ -697,7 +658,7 @@ body.menu-open {
     padding: 12px 16px;
     margin: 4px 0;
     border-radius: 12px;
-    font-size: 0.875rem; /* Mantém o tamanho reduzido em mobile */
+    font-size: 0.875rem; 
   }
 
   .nav-link svg {
@@ -861,7 +822,7 @@ body.menu-open {
   .nav-link {
     padding: 14px 16px;
     margin: 2px 0;
-    font-size: 0.9375rem; /* Reduzido de 1.1rem para 0.9375rem */
+    font-size: 0.9375rem;
   }
 
   .side-menu {
@@ -875,7 +836,7 @@ body.menu-open {
   .nav-link {
     padding: 14px 16px;
     margin: 2px 0;
-    font-size: 0.9375rem; /* Reduzido de 1.1rem para 0.9375rem */
+    font-size: 0.9375rem; 
   }
 
   .nav-link svg {
@@ -1003,7 +964,7 @@ body.menu-open {
 
 @media (min-width: 769px) and (max-width: 1024px) {
   .side-menu {
-    width: 210px; /* Aumentado de 180px para 210px */
+    width: 210px;
   }
 
   body.has-navbar.menu-open {
@@ -1043,7 +1004,7 @@ body.menu-open {
 
 @media (min-width: 1025px) {
   .side-menu {
-    width: 210px; /* Aumentado de 180px para 210px */
+    width: 210px; 
   }
 
   body.has-navbar.menu-open {
@@ -1075,7 +1036,7 @@ body.menu-open {
 /* Ajustes para telas muito grandes */
 @media (min-width: 1600px) {
   .side-menu {
-    width: min(220px, 12vw); /* Aumentado de 200px para 220px */
+    width: min(220px, 12vw);
   }
 
   body.has-navbar.menu-open {
@@ -1143,9 +1104,9 @@ body.has-navbar {
 .side-menu .nav-link {
   display: flex;
   align-items: center;
-  padding: 10px 0; /* Remove padding horizontal */
+  padding: 10px 0; 
   width: 100%;
-  font-size: 0.8125rem; /* Reduzido de 0.875rem para 0.8125rem */
+  font-size: 0.8125rem;
   margin: 2px 0;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -1156,9 +1117,9 @@ body.has-navbar {
   min-width: 22px;
   width: 22px;
   height: 22px;
-  margin-left: 22px; /* Posição fixa para o ícone */
+  margin-left: 22px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  flex-shrink: 0; /* Impede o ícone de encolher */
+  flex-shrink: 0;
 }
 
 /* Ajuste do texto */
@@ -1180,7 +1141,7 @@ body.has-navbar {
 }
 
 .side-menu:not(.open) .nav-link svg {
-  margin-left: 22px; /* Mantém exatamente a mesma margem */
+  margin-left: 22px; 
 }
 
 /* Adiciona estilos para o tema ativo */
