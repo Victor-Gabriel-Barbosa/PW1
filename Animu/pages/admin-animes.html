@@ -14,18 +14,33 @@
 </head>
 
 <body>
-  <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-6">Gerenciar Animes</h1>
+  <!-- Header -->
+  <header class="relative py-8 mb-6 overflow-hidden">
+    <div class="container mx-auto px-4 relative">
+      <h1 class="text-4xl md:text-5xl font-bold text-center mb-2">
+        <span class="text-purple-600">Gerenciamento</span> de Animes
+      </h1>
+      <p class="text-center opacity-75">Gerencie o catálogo de animes da plataforma de forma eficiente</p>
+    </div>
+  </header>
 
+  <!-- Container principal -->
+  <div class="container mx-auto px-4 max-w-7xl">
     <!-- Botões de ação -->
-    <div class="flex gap-4 mb-6">
-      <button onclick="showAnimeForm()" class="btn-primary">
-        + Adicionar Novo Anime
+    <div class="flex gap-4 mb-6 justify-center">
+      <button onclick="showAnimeForm()" class="btn btn-primary group">
+        <span class="flex items-center gap-2">
+          <svg class="w-5 h-5 transition-transform group-hover:rotate-90 duration-300" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          Novo Anime
+        </span>
       </button>
-      <button onclick="exportAnimes()" class="btn-secondary">
+      <button onclick="exportAnimes()" class="btn btn-secondary">
         📤 Exportar Dados
       </button>
-      <button onclick="document.getElementById('importFile').click()" class="btn-secondary">
+      <button onclick="document.getElementById('importFile').click()" class="btn btn-secondary">
         📥 Importar Dados
       </button>
       <input type="file" id="importFile" accept=".json" class="hidden" onchange="importAnimes(event)">
@@ -55,9 +70,10 @@
     <div class="admin-form-container scrollbar-thin max-w-4xl w-full">
       <div class="modal-header-fixed">
         <div class="flex justify-between items-center">
-          <h2 id="modalTitle" class="text-2xl font-bold">Adicionar Novo Anime</h2>
+          <h2 id="modalTitle" class="text-2xl font-bold">Novo Anime</h2>
           <button type="button" onclick="closeAnimeForm()" class="close-btn text-gray-500 hover:text-gray-700">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -102,7 +118,7 @@
                 <label class="block text-sm font-medium mb-1">
                   Título Principal <span class="text-red-500">*</span>
                 </label>
-                <input type="text" id="primaryTitle" required 
+                <input type="text" id="primaryTitle" required
                   class="w-full p-2 sm:p-3 border rounded text-sm sm:text-base">
               </div>
 
@@ -161,7 +177,8 @@
               <div>
                 <label class="block text-sm font-medium mb-1">Produtores</label>
                 <div class="flex gap-2 mb-2">
-                  <input type="text" id="producerInput" placeholder="Nome do produtor" class="flex-1 p-2 border rounded">
+                  <input type="text" id="producerInput" placeholder="Nome do produtor"
+                    class="flex-1 p-2 border rounded">
                   <button type="button" onclick="addProducer()"
                     class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
                     +
@@ -201,7 +218,7 @@
                   <label class="block text-sm font-medium mb-1">
                     Episódios <span class="text-red-500">*</span>
                   </label>
-                  <input type="number" id="episodes" min="1" required 
+                  <input type="number" id="episodes" min="1" required
                     class="w-full p-2 sm:p-3 border rounded text-sm sm:text-base">
                 </div>
 
@@ -209,7 +226,7 @@
                   <label class="block text-sm font-medium mb-1">
                     Duração (min) <span class="text-red-500">*</span>
                   </label>
-                  <input type="number" id="episodeDuration" min="1" required 
+                  <input type="number" id="episodeDuration" min="1" required
                     class="w-full p-2 sm:p-3 border rounded text-sm sm:text-base">
                 </div>
               </div>
@@ -322,7 +339,7 @@
               Sinopse <span class="text-red-500">*</span>
             </label>
             <div class="relative">
-              <textarea id="synopsis" rows="4" required 
+              <textarea id="synopsis" rows="4" required
                 class="w-full p-2 sm:p-3 border rounded text-sm sm:text-base"></textarea>
               <button type="button" onclick="translateSynopsis()"
                 class="absolute top-2 right-2 p-1 bg-purple-600 text-white rounded hover:bg-purple-700"
@@ -338,16 +355,14 @@
 
           <!-- Botões responsivos -->
           <div class="flex flex-col sm:flex-row justify-end gap-2 sm:gap-4 mt-6">
-            <button type="button" onclick="clearAnimeForm()" 
+            <button type="button" onclick="clearAnimeForm()"
               class="w-full sm:w-auto btn btn-secondary order-3 sm:order-1">
               Limpar
             </button>
-            <button type="button" onclick="closeAnimeForm()" 
-              class="w-full sm:w-auto btn btn-cancel order-2">
+            <button type="button" onclick="closeAnimeForm()" class="w-full sm:w-auto btn btn-cancel order-2">
               Cancelar
             </button>
-            <button type="submit" 
-              class="w-full sm:w-auto btn btn-primary order-1 sm:order-3">
+            <button type="submit" class="w-full sm:w-auto btn btn-primary order-1 sm:order-3">
               Salvar
             </button>
           </div>

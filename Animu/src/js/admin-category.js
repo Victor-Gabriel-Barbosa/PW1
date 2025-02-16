@@ -7,9 +7,13 @@ class CategoryManager {
 
     this.setupFormVisibility();
     this.loadCategories();
+    this.updateStatistics(); // Adiciona chamada inicial
 
     // Adiciona o event listener para atualização de categorias
-    window.addEventListener('categoriesUpdated', () => { this.loadCategories(); });
+    window.addEventListener('categoriesUpdated', () => { 
+      this.loadCategories(); 
+      this.updateStatistics();
+    });
 
     // Adiciona event listener para fechar o modal com Esc
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') this.closeModal(); });
@@ -223,6 +227,9 @@ class CategoryManager {
 
     modal.classList.add('hidden');
     formContainer.innerHTML = '';
+    
+    // Restaura o scroll da página
+    document.body.style.overflow = '';
   }
 
   initializeForm() {
@@ -579,6 +586,7 @@ class CategoryManager {
         </div>
       `;
     }
+    this.updateStatistics(); // Adiciona chamada após carregar/modificar categorias
   }
 
   // Abre um modal e preenche um formulário para editar uma categoria existente
@@ -588,7 +596,7 @@ class CategoryManager {
 
     if (!category) return;
 
-    // Mostra o modal
+    // Mostra o modal e bloqueia o scroll da página
     const modal = document.getElementById('category-modal');
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
@@ -669,6 +677,7 @@ class CategoryManager {
     } catch (error) {
       alert('Erro ao excluir categoria: ' + error.message);
     }
+    this.updateStatistics(); // Adiciona chamada após deletar
   }
 
   // Função para verificar se o usuário é admin
@@ -781,6 +790,25 @@ class CategoryManager {
     if (categoryType) state.inputs.categoryType = categoryType.value;
 
     return JSON.stringify(state);
+  }
+
+  // Adicionar este novo método
+  updateStatistics() {
+    const categories = this.getCategories();
+    
+    // Atualiza total de categorias
+    const totalElement = document.getElementById('total-categories');
+    if (totalElement) totalElement.textContent = categories.length;
+    
+    // Conta categorias principais
+    const mainCount = categories.filter(cat => !cat.isSubcategory).length;
+    const mainElement = document.getElementById('main-categories');
+    if (mainElement) mainElement.textContent = mainCount;
+    
+    // Conta subcategorias
+    const subCount = categories.filter(cat => cat.isSubcategory).length;
+    const subElement = document.getElementById('sub-categories');
+    if (subElement) subElement.textContent = subCount;
   }
 }
 

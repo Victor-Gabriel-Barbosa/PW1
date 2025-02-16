@@ -127,17 +127,84 @@ document.addEventListener('DOMContentLoaded', function () {
    */
   function loadNews() {
     const news = JSON.parse(localStorage.getItem('news') || '[]');
-    newsList.innerHTML = news.map(item => createNewsCard(item)).join('');
-
+    const newsList = document.querySelector('.admin-news-list');
+  
+    if (!news.length) {
+      newsList.innerHTML = `
+        <div class="text-center py-8">
+          <p class="text-gray-500 dark:text-gray-400">Nenhuma notícia cadastrada</p>
+        </div>
+      `;
+      return;
+    }
+  
+    newsList.innerHTML = `
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Imagem</th>
+              <th>Título</th>
+              <th>Categoria</th>
+              <th>Data</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${news.map(item => `
+              <tr>
+                <td>
+                  <div class="w-20 h-12 rounded overflow-hidden">
+                    <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover">
+                  </div>
+                </td>
+                <td>
+                  <div class="max-w-xs">
+                    <p class="font-medium truncate">${item.title}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 truncate">${item.summary}</p>
+                  </div>
+                </td>
+                <td>
+                  <span class="px-2 py-1 text-xs text-white bg-purple-100 dark:bg-purple-900 rounded-full">
+                    ${item.category}
+                  </span>
+                </td>
+                <td>${new Date(item.date).toLocaleDateString('pt-BR')}</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button class="btn-action btn-edit" title="Editar" data-id="${item.id}">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                      </svg>
+                    </button>
+                    <button class="btn-action btn-delete" title="Remover" data-id="${item.id}">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 6h18"></path>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  
     // Adiciona event listeners para edição e exclusão
     document.querySelectorAll('.btn-edit').forEach(btn => {
       btn.addEventListener('click', () => editNews(btn.dataset.id));
     });
-
+  
     document.querySelectorAll('.btn-delete').forEach(btn => {
       btn.addEventListener('click', () => deleteNews(btn.dataset.id));
     });
   }
+  
 
   /**
    * Gera HTML para card de notícia com controles administrativos
