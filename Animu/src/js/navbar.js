@@ -47,35 +47,6 @@ class Navbar {
               <div id="user-panel" class="flex items-center">
                 ${this.getUserPanel()}
               </div>
-
-              <!-- Dropdown do seletor de temas -->
-              <div class="theme-selector">
-                <button id="theme-dropdown-btn" class="theme-dropdown-btn" title="Personalizar tema">
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24">
-                    <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
-                  </svg>
-                </button>
-                <div id="theme-menu" class="theme-menu hidden">
-                  <button data-theme="system" class="theme-option">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                      <path d="M20 3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h3l-1 1v2h12v-2l-1-1h3c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 13H4V5h16v11z"/>
-                    </svg>
-                    <span>Sistema</span>
-                  </button>
-                  <button data-theme="light" class="theme-option">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                      <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
-                    </svg>
-                    <span>Claro</span>
-                  </button>
-                  <button data-theme="dark" class="theme-option">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                      <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
-                    </svg>
-                    <span>Escuro</span>
-                  </button>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -172,6 +143,32 @@ class Navbar {
   getUserPanel() {
     const userSession = JSON.parse(localStorage.getItem('userSession'));
 
+    // Template comum para a seção de temas
+    const themeSection = `
+      <div class="dropdown-divider"></div>
+      <div class="dropdown-theme-section">
+        <span class="theme-label">Tema</span>
+        <button data-theme="system" class="theme-option">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M20 3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h3l-1 1v2h12v-2l-1-1h3c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 13H4V5h16v11z"/>
+          </svg>
+          <span>Sistema</span>
+        </button>
+        <button data-theme="light" class="theme-option">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
+          </svg>
+          <span>Claro</span>
+        </button>
+        <button data-theme="dark" class="theme-option">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+          </svg>
+          <span>Escuro</span>
+        </button>
+      </div>
+    `;
+
     if (userSession) {
       return `
         <div class="relative">
@@ -185,6 +182,8 @@ class Navbar {
               </svg>
               <span>Perfil</span>
             </a>
+            ${themeSection}
+            <div class="dropdown-divider"></div>
             <button class="dropdown-item text-red-600" id="logout-btn">
               <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24">
                 <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
@@ -215,6 +214,7 @@ class Navbar {
               </svg>
               <span>Criar Conta</span>
             </a>
+            ${themeSection}
           </div>
         </div>
       `;
@@ -348,6 +348,7 @@ class Navbar {
     const dropdownBtn = document.getElementById('user-dropdown-btn');
     const dropdown = document.getElementById('user-dropdown');
     const logoutBtn = document.getElementById('logout-btn');
+    const themeOptions = dropdown?.querySelectorAll('.theme-option');
 
     if (dropdownBtn && dropdown) {
       dropdownBtn.addEventListener('click', (e) => {
@@ -355,29 +356,26 @@ class Navbar {
         dropdown.classList.toggle('hidden');
       });
 
+      // Configura opções de tema
+      themeOptions?.forEach(option => {
+        option.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const theme = option.dataset.theme;
+          // Usa as funções globais do sistema de temas
+          window.applyTheme(theme);
+          window.updateActiveTheme(theme);
+          localStorage.setItem('theme', theme);
+        });
+      });
+
       document.addEventListener('click', (e) => {
-        if (!dropdownBtn.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.add('hidden');
+        if (!dropdownBtn.contains(e.target) && !dropdown.contains(e.target)) {
+          dropdown.classList.add('hidden');
+        }
       });
     }
 
     if (logoutBtn) logoutBtn.addEventListener('click', this.handleLogout);
-  }
-
-  // Inicializa o dropdown de autenticação
-  initAuthDropdown() {
-    const authBtn = document.getElementById('auth-dropdown-btn');
-    const authDropdown = document.getElementById('auth-dropdown');
-
-    if (authBtn && authDropdown) {
-      authBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        authDropdown.classList.toggle('hidden');
-      });
-
-      document.addEventListener('click', (e) => {
-        if (!authBtn.contains(e.target) && !authDropdown.contains(e.target)) authDropdown.classList.add('hidden');
-      });
-    }
   }
 
   // Limpa sessão e redireciona para login
@@ -385,6 +383,38 @@ class Navbar {
     e.preventDefault();
     localStorage.removeItem('userSession');
     window.location.href = './signin.html';
+  }
+
+  // Inicializa o dropdown de autenticação
+  initAuthDropdown() {
+    const authBtn = document.getElementById('auth-dropdown-btn');
+    const authDropdown = document.getElementById('auth-dropdown');
+    const themeOptions = authDropdown?.querySelectorAll('.theme-option');
+
+    if (authBtn && authDropdown) {
+      authBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        authDropdown.classList.toggle('hidden');
+      });
+
+      // Configura opções de tema
+      themeOptions?.forEach(option => {
+        option.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const theme = option.dataset.theme;
+          // Usa as funções globais do sistema de temas
+          window.applyTheme(theme);
+          window.updateActiveTheme(theme);
+          localStorage.setItem('theme', theme);
+        });
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!authBtn.contains(e.target) && !authDropdown.contains(e.target)) {
+          authDropdown.classList.add('hidden');
+        }
+      });
+    }
   }
 
   setupKeyboardNav() {

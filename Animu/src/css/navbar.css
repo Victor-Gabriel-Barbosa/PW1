@@ -436,7 +436,7 @@ nav .ml-10 a.active {
   opacity: 1;
 }
 
-/* Seção Admin - simplificada */
+/* Seção Admin */
 #admin-options {
   position: relative;
   margin-top: 16px;
@@ -564,6 +564,54 @@ body.menu-open {
   width: 24px;
   height: 24px;
   fill: currentColor;
+}
+
+/* Estilos atualizados do Dropdown do Usuário */
+.dropdown-divider {
+  height: 1px;
+  background: var(--card-shadow);
+  margin: 8px 0;
+}
+
+.dropdown-theme-section {
+  padding: 8px 12px;
+}
+
+.theme-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-color);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+}
+
+.theme-option:hover {
+  background: var(--primary-color-alpha);
+}
+
+.theme-option svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+/* Remove os estilos antigos do seletor de temas */
+.theme-selector {
+  display: none;
 }
 
 /* Ajustes responsivos por breakpoint */
@@ -698,13 +746,6 @@ body.menu-open {
     background: var(--primary-color-alpha);
   }
 
-  /* Seção de administração em mobile */
-  #admin-options {
-    margin-top: 24px;
-    padding-top: 24px;
-    border-top: 1px solid var(--card-shadow);
-  }
-
   .side-menu {
     top: 48px;
     height: calc(100vh - 48px);
@@ -773,6 +814,39 @@ body.menu-open {
   .nav-toggle-btn {
     display: none;
   }
+
+  .container {
+    padding: 0 8px !important;
+    height: 48px;
+  }
+
+  .nav-menu-container {
+    top: 6px;
+    left: 8px;
+  }
+
+  .logo-container {
+    margin-left: 2px;
+  }
+
+  .logo-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .logo-text {
+    font-size: 1.25rem;
+  }
+
+  .flex-1.max-w-xl {
+    margin: 0 4px;
+    max-width: calc(100vw - 120px);
+  }
+
+  .user-dropdown {
+    right: 4px;
+    min-width: 180px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -822,10 +896,6 @@ body.menu-open {
     padding: 14px 16px; 
   }
 
-  .admin-link {
-    padding: 14px 16px !important;
-  }
-
   .theme-toggle-container {
     transform: scale(0.9);
   }
@@ -838,6 +908,46 @@ body.menu-open {
   .nav-menu-container {
     top: 8px;
     left: 10px;
+  }
+
+  .container {
+    height: 44px;
+  }
+
+  .nav-menu-container {
+    top: 4px;
+    left: 6px;
+  }
+
+  .logo-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .logo-text {
+    font-size: 1.125rem;
+  }
+
+  .flex-1.max-w-xl {
+    max-width: calc(100vw - 100px);
+  }
+
+  #user-panel img {
+    width: 32px;
+    height: 32px;
+  }
+
+  .auth-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .side-menu {
+    width: 100vw;
+  }
+
+  .side-menu.open {
+    width: 100vw;
   }
 }
 
@@ -857,6 +967,38 @@ body.menu-open {
   .nav-link {
     padding: 12px 8px;
   }
+
+  .container {
+    height: 42px;
+  }
+
+  .nav-menu-container {
+    top: 3px;
+    left: 4px;
+  }
+
+  .logo-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .logo-text {
+    font-size: 1rem;
+  }
+
+  .flex-1.max-w-xl {
+    max-width: calc(100vw - 90px);
+  }
+
+  #user-panel img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .auth-btn {
+    width: 32px;
+    height: 32px;
+  }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
@@ -873,6 +1015,30 @@ body.menu-open {
   .side-menu {
     max-width: 320px;
   }
+
+  .container {
+    padding: 0 16px !important;
+    height: 60px;
+  }
+
+  .nav-menu-container {
+    top: 12px;
+    left: 16px;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .logo-text {
+    font-size: 1.75rem;
+  }
+
+  .flex-1.max-w-xl {
+    max-width: 800px;
+    margin: 0 32px;
+  }
 }
 
 @media (min-width: 1025px) {
@@ -882,6 +1048,27 @@ body.menu-open {
 
   body.has-navbar.menu-open {
     padding-left: 210px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    padding: 0 24px !important;
+  }
+
+  .flex-1.max-w-xl {
+    max-width: 800px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .container {
+    padding: 0 24px !important;
+  }
+
+  .flex-1.max-w-xl {
+    max-width: 1000px;
+    margin: 0 48px;
   }
 }
 
@@ -896,13 +1083,25 @@ body.menu-open {
   }
 }
 
-@media (min-width: 1200px) {
-  .container {
-    padding: 0 24px !important;
+/* Suporte para orientação paisagem em dispositivos móveis */
+@media (max-height: 480px) and (orientation: landscape) {
+  .side-menu {
+    top: 42px;
+    height: calc(100vh - 42px);
   }
 
-  .flex-1.max-w-xl {
-    max-width: 800px;
+  .side-menu-content {
+    padding: 8px;
+  }
+
+  .nav-link {
+    padding: 8px 12px;
+    margin: 1px 0;
+  }
+
+  .nav-link svg {
+    width: 20px;
+    height: 20px;
   }
 }
 
@@ -982,4 +1181,14 @@ body.has-navbar {
 
 .side-menu:not(.open) .nav-link svg {
   margin-left: 22px; /* Mantém exatamente a mesma margem */
+}
+
+/* Adiciona estilos para o tema ativo */
+.theme-option.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.theme-option.active svg {
+  fill: white;
 }

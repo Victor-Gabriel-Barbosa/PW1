@@ -97,10 +97,49 @@ const setupPageProgress = () => {
   window.addEventListener('popstate', startProgress);
 };
 
+// Sistema de Temas - Funções Globais
+window.applyTheme = function(theme) {
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+  const body = document.body;
+
+  if (theme === 'system') {
+    if (prefersDark.matches) {
+      body.classList.add('dark-mode');
+    } else {
+      body.classList.remove('dark-mode');
+    }
+  } else if (theme === 'dark') {
+    body.classList.add('dark-mode');
+  } else {
+    body.classList.remove('dark-mode');
+  }
+}
+
+window.updateActiveTheme = function(theme) {
+  document.querySelectorAll('.theme-option').forEach(option => {
+    option.classList.toggle('active', option.dataset.theme === theme);
+  });
+}
+
+// Inicialização do tema
+function initThemeSystem() {
+  const savedTheme = localStorage.getItem('theme') || 'system';
+  window.applyTheme(savedTheme);
+  window.updateActiveTheme(savedTheme);
+
+  // Listener para mudanças na preferência do sistema
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+  prefersDark.addListener(() => {
+    if (localStorage.getItem('theme') === 'system') {
+      window.applyTheme('system');
+    }
+  });
+}
+
 // Adiciona a chamada da função no carregamento do DOM
 document.addEventListener('DOMContentLoaded', () => {
   setupPageProgress();
-  initThemeSystem();
+  initThemeSystem(); // Garante que o tema seja aplicado primeiro
 
   // Controle de visibilidade dos painéis baseado em permissões
   const adminPanel = document.getElementById("admin-panel");
@@ -157,119 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
-
-function initThemeSystem() {
-  const themeDropdownBtn = document.getElementById('theme-dropdown-btn');
-  const themeMenu = document.getElementById('theme-menu');
-  const themeOptions = document.querySelectorAll('.theme-option');
-  const body = document.body;
-
-  // Se os elementos do tema não existirem, retorne sem fazer nada
-  if (!themeDropdownBtn || !themeMenu) return;
-
-  // Ícones para cada tema
-  const themeIcons = {
-    system: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-      <path d="M20 3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h3l-1 1v2h12v-2l-1-1h3c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 13H4V5h16v11z"/>
-    </svg>`,
-    light: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-      <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
-    </svg>`,
-    dark: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-      <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
-    </svg>`
-  };
-
-  // Detecta preferência do sistema
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-
-  // Função para atualizar o ícone do botão
-  function updateThemeIcon(theme) {
-    if (!themeDropdownBtn) return;
-    const icon = themeIcons[theme] || themeIcons.system;
-    themeDropdownBtn.innerHTML = icon;
-    themeDropdownBtn.querySelector('svg').style.height = '24px';
-  }
-
-  // Carrega tema salvo ou usa preferência do sistema
-  const savedTheme = localStorage.getItem('theme') || 'system';
-  applyTheme(savedTheme);
-  if (themeOptions.length > 0) updateActiveTheme(savedTheme);
-  updateThemeIcon(savedTheme);
-
-  // Toggle do menu dropdown com animação
-  themeDropdownBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    themeMenu.classList.toggle('hidden');
-    
-    // Nova animação do ícone
-    const icon = themeDropdownBtn.querySelector('svg');
-    themeDropdownBtn.classList.toggle('active');
-    
-    if (themeMenu.classList.contains('hidden')) {
-      icon.style.transform = 'scale(1)';
-      icon.style.filter = 'none';
-    }
-  });
-
-  // Fecha o menu ao clicar fora com animação suave
-  document.addEventListener('click', () => {
-    if (!themeMenu.classList.contains('hidden')) {
-      themeMenu.classList.add('hidden');
-      const icon = themeDropdownBtn.querySelector('svg');
-      themeDropdownBtn.classList.remove('active');
-      icon.style.transform = 'scale(1)';
-      icon.style.filter = 'none';
-    }
-  });
-
-  // Previne que cliques dentro do menu o fechem
-  themeMenu.addEventListener('click', (e) => {
-    e.stopPropagation();
-  });
-
-  // Gerencia seleção de tema com feedback visual
-  themeOptions.forEach(option => {
-    option.addEventListener('click', () => {
-      const theme = option.dataset.theme;
-      applyTheme(theme);
-      updateActiveTheme(theme);
-      updateThemeIcon(theme);
-      localStorage.setItem('theme', theme);
-      
-      // Adiciona efeito de ripple ao clicar
-      const ripple = document.createElement('div');
-      ripple.className = 'ripple';
-      option.appendChild(ripple);
-      setTimeout(() => ripple.remove(), 1000);
-
-      setTimeout(() => {
-        themeMenu.classList.add('hidden');
-        const icon = themeDropdownBtn.querySelector('svg');
-        icon.style.transform = 'rotate(0deg)';
-      }, 300);
-    });
-  });
-
-  // Atualiza tema quando muda preferência do sistema
-  prefersDark.addEventListener('change', () => {
-    if (localStorage.getItem('theme') === 'system') applyTheme('system');
-  });
-
-  function applyTheme(theme) {
-    if (theme === 'system') {
-      if (prefersDark.matches) body.classList.add('dark-mode');
-      else body.classList.remove('dark-mode');
-    } else if (theme === 'dark') body.classList.add('dark-mode');
-    else body.classList.remove('dark-mode');
-  }
-
-  function updateActiveTheme(theme) {
-    themeOptions.forEach(option => {
-      option.classList.toggle('active', option.dataset.theme === theme);
-    });
-  }
-}
 
 // Função para obter o avatar do usuário
 function getUserAvatar(username) {
