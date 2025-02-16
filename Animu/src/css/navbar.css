@@ -194,7 +194,7 @@ nav .ml-10 a.active {
 .menu-toggle-btn {
   padding: 4.9px;
   background: transparent;
-  border: none;
+  border-radius: 10px; 
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -209,7 +209,6 @@ nav .ml-10 a.active {
 .menu-toggle-btn:hover {
   transform: scale(1.1);
   background: var(--card-shadow);
-  border-radius: 50%; 
 }
 
 .menu-toggle-btn svg {
@@ -221,7 +220,7 @@ nav .ml-10 a.active {
   position: fixed;
   top: 56px;
   left: 0;
-  width: 210px;
+  width: 225px; 
   height: calc(100vh - 56px);
   background: var(--background);
   box-shadow: 2px 0 8px var(--card-shadow);
@@ -266,7 +265,7 @@ nav .ml-10 a.active {
 
 /* Estado recolhido do menu - transição suavizada */
 .side-menu:not(.open) {
-  width: 65px;
+  width: 70px; 
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -279,7 +278,7 @@ nav .ml-10 a.active {
 .side-menu:not(.open) .nav-link {
   padding: 10px; 
   justify-content: flex-start;
-  width: 65px;
+  width: 70px;
   margin: 2px 0;
 }
 
@@ -954,11 +953,11 @@ body.menu-open {
 
 @media (min-width: 769px) and (max-width: 1024px) {
   .side-menu {
-    width: 210px; 
+    width: 225px;
   }
 
   body.has-navbar.menu-open {
-    padding-left: 210px;
+    padding-left: 225px;
   }
 }
 
@@ -988,11 +987,11 @@ body.menu-open {
 
 @media (min-width: 1025px) {
   .side-menu {
-    width: 210px;
+    width: 225px; 
   }
 
   body.has-navbar.menu-open {
-    padding-left: 210px;
+    padding-left: 225px;
   }
 }
 
