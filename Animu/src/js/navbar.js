@@ -36,13 +36,6 @@ class Navbar {
 
             <!-- Área do usuário -->
             <div class="flex items-center space-x-4">
-              <!-- Botão para esconder/mostrar navbar -->
-              <button id="toggle-navbar" class="nav-toggle-btn" title="Esconder/Mostrar Barra de Navegação">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" class="nav-toggle-icon">
-                  <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
-                </svg>
-              </button>
-
               <!-- Painel do usuário -->
               <div id="user-panel" class="flex items-center">
                 ${this.getUserPanel()}

@@ -5,7 +5,7 @@
 .nav-menu-container {
   position: fixed;
   top: 8px; 
-  left: 13px; 
+  left: 4px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -73,6 +73,18 @@
   .logo-text {
     font-size: 1.25rem;
   }
+}
+
+.logo-container a {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.logo-container a:hover {
+  color: var(--text-color);
 }
 
 /* Navegação Principal */
@@ -200,7 +212,7 @@ nav .ml-10 a.active {
   fill: var(--text-color);
 }
 
-/* Menu lateral responsivo com estados aberto/fechado - Transição suavizada */
+/* Menu lateral responsivo com estados aberto/fechado */
 .side-menu {
   position: fixed;
   top: 56px;
@@ -261,24 +273,24 @@ nav .ml-10 a.active {
 }
 
 .side-menu:not(.open) .nav-link {
-  padding: 10px;  
-  justify-content: flex-start; 
+  padding: 10px; 
+  justify-content: flex-start;
   width: 65px;
-  margin: 2px 0;  
+  margin: 2px 0;
 }
 
 .side-menu:not(.open) .nav-link svg {
-  margin-left: 12px;
-  width: 22px;
-  height: 22px; 
-  min-width: 22px;
+  margin-left: 12px; 
+  width: 22px; 
+  height: 22px;
+  min-width: 22px; 
 }
 
 .side-menu .nav-link {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px;
+  padding: 10px; 
   width: 100%;
   font-size: 0.8125rem;
   margin: 2px 0; 
@@ -291,7 +303,7 @@ nav .ml-10 a.active {
   display: none;
 }
 
-/* Efeito de hover com gradiente */
+/* Novo efeito de hover com gradiente */
 .side-menu .nav-link::before {
   content: '';
   position: absolute;
@@ -397,6 +409,33 @@ nav .ml-10 a.active {
   color: var(--primary-color);
 }
 
+.side-menu .nav-link svg {
+  fill: var(--text-color);
+  opacity: 0.7;
+  transition: fill 0.3s ease, opacity 0.3s ease;
+  min-width: 20px; 
+  height: 20px; 
+  width: 20px;
+}
+
+.side-menu .nav-link:hover svg {
+  fill: var(--primary-color);
+  opacity: 1;
+}
+
+.side-menu .nav-link.active {
+  color: var(--primary-color);
+}
+
+.side-menu .nav-link.active::before {
+  transform: translateX(0);
+}
+
+.side-menu .nav-link.active svg {
+  fill: var(--primary-color);
+  opacity: 1;
+}
+
 /* Seção Admin */
 #admin-options {
   position: relative;
@@ -440,11 +479,6 @@ nav .ml-10 a.active {
 
 body.menu-open {
   overflow: auto !important;
-}
-
-/* Remove estilos do botão de toggle da navbar */
-.nav-toggle-btn {
-  display: none;
 }
 
 /* Estilos do Dropdown do Usuário */
@@ -535,7 +569,7 @@ body.menu-open {
 }
 
 .dropdown-theme-section {
-  padding: 8px 12px;
+  padding: 12px 16px;
 }
 
 .theme-label {
@@ -561,18 +595,13 @@ body.menu-open {
 }
 
 .theme-option:hover {
-  background: var(--primary-color-alpha);
+  background: var(--card-shadow);
 }
 
 .theme-option svg {
   width: 20px;
   height: 20px;
   fill: currentColor;
-}
-
-/* Remove os estilos antigos do seletor de temas */
-.theme-selector {
-  display: none;
 }
 
 /* Ajustes responsivos por breakpoint */
@@ -772,10 +801,6 @@ body.menu-open {
     left: 8px;
   }
 
-  .nav-toggle-btn {
-    display: none;
-  }
-
   .container {
     padding: 0 8px !important;
     height: 48px;
@@ -822,7 +847,7 @@ body.menu-open {
   .nav-link {
     padding: 14px 16px;
     margin: 2px 0;
-    font-size: 0.9375rem;
+    font-size: 0.9375rem; 
   }
 
   .side-menu {
@@ -836,7 +861,7 @@ body.menu-open {
   .nav-link {
     padding: 14px 16px;
     margin: 2px 0;
-    font-size: 0.9375rem; 
+    font-size: 0.9375rem;
   }
 
   .nav-link svg {
@@ -964,7 +989,7 @@ body.menu-open {
 
 @media (min-width: 769px) and (max-width: 1024px) {
   .side-menu {
-    width: 210px;
+    width: 210px; 
   }
 
   body.has-navbar.menu-open {
@@ -1004,7 +1029,7 @@ body.menu-open {
 
 @media (min-width: 1025px) {
   .side-menu {
-    width: 210px; 
+    width: 210px;
   }
 
   body.has-navbar.menu-open {
@@ -1036,7 +1061,7 @@ body.menu-open {
 /* Ajustes para telas muito grandes */
 @media (min-width: 1600px) {
   .side-menu {
-    width: min(220px, 12vw);
+    width: min(220px, 12vw); 
   }
 
   body.has-navbar.menu-open {
@@ -1106,7 +1131,7 @@ body.has-navbar {
   align-items: center;
   padding: 10px 0; 
   width: 100%;
-  font-size: 0.8125rem;
+  font-size: 0.8125rem; 
   margin: 2px 0;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;

@@ -549,10 +549,6 @@ body.dark-mode {
   --card-shadow: var(--card-shadow-dark);
 }
 
-.theme-selector {
-  position: relative;
-}
-
 .theme-dropdown-btn {
   background: transparent;
   border: none;
