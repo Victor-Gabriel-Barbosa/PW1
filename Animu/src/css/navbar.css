@@ -3,9 +3,8 @@
 
 /* Container fixo do menu de navegação principal */
 .nav-menu-container {
-  position: fixed;
+  position: flex;
   top: 8px; 
-  left: 12.9px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -107,22 +106,6 @@ nav {
   transform: translateY(0);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 0;
-}
-
-.container {
-  padding: 0 12px !important;
-  max-width: 1440px !important;
-  height: 56px;
-}
-
-.container .flex.items-center {
-  height: 100%;
-}
-
-/* Ajusta espaço reservado para menu */
-.w-48 {
-  width: 32px;
-  flex-shrink: 0;
 }
 
 /* Otimiza espaço da barra de pesquisa */
@@ -780,11 +763,6 @@ body.menu-open {
     top: 6px;
   }
 
-  .container {
-    padding: 0 8px !important;
-    height: 48px;
-  }
-
   .w-48 {
     width: 24px;
   }
@@ -795,11 +773,6 @@ body.menu-open {
 
   .nav-menu-container {
     top: 8px;
-  }
-
-  .container {
-    padding: 0 8px !important;
-    height: 48px;
   }
 
   .nav-menu-container {
@@ -890,10 +863,6 @@ body.menu-open {
     top: 8px;
   }
 
-  .container {
-    height: 44px;
-  }
-
   .nav-menu-container {
     top: 4px;
   }
@@ -947,10 +916,6 @@ body.menu-open {
     padding: 12px 8px;
   }
 
-  .container {
-    height: 42px;
-  }
-
   .nav-menu-container {
     top: 3px;
   }
@@ -994,11 +959,6 @@ body.menu-open {
     max-width: 320px;
   }
 
-  .container {
-    padding: 0 16px !important;
-    height: 60px;
-  }
-
   .nav-menu-container {
     top: 12px;
   }
@@ -1029,20 +989,12 @@ body.menu-open {
 }
 
 @media (min-width: 1200px) {
-  .container {
-    padding: 0 24px !important;
-  }
-
   .flex-1.max-w-xl {
     max-width: 800px;
   }
 }
 
 @media (min-width: 1440px) {
-  .container {
-    padding: 0 24px !important;
-  }
-
   .flex-1.max-w-xl {
     max-width: 1000px;
     margin: 0 48px;

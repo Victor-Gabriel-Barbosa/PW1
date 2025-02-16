@@ -3,30 +3,26 @@ class Navbar {
   constructor() {
     // Template HTML principal da navbar com menu lateral e painel de usuário
     this.navHTML = `
-      <!-- Menu Container -->
-      <div class="nav-menu-container">
-        <!-- Menu Toggle Button -->
-        <button id="menu-toggle" class="menu-toggle-btn" title="Alternar Menu de Navegação">
-          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24">
-            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-          </svg>
-        </button>
-        
-        <!-- Logo -->
-        <div class="logo-container">
-          <a href="index.html" class="logo-link">
-            <img src="../src/data/favicon/favicon.svg" class="logo-icon" alt="Logo Animu">
-            <span class="logo-text">Animu</span>
-          </a>
-        </div>
-      </div>
-
       <nav class="fixed top-0 left-0 right-0 backdrop-blur-md shadow-sm z-50">
-        <div class="container mx-auto px-4">
-          <div class="flex items-center justify-between h-16">
+        <div class="mx-auto px-4">
+          <div class="flex items-center justify-between h-14">
             <!-- Espaço reservado para o menu e logo -->
-            <div class="w-40"></div>
-
+            <div class="nav-menu-container">
+              <!-- Menu Toggle Button -->
+              <button id="menu-toggle" class="menu-toggle-btn" title="Alternar Menu de Navegação">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24">
+                  <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                </svg>
+              </button>
+              
+              <!-- Logo -->
+              <div class="logo-container">
+                <a href="index.html" class="logo-link">
+                  <img src="../src/data/favicon/favicon.svg" class="logo-icon" alt="Logo Animu">
+                  <span class="logo-text">Animu</span>
+                </a>
+              </div>
+            </div>
             <!-- Barra de pesquisa -->
             <div class="flex-1 max-w-xl mx-4" id="search-area">
               <!-- Gerada via JavaScript -->
@@ -268,9 +264,7 @@ class Navbar {
       // Atualiza o avatar se disponível
       if (userSession.avatar && userPanel) {
         const avatarImg = userPanel.querySelector('img');
-        if (avatarImg) {
-          avatarImg.src = userSession.avatar;
-        }
+        if (avatarImg) avatarImg.src = userSession.avatar;
       }
 
       // Mostra as opções de admin no menu lateral se o usuário for admin
@@ -303,9 +297,7 @@ class Navbar {
       });
 
       // Previne que cliques dentro do menu o fechem
-      adminMenu.addEventListener('click', (e) => {
-        e.stopPropagation();
-      });
+      adminMenu.addEventListener('click', (e) => { e.stopPropagation(); });
     }
   }
 
@@ -360,9 +352,7 @@ class Navbar {
       });
 
       document.addEventListener('click', (e) => {
-        if (!dropdownBtn.contains(e.target) && !dropdown.contains(e.target)) {
-          dropdown.classList.add('hidden');
-        }
+        if (!dropdownBtn.contains(e.target) && !dropdown.contains(e.target)) { dropdown.classList.add('hidden'); }
       });
     }
 
@@ -401,9 +391,7 @@ class Navbar {
       });
 
       document.addEventListener('click', (e) => {
-        if (!authBtn.contains(e.target) && !authDropdown.contains(e.target)) {
-          authDropdown.classList.add('hidden');
-        }
+        if (!authBtn.contains(e.target) && !authDropdown.contains(e.target))  authDropdown.classList.add('hidden');
       });
     }
   }
