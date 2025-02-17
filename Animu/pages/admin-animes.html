@@ -333,6 +333,29 @@
             </div>
           </div>
 
+          <!-- Campo único para Staff -->
+          <div>
+            <label class="block text-sm font-medium mb-1">Staff</label>
+            <div class="flex gap-2 mb-2">
+              <input type="text" id="staffInput" placeholder="Nome do membro" class="flex-1 p-2 border rounded">
+              <select id="staffRole" class="p-2 border rounded min-w-[140px]">
+                <option value="director">Diretor</option>
+                <option value="writer">Roteirista</option>
+                <option value="composer">Compositor</option>
+                <option value="animator">Animador</option>
+                <option value="designer">Designer</option>
+                <option value="producer">Produtor</option>
+                <option value="other">Outro</option>
+              </select>
+              <button type="button" onclick="addStaffMember()" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+                +
+              </button>
+            </div>
+            <div id="staffList" class="mt-2 flex flex-wrap gap-2">
+              <!-- Lista de membros da staff será inserida aqui -->
+            </div>
+          </div>
+
           <!-- Sinopse - Full width -->
           <div class="w-full mt-6">
             <label class="block text-sm font-medium mb-1">

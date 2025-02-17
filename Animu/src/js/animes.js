@@ -195,6 +195,22 @@ function renderAnimeDetails(anime) {
         </dl>
       </div>
     </div>
+
+    ${anime.staff && anime.staff.length > 0 ? `
+      <div class="staff-section">
+        <h2 class="text-2xl font-bold mb-4">Staff</h2>
+        <div class="staff-grid">
+          ${anime.staff.map(member => `
+            <div class="staff-card">
+              <div>
+                <div class="staff-name">${member.name}</div>
+                <div class="staff-role">${formatRole(member.role)}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    ` : ''}
   `;
 
   // Mostra a seção de comentários apenas para detalhes de um anime específico
@@ -1359,3 +1375,17 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 });
+
+// Adicione esta função auxiliar para formatar os papéis da staff
+function formatRole(role) {
+  const roles = {
+    'director': 'Diretor',
+    'writer': 'Roteirista',
+    'composer': 'Compositor',
+    'animator': 'Animador',
+    'designer': 'Designer',
+    'producer': 'Produtor',
+    'other': 'Outro'
+  };
+  return roles[role.toLowerCase()] || role;
+}

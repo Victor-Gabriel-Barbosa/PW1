@@ -1,4 +1,3 @@
-
 // Variáveis auxiliares
 let currentAnimeId = null;
 let alternativeTitles = [];
@@ -6,6 +5,9 @@ let genres = [];
 let producers = [];
 let licensors = [];
 let isFormSaving = false;
+
+// Variáveis para armazenar os dados da Staff
+let staffMembers = [];
 
 // Armazena os valores iniciais dos campos quando o formulário é aberto
 let initialFormState = null;
@@ -92,7 +94,8 @@ function getStatusClass(status) {
 // Mostra formulário para adicionar/editar anime
 function showAnimeForm() {
   const modalContent = document.querySelector('.admin-form-container');
-  document.getElementById('animeModal').classList.remove('hidden');
+  const modal = document.getElementById('animeModal');
+  modal.classList.remove('hidden');
 
   // Reseta a posição de rolagem do formulário
   if (modalContent) modalContent.scrollTop = 0;
@@ -106,6 +109,7 @@ function showAnimeForm() {
     genres = [];
     producers = [];
     licensors = [];
+    staffMembers = [];
 
     // Limpa os previews e valores dos campos de imagem e trailer
     const coverPreview = document.getElementById('coverImagePreview');
@@ -133,6 +137,7 @@ function showAnimeForm() {
     updateGenresList();
     updateProducersList();
     updateLicensorsList();
+    updateStaffList();
   }
 
   // Captura o estado inicial do formulário após o preenchimento
@@ -350,12 +355,14 @@ function editAnime(index) {
       genres = Array.isArray(anime.genres) ? [...anime.genres] : [];
       producers = Array.isArray(anime.producers) ? [...anime.producers] : [];
       licensors = Array.isArray(anime.licensors) ? [...anime.licensors] : [];
+      staffMembers = anime.staff || [];
 
       // Atualiza todas as listas visuais
       updateAlternativeTitlesList();
       updateGenresList();
       updateProducersList();
       updateLicensorsList();
+      updateStaffList();
 
       // Atualiza previews de mídia
       updateMediaPreviews(anime);
@@ -435,6 +442,7 @@ document.getElementById('animeForm').addEventListener('submit', async function (
       source: document.getElementById('source').value,
       producers: [...producers],
       licensors: [...licensors],
+      staff: [...staffMembers],
       trailerUrl: document.getElementById('trailerUrl').value.trim(),
       updatedAt: now
     };
@@ -1121,10 +1129,15 @@ async function autoFillFromMal() {
   }
 
   try {
+    // Busca dados básicos do anime
     const response = await fetch(`https://api.jikan.moe/v4/anime/${animeId}`);
     const data = await response.json();
     const anime = data.data;
 
+    // Busca dados da staff
+    const staffResponse = await fetch(`https://api.jikan.moe/v4/anime/${animeId}/staff`);
+    const staffData = await staffResponse.json();
+    
     // Preenche os campos automaticamente
     document.getElementById('primaryTitle').value = anime.title;
     document.getElementById('coverImage').value = anime.images.jpg.large_image_url;
@@ -1177,6 +1190,46 @@ async function autoFillFromMal() {
       const releaseDate = new Date(anime.aired.from).toISOString().split('T')[0];
       document.getElementById('releaseDate').value = releaseDate;
     }
+
+    // Limpa e preenche dados da staff
+    staffMembers = [];
+    
+    // Processa dados da staff
+    staffData.data.forEach(member => {
+      // Mapeia as posições para os roles disponíveis
+      const roleMapping = {
+        'Director': 'director',
+        'Series Composition': 'writer',
+        'Music': 'composer',
+        'Animation Director': 'animator',
+        'Character Design': 'designer',
+        'Producer': 'producer'
+      };
+
+      // Para cada posição do membro
+      member.positions.forEach(position => {
+        const mappedRole = roleMapping[position];
+        if (mappedRole) {
+          // Verifica se já existe para evitar duplicatas
+          const exists = staffMembers.some(existing => 
+            existing.name === member.person.name && 
+            existing.role === mappedRole
+          );
+
+          if (!exists) {
+            staffMembers.push({
+              name: member.person.name,
+              role: mappedRole,
+              roleLabel: document.getElementById('staffRole')
+                .querySelector(`option[value="${mappedRole}"]`).text
+            });
+          }
+        }
+      });
+    });
+
+    // Atualiza a lista visual da staff
+    updateStaffList();
 
     // Atualiza previews
     updateCoverImagePreview();
@@ -1434,7 +1487,8 @@ function getFormState() {
       alternativeTitles: [...alternativeTitles],
       genres: [...genres],
       producers: [...producers],
-      licensors: [...licensors]
+      licensors: [...licensors],
+      staff: [...staffMembers]
     },
     media: {
       coverImage: document.getElementById('coverImage').value,
@@ -1449,3 +1503,188 @@ function getFormState() {
 
   return JSON.stringify(state);
 }
+
+// Adiciona membro da Staff
+function addStaffMember() {
+  const input = document.getElementById('staffInput');
+  const roleSelect = document.getElementById('staffRole');
+  
+  const name = input.value.trim();
+  const role = roleSelect.value;
+  const roleLabel = roleSelect.options[roleSelect.selectedIndex].text;
+
+  if (!name) return;
+
+  // Verifica se já existe esta pessoa com esta função
+  const exists = staffMembers.some(member => 
+    member.name.toLowerCase() === name.toLowerCase() && 
+    member.role === role
+  );
+
+  if (exists) {
+    alert('Este membro já foi adicionado com esta função.');
+    return;
+  }
+
+  staffMembers.push({
+    name: name,
+    role: role,
+    roleLabel: roleLabel
+  });
+
+  input.value = '';
+  updateStaffList();
+}
+
+// Remove membro da Staff
+function removeStaffMember(index) {
+  staffMembers.splice(index, 1);
+  updateStaffList();
+}
+
+// Atualiza lista visual da Staff
+function updateStaffList() {
+  const container = document.getElementById('staffList');
+  
+  // Agrupa membros por função
+  const groupedStaff = staffMembers.reduce((groups, member) => {
+    if (!groups[member.role]) {
+      groups[member.role] = [];
+    }
+    groups[member.role].push(member);
+    return groups;
+  }, {});
+
+  // Gera o HTML com os membros agrupados
+  const html = Object.entries(groupedStaff).map(([role, members]) => {
+    const roleLabel = members[0].roleLabel;
+    return `
+      <div class="w-full">
+        <h4 class="text-sm font-medium text-gray-700 mb-2">${roleLabel}</h4>
+        <div class="flex flex-wrap gap-2">
+          ${members.map((member, index) => `
+            <div class="tag bg-purple-100 text-purple-800 px-2 py-1 rounded flex items-center gap-2">
+              <span>${member.name}</span>
+              <button type="button" 
+                onclick="removeStaffMember(${staffMembers.findIndex(m => m === member)})" 
+                class="text-purple-600 hover:text-purple-800"
+              >✕</button>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('<div class="border-t my-2"></div>');
+
+  container.innerHTML = html || '<p class="text-sm text-gray-500">Nenhum membro da staff adicionado</p>';
+}
+
+// Modifique a função showAnimeForm para incluir a limpeza da staff
+function showAnimeForm() {
+  const modalContent = document.querySelector('.admin-form-container');
+  const modal = document.getElementById('animeModal');
+  modal.classList.remove('hidden');
+
+  // Reseta a posição de rolagem do formulário
+  if (modalContent) modalContent.scrollTop = 0;
+
+  if (!currentAnimeId) {
+    document.getElementById('modalTitle').textContent = 'Adicionar Novo Anime';
+    document.getElementById('animeForm').reset();
+
+    // Limpa arrays
+    alternativeTitles = [];
+    genres = [];
+    producers = [];
+    licensors = [];
+    staffMembers = [];
+
+    // Limpa os previews e valores dos campos de imagem e trailer
+    const coverPreview = document.getElementById('coverImagePreview');
+    const coverPrompt = coverPreview.previousElementSibling;
+    const removeCoverBtn = document.getElementById('removeCoverImage');
+
+    coverPreview.src = '';
+    coverPreview.classList.add('hidden');
+    coverPrompt.classList.remove('hidden');
+    removeCoverBtn.classList.add('hidden');
+    document.getElementById('coverImage').value = '';
+
+    const trailerPreview = document.getElementById('trailerPreview');
+    const trailerPrompt = trailerPreview.previousElementSibling;
+    const removeTrailerBtn = document.getElementById('removeTrailer');
+
+    trailerPreview.innerHTML = '';
+    trailerPreview.classList.add('hidden');
+    trailerPrompt.classList.remove('hidden');
+    removeTrailerBtn.classList.add('hidden');
+    document.getElementById('trailerUrl').value = '';
+
+    // Atualiza todas as listas
+    updateAlternativeTitlesList();
+    updateGenresList();
+    updateProducersList();
+    updateLicensorsList();
+    updateStaffList();
+  }
+
+  // Captura o estado inicial do formulário após o preenchimento
+  setTimeout(() => { initialFormState = getFormState(); }, 100);
+}
+
+// Modifique a função editAnime para carregar os dados da staff
+function editAnime(index) {
+  try {
+    const animes = JSON.parse(localStorage.getItem('animeData')) || [];
+    const anime = animes[index];
+    if (!anime) throw new Error('Anime não encontrado');
+
+    currentAnimeId = index;
+    showAnimeForm();
+
+    // Configura temporizador para garantir que o modal esteja visível
+    setTimeout(() => {
+      // Preenche campos básicos
+      document.getElementById('primaryTitle').value = anime.primaryTitle || '';
+      document.getElementById('coverImage').value = anime.coverImage || '';
+      document.getElementById('synopsis').value = anime.synopsis || '';
+      document.getElementById('episodes').value = anime.episodes || '';
+      document.getElementById('episodeDuration').value = anime.episodeDuration || '';
+      document.getElementById('status').value = anime.status || 'Em Exibição';
+      document.getElementById('ageRating').value = anime.ageRating || 'Livre';
+      document.getElementById('seasonPeriod').value = anime.season?.period || 'inverno';
+
+      // Formata a data para o formato yyyy-MM-dd
+      const releaseDate = anime.releaseDate ? new Date(anime.releaseDate).toISOString().split('T')[0] : '';
+      document.getElementById('releaseDate').value = releaseDate;
+
+      document.getElementById('studio').value = anime.studio || '';
+      document.getElementById('source').value = anime.source || '';
+      document.getElementById('trailerUrl').value = anime.trailerUrl || '';
+
+      // Reseta e preenche arrays
+      alternativeTitles = Array.isArray(anime.alternativeTitles) ? [...anime.alternativeTitles] : [];
+      genres = Array.isArray(anime.genres) ? [...anime.genres] : [];
+      producers = Array.isArray(anime.producers) ? [...anime.producers] : [];
+      licensors = Array.isArray(anime.licensors) ? [...anime.licensors] : [];
+      staffMembers = anime.staff || [];
+
+      // Atualiza todas as listas visuais
+      updateAlternativeTitlesList();
+      updateGenresList();
+      updateProducersList();
+      updateLicensorsList();
+      updateStaffList();
+
+      // Atualiza previews de mídia
+      updateMediaPreviews(anime);
+
+    }, 100);
+
+  } catch (error) {
+    console.error('Erro ao editar anime:', error);
+    alert('Erro ao carregar dados do anime para edição.');
+  }
+}
+
+// ...existing code...

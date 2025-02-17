@@ -26,16 +26,11 @@
   backface-visibility: hidden;
 }
 
-.logo-link:hover .logo-icon {
-  transform: rotate(8deg) scale(1.05);
-  transition: transform 0.3s ease;
-}
-
 .logo-icon {
   width: 28px;
   height: 28px;
   object-fit: contain; 
-  background-color: var(--primary-color);
+  background: var(--primary-gradient);
   border-radius: 50%;
 }
 

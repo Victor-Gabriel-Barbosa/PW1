@@ -22,7 +22,7 @@ const setupPageProgress = () => {
     const updateProgress = (currentTime) => {
       const elapsed = currentTime - startTime;
       const timeProgress = Math.min(elapsed / duration, 1);
-      
+
       progress = startProgress + (targetProgress - startProgress) * easeInOut(timeProgress);
       progressBar.style.width = `${progress}%`;
 
@@ -34,11 +34,11 @@ const setupPageProgress = () => {
 
   const startProgress = () => {
     if (isLoading) return;
-    
+
     isLoading = true;
     progress = 0;
     progressBar.classList.add('loading');
-    
+
     // Simula progresso com aceleração suave
     const incrementProgress = () => {
       const nextProgress = progress + (Math.random() * 15 * (1 - progress / 100));
@@ -56,11 +56,11 @@ const setupPageProgress = () => {
 
     clearTimeout(loadingTimeout);
     animateProgress(100);
-    
+
     setTimeout(() => {
       progressBar.style.transition = 'opacity 0.5s ease';
       progressBar.style.opacity = '0';
-      
+
       setTimeout(() => {
         isLoading = false;
         progressBar.classList.remove('loading');
@@ -98,24 +98,18 @@ const setupPageProgress = () => {
 };
 
 // Sistema de Temas - Funções Globais
-window.applyTheme = function(theme) {
+window.applyTheme = function (theme) {
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
   const body = document.body;
 
   if (theme === 'system') {
-    if (prefersDark.matches) {
-      body.classList.add('dark-mode');
-    } else {
-      body.classList.remove('dark-mode');
-    }
-  } else if (theme === 'dark') {
-    body.classList.add('dark-mode');
-  } else {
-    body.classList.remove('dark-mode');
-  }
+    if (prefersDark.matches) body.classList.add('dark-mode');
+    else body.classList.remove('dark-mode');
+  } else if (theme === 'dark') body.classList.add('dark-mode');
+  else body.classList.remove('dark-mode');
 }
 
-window.updateActiveTheme = function(theme) {
+window.updateActiveTheme = function (theme) {
   document.querySelectorAll('.theme-option').forEach(option => {
     option.classList.toggle('active', option.dataset.theme === theme);
   });
@@ -130,11 +124,137 @@ function initThemeSystem() {
   // Listener para mudanças na preferência do sistema
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
   prefersDark.addListener(() => {
-    if (localStorage.getItem('theme') === 'system') {
-      window.applyTheme('system');
-    }
+    if (localStorage.getItem('theme') === 'system') window.applyTheme('system');
   });
 }
+
+// Sistema de Gerenciamento de Temas
+window.ThemeManager = {
+  getThemeSectionTemplate() {
+    return `
+      <div class="dropdown-divider"></div>
+      <div class="dropdown-theme-section">
+        <span class="theme-label">Tema</span>
+        <button data-theme="system" class="theme-option">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M20 3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h3l-1 1v2h12v-2l-1-1h3c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 13H4V5h16v11z"/>
+          </svg>
+          <span>Sistema</span>
+        </button>
+        <button data-theme="light" class="theme-option">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
+          </svg>
+          <span>Claro</span>
+        </button>
+        <button data-theme="dark" class="theme-option">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+          </svg>
+          <span>Escuro</span>
+        </button>
+      </div>
+    `;
+  },
+
+  getThemeIcon(theme) {
+    const icons = {
+      system: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M20 3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h3l-1 1v2h12v-2l-1-1h3c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 13H4V5h16v11z"/>
+      </svg>`,
+      light: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
+      </svg>`,
+      dark: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+      </svg>`
+    };
+    return icons[theme] || icons.system;
+  },
+
+  updateThemeIcon(theme) {
+    const themeBtn = document.getElementById('theme-dropdown-btn');
+    if (themeBtn) themeBtn.innerHTML = this.getThemeIcon(theme);
+  },
+
+  applyTheme(theme) {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const body = document.body;
+
+    if (theme === 'system') {
+      if (prefersDark.matches) body.classList.add('dark-mode');
+      else body.classList.remove('dark-mode');
+    } else if (theme === 'dark') body.classList.add('dark-mode');
+    else body.classList.remove('dark-mode');
+
+    localStorage.setItem('theme', theme);
+    this.updateActiveTheme(theme);
+    this.updateThemeIcon(theme); // Atualiza o ícone
+  },
+
+  updateActiveTheme(theme) {
+    document.querySelectorAll('.theme-option').forEach(option => {
+      option.classList.toggle('active', option.dataset.theme === theme);
+    });
+  },
+
+  initThemeDropdown() {
+    const themeMenu = document.getElementById('theme-menu');
+    if (!themeMenu) return;
+
+    // Injeta o HTML das opções de tema
+    themeMenu.innerHTML = `
+      <button data-theme="system" class="theme-option">
+        ${this.getThemeIcon('system')}
+        <span>Sistema</span>
+      </button>
+      <button data-theme="light" class="theme-option">
+        ${this.getThemeIcon('light')}
+        <span>Claro</span>
+      </button>
+      <button data-theme="dark" class="theme-option">
+        ${this.getThemeIcon('dark')}
+        <span>Escuro</span>
+      </button>
+    `;
+
+    // Configura os eventos do dropdown
+    const themeDropdownBtn = document.getElementById('theme-dropdown-btn');
+    const themeOptions = themeMenu.querySelectorAll('.theme-option');
+
+    themeDropdownBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      themeMenu.classList.toggle('hidden');
+    });
+
+    themeOptions.forEach(option => {
+      option.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const theme = option.dataset.theme;
+        this.applyTheme(theme);
+        themeMenu.classList.add('hidden');
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!themeDropdownBtn?.contains(e.target) && !themeMenu.contains(e.target)) themeMenu.classList.add('hidden');
+    });
+  },
+
+  init() {
+    const savedTheme = localStorage.getItem('theme') || 'system';
+    this.applyTheme(savedTheme);
+    this.updateThemeIcon(savedTheme); // Atualiza o ícone inicial
+
+    // Inicializa o dropdown se estiver em uma página de login/signup
+    if (window.location.pathname.includes('signin.html') || window.location.pathname.includes('signup.html')) this.initThemeDropdown();
+
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    prefersDark.addListener(() => {
+      if (localStorage.getItem('theme') === 'system') this.applyTheme('system');
+    });
+  }
+};
 
 // Adiciona a chamada da função no carregamento do DOM
 document.addEventListener('DOMContentLoaded', () => {
@@ -327,7 +447,7 @@ function renderFeaturedAnimes() {
 
   // Duplicar os animes para criar efeito infinito
   const duplicatedAnimes = [...featuredAnimes, ...featuredAnimes, ...featuredAnimes];
-  
+
   carouselTrack.innerHTML = duplicatedAnimes.map(anime => `
     <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="anime-card">
       <div class="image-wrapper">
@@ -350,9 +470,9 @@ function renderFeaturedAnimes() {
         <div class="anime-overlay">
           <div class="overlay-content">
             <div class="anime-genres">
-              ${anime.genres.slice(0, 3).map(genre => 
-                `<span class="genre-tag">${genre}</span>`
-              ).join('')}
+              ${anime.genres.slice(0, 3).map(genre =>
+    `<span class="genre-tag">${genre}</span>`
+  ).join('')}
             </div>
             <p class="text-sm mt-2 line-clamp-3">${anime.synopsis || 'Sinopse não disponível.'}</p>
           </div>
@@ -386,7 +506,7 @@ function renderFeaturedAnimes() {
   // Configura o carrossel
   let currentIndex = featuredAnimes.length; // Começar do conjunto do meio
   const slideWidth = carouselTrack.querySelector('.anime-card').offsetWidth + 20; // 20 é o margin total
-  
+
   // Posiciona no conjunto do meio
   carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
 
@@ -441,12 +561,12 @@ function toggleFavoriteFromCard(animeTitle) {
   }
 
   toggleFavorite(animeTitle);
-  
+
   // Atualiza todos os botões do mesmo anime no carrossel
   const favoriteBtns = document.querySelectorAll(`[onclick*="${animeTitle}"]`);
   const isFavorited = isAnimeFavorited(animeTitle);
   const newFavoriteCount = countAnimeFavorites(animeTitle);
-  
+
   favoriteBtns.forEach(btn => {
     btn.classList.toggle('is-favorited', isFavorited);
     const countElement = btn.querySelector('.favorite-number');
@@ -461,7 +581,7 @@ function loadLatestReviews() {
 
   // Recupera todos os comentários dos animes
   const allComments = JSON.parse(localStorage.getItem('animeComments')) || {};
-  
+
   // Cria um array com todos os comentários e suas informações
   const reviews = Object.entries(allComments).flatMap(([animeTitle, comments]) =>
     comments.map(comment => ({
@@ -483,9 +603,9 @@ function loadLatestReviews() {
       <a href="animes.html?anime=${encodeURIComponent(review.animeTitle)}" class="inicio-card-link">
         <span class="inicio-card-link-title">${review.animeTitle}</span>
         <p class="inicio-card-link-subtitle">
-          ${review.comment.text.length > 50 
-            ? review.comment.text.substring(0, 50) + '...' 
-            : review.comment.text}
+          ${review.comment.text.length > 50
+      ? review.comment.text.substring(0, 50) + '...'
+      : review.comment.text}
         </p>
       </a>
     </li>
@@ -528,7 +648,7 @@ function getCategoryDescription(category) {
       icon: '✨'
     }
   };
-  
+
   return categoryInfo[category] || {
     desc: 'Explore mais desta categoria',
     icon: '📺'
@@ -568,7 +688,7 @@ function renderPopularCategories() {
   if (!popularCategoriesList) return;
 
   const popularCategories = getPopularCategories();
-  
+
   popularCategoriesList.innerHTML = popularCategories.map(({ category, desc, icon, count, examples }) => `
     <li class="index-card-item">
       <a href="animes.html?category=${encodeURIComponent(category)}" class="index-card-link">
@@ -594,7 +714,7 @@ function renderIndexNews() {
   if (!newsGrid) return;
 
   const newsData = JSON.parse(localStorage.getItem('news') || '[]');
-  
+
   // Ordena as notícias por data, mais recentes primeiro
   const sortedNews = [...newsData].sort((a, b) =>
     new Date(b.date) - new Date(a.date)
@@ -638,12 +758,12 @@ function getSeasonalAnimes(limit = 12) {
   try {
     const animes = JSON.parse(localStorage.getItem('animeData')) || [];
     const currentSeason = getCurrentSeason();
-    
+
     // Filtra animes da temporada atual
     const seasonalAnimes = animes.filter(anime => {
       // Verifica se tem a propriedade season e se os valores correspondem
-      return anime.season?.period?.toLowerCase() === currentSeason.season.toLowerCase() && 
-             parseInt(anime.season?.year) === currentSeason.year;
+      return anime.season?.period?.toLowerCase() === currentSeason.season.toLowerCase() &&
+        parseInt(anime.season?.year) === currentSeason.year;
     });
 
     // Ordena por pontuação antes de retornar
@@ -660,7 +780,7 @@ function getSeasonalAnimes(limit = 12) {
 function getCurrentSeason() {
   const date = new Date();
   const month = date.getMonth();
-  
+
   let season;
   if (month >= 0 && month < 3) season = 'Inverno';
   else if (month >= 3 && month < 6) season = 'Primavera';
@@ -688,7 +808,7 @@ function renderSeasonalAnimes() {
 
   // Duplica os animes para criar efeito infinito
   const duplicatedAnimes = [...seasonalAnimes, ...seasonalAnimes, ...seasonalAnimes];
-  
+
   carouselTrack.innerHTML = duplicatedAnimes.map(anime => `
     <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="anime-card">
       <div class="image-wrapper">
@@ -736,7 +856,7 @@ function renderSeasonalAnimes() {
   // Configuração do carrossel
   let currentIndex = seasonalAnimes.length;
   const slideWidth = carouselTrack.querySelector('.anime-card').offsetWidth + 20;
-  
+
   carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
 
   // Botões de navegação
@@ -783,14 +903,14 @@ function updateCurrentSeasonLink() {
   const currentSeason = getCurrentSeason();
   const seasonLink = document.getElementById('current-season-link');
   const seasonText = document.getElementById('current-season-text');
-  
+
   if (seasonLink && seasonText) {
     const seasonName = currentSeason.season.toLowerCase();
     const year = currentSeason.year;
-    
+
     // Atualiza o href com a temporada atual
     seasonLink.href = `animes.html?season=${seasonName}&year=${year}`;
-    
+
     // Atualiza o texto com a temporada atual
     seasonText.textContent = `Top animes de ${currentSeason.season} ${year}`;
   }
@@ -798,11 +918,12 @@ function updateCurrentSeasonLink() {
 
 // Inicialização da página
 window.addEventListener('DOMContentLoaded', () => {
+  window.ThemeManager.init(); // Inicializa o sistema de temas primeiro
   updateUserInterface();
-  updateCurrentSeasonLink(); 
-  renderFeaturedAnimes(); 
+  updateCurrentSeasonLink();
+  renderFeaturedAnimes();
   renderSeasonalAnimes();
   loadLatestReviews();
-  renderPopularCategories(); 
+  renderPopularCategories();
   renderIndexNews();
 });
