@@ -40,6 +40,9 @@ function getYouTubeEmbedUrl(url) {
   return videoId ? `https://www.youtube.com/embed/${videoId}` : '';
 }
 
+// Adicione esta constante no topo do arquivo junto com as outras
+const STAFF_LIMIT = 6; // Limite inicial de membros da staff mostrados
+
 // Renderiza detalhes completos do anime na página
 function renderAnimeDetails(anime) {
   const container = document.getElementById('anime-content');
@@ -199,7 +202,7 @@ function renderAnimeDetails(anime) {
     ${anime.staff && anime.staff.length > 0 ? `
       <div class="staff-section">
         <h2 class="text-2xl font-bold mb-4">Staff</h2>
-        <div class="staff-grid">
+        <div class="staff-grid ${anime.staff.length > STAFF_LIMIT ? 'collapsed' : ''}" id="staffGrid">
           ${anime.staff.map(member => `
             <div class="staff-card">
               <div>
@@ -209,6 +212,14 @@ function renderAnimeDetails(anime) {
             </div>
           `).join('')}
         </div>
+        ${anime.staff.length > STAFF_LIMIT ? `
+          <button class="staff-toggle-btn" onclick="toggleStaffGrid()">
+            <span class="text">Ver mais</span>
+            <svg class="icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        ` : ''}
       </div>
     ` : ''}
   `;
@@ -1388,4 +1399,24 @@ function formatRole(role) {
     'other': 'Outro'
   };
   return roles[role.toLowerCase()] || role;
+}
+
+// Adicione esta nova função para controlar a expansão/contração da grid
+function toggleStaffGrid() {
+  const grid = document.getElementById('staffGrid');
+  const btn = document.querySelector('.staff-toggle-btn');
+  const isCollapsed = grid.classList.contains('collapsed');
+  
+  grid.classList.toggle('collapsed');
+  
+  // Atualiza o texto e rotação do ícone
+  if (isCollapsed) {
+    btn.querySelector('.text').textContent = 'Ver menos';
+    btn.classList.add('expanded');
+  } else {
+    btn.querySelector('.text').textContent = 'Ver mais';
+    btn.classList.remove('expanded');
+    // Scroll suave de volta ao topo da seção
+    document.querySelector('.staff-section').scrollIntoView({ behavior: 'smooth' });
+  }
 }

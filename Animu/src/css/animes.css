@@ -1465,3 +1465,55 @@
     padding: 0.75rem;
   }
 }
+
+/* Estilos para expansão da Staff */
+.staff-grid.collapsed {
+  max-height: 300px;
+  overflow: hidden;
+  position: relative;
+}
+
+.staff-grid.collapsed::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(to bottom, transparent, var(--background));
+  pointer-events: none;
+}
+
+.staff-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem auto 0;
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  background: var(--primary-color);
+  color: white;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.staff-toggle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+}
+
+.staff-toggle-btn:active {
+  transform: translateY(0);
+}
+
+.staff-toggle-btn .icon {
+  transition: transform 0.3s ease;
+}
+
+.staff-toggle-btn.expanded .icon {
+  transform: rotate(180deg);
+}
+
+.staff-toggle-btn.hidden {
+  display: none;
+}
