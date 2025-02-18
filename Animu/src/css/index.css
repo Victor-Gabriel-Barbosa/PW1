@@ -71,7 +71,7 @@
 }
 
 .parallax-content:hover {
-  transform: translateY(-5px);
+  transform: scale(1.02);
   box-shadow: 
     0 12px 40px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.15) inset;

@@ -73,7 +73,6 @@ nav {
   background-color: rgba(var(--background-rgb), 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--card-shadow);
   transform: translateY(0);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 0;
@@ -157,7 +156,7 @@ nav .ml-10 a.active {
 .menu-toggle-btn {
   padding: 4.9px;
   background: transparent;
-  border-radius: 10px; 
+  border-radius: 5px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -264,11 +263,6 @@ nav .ml-10 a.active {
   position: relative;
 }
 
-/* Remove efeitos de gradiente anteriores */
-.side-menu .nav-link::before {
-  display: none;
-}
-
 /* Novo efeito de hover com gradiente */
 .side-menu .nav-link::before {
   content: '';
@@ -313,7 +307,7 @@ nav .ml-10 a.active {
   z-index: 1;
 }
 
-/* Atualização do efeito dos ícones */
+/* Efeito dos ícones */
 .side-menu .nav-link svg {
   fill: var(--text-color);
   opacity: 0.7;
@@ -1031,6 +1025,7 @@ body.menu-open {
 
 /* Ajuste para padding do conteúdo principal */
 body.has-navbar {
+  padding-top: 55px; 
   transition: padding-left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
