@@ -1233,15 +1233,17 @@
 
 .hero-backdrop {
   position: absolute;
-  top: 0;
+  top: -50px; /* Aumenta a área para o efeito parallax */
   left: 0;
   width: 100%;
-  height: 100%;
+  height: calc(100% + 100px); /* Aumenta a altura para compensar o movimento */
   background-size: cover;
   background-position: center;
+  background-attachment: fixed; /* Adiciona efeito parallax nativo */
   filter: blur(4px);
   opacity: 0.7;
   transform: scale(1.1);
+  will-change: transform; /* Otimiza performance */
 }
 
 .hero-gradient {

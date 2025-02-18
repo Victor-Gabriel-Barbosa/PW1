@@ -235,6 +235,33 @@ function renderAnimeDetails(anime) {
 
   // Adiciona renderização de animes relacionados após renderizar os detalhes do anime
   renderRelatedAnimes(anime);
+
+  // Adicione esta linha antes do return
+  initParallax();
+}
+
+// Inicializa o efeito parallax
+function initParallax() {
+  const heroBackdrop = document.querySelector('.hero-backdrop');
+  if (!heroBackdrop) return;
+
+  let ticking = false;
+  const PARALLAX_SPEED = 0.4; // Ajuste este valor para mudar a velocidade do efeito
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        const scrolled = window.pageYOffset;
+        const parallaxOffset = scrolled * PARALLAX_SPEED;
+        
+        // Aplica a transformação com translate3d para melhor performance
+        heroBackdrop.style.transform = `scale(1.1) translate3d(0, ${parallaxOffset}px, 0)`;
+        ticking = false;
+      });
+
+      ticking = true;
+    }
+  });
 }
 
 // Padroniza categorias para busca e filtragem
