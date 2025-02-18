@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora</title>
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora</h1>
+
+        <div class="card">
+            <h2>Verificar Desempenho</h2>
+            <div class="input-group">
+                <label for="nota">Digite a sua nota</label>
+                <input type="number" id="nota" placeholder="0 - 100"/>
+                <button onclick="verificarNota()">Verificar</button>
+            </div>
+            <p id="desempenho" class="resultado"></p>
+        </div>
+
+        <div class="card">
+            <h2>Mês do Ano</h2>
+            <div class="input-group">
+                <label for="mes">Digite o mês do ano</label>
+                <input type="number" id="mes" placeholder="1 - 12"/>
+                <button onclick="verificarMes()">Verificar</button>
+            </div>
+            <p id="nomeMes" class="resultado"></p>
+        </div>
+
+        <div class="card">
+            <h2>Média de Notas</h2>
+            <div class="input-group">
+                <label for="nota1">Digite as suas notas</label>
+                <div class="notas-grid">
+                    <input type="number" id="nota1" placeholder="Nota 1"/>
+                    <input type="number" id="nota2" placeholder="Nota 2"/>
+                    <input type="number" id="nota3" placeholder="Nota 3"/>
+                </div>
+                <button onclick="mediaNotas()">Calcular</button>
+            </div>
+            <p id="media" class="resultado"></p>
+        </div>
+
+        <div class="card">
+            <h2>Cálculo de Imposto</h2>
+            <div class="input-group">
+                <label for="salario">Digite o seu salário (bruto)</label>
+                <input type="number" id="salario" placeholder="R$"/>
+                <button onclick="impostoSalario()">Calcular</button>
+            </div>
+            <p id="imposto" class="resultado"></p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
