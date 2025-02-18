@@ -166,6 +166,9 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('tags').value = newsData.tags.join(', ');
       tinymce.get('content').setContent(newsData.content);
 
+      // Atualiza o contador de caracteres do resumo
+      updateSummaryCounter();
+      
       // Atualiza o progresso do formulário
       if (typeof updateFormProgress === 'function') {
         updateFormProgress();
@@ -368,8 +371,17 @@ document.addEventListener('DOMContentLoaded', function () {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    // Validar conteúdo antes de submeter
-    const content = tinymce.get('content').getContent();
+    // Validar campos obrigatórios
+    const requiredFields = ['title', 'category', 'summary', 'image'];
+    const emptyFields = requiredFields.filter(field => !document.getElementById(field).value.trim());
+    
+    if (emptyFields.length > 0) {
+      alert('Por favor, preencha todos os campos obrigatórios');
+      return;
+    }
+
+    // Validar conteúdo do TinyMCE
+    const content = tinymce.get('content').getContent().trim();
     if (!content) {
       alert('Por favor, preencha o conteúdo da notícia');
       return;
@@ -382,7 +394,7 @@ document.addEventListener('DOMContentLoaded', function () {
       tags: document.getElementById('tags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
       image: document.getElementById('image').value,
       summary: document.getElementById('summary').value,
-      content: content, // Pega conteúdo do editor
+      content: content,
       date: editingId ? (await getExistingDate(editingId)) : new Date().toISOString()
     };
 

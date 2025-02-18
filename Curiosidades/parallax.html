@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Efeito Parallax</title>
+  <style>
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    .parallax {
+      background-image: url('https://m.media-amazon.com/images/I/91NOfyJbXJL.jpg');
+      height: 100vh;
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    .content {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f4f4f4;
+      font-size: 2em;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="parallax"></div>
+  <div class="content">Conteúdo 1</div>
+  <div class="parallax"></div>
+  <div class="content">Conteúdo 2</div>
+  <div class="parallax"></div>
+</body>
+
+</html>
