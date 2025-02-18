@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const addBtn = document.getElementById('add-news-btn');
   const closeBtn = document.querySelector('.modal-close');
   const cancelBtn = document.getElementById('cancel-btn');
-  const newsList = document.querySelector('.admin-news-list');
 
   let editingId = null;
 
@@ -39,7 +38,72 @@ document.addEventListener('DOMContentLoaded', function () {
     // Configuração para tema escuro
     skin: (document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide'),
     content_css: (document.documentElement.classList.contains('dark') ? 'dark' : 'default'),
+  }).then(() => {
+    // Chama setupFormProgress somente após o TinyMCE estar pronto
+    setupFormProgress();
   });
+
+  // Adiciona após a inicialização do TinyMCE
+  let updateFormProgress; // Define a variável em um escopo acessível
+
+  function setupFormProgress() {
+    const form = document.getElementById('news-form');
+    const progressBar = document.getElementById('formProgress');
+    const requiredFields = ['title', 'category', 'summary', 'image'];
+    const totalFields = requiredFields.length + 1; // +1 para o campo de conteúdo
+    
+    updateFormProgress = function() {
+      let filledFields = 0;
+      
+      // Verifica campos obrigatórios
+      requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field && field.value.trim()) {
+          filledFields++;
+          console.log(`Campo ${fieldId} preenchido: ${field.value.trim()}`);
+        }
+      });
+
+      // Verifica o conteúdo do editor TinyMCE
+      const editor = tinymce.get('content');
+      if (editor && editor.getContent().trim()) {
+        filledFields++;
+        console.log('Editor preenchido');
+      }
+
+      // Calcula a porcentagem
+      const progress = Math.round((filledFields / totalFields) * 100);
+      console.log(`Progresso: ${progress}% (${filledFields}/${totalFields} campos)`);
+      
+      // Atualiza a barra de progresso
+      progressBar.style.width = `${progress}%`;
+      
+      // Atualiza a cor baseado no progresso
+      if (progress < 33) {
+        progressBar.style.background = 'var(--error-color, #EF4444)';
+      } else if (progress < 66) {
+        progressBar.style.background = 'var(--warning-color, #F59E0B)';
+      } else {
+        progressBar.style.background = 'var(--success-color, #10B981)';
+      }
+    }
+
+    // Monitora mudanças em campos de texto e select
+    form.querySelectorAll('input, select, textarea').forEach(field => {
+      field.addEventListener('input', updateFormProgress);
+      field.addEventListener('change', updateFormProgress);
+    });
+
+    // Monitora mudanças no TinyMCE
+    const editor = tinymce.get('content');
+    if (editor) {
+      editor.on('input', updateFormProgress);
+      editor.on('change', updateFormProgress);
+    }
+
+    // Atualização inicial
+    updateFormProgress();
+  }
 
   // Após a inicialização do TinyMCE
   const generateBtn = document.getElementById('generate-news-btn');
@@ -56,59 +120,60 @@ document.addEventListener('DOMContentLoaded', function () {
     generateBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Gerando...';
 
     try {
-      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyAannBPxmplEUwKZaQj_5gG3Ms9t6IXnvI', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
+      // Simulação de resposta
+      const templates = {
+        anuncio: {
+          title: `${title} anuncia nova temporada para 2024`,
+          summary: `Fãs comemoram o anúncio oficial da nova temporada de ${title}, que promete trazer grandes revelações e animações ainda mais impressionantes.`,
+          content: `<p>Os fãs de anime têm um grande motivo para comemorar! Foi anunciado oficialmente que ${title} retornará com uma nova temporada em 2024. O anúncio foi feito através das redes sociais oficiais da obra e já está gerando grande expectativa na comunidade.</p>
+                    <p>O estúdio responsável pela adaptação garantiu que manterá o alto padrão de animação que tornou a série famosa, prometendo cenas ainda mais impressionantes e fiéis ao material original. A equipe principal de produção permanece a mesma da temporada anterior, o que é uma ótima notícia para os fãs.</p>
+                    <p>Ainda não foram revelados detalhes específicos sobre a quantidade de episódios ou exatamente qual arco do mangá será adaptado, mas especula-se que a nova temporada poderá cobrir alguns dos momentos mais aguardados pelos fãs da obra.</p>`,
+          tags: ["anime", "anúncio", "nova temporada", title.toLowerCase()],
+          category: "Anúncio"
         },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: `Gere uma notícia sobre anime relacionada ao tópico: "${title}".
-                     Formate a resposta exatamente assim:
-                     {
-                       "title": "título da notícia",
-                       "summary": "resumo curto da notícia",
-                       "content": "<p>primeiro parágrafo</p><p>segundo parágrafo</p>",
-                       "tags": ["tag1", "tag2", "tag3"],
-                       "category": "Notícia"
-                     }`
-            }]
-          }]
-        })
-      });
+        evento: {
+          title: `${title} confirmado na Anime Expo 2024`,
+          summary: `Produtores e dubladores de ${title} farão participação especial no maior evento de anime do ocidente.`,
+          content: `<p>A Anime Expo 2024 acaba de anunciar mais uma atração imperdível: um painel especial dedicado a ${title}! O evento, que acontece em Los Angeles, receberá membros da equipe de produção e dubladores do anime para uma série de atividades exclusivas.</p>
+                    <p>Entre as atrações confirmadas estão sessões de autógrafos, exibição de cenas inéditas da próxima temporada e uma exposição com artworks originais utilizados na produção do anime. Os fãs também poderão participar de uma sessão de perguntas e respostas com os convidados.</p>
+                    <p>Os ingressos para o evento começarão a ser vendidos no próximo mês, e a organização já alerta que a procura deve ser intensa, especialmente para as atividades relacionadas a ${title}.</p>`,
+          tags: ["anime", "evento", "anime expo", title.toLowerCase()],
+          category: "Evento"
+        },
+        noticia: {
+          title: `${title} quebra recordes de audiência no streaming`,
+          summary: `Série alcança números impressionantes e se torna um dos animes mais assistidos da temporada.`,
+          content: `<p>O sucesso de ${title} não para de crescer! De acordo com dados recentes divulgados pelas principais plataformas de streaming, o anime atingiu números recordes de visualização, superando todas as expectativas iniciais.</p>
+                    <p>O crescimento expressivo na base de fãs internacional tem chamado atenção da indústria, com destaque especial para o mercado ocidental. A popularidade da série tem influenciado significativamente o cenário do anime, inspirando novas produções e elevando os padrões de qualidade.</p>
+                    <p>Este sucesso também se reflete no mercado de mangás e produtos relacionados, com um aumento significativo nas vendas de volumes físicos e itens colecionáveis da franquia. A editora responsável já confirmou que fará novas tiragens para atender à demanda crescente.</p>`,
+          tags: ["anime", "sucesso", "streaming", title.toLowerCase()],
+          category: "Notícia"
+        }
+      };
 
-      const data = await response.json();
+      // Seleciona aleatoriamente um dos templates
+      const types = Object.keys(templates);
+      const randomType = types[Math.floor(Math.random() * types.length)];
+      const newsData = templates[randomType];
 
-      if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) throw new Error('Resposta inválida da API');
+      // Simula delay da API
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
-      const responseText = data.candidates[0].content.parts[0].text;
+      // Preenche os campos do formulário
+      document.getElementById('title').value = newsData.title;
+      document.getElementById('summary').value = newsData.summary;
+      document.getElementById('category').value = newsData.category;
+      document.getElementById('tags').value = newsData.tags.join(', ');
+      tinymce.get('content').setContent(newsData.content);
 
-      // Procura o JSON na resposta
-      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) throw new Error('JSON não encontrado na resposta');
-
-      try {
-        const newsData = JSON.parse(jsonMatch[0]);
-
-        // Verifica se o JSON tem todos os campos necessários
-        if (!newsData.title || !newsData.content) throw new Error('Dados incompletos na resposta');
-
-        // Preenche os campos do formulário
-        document.getElementById('title').value = newsData.title;
-        document.getElementById('summary').value = newsData.summary || '';
-        document.getElementById('category').value = newsData.category || 'Notícia';
-        document.getElementById('tags').value = (newsData.tags || []).join(', ');
-        tinymce.get('content').setContent(newsData.content);
-
-      } catch (jsonError) {
-        console.error('Erro ao processar JSON:', jsonError);
-        throw new Error('Formato de resposta inválido');
+      // Atualiza o progresso do formulário
+      if (typeof updateFormProgress === 'function') {
+        updateFormProgress();
       }
 
     } catch (error) {
       console.error('Erro ao gerar notícia:', error);
-      alert(`Erro ao gerar notícia: ${error.message}`);
+      alert('Erro ao gerar notícia. Por favor, tente novamente.');
     } finally {
       generateBtn.disabled = false;
       generateBtn.innerHTML = '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>Gerar com IA';
@@ -120,6 +185,36 @@ document.addEventListener('DOMContentLoaded', function () {
   closeBtn.addEventListener('click', closeModal);
   cancelBtn.addEventListener('click', closeModal);
   form.addEventListener('submit', handleSubmit);
+
+  const clearBtn = document.getElementById('clear-btn');
+  clearBtn.addEventListener('click', clearForm);
+
+  function clearForm() {
+    if (confirm('Tem certeza que deseja limpar todos os campos?')) {
+      // Limpa campos principais
+      document.getElementById('title').value = '';
+      document.getElementById('category').value = '';
+      document.getElementById('tags').value = '';
+      document.getElementById('summary').value = '';
+      
+      // Limpa o editor TinyMCE
+      tinymce.get('content').setContent('');
+      
+      // Limpa a imagem
+      document.getElementById('image').value = '';
+      imagePreview.classList.add('hidden');
+      imageDropZone.querySelector('.upload-area').classList.remove('hidden');
+      
+      // Reseta contadores
+      summaryCounter.textContent = `0/${maxLength}`;
+      summaryCounter.classList.remove('text-red-500');
+      
+      // Usa updateFormProgress ao invés de setupFormProgress
+      if (typeof updateFormProgress === 'function') {
+        updateFormProgress();
+      }
+    }
+  }
 
   /**
    * Carrega e exibe as notícias do localStorage
@@ -206,41 +301,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   
 
-  /**
-   * Gera HTML para card de notícia com controles administrativos
-   * @param {Object} news - Dados da notícia
-   */
-  function createNewsCard(news) {
-    return `
-      <div class="admin-news-item">
-        <div class="news-preview">
-          <img src="${news.image}" alt="${news.title}">
-        </div>
-        <div class="news-info">
-          <span class="news-category">${news.category}</span>
-          <h3>${news.title}</h3>
-          <p class="text-sm opacity-75 line-clamp-2">${news.summary}</p>
-          <div class="news-tags">
-            ${news.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-          </div>
-        </div>
-        <div class="news-actions">
-          <button class="btn-edit" title="Editar notícia" data-id="${news.id}">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-            </svg>
-          </button>
-          <button class="btn-delete" title="Excluir notícia" data-id="${news.id}">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-    `;
-  }
 
   /**
    * Gerencia estado do modal para criação/edição
@@ -271,12 +331,34 @@ document.addEventListener('DOMContentLoaded', function () {
       tinymce.get('content').setContent(''); // Limpar editor
       document.getElementById('modal-title').textContent = 'Nova Notícia';
     }
+    
+    // Atualiza o progresso após abrir o modal
+    if (typeof updateFormProgress === 'function') {
+      setTimeout(updateFormProgress, 100); // Pequeno delay para garantir que o TinyMCE está pronto
+    }
   }
+
+  // Adicionar contador de caracteres para o resumo
+  const summaryInput = document.getElementById('summary');
+  const summaryCounter = document.getElementById('summary-counter');
+  const maxLength = 200;
+
+  function updateSummaryCounter() {
+    const currentLength = summaryInput.value.length;
+    summaryCounter.textContent = `${currentLength}/${maxLength}`;
+    
+    if (currentLength >= maxLength * 0.9) summaryCounter.classList.add('text-red-500');
+    else summaryCounter.classList.remove('text-red-500');
+  }
+
+  summaryInput.addEventListener('input', updateSummaryCounter);
 
   function closeModal() {
     modal.classList.add('hidden');
     form.reset();
     editingId = null;
+    summaryCounter.textContent = `0/${maxLength}`;
+    summaryCounter.classList.remove('text-red-500');
   }
 
   /**
@@ -323,7 +405,7 @@ document.addEventListener('DOMContentLoaded', function () {
     else news.unshift(newsData); // Adiciona no início do array
 
     localStorage.setItem('news', JSON.stringify(news));
-    // Disparar evento para atualizar outras páginas
+    // Dispara evento para atualizar outras páginas
     window.dispatchEvent(new Event('newsUpdated'));
   }
 
@@ -381,6 +463,11 @@ document.addEventListener('DOMContentLoaded', function () {
       imageInput.value = '';
       imagePreview.classList.add('hidden');
       imageDropZone.querySelector('.upload-area').classList.remove('hidden');
+      
+      // Atualiza a barra de progresso quando a imagem for removida
+      if (typeof updateFormProgress === 'function') {
+        updateFormProgress();
+      }
     }
   });
 
@@ -398,6 +485,11 @@ document.addEventListener('DOMContentLoaded', function () {
       previewImage.src = imageData;
       imagePreview.classList.remove('hidden');
       imageDropZone.querySelector('.upload-area').classList.add('hidden');
+      
+      // Atualiza a barra de progresso quando a imagem for carregada
+      if (typeof updateFormProgress === 'function') {
+        updateFormProgress();
+      }
     };
     reader.readAsDataURL(file);
   }

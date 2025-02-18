@@ -61,131 +61,156 @@
       </div>
     </div>
 
-    <!-- Modal de Notícia - Layout Melhorado -->
+    <!-- Modal de Notícia - Layout Padronizado -->
     <div id="news-modal" class="modal hidden">
-      <div class="modal-content max-w-4xl w-full">
-        <div class="modal-header border-b border-gray-200 pb-4 mb-6">
-          <h2 id="modal-title" class="text-2xl font-bold">Nova Notícia</h2>
-          <button class="modal-close hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full p-2 transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+      <div class="admin-form-container" style="max-width: 800px; max-height: 80vh; width: 95%;">
+        <div class="modal-header-fixed">
+          <div class="flex justify-between items-center">
+            <h2 id="modal-title" class="text-2xl font-bold">Nova Notícia</h2>
+            <button type="button" class="modal-close close-btn text-gray-500 hover:text-gray-700">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <!-- Barra de progresso do formulário -->
+          <div class="progress-bar mt-4">
+            <div class="progress-fill" id="formProgress"></div>
+          </div>
         </div>
 
-        <form id="news-form" class="admin-form space-y-6">
-          <!-- Seção Principal -->
-          <div class="space-y-6">
-            <!-- Título e Categoria -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div class="md:col-span-2">
-                <div class="form-group">
-                  <label for="title" class="form-label">Título da Notícia</label>
-                  <div class="flex gap-2">
-                    <input type="text" id="title" name="title" 
-                           class="form-input focus-ring flex-1" 
-                           placeholder="Digite o título da notícia"
-                           required>
-                    <button type="button" 
-                            id="generate-news-btn"
-                            class="btn btn-secondary flex items-center gap-2">
-                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        <div class="modal-content-scroll">
+          <form id="news-form" class="admin-form space-y-6">
+            <!-- Guia rápido -->
+            <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg mb-4">
+              <h3 class="text-sm font-semibold mb-2">Dicas de preenchimento:</h3>
+              <ul class="text-sm space-y-1">
+                <li>• Escolha um título claro e atrativo para a notícia</li>
+                <li>• Use uma imagem relevante e de boa qualidade</li>
+                <li>• Escreva um resumo conciso que capture a essência da notícia</li>
+              </ul>
+            </div>
+
+            <!-- Seção Principal -->
+            <div class="space-y-6">
+              <!-- Título e Categoria -->
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="md:col-span-2">
+                  <div class="form-group required">
+                    <label for="title" class="form-label">Título da Notícia</label>
+                    <div class="flex gap-2">
+                      <input type="text" id="title" name="title" 
+                             class="form-input focus-ring flex-1" 
+                             placeholder="Digite o título da notícia"
+                             required>
+                      <button type="button" 
+                              id="generate-news-btn"
+                              class="btn btn-secondary flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                        Gerar com IA
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="form-group required">
+                    <label for="category" class="form-label">Categoria</label>
+                    <select id="category" name="category" 
+                            class="form-select focus-ring" required>
+                      <option value="" disabled selected>Selecione...</option>
+                      <option value="Anúncio">Anúncio</option>
+                      <option value="Lançamento">Lançamento</option>
+                      <option value="Evento">Evento</option>
+                      <option value="Notícia">Notícia Geral</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tags -->
+              <div class="form-group">
+                <label for="tags" class="form-label flex items-center gap-2">
+                  Tags
+                  <span class="text-sm text-gray-500">(Separe por vírgulas)</span>
+                </label>
+                <input type="text" id="tags" name="tags" 
+                       class="form-input focus-ring"
+                       placeholder="Ex: anime, evento, lançamento">
+              </div>
+
+              <!-- Upload de Imagem -->
+              <div class="form-group required">
+                <label class="form-label">Imagem da Notícia</label>
+                <div class="image-upload-container focus-ring-container" id="image-drop-zone">
+                  <input type="file" id="image-file" accept="image/*" class="hidden">
+                  <input type="hidden" id="image" name="image">
+                  
+                  <div class="upload-area p-8 text-center">
+                    <div class="upload-prompt">
+                      <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
-                      Gerar com IA
+                      <p class="mb-2 text-lg">Arraste uma imagem ou clique para selecionar</p>
+                      <p class="text-sm text-gray-500">PNG, JPG ou GIF (max. 2MB)</p>
+                    </div>
+                  </div>
+
+                  <div class="image-preview hidden">
+                    <img id="preview-image" src="" alt="Preview" class="max-h-[300px] mx-auto rounded-lg shadow-lg">
+                    <button type="button" class="remove-image" id="remove-image">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
                     </button>
                   </div>
                 </div>
               </div>
-              <div>
-                <div class="form-group">
-                  <label for="category" class="form-label">Categoria</label>
-                  <select id="category" name="category" 
-                          class="form-select focus-ring" required>
-                    <option value="" disabled selected>Selecione...</option>
-                    <option value="Anúncio">Anúncio</option>
-                    <option value="Lançamento">Lançamento</option>
-                    <option value="Evento">Evento</option>
-                    <option value="Notícia">Notícia Geral</option>
-                  </select>
-                </div>
+
+              <!-- Resumo -->
+              <div class="form-group required">
+                <label for="summary" class="form-label flex items-center justify-between">
+                  <span>Resumo</span>
+                  <span class="text-sm text-gray-500" id="summary-counter">0/200</span>
+                </label>
+                <textarea id="summary" name="summary" 
+                         class="form-textarea focus-ring" 
+                         maxlength="200" rows="2"
+                         placeholder="Um breve resumo da notícia"
+                         required></textarea>
+              </div>
+
+              <!-- Conteúdo -->
+              <div class="form-group required">
+                <label for="content" class="form-label">Conteúdo</label>
+                <textarea id="content" name="content" 
+                          class="form-textarea focus-ring" 
+                          rows="8"
+                          placeholder="Conteúdo completo da notícia"
+                          required></textarea>
               </div>
             </div>
 
-            <!-- Tags -->
-            <div class="form-group">
-              <label for="tags" class="form-label flex items-center gap-2">
-                Tags
-                <span class="text-sm text-gray-500">(Separe por vírgulas)</span>
-              </label>
-              <input type="text" id="tags" name="tags" 
-                     class="form-input focus-ring"
-                     placeholder="Ex: anime, evento, lançamento">
+            <!-- Botões -->
+            <div class="flex flex-col sm:flex-row justify-end gap-2 sm:gap-4 mt-6 pt-4 border-t">
+              <button type="button" id="clear-btn" 
+                class="w-full sm:w-auto btn btn-secondary order-3 sm:order-1">
+                Limpar
+              </button>
+              <button type="button" id="cancel-btn"
+                class="w-full sm:w-auto btn btn-cancel order-2">
+                Cancelar
+              </button>
+              <button type="submit" id="save-btn"
+                class="w-full sm:w-auto btn btn-primary order-1 sm:order-3">
+                Salvar Notícia
+              </button>
             </div>
-
-            <!-- Upload de Imagem -->
-            <div class="form-group">
-              <label class="form-label">Imagem da Notícia</label>
-              <div class="image-upload-container focus-ring-container" id="image-drop-zone">
-                <input type="file" id="image-file" accept="image/*" class="hidden">
-                <input type="hidden" id="image" name="image">
-                
-                <div class="upload-area p-8 text-center">
-                  <div class="upload-prompt">
-                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <p class="mb-2 text-lg">Arraste uma imagem ou clique para selecionar</p>
-                    <p class="text-sm text-gray-500">PNG, JPG ou GIF (max. 2MB)</p>
-                  </div>
-                </div>
-
-                <div class="image-preview hidden">
-                  <img id="preview-image" src="" alt="Preview" class="max-h-[300px] mx-auto rounded-lg shadow-lg">
-                  <button type="button" class="remove-image" id="remove-image">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Resumo -->
-            <div class="form-group">
-              <label for="summary" class="form-label flex items-center justify-between">
-                <span>Resumo</span>
-                <span class="text-sm text-gray-500" id="summary-counter">0/200</span>
-              </label>
-              <textarea id="summary" name="summary" 
-                       class="form-textarea focus-ring" 
-                       maxlength="200" rows="2"
-                       placeholder="Um breve resumo da notícia"
-                       required></textarea>
-            </div>
-
-            <!-- Conteúdo -->
-            <div class="form-group">
-              <label for="content" class="form-label">Conteúdo</label>
-              <textarea id="content" name="content" 
-                        class="form-textarea focus-ring" 
-                        rows="8"
-                        placeholder="Conteúdo completo da notícia"></textarea>
-            </div>
-          </div>
-
-          <!-- Botões -->
-          <div class="modal-footer flex items-center justify-end gap-4 pt-6 border-t border-gray-200">
-            <button type="button" class="btn btn-cancel" id="cancel-btn">
-              Cancelar
-            </button>
-            <button type="submit" class="btn btn-primary" id="save-btn">
-              Salvar Notícia
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   </div>
