@@ -21,7 +21,7 @@
   border: 1px solid var(--input-border-color);
   border-radius: 20px 0 0 20px;
   font-size: 16px;
-  background: var(--background);
+  background: transparent;
   color: var(--text-color);
   transition: all 0.3s ease;
   padding-right: 36px;
@@ -41,7 +41,7 @@
 .search-button {
   height: 36px; 
   padding: 0 20px;
-  background: var(--background);
+  background: transparent;
   border: 1px solid var(--input-border-color);
   border-left: none;
   border-radius: 0 20px 20px 0;
@@ -151,7 +151,7 @@
 .filter-btn {
   height: 36px;
   padding: 0 10px;
-  background: var(--background);
+  background: transparent;
   border: 1px solid var(--input-border-color);
   border-left: none;
   cursor: pointer;
