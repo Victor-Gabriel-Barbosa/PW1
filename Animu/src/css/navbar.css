@@ -171,6 +171,11 @@ nav .ml-10 a.active {
 .menu-toggle-btn:hover {
   transform: scale(1.1);
   background: var(--card-shadow);
+  fill: var(--primary-color);
+}
+
+.menu-toggle-btn:hover svg {
+  fill: var(--primary-color);
 }
 
 .menu-toggle-btn svg {
