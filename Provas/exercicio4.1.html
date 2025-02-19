@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercício</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      
+      .quadrado-verde {
+        width: 150px;
+        height: 150px;
+        background-color: green;
+        z-index: 2;
+        position: absolute;
+        top: 50px;
+        left: 50px;
+      }
+
+      .quadrado-azul {
+        width: 150px;
+        height: 150px;
+        background-color: blue;
+        z-index: 1;
+        position: absolute;
+        top: 100px;
+        left: 100px;
+      }
+
+      .quadrado-vermelho {
+        width: 150px;
+        height: 150px;
+        background-color: red;
+        z-index: 1;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="quadrado-verde"></div>
+    <div class="quadrado-azul"></div>
+    <div class="quadrado-vermelho"></div>
+  </body>
+
+</html>
