@@ -68,7 +68,6 @@ body.has-navbar.menu-open {
   overflow: hidden;
 }
 
-/* Ajuste para quando o menu não estiver aberto */
 body.has-navbar:not(.menu-open) {
   padding-left: 60px; 
   transition: padding-left 0.3s ease;
@@ -111,7 +110,6 @@ h1, h2, h3, h4, h5, h6 {
   color: #ff4444;
 }
 
-/* Tabela */
 .table-container {
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -191,7 +189,6 @@ tbody tr:nth-child(5) { animation-delay: 0.5s; }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Adicione estas media queries após as definições da tabela */
 @media screen and (max-width: 768px) {
   .table-container {
     padding: 1rem;
@@ -304,6 +301,28 @@ tbody tr:nth-child(5) { animation-delay: 0.5s; }
   backdrop-filter: blur(2px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.parallax-content * {
+  text-shadow: 
+    2px 2px 4px rgba(0, 0, 0, 0.3),
+    0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.parallax-content h1,
+.parallax-content h2,
+.parallax-content h3,
+.parallax-content h4,
+.parallax-content h5,
+.parallax-content h6 {
+  text-shadow: 
+    2px 2px 4px rgba(0, 0, 0, 0.4),
+    0 0 15px rgba(138, 43, 226, 0.4); 
+}
+
+.parallax-content p {
+  font-weight: 500;
+  letter-spacing: 0.015em;
 }
 
 .parallax-content::before {
