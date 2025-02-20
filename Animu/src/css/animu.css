@@ -257,13 +257,6 @@ tbody tr:nth-child(5) { animation-delay: 0.5s; }
   perspective: 1px;
 }
 
-/* Remove o background do content-wrapper antigo */
-.content-wrapper {
-  position: relative;
-  z-index: 1;
-}
-
-/* Adiciona classes para seções com parallax */
 .parallax-section {
   position: relative;
   overflow: hidden;

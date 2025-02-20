@@ -431,7 +431,7 @@ function loadActivityTimeline(user) {
   const container = document.getElementById('activity-timeline');
   container.innerHTML = activities.map(activity => `
     <div class="activity-item border-l-2 border-purple-500 pl-4 pb-4">
-      <div class="text-sm text-gray-500 dark:text-gray-400">
+      <div class="text-sm text-white">
         ${new Date(activity.timestamp).toLocaleDateString('pt-BR')}
       </div>
       <div class="mt-1">
