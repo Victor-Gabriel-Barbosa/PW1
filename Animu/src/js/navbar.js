@@ -3,6 +3,11 @@ class Navbar {
   constructor() {
     // Template HTML principal da navbar com menu lateral e painel de usuário
     this.navHTML = `
+      <button id="toggle-navigation" class="toggle-nav-btn" title="Ocultar Navegação">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24">
+          <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"/>
+        </svg>
+      </button>
       <nav class="fixed top-0 left-0 right-0 backdrop-blur-md shadow-sm z-50">
         <div class="mx-auto px-4">
           <div class="flex items-center justify-between h-14">
@@ -196,6 +201,7 @@ class Navbar {
     this.initSideMenu();
     this.initUserDropdown();
     this.initAuthDropdown();
+    this.initNavigationToggle();
   }
 
   // Marca o link ativo baseado na URL atual, tratando páginas normais e admin
@@ -440,6 +446,32 @@ class Navbar {
 
     // Fecha dropdowns
     document.querySelectorAll('.user-dropdown, .theme-menu').forEach(menu => menu.classList.add('hidden'));
+  }
+
+  initNavigationToggle() {
+    const toggleBtn = document.getElementById('toggle-navigation');
+    const navbar = document.querySelector('nav');
+    const sideMenu = document.getElementById('side-menu');
+    
+    // Verifica estado salvo
+    const navHidden = localStorage.getItem('navigationHidden') === 'true';
+    if (navHidden) {
+      navbar.classList.add('nav-hidden');
+      sideMenu.classList.add('nav-hidden');
+      document.body.classList.add('nav-hidden');
+      toggleBtn.classList.add('rotated');
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      navbar.classList.toggle('nav-hidden');
+      sideMenu.classList.toggle('nav-hidden');
+      document.body.classList.toggle('nav-hidden');
+      toggleBtn.classList.toggle('rotated');
+      
+      // Salva estado
+      const isHidden = navbar.classList.contains('nav-hidden');
+      localStorage.setItem('navigationHidden', isHidden);
+    });
   }
 }
 
