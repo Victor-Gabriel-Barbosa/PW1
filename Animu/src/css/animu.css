@@ -484,7 +484,8 @@ tbody tr:nth-child(5) { animation-delay: 0.5s; }
 .back-to-top {
   position: fixed;
   bottom: 20px;
-  right: 25px;
+  right: 75px;
+  box-sizing: border-box;
   background: transparent;
   border: 2px solid var(--primary-color);
   color: var(--primary-color);
