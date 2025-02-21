@@ -483,13 +483,13 @@ tbody tr:nth-child(5) { animation-delay: 0.5s; }
 /* Botão Voltar ao Topo */
 .back-to-top {
   position: fixed;
-  bottom: 25px;
+  bottom: 20px;
   right: 25px;
   background: transparent;
   border: 2px solid var(--primary-color);
   color: var(--primary-color);
-  width: 35px;
-  height: 35px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;

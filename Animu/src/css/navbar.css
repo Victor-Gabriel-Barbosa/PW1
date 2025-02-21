@@ -1089,12 +1089,9 @@ body.has-navbar {
 /* Botão para ocultar navegação */
 .toggle-nav-btn {
   position: fixed;
-  right: 70px;
-  bottom: 20px;
   width: 40px;
   height: 40px;
-  border-radius: 50%;
-  background: var(--primary-color);
+  background: transparent;
   color: white;
   border: none;
   cursor: pointer;
@@ -1107,7 +1104,6 @@ body.has-navbar {
 }
 
 .toggle-nav-btn:hover {
-  transform: scale(1.1);
   background: var(--primary-color-dark);
 }
 
@@ -1170,19 +1166,4 @@ body.has-navbar {
 
 nav.nav-hidden + body.has-navbar {
   padding-top: 0;
-}
-
-/* Ajustes responsivos para o botão */
-@media (max-width: 768px) {
-  .toggle-nav-btn {
-    right: 16px;
-    bottom: 16px;
-    width: 36px;
-    height: 36px;
-  }
-
-  .toggle-nav-btn svg {
-    width: 20px;
-    height: 20px;
-  }
 }
