@@ -1200,11 +1200,11 @@ textarea:disabled {
   }
 
   .btn {
-    min-height: 44px; /* Melhor área de toque */
+    min-height: 44px; 
   }
 
   input, select, textarea {
-    font-size: 16px !important; /* Evita zoom em iOS */
+    font-size: 16px !important;
   }
 }
 
@@ -1249,14 +1249,14 @@ textarea:disabled {
 .admin-form-container {
   display: flex;
   flex-direction: column;
-  height: 90vh; /* Altura fixa para o container */
+  height: 90vh;
   overflow: hidden;
   background: var(--background);
   border-radius: 0.75rem;
-  margin: 2rem auto; /* Adiciona margem para melhor visualização */
-  max-height: calc(100vh - 4rem); /* Ajusta altura máxima considerando o padding */
+  margin: 2rem auto; 
+  max-height: calc(100vh - 4rem); 
   overflow: auto;
-  position: relative; /* Garante que o modal fique sobre o conteúdo */
+  position: relative; 
 }
 
 .modal-header-fixed {

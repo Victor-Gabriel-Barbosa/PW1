@@ -4,7 +4,6 @@
   gap: var(--spacing-lg);
 }
 
-/* Redesign dos cards de notícias */
 .news-card {
   display: flex;
   flex-direction: column;
@@ -159,6 +158,7 @@
   transition: color 0.3s ease;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -166,6 +166,7 @@
 .news-card:hover .news-title {
   background: var(--primary-gradient);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -177,6 +178,7 @@
   line-height: 1.6;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   flex-grow: 1;
@@ -493,6 +495,7 @@
 .gradient-text {
   background: var(--primary-gradient);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   position: relative;
 }

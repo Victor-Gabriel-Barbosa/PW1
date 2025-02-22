@@ -33,11 +33,6 @@
   box-shadow: 0 0 0 1px var(--primary-color);
 }
 
-/* Remove estilos do ícone de busca que não será mais usado */
-.search-icon {
-  display: none;
-}
-
 .search-button {
   height: 36px; 
   padding: 0 20px;
@@ -236,11 +231,6 @@
   font-size: 0.85em;
 }
 
-/* Remove estilos do botão que não será mais usado */
-.apply-filters-btn {
-  display: none;
-}
-
 .apply-filters-btn:hover {
   opacity: 0.9;
 }
@@ -378,11 +368,11 @@
 /* Adiciona breakpoint específico para telas ainda menores */
 @media (max-width: 380px) {
   .search-container {
-    max-width: calc(100vw - 160px); /* Reduz ainda mais em telas muito pequenas */
+    max-width: calc(100vw - 160px);
   }
 
   .search-input {
-    min-width: 60px; /* Reduz ainda mais a largura mínima */
+    min-width: 60px;
   }
 
   .filter-menu {

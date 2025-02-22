@@ -17,56 +17,56 @@
       transform: translateY(20px);
       animation: fadeInUp 0.6s ease forwards;
     }
-    
+
     .recommendation-section {
       opacity: 0;
       transform: translateY(20px);
       animation: fadeInUp 0.6s ease forwards;
     }
-    
+
     .recommendation-section:nth-child(2) {
       animation-delay: 0.2s;
     }
-    
+
     .recommendation-section:nth-child(3) {
       animation-delay: 0.4s;
     }
-    
+
     .grid-recommendations {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 1.5rem;
       min-height: 200px;
     }
-    
+
     .filter-feedback-btn {
       padding: 0.5rem 1rem;
       border-radius: 0.5rem;
       transition: all 0.3s ease;
       border: 2px solid transparent;
     }
-    
+
     .filter-feedback-btn:hover {
       border-color: #8b5cf6;
     }
-    
+
     .filter-feedback-btn.active {
       background: #8b5cf6;
       color: white;
     }
-    
+
     @keyframes fadeInUp {
       from {
         opacity: 0;
         transform: translateY(20px);
       }
-    
+
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
-    
+
     /* Estilo para o placeholder de carregamento */
     .recommendation-skeleton {
       height: 300px;
@@ -78,23 +78,23 @@
       background-size: 200% 100%;
       animation: loading 1.5s infinite;
     }
-    
+
     @keyframes loading {
       0% {
         background-position: 200% 0;
       }
-    
+
       100% {
         background-position: -200% 0;
       }
     }
-    
+
     /* Adiciona estado de carregamento */
     .loading {
       position: relative;
       min-height: 200px;
     }
-    
+
     .loading::after {
       content: '';
       position: absolute;
@@ -106,70 +106,70 @@
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite linear;
     }
-    
+
     @keyframes shimmer {
       from {
         background-position: 200% 0;
       }
-    
+
       to {
         background-position: -200% 0;
       }
     }
-    
+
     /* Responsividade */
     @media (max-width: 768px) {
       .grid-recommendations {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       }
     }
-    
+
     /* Melhora responsividade */
     @media (max-width: 640px) {
       .grid-recommendations {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
       }
-    
+
       .recommendation-title {
         font-size: 0.9rem;
       }
-    
+
       .recommendation-match {
         font-size: 0.75rem;
       }
     }
-    
+
     /* Adiciona estilos para o modo escuro */
     .dark .recommendation-card {
       background: rgba(17, 24, 39, 0.8);
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     }
-    
+
     .dark .recommendation-info {
       background: linear-gradient(transparent, rgba(0, 0, 0, 0.95));
     }
-    
+
     .dark .filter-feedback-btn {
       color: #fff;
       border-color: rgba(139, 92, 246, 0.3);
     }
-    
+
     .dark .filter-feedback-btn:hover {
       border-color: #8b5cf6;
       background: rgba(139, 92, 246, 0.2);
     }
-    
+
     .dark .filter-feedback-btn.active {
       background: #8b5cf6;
       border-color: #8b5cf6;
     }
-    
+
     /* Novos estilos */
     .recommendations-header {
       position: relative;
       padding: 2rem;
     }
-    
+
     .gradient-text {
       background: linear-gradient(135deg, #6366f1, #8b5cf6, #d946ef);
       -webkit-background-clip: text;
@@ -177,35 +177,35 @@
       color: transparent;
       animation: gradientFlow 6s ease infinite;
     }
-    
+
     .recommendation-progress {
       width: 120px;
       height: 120px;
       margin: 0 auto 2rem;
       position: relative;
     }
-    
+
     .recommendation-circle {
       width: 100%;
       height: 100%;
       transform: rotate(-90deg);
     }
-    
+
     .recommendation-circle path {
       fill: none;
       stroke-width: 2.8;
       stroke-linecap: round;
     }
-    
+
     .recommendation-circle path:first-child {
       stroke: rgba(139, 92, 246, 0.2);
     }
-    
+
     .recommendation-circle path.progress {
       stroke: #8b5cf6;
       animation: progressAnimation 1.5s ease-in-out forwards;
     }
-    
+
     .percentage {
       position: absolute;
       top: 50%;
@@ -215,7 +215,7 @@
       font-weight: bold;
       color: #8b5cf6;
     }
-    
+
     /* Stats Grid */
     .stats-grid {
       display: grid;
@@ -223,7 +223,7 @@
       gap: 1.5rem;
       margin-bottom: 3rem;
     }
-    
+
     .stat-rec-card {
       background: var(--background);
       padding: 1.5rem;
@@ -232,28 +232,28 @@
       transition: transform 0.3s ease;
       border: 2px solid rgba(139, 92, 246, 0.1);
     }
-    
+
     .stat-rec-card:hover {
       transform: translateY(-5px);
     }
-    
+
     .stat-rec-icon {
       font-size: 2rem;
       margin-bottom: 0.5rem;
     }
-    
+
     .stat-rec-value {
       font-size: 2rem;
       font-weight: bold;
       color: #8b5cf6;
     }
-    
+
     .stat-rec-label {
       font-size: 0.9rem;
       color: var(--text-color);
       opacity: 0.8;
     }
-    
+
     /* Filter Tabs */
     .filter-tabs {
       display: flex;
@@ -262,7 +262,7 @@
       position: relative;
       margin-bottom: 3rem;
     }
-    
+
     .filter-tab {
       padding: 0.75rem 1.5rem;
       border-radius: 0.75rem;
@@ -273,16 +273,16 @@
       position: relative;
       z-index: 1;
     }
-    
+
     .filter-tab.active {
       background: #8b5cf6;
       color: white;
     }
-    
+
     .filter-icon {
       font-size: 1.2rem;
     }
-    
+
     /* Insight Box */
     .insight-box {
       background: var(--background);
@@ -290,34 +290,34 @@
       padding: 2rem;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    
+
     .insight-header {
       display: flex;
       align-items: center;
       gap: 1rem;
       margin-bottom: 1.5rem;
     }
-    
+
     .insight-icon {
       font-size: 1.5rem;
     }
-    
+
     .insight-title {
       font-size: 1.25rem;
       font-weight: 600;
     }
-    
+
     .genre-preference {
       display: flex;
       align-items: center;
       gap: 1rem;
       margin-bottom: 1rem;
     }
-    
+
     .genre-label {
       min-width: 80px;
     }
-    
+
     .genre-bar {
       height: 8px;
       background: rgba(139, 92, 246, 0.2);
@@ -326,7 +326,7 @@
       position: relative;
       overflow: hidden;
     }
-    
+
     .genre-bar::after {
       content: '';
       position: absolute;
@@ -338,62 +338,62 @@
       border-radius: 4px;
       animation: barFill 1.5s ease-out forwards;
     }
-    
+
     /* Animações */
     @keyframes progressAnimation {
       from {
         stroke-dasharray: 0, 100;
       }
-    
+
       to {
         stroke-dasharray: 75, 100;
       }
     }
-    
+
     @keyframes barFill {
       from {
         width: 0;
       }
-    
+
       to {
         width: var(--percent);
       }
     }
-    
+
     @keyframes gradientFlow {
       0% {
         background-position: 0% 50%;
       }
-    
+
       50% {
         background-position: 100% 50%;
       }
-    
+
       100% {
         background-position: 0% 50%;
       }
     }
-    
+
     /* Responsividade */
     @media (max-width: 768px) {
       .stats-grid {
         grid-template-columns: repeat(2, 1fr);
       }
-    
+
       .filter-tabs {
         flex-wrap: wrap;
       }
-    
+
       .filter-tab {
         flex: 1 1 calc(50% - 0.5rem);
       }
     }
-    
+
     @media (max-width: 480px) {
       .stats-grid {
         grid-template-columns: 1fr;
       }
-    
+
       .filter-tab {
         flex: 1 1 100%;
       }
@@ -403,7 +403,8 @@
 
 <body>
   <div class="parallax-container">
-    <section class="parallax-section" style="--parallax-bg-image: url('https://img.freepik.com/fotos-gratis/paisagem-magica-de-fantasia_23-2151502913.jpg?ga=GA1.1.1952551659.1739965581&semt=ais_hybrid');">
+    <section class="parallax-section"
+      style="--parallax-bg-image: url('https://img.freepik.com/fotos-gratis/paisagem-magica-de-fantasia_23-2151502913.jpg?ga=GA1.1.1952551659.1739965581&semt=ais_hybrid');">
       <div class="container mx-auto px-4 py-12">
         <!-- Cabeçalho Animado -->
         <div class="parallax-content">
@@ -468,7 +469,8 @@
       </div>
     </div>
 
-    <section class="parallax-section" style="--parallax-bg-image: url('https://img.freepik.com/fotos-gratis/paisagem-magica-de-fantasia_23-2151502913.jpg?ga=GA1.1.1952551659.1739965581&semt=ais_hybrid');">
+    <section class="parallax-section"
+      style="--parallax-bg-image: url('https://img.freepik.com/fotos-gratis/paisagem-magica-de-fantasia_23-2151502913.jpg?ga=GA1.1.1952551659.1739965581&semt=ais_hybrid');">
       <div class="container mx-auto px-4 py-12">
         <div class="parallax-content">
           <!-- Container de Recomendações -->
@@ -482,7 +484,7 @@
               </div>
               <div class="grid-recommendations"></div>
             </div>
-      
+
             <div id="similar-recommendations" class="recommendation-section mb-12">
               <div class="section-header flex justify-between items-center mb-6">
                 <h2 class="section-title text-2xl font-bold">Animes Similares</h2>
@@ -492,7 +494,7 @@
               </div>
               <div class="grid-recommendations"></div>
             </div>
-      
+
             <div id="trending-recommendations" class="recommendation-section mb-12">
               <div class="section-header flex justify-between items-center mb-6">
                 <h2 class="section-title text-2xl font-bold">Tendências Atuais</h2>
@@ -506,36 +508,30 @@
         </div>
       </div>
     </section>
-
-    <section class="parallax-section" style="--parallax-bg-image: url('https://img.freepik.com/fotos-gratis/paisagem-magica-de-fantasia_23-2151502913.jpg?ga=GA1.1.1952551659.1739965581&semt=ais_hybrid');">
-      <div class="container mx-auto px-4 py-12">
-        <div class="parallax-content">
-          <!-- Insight Box -->
-          <div class="insight-box mt-12">
-            <div class="insight-header">
-              <span class="insight-icon">💡</span>
-              <h3 class="insight-title">Análise do seu Perfil</h3>
-            </div>
-            <div class="insight-content">
-              <div class="insight-stat">
-                <div class="genre-preference">
-                  <span class="genre-label">Ação</span>
-                  <div class="genre-bar" style="--percent: 85%"></div>
-                </div>
-                <div class="genre-preference">
-                  <span class="genre-label">Aventura</span>
-                  <div class="genre-bar" style="--percent: 70%"></div>
-                </div>
-                <div class="genre-preference">
-                  <span class="genre-label">Fantasia</span>
-                  <div class="genre-bar" style="--percent: 65%"></div>
-                </div>
-              </div>
-            </div>
+    
+    <!-- Insight Box -->
+    <div class="insight-box mt-12">
+      <div class="insight-header">
+        <span class="insight-icon">💡</span>
+        <h3 class="insight-title">Análise do seu Perfil</h3>
+      </div>
+      <div class="insight-content">
+        <div class="insight-stat">
+          <div class="genre-preference">
+            <span class="genre-label">Ação</span>
+            <div class="genre-bar" style="--percent: 85%"></div>
+          </div>
+          <div class="genre-preference">
+            <span class="genre-label">Aventura</span>
+            <div class="genre-bar" style="--percent: 70%"></div>
+          </div>
+          <div class="genre-preference">
+            <span class="genre-label">Fantasia</span>
+            <div class="genre-bar" style="--percent: 65%"></div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   </div>
 
   <!-- Scripts -->

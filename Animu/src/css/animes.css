@@ -140,11 +140,6 @@
   transform: scale(1.15);
 }
 
-/* Remover overlay e seus efeitos */
-.anime-card .anime-overlay {
-  display: none; 
-}
-
 /* Manter apenas as informações básicas sempre visíveis */
 .anime-card .anime-info {
   position: absolute;
@@ -1272,16 +1267,16 @@
 
 .hero-cover {
   width: 220px;
-  height: 330px; /* Altura fixa para manter proporção */
+  height: 330px; 
   border-radius: 0.5rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  object-fit: cover; /* Garante que a imagem cubra todo o espaço */
+  object-fit: cover;
 }
 
 .hero-info {
   color: white;
   flex: 1;
-  max-width: 800px; /* Limita a largura máxima do texto */
+  max-width: 800px; 
 }
 
 /* Estatísticas do anime */
@@ -1358,20 +1353,20 @@
   }
 
   .hero-content {
-    flex-direction: row; /* Mantém o layout horizontal */
+    flex-direction: row; 
     padding: 1rem;
     gap: 1rem;
-    align-items: flex-start; /* Alinha ao topo em telas menores */
+    align-items: flex-start;
   }
 
   .hero-cover {
     width: 150px;
     height: 225px;
-    flex-shrink: 0; /* Impede que a imagem encolha */
+    flex-shrink: 0;
   }
 
   .hero-info {
-    font-size: 0.95rem; /* Reduz ligeiramente o tamanho da fonte */
+    font-size: 0.95rem; 
   }
 
   .anime-stats {
@@ -1413,7 +1408,7 @@
   }
 
   .stat-item {
-    flex-basis: calc(50% - 0.75rem); /* 2 itens por linha */
+    flex-basis: calc(50% - 0.75rem);
     justify-content: center;
   }
 }
