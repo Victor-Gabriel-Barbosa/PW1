@@ -1089,14 +1089,11 @@ body.has-navbar {
 /* Botão para ocultar navegação */
 .toggle-nav-btn {
   position: fixed;
-  bottom: 20px;
-  right: 25px;
   width: 40px;
   height: 40px;
-  background: var(--primary-color);
+  background: transparent;
   color: white;
   border: none;
-  border-radius: 50%;
   cursor: pointer;
   z-index: 1000;
   display: flex;
@@ -1107,48 +1104,16 @@ body.has-navbar {
 }
 
 .toggle-nav-btn:hover {
-  transform: scale(1.1);
   background: var(--primary-color-dark);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-.toggle-nav-btn:active {
-  transform: scale(0.95);
 }
 
 .toggle-nav-btn svg {
   fill: currentColor;
   transition: transform 0.3s ease;
-  width: 28px;
-  height: 28px;
 }
 
 .toggle-nav-btn.rotated svg {
   transform: rotate(180deg);
-}
-
-/* Ajustes responsivos para o botão */
-@media (max-width: 768px) {
-  .toggle-nav-btn {
-    bottom: 16px;
-    right: 16px;
-    width: 42px;
-    height: 42px;
-  }
-
-  .toggle-nav-btn svg {
-    width: 24px;
-    height: 24px;
-  }
-}
-
-@media (max-width: 480px) {
-  .toggle-nav-btn {
-    bottom: 12px;
-    right: 12px;
-    width: 40px;
-    height: 40px;
-  }
 }
 
 /* Estados ocultos */
