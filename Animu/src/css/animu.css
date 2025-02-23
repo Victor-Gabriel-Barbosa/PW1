@@ -283,8 +283,8 @@ tbody tr:nth-child(5) { animation-delay: 0.5s; }
   z-index: 1;
   background: linear-gradient(
     135deg,
-    rgba(var(--background-rgb), 0.92) 0%,
-    rgba(var(--background-rgb), 0.98) 100%
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.7) 100%
   );
   padding: 1rem;
   border-radius: 1.5rem;
@@ -294,23 +294,6 @@ tbody tr:nth-child(5) { animation-delay: 0.5s; }
   backdrop-filter: blur(4px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.parallax-content * {
-  text-shadow: 
-    2px 2px 4px rgba(0, 0, 0, 0.5),
-    0 0 12px rgba(0, 0, 0, 0.3);
-}
-
-.parallax-content :is(h1, h2, h3, h4, h5, h6) {
-  text-shadow: 
-    2px 2px 4px rgba(0, 0, 0, 0.6),
-    0 0 20px rgba(138, 43, 226, 0.5); 
-}
-
-.parallax-content p {
-  font-weight: 600;
-  letter-spacing: 0.02em;
 }
 
 .parallax-content::before {
@@ -332,7 +315,7 @@ tbody tr:nth-child(5) { animation-delay: 0.5s; }
 }
 
 .parallax-content:hover {
-  transform: scale(1.02);
+  transform: scale(1.01);
   box-shadow: 
     0 12px 40px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.15) inset;
@@ -368,7 +351,7 @@ tbody tr:nth-child(5) { animation-delay: 0.5s; }
   background-image: url('https://images5.alphacoders.com/137/1376638.jpg');
   background-size: cover;
   background-position: center;
-  filter: brightness(0.3);
+  filter: brightness(0.8);
 }
 
 /* 4. Componentes
