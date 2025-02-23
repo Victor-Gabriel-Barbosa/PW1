@@ -315,7 +315,6 @@ tbody tr:nth-child(5) { animation-delay: 0.5s; }
 }
 
 .parallax-content:hover {
-  transform: scale(1.01);
   box-shadow: 
     0 12px 40px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.15) inset;
