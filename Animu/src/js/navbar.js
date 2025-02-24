@@ -22,7 +22,7 @@ class Navbar {
               
               <!-- Logo -->
               <div class="logo-container">
-                <a href="index.html" class="logo-link">
+                <a class="logo-link cursor-pointer hover:opacity-80 active:opacity-60 transition-opacity" id="logo-top" role="button" tabindex="0" title="Voltar ao topo">
                   <img src="../src/data/favicon/favicon.svg" class="logo-icon" alt="Logo Animu">
                   <span class="logo-text">Animu</span>
                 </a>
@@ -202,6 +202,30 @@ class Navbar {
     this.initUserDropdown();
     this.initAuthDropdown();
     this.initNavigationToggle();
+    
+    // Adiciona scroll suave ao clicar na logo
+    const logoLink = document.getElementById('logo-top');
+    if (logoLink) {
+      // Adiciona suporte a clique
+      logoLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+
+      // Adiciona suporte a teclado (Enter e Espaço)
+      logoLink.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        }
+      });
+    }
   }
 
   // Marca o link ativo baseado na URL atual, tratando páginas normais e admin
