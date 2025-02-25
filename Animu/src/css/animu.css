@@ -462,18 +462,17 @@ tbody tr:nth-child(5) { animation-delay: 0.5s; }
   position: fixed;
   bottom: 20px;
   right: 75px;
-  box-sizing: border-box;
-  background: transparent;
-  border: 2px solid var(--primary-color);
-  color: var(--primary-color);
   width: 40px;
   height: 40px;
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
   border-radius: 50%;
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  opacity: 0;
   visibility: hidden;
   transform: translateY(10px);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -486,23 +485,40 @@ tbody tr:nth-child(5) { animation-delay: 0.5s; }
   transform: translateY(0);
 }
 
-.back-to-top:hover {
-  background: var(--primary-color);
-  color: white;
-  transform: translateY(-2px) scale(1.05);
-}
-
 .back-to-top svg {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   stroke-width: 2;
-  stroke: currentColor;
+  stroke: white;
   fill: none;
   transition: transform 0.2s ease;
 }
 
 .back-to-top:hover svg {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+  transition: transform 0.2s ease;
+}
+
+/* Ajustes responsivos para o botão */
+@media (max-width: 768px) {
+  .back-to-top {
+    bottom: 16px;
+    width: 42px;
+    height: 42px;
+  }
+
+  .back-to-top svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .back-to-top {
+    bottom: 12px;
+    width: 40px;
+    height: 40px;
+  }
 }
 
 /* 4.2. Formulários */
