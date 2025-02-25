@@ -252,9 +252,7 @@ tbody tr:nth-child(5) { animation-delay: 0.5s; }
 .parallax-container {
   position: relative;
   width: 100%;
-  min-height: 100vh;
   overflow-x: hidden;
-  perspective: 1px;
 }
 
 .parallax-section {
@@ -923,4 +921,25 @@ body.dark-mode {
 @keyframes shimmer {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(400%); }
+}
+
+#new-topic-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.new-topic-modal {
+  background: var(--background);
+  border-radius: 1rem;
+  padding: 2rem;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  z-index: 1001;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
