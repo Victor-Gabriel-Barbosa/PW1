@@ -180,7 +180,7 @@ nav .ml-10 a.active {
   fill: var(--text-color);
 }
 
-/* Menu lateral responsivo com estados aberto/fechado */
+/* Menu lateral com largura fixa e animação */
 .side-menu {
   position: fixed;
   top: 56px;
@@ -189,7 +189,7 @@ nav .ml-10 a.active {
   height: calc(100vh - 56px);
   background: var(--background);
   box-shadow: 2px 0 8px var(--card-shadow);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 49;
   overflow: hidden;
   transform: translateZ(0);
@@ -231,7 +231,7 @@ nav .ml-10 a.active {
 /* Estado recolhido do menu - transição suavizada */
 .side-menu:not(.open) {
   width: 70px; 
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .side-menu:not(.open) .nav-link span,
@@ -244,7 +244,6 @@ nav .ml-10 a.active {
   padding: 10px; 
   justify-content: flex-start;
   width: 70px;
-  margin: 2px 0;
 }
 
 .side-menu:not(.open) .nav-link svg {
@@ -340,7 +339,7 @@ nav .ml-10 a.active {
 
 .side-menu:not(.open) .nav-link span {
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.2s ease;
 }
 
 /* Estado ativo */
@@ -548,31 +547,8 @@ body.menu-open {
   font-size: 0.95rem;
 }
 
-/* Ajustes responsivos por breakpoint */
+/* Remove todos os media queries relacionados ao side-menu */
 @media (max-width: 768px) {
-  .side-menu {
-    top: 48px;
-    height: calc(100vh - 48px);
-    width: min(250px, 75vw); 
-    transform: translateX(-100%);
-    box-shadow: none;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                width 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                box-shadow 0.3s ease;
-  }
-
-  .side-menu.open {
-    transform: translateX(0);
-    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.2);
-    width: min(250px, 75vw);
-  }
-
-  .side-menu-content {
-    padding: 16px;
-    height: 100%;
-    overflow-y: auto;
-  }
-
   .menu-overlay.show {
     background: rgba(0, 0, 0, 0.5);
     pointer-events: auto;
@@ -582,140 +558,6 @@ body.menu-open {
 
   body.menu-open {
     overflow: hidden;
-  }
-
-  .side-menu {
-    top: 48px;
-    height: calc(100vh - 48px);
-    width: min(350px, 85vw); 
-    transform: translateX(-100%);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: none;
-    position: fixed;
-    left: 0;
-    z-index: 1000;
-  }
-
-  .side-menu.open {
-    transform: translateX(0);
-    box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
-    width: min(350px, 85vw); 
-  }
-
-  .side-menu:not(.open) {
-    width: 0;
-  }
-
-  .side-menu-content {
-    padding: 16px 12px;
-    height: 100%;
-    overflow-y: hidden; 
-    scrollbar-width: thin;
-    scrollbar-color: var(--primary-color) transparent;
-  }
-
-  .side-menu-content:hover {
-    overflow-y: auto;
-  }
-
-  .side-menu-content::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  .side-menu-content::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
-    border-radius: 4px;
-  }
-
-  .nav-link {
-    padding: 12px 16px;
-    margin: 4px 0;
-    border-radius: 12px;
-    font-size: 0.875rem; 
-  }
-
-  .nav-link svg {
-    width: 24px;
-    height: 24px;
-  }
-
-  .menu-overlay.show {
-    opacity: 1;
-    visibility: visible;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    pointer-events: all;
-  }
-
-  /* Animação suave para links do menu */
-  .side-menu.open .nav-link {
-    animation: slideInRight 0.3s ease forwards;
-    opacity: 0;
-  }
-
-  @keyframes slideInRight {
-    from {
-      transform: translateX(-10px);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-
-  /* Atrasa animação para cada link subsequente */
-  .side-menu.open .nav-link:nth-child(1) { animation-delay: 0.1s; }
-  .side-menu.open .nav-link:nth-child(2) { animation-delay: 0.15s; }
-  .side-menu.open .nav-link:nth-child(3) { animation-delay: 0.2s; }
-  .side-menu.open .nav-link:nth-child(4) { animation-delay: 0.25s; }
-  .side-menu.open .nav-link:nth-child(5) { animation-delay: 0.3s; }
-  .side-menu.open .nav-link:nth-child(6) { animation-delay: 0.35s; }
-  .side-menu.open .nav-link:nth-child(7) { animation-delay: 0.4s; }
-
-  /* Melhora feedback visual ao tocar */
-  .nav-link:active {
-    transform: scale(0.98);
-    background: var(--primary-color-alpha);
-  }
-
-  .side-menu {
-    top: 48px;
-    height: calc(100vh - 48px);
-    width: min(280px, 80vw);
-    transform: translateX(-100%);
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .side-menu.open {
-    transform: translateX(0);
-  }
-
-  .side-menu:not(.open) {
-    width: 0;
-  }
-
-  .side-menu-content {
-    padding: 80px 12px 16px;
-    min-width: 250px;
-  }
-
-  body.has-navbar.menu-open {
-    padding-left: 0;
-  }
-
-  body.has-navbar:not(.menu-open) {
-    padding-left: 0;
-  }
-
-  .nav-link {
-    padding: 0.75rem 1rem;
-  }
-
-  .menu-toggle-btn {
-    top: 16px;
-    
   }
 
   .flex-shrink-0.ml-4 {
@@ -767,50 +609,10 @@ body.menu-open {
 }
 
 @media (max-width: 480px) {
-  .side-menu {
-    width: 85vw;
-  }
-
-  .side-menu-content {
-    padding: 12px;
-  }
-
   .nav-link {
     padding: 14px 16px;
     margin: 2px 0;
     font-size: 0.9375rem; 
-  }
-
-  .side-menu {
-    width: min(320px, 90vw);
-  }
-
-  .side-menu.open {
-    width: min(320px, 90vw);
-  }
-
-  .nav-link {
-    padding: 14px 16px;
-    margin: 2px 0;
-    font-size: 0.9375rem;
-  }
-
-  .nav-link svg {
-    width: 24px;
-    height: 24px;
-  }
-
-  /* Melhora espaçamento em telas muito pequenas */
-  .side-menu-content {
-    padding: 20px 16px;
-  }
-
-  .side-menu {
-    width: clamp(180px, 75vw, 260px); 
-  }
-
-  .side-menu .nav-link {
-    padding: 14px 16px; 
   }
 
   .theme-toggle-container {
@@ -852,29 +654,9 @@ body.menu-open {
     width: 36px;
     height: 36px;
   }
-
-  .side-menu {
-    width: 100vw;
-  }
-
-  .side-menu.open {
-    width: 100vw;
-  }
 }
 
 @media (max-width: 360px) {
-  .side-menu {
-    width: 90vw;
-  }
-
-  .side-menu.open {
-    width: 90vw;
-  }
-
-  .side-menu-content {
-    padding: 70px 8px 16px;
-  }
-
   .nav-link {
     padding: 12px 8px;
   }
@@ -908,20 +690,12 @@ body.menu-open {
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
-  .side-menu {
-    width: 225px;
-  }
-
   body.has-navbar.menu-open {
     padding-left: 225px;
   }
 }
 
 @media (min-width: 1024px) {
-  .side-menu {
-    max-width: 320px;
-  }
-
   .nav-menu-container {
     top: 12px;
   }
@@ -942,10 +716,6 @@ body.menu-open {
 }
 
 @media (min-width: 1025px) {
-  .side-menu {
-    width: 225px; 
-  }
-
   body.has-navbar.menu-open {
     padding-left: 225px;
   }
@@ -977,15 +747,6 @@ body.menu-open {
 
 /* Suporte para orientação paisagem em dispositivos móveis */
 @media (max-height: 480px) and (orientation: landscape) {
-  .side-menu {
-    top: 42px;
-    height: calc(100vh - 42px);
-  }
-
-  .side-menu-content {
-    padding: 8px;
-  }
-
   .nav-link {
     padding: 8px 12px;
     margin: 1px 0;
