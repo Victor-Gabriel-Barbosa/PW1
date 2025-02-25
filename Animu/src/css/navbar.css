@@ -656,6 +656,19 @@ body.menu-open {
   }
 }
 
+/* Oculta barra lateral minimizada em telas pequenas */
+@media (max-width: 480px) {
+  .side-menu:not(.open) {
+    transform: translateX(-100%);
+    visibility: hidden;
+  }
+
+  /* Ajusta padding do conteúdo quando menu está fechado */
+  body.has-navbar:not(.menu-open) {
+    padding-left: 0 !important;
+  }
+}
+
 @media (max-width: 360px) {
   .nav-link {
     padding: 12px 8px;

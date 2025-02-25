@@ -129,6 +129,9 @@ class Navbar {
 
     // Adiciona observador de conexão
     this.setupConnectionObserver();
+
+    // Adiciona handler para fechar menu em telas pequenas
+    this.handleOutsideClick = this.handleOutsideClick.bind(this);
   }
 
   // Gera o painel do usuário com avatar e opções de login/logout
@@ -304,7 +307,38 @@ class Navbar {
       // Salva o estado do menu
       const isOpen = sideMenu.classList.contains('open');
       localStorage.setItem('sideMenuState', isOpen ? 'open' : 'closed');
+
+      // Adiciona ou remove listener de clique fora baseado no estado do menu
+      if (isOpen && window.innerWidth <= 768) {
+        document.addEventListener('click', this.handleOutsideClick);
+      } else {
+        document.removeEventListener('click', this.handleOutsideClick);
+      }
     });
+
+    // Adiciona listener para mudanças no tamanho da tela
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+        document.removeEventListener('click', this.handleOutsideClick);
+      } else if (sideMenu.classList.contains('open')) {
+        document.addEventListener('click', this.handleOutsideClick);
+      }
+    });
+  }
+
+  handleOutsideClick(event) {
+    const sideMenu = document.getElementById('side-menu');
+    const menuToggle = document.getElementById('menu-toggle');
+    const menuOverlay = document.getElementById('menu-overlay');
+
+    // Verifica se o clique foi fora do menu e do botão de toggle
+    if (!sideMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+      sideMenu.classList.remove('open');
+      menuOverlay.classList.remove('show');
+      document.body.classList.remove('menu-open');
+      localStorage.setItem('sideMenuState', 'closed');
+      document.removeEventListener('click', this.handleOutsideClick);
+    }
   }
 
   // Inicializa o dropdown do usuário
