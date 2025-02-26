@@ -30,6 +30,10 @@ function calcular() {
 
 let idades = [];
 let pesos = [];
+let faixaEtaria1 = [];
+let faixaEtaria2 = [];
+let faixaEtaria3 = [];
+let faixaEtaria4 = [];
 
 function calcularMedia() {
   const idade = parseInt(document.getElementById('idade').value);
@@ -52,10 +56,25 @@ function calcularMedia() {
 
   pesos.push(peso);
   idades.push(idade);
-  const media = pesos.reduce((a, b) => a + b, 0) / pesos.length;
+  const mediaPeso = pesos.reduce((a, b) => a + b, 0) / pesos.length;
   const mediaIdade = idades.reduce((a, b) => a + b, 0) / idades.length;
-  document.getElementById('media').textContent = `A média das idades é: ${mediaIdade}. A média dos pesos é: ${media}`;
 
+  if (idade <= 10) faixaEtaria1.push(peso);
+  else if (idade <= 20) faixaEtaria2.push(peso);
+  else if (idade <= 30) faixaEtaria3.push(peso);
+  else faixaEtaria4.push(peso);
+
+  const mediaFaixa1 = faixaEtaria1.reduce((a, b) => a + b, 0) / faixaEtaria1.length || 0;
+  const mediaFaixa2 = faixaEtaria2.reduce((a, b) => a + b, 0) / faixaEtaria2.length || 0;
+  const mediaFaixa3 = faixaEtaria3.reduce((a, b) => a + b, 0) / faixaEtaria3.length || 0;
+  const mediaFaixa4 = faixaEtaria4.reduce((a, b) => a + b, 0) / faixaEtaria4.length || 0;
+
+  document.getElementById('media').textContent = `A média das idades é: ${mediaIdade}. A média dos pesos é: ${mediaPeso}`;
+  document.getElementById('faixa1').textContent = `A média dos pesos da faixa etária 1 (até 10 anos) é: ${mediaFaixa1} kg`;
+  document.getElementById('faixa2').textContent = `A média dos pesos da faixa etária 2 (11 a 20 anos) é: ${mediaFaixa2} kg`;
+  document.getElementById('faixa3').textContent = `A média dos pesos da faixa etária 3 (21 a 30 anos) é: ${mediaFaixa3} kg`;
+  document.getElementById('faixa4').textContent = `A média dos pesos da faixa etária 4 (mais de 30 anos) é: ${mediaFaixa4} kg`;
+  
   document.getElementById('idade').value = '';
   document.getElementById('peso').value = '';
   document.getElementById('idade').focus();
@@ -80,21 +99,22 @@ function verificarPessoa() {
   document.getElementById('pessoa').textContent = `Resultado: ${pessoa}`;
 }
 
-let temperaturas = [];
-
 function calcularTemperaturas() {
-  const temperatura = parseFloat(document.getElementById('temperatura').value);
+  let temperatura = [];
+  temperatura.push(parseFloat(document.getElementById('temperatura1').value));
+  temperatura.push(parseFloat(document.getElementById('temperatura2').value));
+  temperatura.push(parseFloat(document.getElementById('temperatura3').value));
+  temperatura.push(parseFloat(document.getElementById('temperatura4').value));
+  temperatura.push(parseFloat(document.getElementById('temperatura5').value));
+  temperatura.push(parseFloat(document.getElementById('temperatura6').value));
+  temperatura.push(parseFloat(document.getElementById('temperatura7').value));
+  temperatura.push(parseFloat(document.getElementById('temperatura8').value));
+  temperatura.push(parseFloat(document.getElementById('temperatura9').value));
+  temperatura.push(parseFloat(document.getElementById('temperatura10').value));
 
-  if (isNaN(temperatura)) {
-    alert('Por favor, insira um valor válido.');
-    return;
-  }
-  temperaturas.push(temperatura);
-  const mediaTemperaturas = temperaturas.reduce((a, b) => a + b, 0) / temperaturas.length;
-  document.getElementById('mediaTemp').textContent = `A média das temperaturas é: ${mediaTemperaturas} Cº`;
-  document.getElementById('temperatura').value = '';
-  document.getElementById('temperatura').focus();
-  document.getElementById('temperatura').select();
+  let media = temperatura.reduce((a, b) => a + b, 0) / temperatura.length;
+  
+  document.getElementById('mediaTemperatura').textContent = `A média das temperaturas é: ${media}`;
 }
 
 let valores = [];
