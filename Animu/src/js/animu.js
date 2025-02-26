@@ -9,9 +9,7 @@ const setupPageProgress = () => {
   let progress = 0;
 
   const easeInOut = (t) => {
-    return t < 0.5
-      ? 4 * t * t * t
-      : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+    return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
   };
 
   const animateProgress = (targetProgress) => {
@@ -286,9 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fecha menu ao clicar fora
     document.addEventListener('click', (e) => {
-      if (!adminMenu.contains(e.target) && !adminButton.contains(e.target)) {
-        adminMenu.classList.add('hidden');
-      }
+      if (!adminMenu.contains(e.target) && !adminButton.contains(e.target)) adminMenu.classList.add('hidden');
     });
   }
 
@@ -504,7 +500,7 @@ function renderFeaturedAnimes() {
   `).join('');
 
   // Configura o carrossel
-  let currentIndex = featuredAnimes.length; // Começar do conjunto do meio
+  let currentIndex = featuredAnimes.length; // Começa do conjunto do meio
   const slideWidth = carouselTrack.querySelector('.anime-card').offsetWidth + 20; // 20 é o margin total
 
   // Posiciona no conjunto do meio
