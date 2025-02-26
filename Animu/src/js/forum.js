@@ -622,41 +622,17 @@ function editTopic(topicId) {
   const contentDiv = topicElement.querySelector('.topic-content');
   const editFormDiv = topicElement.querySelector('.topic-edit-form');
 
-  // Inicializa TinyMCE para o formulário de edição
-  tinymce.init({
-    selector: `#edit-content-${topicId}`,
-    plugins: [
-      'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-      'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-      'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons'
-    ],
-    toolbar: 'undo redo | blocks | ' +
-      'bold italic forecolor | alignleft aligncenter ' +
-      'alignright alignjustify | bullist numlist outdent indent | ' +
-      'removeformat | emoticons | help',
-    content_style: 'body { font-family: Inter, sans-serif; font-size: 14px }',
-    height: 300,
-    language: 'pt_BR',
-    menubar: false,
-    branding: false,
-    promotion: false,
-    skin: (document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide'),
-    content_css: (document.documentElement.classList.contains('dark') ? 'dark' : 'default'),
-    setup: (editor) => {
-      editor.on('change', () => {
-        const content = editor.getContent();
-        const charCount = document.getElementById('content-char-count');
-        if (charCount) {
-          const textLength = content.replace(/<[^>]*>/g, '').length;
-          charCount.textContent = `${textLength}/${FORUM_CONFIG.maxContentLength}`;
-        }
-      });
+  // Inicializar Quill para o formulário de edição
+  const editQuill = new Quill(`#edit-content-${topicId}`, {
+    theme: 'snow',
+    modules: {
+      toolbar: toolbarOptions
     }
-  }).then(() => {
-    contentDiv.classList.add('hidden');
-    editFormDiv.classList.remove('hidden');
-    tinymce.get(`edit-content-${topicId}`).setContent(topic.content);
   });
+
+  editQuill.root.innerHTML = topic.content;
+  contentDiv.classList.add('hidden');
+  editFormDiv.classList.remove('hidden');
 }
 
 // Salva a edição de um tópico
@@ -668,15 +644,18 @@ function saveTopicEdit(event, topicId) {
 
   const form = event.target;
   const newTitle = form.querySelector('input').value.trim();
-  const newContent = tinymce.get(`edit-content-${topicId}`).getContent();
+  const editQuill = Quill.find(document.querySelector(`#edit-content-${topicId}`));
+  const newContent = editQuill.root.innerHTML;
+  const plainContent = editQuill.getText().trim();
 
   try {
     ForumModerator.validateContent(newTitle, 'título');
-    const plainContent = newContent.replace(/<[^>]*>/g, '');
-    if (plainContent.length > FORUM_CONFIG.maxContentLength) throw new Error(`O conteúdo excede o limite de ${FORUM_CONFIG.maxContentLength} caracteres.`);
+    if (plainContent.length > FORUM_CONFIG.maxContentLength) {
+      throw new Error(`O conteúdo excede o limite de ${FORUM_CONFIG.maxContentLength} caracteres.`);
+    }
 
     topic.title = TextFormatter.format(newTitle);
-    topic.content = newContent; // Salva o HTML formatado
+    topic.content = newContent;
     topic.editedAt = new Date().toISOString();
     renderTopics();
     saveForumData();
@@ -810,8 +789,8 @@ function addTopic(event) {
   }
 
   const title = document.getElementById('topic-title').value.trim();
-  const content = tinymce.get('topic-content').getContent();
-  const plainContent = content.replace(/<[^>]*>/g, '');
+  const content = quillEditor.root.innerHTML;
+  const plainContent = quillEditor.getText().trim();
   const category = document.getElementById('topic-category').value;
   const rawTags = document.getElementById('topic-tags').value
     .split(',')
@@ -1008,43 +987,46 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Carrega ps dados salvos
   loadForumData();
 
-  // Inicialização do TinyMCE
-  tinymce.init({
-    selector: '#topic-content',
-    plugins: [
-      'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-      'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-      'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons'
-    ],
-    toolbar: 'undo redo | blocks | ' +
-      'bold italic forecolor | alignleft aligncenter ' +
-      'alignright alignjustify | bullist numlist outdent indent | ' +
-      'removeformat | emoticons | help',
-    content_style: 'body { font-family: Inter, sans-serif; font-size: 14px }',
-    height: 300,
-    language: 'pt_BR',
-    menubar: false,
-    branding: false,
-    promotion: false,
-    skin: (document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide'),
-    content_css: (document.documentElement.classList.contains('dark') ? 'dark' : 'default'),
-    setup: (editor) => {
-      editor.on('KeyUp Change', () => {
-        const content = editor.getContent();
-        const plainText = content.replace(/<[^>]*>/g, '');
-        const charCount = document.getElementById('content-char-count');
-        if (charCount) {
-          charCount.textContent = `${plainText.length}/${FORUM_CONFIG.maxContentLength}`;
-
-          // Adiciona classe de aviso quando próximo do limite
-          if (plainText.length > FORUM_CONFIG.maxContentLength * 0.9) charCount.classList.add('text-red-500');
-          else charCount.classList.remove('text-red-500');
-        }
-      });
-    }
-  });
+  // Inicialização do Quill
+  initQuillEditor();
 
   // Renderiza tópicos e popula categorias
   renderTopics();
   populateCategories();
 });
+
+// Adicionar variável global para o editor
+let quillEditor;
+
+// Atualizar a função de inicialização do editor
+function initQuillEditor() {
+  const toolbarOptions = [
+    ['bold', 'italic', 'underline', 'strike'],
+    ['blockquote', 'code-block'],
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    [{ 'header': [1, 2, false] }],
+    ['link', 'image'],
+    ['clean']
+  ];
+
+  quillEditor = new Quill('#topic-content', {
+    theme: 'snow',
+    modules: {
+      toolbar: toolbarOptions
+    },
+    placeholder: 'Escreva sua discussão aqui...'
+  });
+
+  quillEditor.on('text-change', function() {
+    const text = quillEditor.getText().trim();
+    const charCount = document.getElementById('content-char-count');
+    if (charCount) {
+      charCount.textContent = `${text.length}/${FORUM_CONFIG.maxContentLength}`;
+      if (text.length > FORUM_CONFIG.maxContentLength * 0.9) {
+        charCount.classList.add('text-red-500');
+      } else {
+        charCount.classList.remove('text-red-500');
+      }
+    }
+  });
+}

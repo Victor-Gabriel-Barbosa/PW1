@@ -13,99 +13,87 @@ document.addEventListener('DOMContentLoaded', function () {
   const cancelBtn = document.getElementById('cancel-btn');
 
   let editingId = null;
+  let updateFormProgress; // Mover a declaração para o escopo principal
 
   // Inicialização
   loadNews();
 
-  // Inicialização do TinyMCE
-  tinymce.init({
-    selector: '#content',
-    plugins: [
-      'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-      'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-      'insertdatetime', 'media', 'table', 'help', 'wordcount'
-    ],
-    toolbar: 'undo redo | blocks | ' +
-      'bold italic forecolor | alignleft aligncenter ' +
-      'alignright alignjustify | bullist numlist outdent indent | ' +
-      'removeformat | help',
-    content_style: 'body { font-family: Inter, sans-serif; font-size: 14px }',
-    height: 400,
-    language: 'pt_BR',
-    menubar: false,
-    branding: false,
-    promotion: false,
-    // Configuração para tema escuro
-    skin: (document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide'),
-    content_css: (document.documentElement.classList.contains('dark') ? 'dark' : 'default'),
-  }).then(() => {
-    // Chama setupFormProgress somente após o TinyMCE estar pronto
-    setupFormProgress();
+  // Inicialização do Quill
+  const quill = new Quill('#editor-container', {
+    theme: 'snow',
+    modules: {
+      toolbar: [
+        [{ 'header': [1, 2, 3, false] }],
+        ['bold', 'italic', 'underline'],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'align': [] }],
+        ['link', 'image'],
+        ['clean']
+      ]
+    },
+    placeholder: 'Digite o conteúdo da notícia...'
   });
 
-  // Adiciona após a inicialização do TinyMCE
-  let updateFormProgress; // Define a variável em um escopo acessível
+  // Configurar tema escuro se necessário
+  if (document.documentElement.classList.contains('dark')) {
+    document.querySelector('.ql-toolbar').classList.add('dark');
+    document.querySelector('.ql-container').classList.add('dark');
+  }
 
-  function setupFormProgress() {
-    const form = document.getElementById('news-form');
+  // Definir função updateFormProgress antes de usá-la
+  updateFormProgress = function() {
     const progressBar = document.getElementById('formProgress');
     const requiredFields = ['title', 'category', 'summary', 'image'];
     const totalFields = requiredFields.length + 1; // +1 para o campo de conteúdo
+    let filledFields = 0;
     
-    updateFormProgress = function() {
-      let filledFields = 0;
-      
-      // Verifica campos obrigatórios
-      requiredFields.forEach(fieldId => {
-        const field = document.getElementById(fieldId);
-        if (field && field.value.trim()) {
-          filledFields++;
-          console.log(`Campo ${fieldId} preenchido: ${field.value.trim()}`);
-        }
-      });
-
-      // Verifica o conteúdo do editor TinyMCE
-      const editor = tinymce.get('content');
-      if (editor && editor.getContent().trim()) {
+    // Verifica campos obrigatórios
+    requiredFields.forEach(fieldId => {
+      const field = document.getElementById(fieldId);
+      if (field && field.value.trim()) {
         filledFields++;
-        console.log('Editor preenchido');
       }
+    });
 
-      // Calcula a porcentagem
-      const progress = Math.round((filledFields / totalFields) * 100);
-      console.log(`Progresso: ${progress}% (${filledFields}/${totalFields} campos)`);
-      
-      // Atualiza a barra de progresso
-      progressBar.style.width = `${progress}%`;
-      
-      // Atualiza a cor baseado no progresso
-      if (progress < 33) {
-        progressBar.style.background = 'var(--error-color, #EF4444)';
-      } else if (progress < 66) {
-        progressBar.style.background = 'var(--warning-color, #F59E0B)';
-      } else {
-        progressBar.style.background = 'var(--success-color, #10B981)';
-      }
+    // Verifica o conteúdo do editor Quill
+    const content = quill.root.innerHTML.trim();
+    if (content && content !== '<p><br></p>') {
+      filledFields++;
     }
 
+    // Calcula e atualiza progresso
+    const progress = Math.round((filledFields / totalFields) * 100);
+    progressBar.style.width = `${progress}%`;
+    
+    // Atualiza cor baseado no progresso
+    if (progress < 33) {
+      progressBar.style.background = 'var(--error-color, #EF4444)';
+    } else if (progress < 66) {
+      progressBar.style.background = 'var(--warning-color, #F59E0B)';
+    } else {
+      progressBar.style.background = 'var(--success-color, #10B981)';
+    }
+  };
+
+  // Agora podemos configurar o formulário com a função já definida
+  function setupFormProgress() {
     // Monitora mudanças em campos de texto e select
     form.querySelectorAll('input, select, textarea').forEach(field => {
       field.addEventListener('input', updateFormProgress);
       field.addEventListener('change', updateFormProgress);
     });
 
-    // Monitora mudanças no TinyMCE
-    const editor = tinymce.get('content');
-    if (editor) {
-      editor.on('input', updateFormProgress);
-      editor.on('change', updateFormProgress);
-    }
+    // Monitora mudanças no Quill
+    quill.on('text-change', updateFormProgress);
 
     // Atualização inicial
     updateFormProgress();
   }
 
-  // Após a inicialização do TinyMCE
+  // Chamar setupFormProgress após definir todas as funções necessárias
+  setupFormProgress();
+
+  // Após a inicialização do Quill
   const generateBtn = document.getElementById('generate-news-btn');
   generateBtn.addEventListener('click', generateNewsContent);
 
@@ -164,7 +152,8 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('summary').value = newsData.summary;
       document.getElementById('category').value = newsData.category;
       document.getElementById('tags').value = newsData.tags.join(', ');
-      tinymce.get('content').setContent(newsData.content);
+      quill.setContents([]);
+      quill.clipboard.dangerouslyPasteHTML(newsData.content);
 
       // Atualiza o contador de caracteres do resumo
       updateSummaryCounter();
@@ -200,8 +189,8 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('tags').value = '';
       document.getElementById('summary').value = '';
       
-      // Limpa o editor TinyMCE
-      tinymce.get('content').setContent('');
+      // Limpa o editor Quill
+      quill.setContents([]);
       
       // Limpa a imagem
       document.getElementById('image').value = '';
@@ -324,20 +313,20 @@ document.addEventListener('DOMContentLoaded', function () {
         imageDropZone.querySelector('.upload-area').classList.add('hidden');
       }
       document.getElementById('summary').value = newsData.summary;
-      tinymce.get('content').setContent(newsData.content); // Setar conteúdo no editor
+      quill.clipboard.dangerouslyPasteHTML(newsData.content); // Setar conteúdo no editor
       document.getElementById('modal-title').textContent = 'Editar Notícia';
     } else {
       editingId = null;
       form.reset();
       imagePreview.classList.add('hidden');
       imageDropZone.querySelector('.upload-area').classList.remove('hidden');
-      tinymce.get('content').setContent(''); // Limpar editor
+      quill.setContents([]); // Limpar editor
       document.getElementById('modal-title').textContent = 'Nova Notícia';
     }
     
     // Atualiza o progresso após abrir o modal
     if (typeof updateFormProgress === 'function') {
-      setTimeout(updateFormProgress, 100); // Pequeno delay para garantir que o TinyMCE está pronto
+      setTimeout(updateFormProgress, 100); // Pequeno delay para garantir que o Quill está pronto
     }
   }
 
@@ -380,9 +369,9 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    // Validar conteúdo do TinyMCE
-    const content = tinymce.get('content').getContent().trim();
-    if (!content) {
+    // Validar conteúdo do Quill
+    const content = quill.root.innerHTML.trim();
+    if (!content || content === '<p><br></p>') {
       alert('Por favor, preencha o conteúdo da notícia');
       return;
     }
