@@ -508,10 +508,7 @@ function formatDate(dateStr) {
   return date.toLocaleDateString('pt-BR');
 }
 
-/**
- * Gerencia o sistema de likes dos tópicos
- * Verifica autenticação e atualiza contadores
- */
+// Gerencia o sistema de likes dos tópico e verifica autenticação e atualiza contadores
 function likeTopic(topicId) {
   if (!isUserLoggedIn()) {
     alert('Você precisa estar logado para curtir!');
@@ -540,6 +537,7 @@ function likeTopic(topicId) {
   saveForumData();
 }
 
+// Gerencia o sistema de likes das respostas e verifica autenticação e atualiza contadores
 function likeReply(topicId, replyId) {
   if (!isUserLoggedIn()) {
     alert('Você precisa estar logado para curtir!');
@@ -622,7 +620,7 @@ function editTopic(topicId) {
   const contentDiv = topicElement.querySelector('.topic-content');
   const editFormDiv = topicElement.querySelector('.topic-edit-form');
 
-  // Inicializar Quill para o formulário de edição
+  // Inicializa Quill para o formulário de edição
   const editQuill = new Quill(`#edit-content-${topicId}`, {
     theme: 'snow',
     modules: {
@@ -995,10 +993,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   populateCategories();
 });
 
-// Adicionar variável global para o editor
+// Adiciona variável global para o editor
 let quillEditor;
 
-// Atualizar a função de inicialização do editor
+// Atualiza a função de inicialização do editor
 function initQuillEditor() {
   const toolbarOptions = [
     ['bold', 'italic', 'underline', 'strike'],
@@ -1022,11 +1020,8 @@ function initQuillEditor() {
     const charCount = document.getElementById('content-char-count');
     if (charCount) {
       charCount.textContent = `${text.length}/${FORUM_CONFIG.maxContentLength}`;
-      if (text.length > FORUM_CONFIG.maxContentLength * 0.9) {
-        charCount.classList.add('text-red-500');
-      } else {
-        charCount.classList.remove('text-red-500');
-      }
+      if (text.length > FORUM_CONFIG.maxContentLength * 0.9) charCount.classList.add('text-red-500');
+      else charCount.classList.remove('text-red-500');
     }
   });
 }
