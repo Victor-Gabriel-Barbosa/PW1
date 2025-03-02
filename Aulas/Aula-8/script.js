@@ -113,8 +113,12 @@ function calcularTemperaturas() {
   temperatura.push(parseFloat(document.getElementById('temperatura10').value));
 
   let media = temperatura.reduce((a, b) => a + b, 0) / temperatura.length;
+  const maior = Math.max(...temperatura);
+  const menor = Math.min(...temperatura);
   
   document.getElementById('mediaTemperatura').textContent = `A média das temperaturas é: ${media}`;
+  document.getElementById('maiorTemperatura').textContent = `A maior temperatura é: ${maior}`;
+  document.getElementById('menorTemperatura').textContent = `A menor temperatura é: ${menor}`;
 }
 
 let valores = [];
