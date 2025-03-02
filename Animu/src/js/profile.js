@@ -449,21 +449,21 @@ function loadActivityTimeline(user) {
 function getActivityContent(activity) {
   switch (activity.type) {
     case 'comment':
-      return `Comentou em <a href="animes.html?anime=${encodeURIComponent(activity.animeTitle)}" 
+      return `<span class="text-white">Comentou em </span><a href="animes.html?anime=${encodeURIComponent(activity.animeTitle)}" 
               class="text-purple-600 hover:underline">${activity.animeTitle}</a>: 
               <span class="text-gray-600 dark:text-gray-300">${activity.content}</span>`;
 
     case 'forum_topic':
-      return `Criou um tópico no fórum: <span class="font-semibold">${activity.title}</span>
+      return `<span class="text-white">Criou um tópico no fórum: </span><span class="text-purple-600 hover:underline">${activity.title}</span>
               <span class="text-gray-600 dark:text-gray-300">${activity.content}</span>`;
 
     case 'forum_reply':
-      return `Respondeu ao tópico <span class="font-semibold">${activity.topicTitle}</span>: 
+      return `<span class="text-white">Respondeu ao tópico </span><span class="text-purple-600 hover:underline">${activity.topicTitle}</span>: 
               <span class="text-gray-600 dark:text-gray-300">${activity.content}</span>`;
 
     case 'favorite':
-      return `Adicionou <a href="animes.html?anime=${encodeURIComponent(activity.animeTitle)}" 
-              class="text-purple-600 hover:underline">${activity.animeTitle}</a> aos favoritos`;
+      return `<span class="text-white">Adicionou </span><a href="animes.html?anime=${encodeURIComponent(activity.animeTitle)}" 
+              class="text-purple-600 hover:underline">${activity.animeTitle}</a> <span class="text-white">aos favoritos</span>`;
 
     default: return '';
   }
