@@ -13,6 +13,11 @@ class NewsManager {
     this.gridView = document.getElementById('news-grid-view');
     this.detailView = document.getElementById('news-detail-view');
 
+    // Referências aos elementos principais da página
+    this.parallaxSection = document.querySelector('.parallax-section');
+    this.newsGridContainer = document.querySelector('.news-grid')?.parentElement;
+    this.paginationContainer = document.querySelector('.pagination-container');
+
     // Inicializa grid com base no contexto da página
     const newsGrid = document.querySelector('.news-grid');
     if (newsGrid) {
@@ -66,6 +71,19 @@ class NewsManager {
 
     // Esconde a view atual
     if (this.activeView) this.views[this.activeView].element.style.display = 'none';
+
+    // Gerenciamento de visibilidade dos elementos da página
+    if (viewName === 'detail') {
+      // Oculta elementos da visualização em grid quando mostra detalhes da notícia
+      if (this.parallaxSection) this.parallaxSection.style.display = 'none';
+      if (this.newsGridContainer) this.newsGridContainer.style.display = 'none';
+      if (this.paginationContainer) this.paginationContainer.style.display = 'none';
+    } else {
+      // Mostra elementos da visualização em grid
+      if (this.parallaxSection) this.parallaxSection.style.display = 'block';
+      if (this.newsGridContainer) this.newsGridContainer.style.display = 'block';
+      if (this.paginationContainer) this.paginationContainer.style.display = 'flex';
+    }
 
     // Mostra e inicializar nova view
     const view = this.views[viewName];
@@ -130,7 +148,7 @@ class NewsManager {
 
     const onClickHandler = this.currentPage === 'index'
       ? ''  // Sem handler quando na index
-      : `onclick="event.preventDefault(); newsManager.switchToView('detail', '${news.id}')"`;
+      : `onclick="event.preventDefault(); newsManager.switchToView('detail', '${news.id}')"`; 
 
     return `
       <article class="news-card">
