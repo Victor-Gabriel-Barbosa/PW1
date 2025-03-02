@@ -93,85 +93,6 @@ document.addEventListener('DOMContentLoaded', function () {
   // Chamar setupFormProgress após definir todas as funções necessárias
   setupFormProgress();
 
-  // Após a inicialização do Quill
-  const generateBtn = document.getElementById('generate-news-btn');
-  generateBtn.addEventListener('click', generateNewsContent);
-
-  async function generateNewsContent() {
-    const title = document.getElementById('title').value;
-    if (!title) {
-      alert('Digite um título ou tópico para gerar a notícia');
-      return;
-    }
-
-    generateBtn.disabled = true;
-    generateBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Gerando...';
-
-    try {
-      // Simulação de resposta
-      const templates = {
-        anuncio: {
-          title: `${title} anuncia nova temporada para 2024`,
-          summary: `Fãs comemoram o anúncio oficial da nova temporada de ${title}, que promete trazer grandes revelações e animações ainda mais impressionantes.`,
-          content: `<p>Os fãs de anime têm um grande motivo para comemorar! Foi anunciado oficialmente que ${title} retornará com uma nova temporada em 2024. O anúncio foi feito através das redes sociais oficiais da obra e já está gerando grande expectativa na comunidade.</p>
-                    <p>O estúdio responsável pela adaptação garantiu que manterá o alto padrão de animação que tornou a série famosa, prometendo cenas ainda mais impressionantes e fiéis ao material original. A equipe principal de produção permanece a mesma da temporada anterior, o que é uma ótima notícia para os fãs.</p>
-                    <p>Ainda não foram revelados detalhes específicos sobre a quantidade de episódios ou exatamente qual arco do mangá será adaptado, mas especula-se que a nova temporada poderá cobrir alguns dos momentos mais aguardados pelos fãs da obra.</p>`,
-          tags: ["anime", "anúncio", "nova temporada", title.toLowerCase()],
-          category: "Anúncio"
-        },
-        evento: {
-          title: `${title} confirmado na Anime Expo 2024`,
-          summary: `Produtores e dubladores de ${title} farão participação especial no maior evento de anime do ocidente.`,
-          content: `<p>A Anime Expo 2024 acaba de anunciar mais uma atração imperdível: um painel especial dedicado a ${title}! O evento, que acontece em Los Angeles, receberá membros da equipe de produção e dubladores do anime para uma série de atividades exclusivas.</p>
-                    <p>Entre as atrações confirmadas estão sessões de autógrafos, exibição de cenas inéditas da próxima temporada e uma exposição com artworks originais utilizados na produção do anime. Os fãs também poderão participar de uma sessão de perguntas e respostas com os convidados.</p>
-                    <p>Os ingressos para o evento começarão a ser vendidos no próximo mês, e a organização já alerta que a procura deve ser intensa, especialmente para as atividades relacionadas a ${title}.</p>`,
-          tags: ["anime", "evento", "anime expo", title.toLowerCase()],
-          category: "Evento"
-        },
-        noticia: {
-          title: `${title} quebra recordes de audiência no streaming`,
-          summary: `Série alcança números impressionantes e se torna um dos animes mais assistidos da temporada.`,
-          content: `<p>O sucesso de ${title} não para de crescer! De acordo com dados recentes divulgados pelas principais plataformas de streaming, o anime atingiu números recordes de visualização, superando todas as expectativas iniciais.</p>
-                    <p>O crescimento expressivo na base de fãs internacional tem chamado atenção da indústria, com destaque especial para o mercado ocidental. A popularidade da série tem influenciado significativamente o cenário do anime, inspirando novas produções e elevando os padrões de qualidade.</p>
-                    <p>Este sucesso também se reflete no mercado de mangás e produtos relacionados, com um aumento significativo nas vendas de volumes físicos e itens colecionáveis da franquia. A editora responsável já confirmou que fará novas tiragens para atender à demanda crescente.</p>`,
-          tags: ["anime", "sucesso", "streaming", title.toLowerCase()],
-          category: "Notícia"
-        }
-      };
-
-      // Seleciona aleatoriamente um dos templates
-      const types = Object.keys(templates);
-      const randomType = types[Math.floor(Math.random() * types.length)];
-      const newsData = templates[randomType];
-
-      // Simula delay da API
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // Preenche os campos do formulário
-      document.getElementById('title').value = newsData.title;
-      document.getElementById('summary').value = newsData.summary;
-      document.getElementById('category').value = newsData.category;
-      document.getElementById('tags').value = newsData.tags.join(', ');
-      quill.setContents([]);
-      quill.clipboard.dangerouslyPasteHTML(newsData.content);
-
-      // Atualiza o contador de caracteres do resumo
-      updateSummaryCounter();
-      
-      // Atualiza o progresso do formulário
-      if (typeof updateFormProgress === 'function') {
-        updateFormProgress();
-      }
-
-    } catch (error) {
-      console.error('Erro ao gerar notícia:', error);
-      alert('Erro ao gerar notícia. Por favor, tente novamente.');
-    } finally {
-      generateBtn.disabled = false;
-      generateBtn.innerHTML = '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>Gerar com IA';
-    }
-  }
-
   // Event Listeners principais
   addBtn.addEventListener('click', () => openModal());
   closeBtn.addEventListener('click', closeModal);
@@ -292,7 +213,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
   
-
 
   /**
    * Gerencia estado do modal para criação/edição
