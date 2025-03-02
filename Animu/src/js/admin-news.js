@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const cancelBtn = document.getElementById('cancel-btn');
 
   let editingId = null;
-  let updateFormProgress; // Mover a declaração para o escopo principal
+  let updateFormProgress;
 
   // Inicialização
   loadNews();
@@ -50,29 +50,21 @@ document.addEventListener('DOMContentLoaded', function () {
     // Verifica campos obrigatórios
     requiredFields.forEach(fieldId => {
       const field = document.getElementById(fieldId);
-      if (field && field.value.trim()) {
-        filledFields++;
-      }
+      if (field && field.value.trim()) filledFields++;
     });
 
     // Verifica o conteúdo do editor Quill
     const content = quill.root.innerHTML.trim();
-    if (content && content !== '<p><br></p>') {
-      filledFields++;
-    }
+    if (content && content !== '<p><br></p>') filledFields++;
 
     // Calcula e atualiza progresso
     const progress = Math.round((filledFields / totalFields) * 100);
     progressBar.style.width = `${progress}%`;
     
     // Atualiza cor baseado no progresso
-    if (progress < 33) {
-      progressBar.style.background = 'var(--error-color, #EF4444)';
-    } else if (progress < 66) {
-      progressBar.style.background = 'var(--warning-color, #F59E0B)';
-    } else {
-      progressBar.style.background = 'var(--success-color, #10B981)';
-    }
+    if (progress < 33) progressBar.style.background = 'var(--error-color, #EF4444)';
+    else if (progress < 66) progressBar.style.background = 'var(--warning-color, #F59E0B)';
+    else progressBar.style.background = 'var(--success-color, #10B981)';
   };
 
   // Agora podemos configurar o formulário com a função já definida
@@ -123,9 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
       summaryCounter.classList.remove('text-red-500');
       
       // Usa updateFormProgress ao invés de setupFormProgress
-      if (typeof updateFormProgress === 'function') {
-        updateFormProgress();
-      }
+      if (typeof updateFormProgress === 'function') updateFormProgress();
     }
   }
 
@@ -245,12 +235,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
     // Atualiza o progresso após abrir o modal
-    if (typeof updateFormProgress === 'function') {
-      setTimeout(updateFormProgress, 100); // Pequeno delay para garantir que o Quill está pronto
-    }
+    if (typeof updateFormProgress === 'function') setTimeout(updateFormProgress, 100); // Delay para garantir que o Quill está pronto
   }
 
-  // Adicionar contador de caracteres para o resumo
+  // Adiciona contador de caracteres para o resumo
   const summaryInput = document.getElementById('summary');
   const summaryCounter = document.getElementById('summary-counter');
   const maxLength = 200;
@@ -386,9 +374,7 @@ document.addEventListener('DOMContentLoaded', function () {
       imageDropZone.querySelector('.upload-area').classList.remove('hidden');
       
       // Atualiza a barra de progresso quando a imagem for removida
-      if (typeof updateFormProgress === 'function') {
-        updateFormProgress();
-      }
+      if (typeof updateFormProgress === 'function') updateFormProgress();
     }
   });
 
@@ -408,9 +394,7 @@ document.addEventListener('DOMContentLoaded', function () {
       imageDropZone.querySelector('.upload-area').classList.add('hidden');
       
       // Atualiza a barra de progresso quando a imagem for carregada
-      if (typeof updateFormProgress === 'function') {
-        updateFormProgress();
-      }
+      if (typeof updateFormProgress === 'function') updateFormProgress();
     };
     reader.readAsDataURL(file);
   }

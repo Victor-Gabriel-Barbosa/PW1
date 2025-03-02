@@ -6,7 +6,9 @@ class NewsManager {
 
     // Listeners para sincronização de dados entre abas
     window.addEventListener('newsUpdated', () => this.refreshData());
-    window.addEventListener('storage', (e) => { if (e.key === 'news') this.refreshData(); });
+    window.addEventListener('storage', (e) => { 
+      if (e.key === 'news') this.refreshData(); 
+    });
 
     // Identifica contexto da página atual
     this.currentPage = this.getCurrentPage();
@@ -436,7 +438,9 @@ class NewsManager {
     };
 
     // Adiciona listeners aos botões
-    Object.entries(shareHandlers).forEach(([network, handler]) => { document.querySelector(`.share-btn.${network}`).addEventListener('click', handler); });
+    Object.entries(shareHandlers).forEach(([network, handler]) => { 
+      document.querySelector(`.share-btn.${network}`).addEventListener('click', handler); 
+    });
   }
 
   showGridView(updateHistory = true) {

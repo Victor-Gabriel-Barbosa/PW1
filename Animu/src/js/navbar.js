@@ -309,20 +309,14 @@ class Navbar {
       localStorage.setItem('sideMenuState', isOpen ? 'open' : 'closed');
 
       // Adiciona ou remove listener de clique fora baseado no estado do menu
-      if (isOpen && window.innerWidth <= 768) {
-        document.addEventListener('click', this.handleOutsideClick);
-      } else {
-        document.removeEventListener('click', this.handleOutsideClick);
-      }
+      if (isOpen && window.innerWidth <= 768) document.addEventListener('click', this.handleOutsideClick);
+      else document.removeEventListener('click', this.handleOutsideClick);
     });
 
     // Adiciona listener para mudanças no tamanho da tela
     window.addEventListener('resize', () => {
-      if (window.innerWidth > 768) {
-        document.removeEventListener('click', this.handleOutsideClick);
-      } else if (sideMenu.classList.contains('open')) {
-        document.addEventListener('click', this.handleOutsideClick);
-      }
+      if (window.innerWidth > 768) document.removeEventListener('click', this.handleOutsideClick);
+      else if (sideMenu.classList.contains('open')) document.addEventListener('click', this.handleOutsideClick);
     });
   }
 

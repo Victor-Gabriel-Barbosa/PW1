@@ -88,22 +88,18 @@ class AnimeSearchBar {
     this.setupSearchBar();
     this.setupEventListeners();
 
-    // Adicionar listener para atualização de categorias
+    // Adiciona listener para atualização de categorias
     window.addEventListener('categoriesUpdated', () => {
       this.updateGenreFilter();
     });
   }
 
-  /**
-   * Carrega categorias do localStorage
-   */
+  // Carrega categorias do localStorage
   loadCategories() {
     return JSON.parse(localStorage.getItem('animuCategories')) || [];
   }
 
-  /**
-   * Converte categorias para o formato de opções do filtro
-   */
+  // Converte categorias para o formato de opções do filtro
   formatCategoriesToOptions(categories) {
     return categories.map(cat => ({
       value: cat.name.toLowerCase(),
@@ -111,9 +107,7 @@ class AnimeSearchBar {
     }));
   }
 
-  /**
-   * Atualiza o filtro de gêneros quando as categorias são modificadas
-   */
+  // Atualiza o filtro de gêneros quando as categorias são modificadas
   updateGenreFilter() {
     const categories = this.loadCategories();
     const genreSelect = this.container.querySelector('#genre-filter');
@@ -170,9 +164,7 @@ class AnimeSearchBar {
     `;
   }
 
-  /**
-   * Inicializa a estrutura HTML da barra de busca e seus componentes
-   */
+  // Inicializa a estrutura HTML da barra de busca e seus componentes
   setupSearchBar() {
     if (!this.container) return;
 
@@ -218,19 +210,17 @@ class AnimeSearchBar {
     this.filterBtn = this.container.querySelector('.filter-btn');
     this.filterMenu = this.container.querySelector('.filter-menu');
 
-    // Adicionar referência ao botão de limpar
+    // Adiciona referência ao botão de limpar
     this.clearButton = this.container.querySelector('.clear-input');
 
-    // Atualizar visibilidade inicial do botão
+    // Atualiza visibilidade inicial do botão
     this.updateClearButtonVisibility();
 
-    // Configurar eventos dos filtros
+    // Configura eventos dos filtros
     this.setupFilterEvents();
   }
 
-  /**
-   * Configura listeners para input de busca e interações do usuário
-   */
+  // Configura listeners para input de busca e interações do usuário
   setupEventListeners() {
     if (!this.input || !this.results) return;
 
@@ -250,10 +240,12 @@ class AnimeSearchBar {
 
     this.searchButton.addEventListener('click', () => this.handleSearch(true));
 
-    // Fechar resultados ao clicar fora
-    document.addEventListener('click', (e) => { if (!this.container.contains(e.target)) this.hideResults(); });
+    // Fecha resultados ao clicar fora
+    document.addEventListener('click', (e) => { 
+      if (!this.container.contains(e.target)) this.hideResults(); 
+    });
 
-    // Adicionar evento para o botão de limpar
+    // Adiciona evento para o botão de limpar
     this.clearButton.addEventListener('click', () => {
       this.input.value = '';
       this.hideResults();
@@ -262,7 +254,9 @@ class AnimeSearchBar {
     });
 
     // Atualizar visibilidade do botão ao digitar
-    this.input.addEventListener('input', () => { this.updateClearButtonVisibility(); });
+    this.input.addEventListener('input', () => { 
+      this.updateClearButtonVisibility(); 
+    });
   }
 
   // Novo método para controlar a visibilidade do botão de limpar
@@ -271,19 +265,19 @@ class AnimeSearchBar {
     else this.clearButton.style.display = 'none';
   }
 
-  /**
-   * Configura eventos para interação com filtros de busca
-   */
+  // Configura eventos para interação com filtros de busca
   setupFilterEvents() {
     // Toggle do menu de filtros
-    this.filterBtn.addEventListener('click', () => { this.filterMenu.classList.toggle('show'); });
-
-    // Fechar filtros ao clicar fora
-    document.addEventListener('click', (e) => {
-      if (!this.container.contains(e.target)) { this.filterMenu.classList.remove('show'); }
+    this.filterBtn.addEventListener('click', () => { 
+      this.filterMenu.classList.toggle('show'); 
     });
 
-    // Adicionar listeners para cada select de filtro
+    // Fecha filtros ao clicar fora
+    document.addEventListener('click', (e) => {
+      if (!this.container.contains(e.target)) this.filterMenu.classList.remove('show'); 
+    });
+
+    // Adiciona listeners para cada select de filtro
     const filterSelects = this.container.querySelectorAll('.filter-group select');
     filterSelects.forEach(select => {
       select.addEventListener('change', () => {
@@ -330,7 +324,9 @@ class AnimeSearchBar {
       let touchStartY = 0;
       let touchEndY = 0;
 
-      this.filterMenu.addEventListener('touchstart', (e) => { touchStartY = e.touches[0].clientY; });
+      this.filterMenu.addEventListener('touchstart', (e) => { 
+        touchStartY = e.touches[0].clientY; 
+      });
 
       this.filterMenu.addEventListener('touchmove', (e) => {
         touchEndY = e.touches[0].clientY;
@@ -402,13 +398,17 @@ class AnimeSearchBar {
         if (normalizedTitle.includes(normalizedQuery)) score += 30;
 
         // Pontuação para palavras individuais no título
-        queryWords.forEach(word => { if (normalizedTitle.includes(word)) score += 15; });
+        queryWords.forEach(word => { 
+          if (normalizedTitle.includes(word)) score += 15; 
+        });
 
         // Pontuação para títulos alternativos
         anime.alternativeTitles.forEach(alt => {
           const normalizedAlt = this.normalizeText(alt.title);
           if (normalizedAlt.includes(normalizedQuery)) score += 20;
-          queryWords.forEach(word => { if (normalizedAlt.includes(word)) score += 10; });
+          queryWords.forEach(word => { 
+            if (normalizedAlt.includes(word)) score += 10; 
+          });
         });
 
         // Pontuação para gêneros
@@ -549,9 +549,7 @@ class AnimeSearchBar {
     `;
   }
 
-  /**
-   * Exibe mensagem de erro na interface
-   */
+  // Exibe mensagem de erro na interface
   displayError() {
     if (!this.results) return;
 

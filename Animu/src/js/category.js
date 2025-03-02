@@ -139,4 +139,6 @@ class CategoryDisplay {
 }
 
 // Inicializa o gerenciador de categorias
-document.addEventListener('DOMContentLoaded', () => { new CategoryDisplay(); });
+document.addEventListener('DOMContentLoaded', () => { 
+  new CategoryDisplay(); 
+});

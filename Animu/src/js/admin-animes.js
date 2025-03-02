@@ -141,7 +141,9 @@ function showAnimeForm() {
   }
 
   // Captura o estado inicial do formulário após o preenchimento
-  setTimeout(() => { initialFormState = getFormState(); }, 100);
+  setTimeout(() => { 
+    initialFormState = getFormState(); 
+  }, 100);
 }
 
 // Fecha formulário
@@ -568,11 +570,15 @@ function setupDropZone(dropzoneId, inputId, urlInputId, previewId, dropHandler) 
   }
 
   ['dragenter', 'dragover'].forEach(eventName => {
-    dropZone.addEventListener(eventName, () => { dropZone.classList.add('drag-over'); });
+    dropZone.addEventListener(eventName, () => { 
+      dropZone.classList.add('drag-over'); 
+    });
   });
 
   ['dragleave', 'drop'].forEach(eventName => {
-    dropZone.addEventListener(eventName, () => { dropZone.classList.remove('drag-over'); });
+    dropZone.addEventListener(eventName, () => { 
+      dropZone.classList.remove('drag-over'); 
+    });
   });
 
   dropZone.addEventListener('dragover', (e) => {
@@ -620,7 +626,9 @@ function setupDropZone(dropzoneId, inputId, urlInputId, previewId, dropHandler) 
     }
   });
 
-  dropZone.addEventListener('click', () => { fileInput.click(); });
+  dropZone.addEventListener('click', () => { 
+    fileInput.click(); 
+  });
 
   fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
@@ -962,7 +970,9 @@ function updateFormProgress() {
   let filledFields = 0;
 
   // Verifica campos obrigatórios
-  requiredFields.forEach(field => { if (field.value.trim() !== '') filledFields++; });
+  requiredFields.forEach(field => { 
+    if (field.value.trim() !== '') filledFields++; 
+  });
 
   // Verifica se há pelo menos um gênero
   if (genres.length > 0) filledFields++;
@@ -1075,7 +1085,9 @@ function enableDragAndDrop(dropzoneId, inputId, acceptedTypes) {
     dropzone.classList.add('dragover');
   });
 
-  dropzone.addEventListener('dragleave', () => { dropzone.classList.remove('dragover'); });
+  dropzone.addEventListener('dragleave', () => { 
+    dropzone.classList.remove('dragover'); 
+  });
 
   dropzone.addEventListener('drop', (e) => {
     e.preventDefault();
@@ -1153,12 +1165,16 @@ async function autoFillFromMal() {
 
     // Preenche produtores
     producers = [];
-    anime.producers.forEach(producer => { if (producer.name) producers.push(producer.name); });
+    anime.producers.forEach(producer => { 
+      if (producer.name) producers.push(producer.name); 
+    });
     updateProducersList();
 
     // Preenche licenciadores
     licensors = [];
-    anime.licensors.forEach(licensor => { if (licensor.name) licensors.push(licensor.name); });
+    anime.licensors.forEach(licensor => { 
+      if (licensor.name) licensors.push(licensor.name); 
+    });
     updateLicensorsList();
 
     // Preenche o trailer se disponível
@@ -1548,9 +1564,7 @@ function updateStaffList() {
   
   // Agrupa membros por função
   const groupedStaff = staffMembers.reduce((groups, member) => {
-    if (!groups[member.role]) {
-      groups[member.role] = [];
-    }
+    if (!groups[member.role]) groups[member.role] = [];
     groups[member.role].push(member);
     return groups;
   }, {});
@@ -1629,7 +1643,9 @@ function showAnimeForm() {
   }
 
   // Captura o estado inicial do formulário após o preenchimento
-  setTimeout(() => { initialFormState = getFormState(); }, 100);
+  setTimeout(() => { 
+    initialFormState = getFormState(); 
+  }, 100);
 }
 
 // Modifique a função editAnime para carregar os dados da staff
@@ -1686,5 +1702,3 @@ function editAnime(index) {
     alert('Erro ao carregar dados do anime para edição.');
   }
 }
-
-// ...existing code...

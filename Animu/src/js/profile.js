@@ -357,7 +357,9 @@ function confirmShare(animeTitle, coverImage) {
   };
 
   // Envia para cada amigo selecionado
-  selectedFriends.forEach(friendId => { chat.sendMessage(sessionData.userId, friendId, JSON.stringify(message)); });
+  selectedFriends.forEach(friendId => { 
+    chat.sendMessage(sessionData.userId, friendId, JSON.stringify(message)); 
+  });
 
   closeShareModal();
 
@@ -542,7 +544,9 @@ function setupEventListeners(user, isOwnProfile) {
       // Configura e marca os gêneros favoritos
       setupGenreSelection();
       const checkboxes = document.querySelectorAll('input[name="genres"]');
-      checkboxes.forEach(checkbox => { checkbox.checked = user.favoriteGenres?.includes(checkbox.value) || false; });
+      checkboxes.forEach(checkbox => { 
+        checkbox.checked = user.favoriteGenres?.includes(checkbox.value) || false; 
+      });
     });
 
     // Botão de cancelar edição
@@ -581,13 +585,17 @@ function setupEventListeners(user, isOwnProfile) {
     // Inicializar preview com avatar atual
     previewAvatar.src = user.avatar || "https://ui-avatars.com/api/?name=" + encodeURIComponent(user.username);
 
-    avatarUploadBtn.addEventListener('click', () => { avatarInput.click(); });
+    avatarUploadBtn.addEventListener('click', () => { 
+      avatarInput.click(); 
+    });
 
     avatarInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = (event) => { previewAvatar.src = event.target.result; };
+        reader.onload = (event) => { 
+          previewAvatar.src = event.target.result; 
+        };
         reader.readAsDataURL(file);
       }
     });
@@ -912,7 +920,9 @@ function sendFriendRequest(targetUserId) {
   document.body.appendChild(notification);
 
   // Remove a notificação após 3 segundos
-  setTimeout(() => { notification.remove(); }, 3000);
+  setTimeout(() => { 
+    notification.remove(); 
+  }, 3000);
 }
 
 // Aceita uma solicitação de amizade e atualiza as listas de amigos dos usuários envolvidos

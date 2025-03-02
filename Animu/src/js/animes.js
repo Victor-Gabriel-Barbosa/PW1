@@ -1354,7 +1354,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Adicionar o contador de caracteres ao textarea
+  // Adiciona o contador de caracteres ao textarea
   const commentText = document.getElementById('comment-text');
   if (commentText) {
     commentText.setAttribute('maxlength', MAX_COMMENT_LENGTH);

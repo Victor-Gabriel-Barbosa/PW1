@@ -16,7 +16,9 @@ class CategoryManager {
     });
 
     // Adiciona event listener para fechar o modal com Esc
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') this.closeModal(); });
+    document.addEventListener('keydown', (e) => { 
+      if (e.key === 'Escape') this.closeModal(); 
+    });
 
     // Fecha o modal ao clicar fora dele
     document.getElementById('category-modal').addEventListener('click', (e) => {
@@ -210,7 +212,9 @@ class CategoryManager {
       this.setupProgressTracking();
 
       // Captura o estado inicial do formulário após o preenchimento
-      setTimeout(() => { this.initialFormState = this.getFormState(); }, 100);
+      setTimeout(() => { 
+        this.initialFormState = this.getFormState(); 
+      }, 100);
 
       // Configura o botão cancelar
       const cancelButton = document.getElementById('btn-cancel');
@@ -260,7 +264,9 @@ class CategoryManager {
       `).join('');
 
       // Toggle do picker
-      pickerBtn.addEventListener('click', () => { picker.classList.toggle('hidden'); });
+      pickerBtn.addEventListener('click', () => { 
+        picker.classList.toggle('hidden'); 
+      });
 
       // Seleciona emoji
       picker.addEventListener('click', (e) => {
@@ -272,7 +278,9 @@ class CategoryManager {
       });
 
       // Fecha picker ao clicar fora
-      document.addEventListener('click', (e) => { if (!picker.contains(e.target) && !pickerBtn.contains(e.target)) picker.classList.add('hidden'); });
+      document.addEventListener('click', (e) => { 
+        if (!picker.contains(e.target) && !pickerBtn.contains(e.target)) picker.classList.add('hidden'); 
+      });
     }
   }
 
@@ -792,7 +800,7 @@ class CategoryManager {
     return JSON.stringify(state);
   }
 
-  // Adicionar este novo método
+  // Adiciona este novo método
   updateStatistics() {
     const categories = this.getCategories();
     
