@@ -1,100 +1,3 @@
-// Configura barra de progresso
-const setupPageProgress = () => {
-  const progressBar = document.createElement('div');
-  progressBar.className = 'page-progress';
-  document.body.appendChild(progressBar);
-
-  let loadingTimeout;
-  let isLoading = false;
-  let progress = 0;
-
-  const easeInOut = (t) => {
-    return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
-  };
-
-  const animateProgress = (targetProgress) => {
-    const duration = 500;
-    const startProgress = progress;
-    const startTime = performance.now();
-
-    const updateProgress = (currentTime) => {
-      const elapsed = currentTime - startTime;
-      const timeProgress = Math.min(elapsed / duration, 1);
-
-      progress = startProgress + (targetProgress - startProgress) * easeInOut(timeProgress);
-      progressBar.style.width = `${progress}%`;
-
-      if (timeProgress < 1) requestAnimationFrame(updateProgress);
-    };
-
-    requestAnimationFrame(updateProgress);
-  };
-
-  const startProgress = () => {
-    if (isLoading) return;
-
-    isLoading = true;
-    progress = 0;
-    progressBar.classList.add('loading');
-
-    // Simula progresso com aceleração suave
-    const incrementProgress = () => {
-      const nextProgress = progress + (Math.random() * 15 * (1 - progress / 100));
-      if (nextProgress < 90) {
-        animateProgress(nextProgress);
-        loadingTimeout = setTimeout(incrementProgress, 500);
-      }
-    };
-
-    incrementProgress();
-  };
-
-  const finishProgress = () => {
-    if (!isLoading) return;
-
-    clearTimeout(loadingTimeout);
-    animateProgress(100);
-
-    setTimeout(() => {
-      progressBar.style.transition = 'opacity 0.5s ease';
-      progressBar.style.opacity = '0';
-
-      setTimeout(() => {
-        isLoading = false;
-        progressBar.classList.remove('loading');
-        progressBar.style.width = '0%';
-        progressBar.style.transition = '';
-        progressBar.style.opacity = '';
-      }, 500);
-    }, 300);
-  };
-
-  // Intercepta cliques em links
-  document.addEventListener('click', (e) => {
-    const link = e.target.closest('a');
-    if (link?.href && !link.target && link.href !== window.location.href) startProgress();
-  });
-
-  // Intercepta requisições fetch
-  const originalFetch = window.fetch;
-  window.fetch = async (...args) => {
-    startProgress();
-    try {
-      const response = await originalFetch(...args);
-      finishProgress();
-      return response;
-    } catch (error) {
-      finishProgress();
-      throw error;
-    }
-  };
-
-  // Eventos de navegação
-  window.addEventListener('beforeunload', startProgress);
-  window.addEventListener('load', finishProgress);
-  window.addEventListener('popstate', startProgress);
-};
-
 // Sistema de Temas - Funções Globais
 window.applyTheme = function (theme) {
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
@@ -256,7 +159,6 @@ window.ThemeManager = {
 
 // Adiciona a chamada da função no carregamento do DOM
 document.addEventListener('DOMContentLoaded', () => {
-  setupPageProgress();
   initThemeSystem(); // Garante que o tema seja aplicado primeiro
 
   // Controle de visibilidade dos painéis baseado em permissões
