@@ -506,6 +506,7 @@ function renderFeaturedAnimes() {
     autoplay: {
       delay: 3000,
       disableOnInteraction: false,
+      pauseOnMouseEnter: true  // Pausa o autoplay quando o mouse estiver sobre o carrossel
     },
     pagination: {
       el: '.featured-pagination',
@@ -844,6 +845,7 @@ function renderSeasonalAnimes() {
     autoplay: {
       delay: 3000,
       disableOnInteraction: false,
+      pauseOnMouseEnter: true
     },
     pagination: {
       el: '.seasonal-pagination',

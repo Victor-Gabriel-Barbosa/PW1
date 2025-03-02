@@ -1261,6 +1261,7 @@ function renderRelatedAnimes(currentAnime) {
     autoplay: {
       delay: 3000,
       disableOnInteraction: false,
+      pauseOnMouseEnter: true
     },
     pagination: {
       el: '.related-pagination',
