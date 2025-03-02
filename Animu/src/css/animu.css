@@ -943,3 +943,117 @@ body.dark-mode {
   z-index: 1001;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
+
+/* Estilos para o Swiper */
+.swiper-container {
+  width: 100%;
+  padding: 2rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.swiper-slide {
+  height: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: var(--primary-color);
+  background-color: var(--background);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background-color: var(--card-shadow);
+  transform: scale(1.1);
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Estilo para a paginação do Swiper */
+.swiper-pagination {
+  position: relative;
+  bottom: -10px !important;
+  margin-top: 20px;
+}
+
+.swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: var(--primary-color);
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.swiper-pagination-bullet-active {
+  background: var(--primary-color);
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* Efeito para paginação com dynamicBullets */
+.swiper-pagination-bullet-active-main {
+  transform: scale(1.4);
+}
+
+.swiper-pagination-bullet-active-prev,
+.swiper-pagination-bullet-active-next {
+  transform: scale(1.2);
+}
+
+.swiper-pagination-bullet-active-prev-prev,
+.swiper-pagination-bullet-active-next-next {
+  transform: scale(1);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .swiper-button-next::after,
+  .swiper-button-prev::after {
+    font-size: 16px;
+  }
+  
+  .swiper-pagination-bullet {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .swiper-button-next::after,
+  .swiper-button-prev::after {
+    font-size: 14px;
+  }
+  
+  .swiper-pagination {
+    margin-top: 15px;
+  }
+  
+  .swiper-pagination-bullet {
+    width: 6px;
+    height: 6px;
+  }
+}

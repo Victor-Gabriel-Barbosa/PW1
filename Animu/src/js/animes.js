@@ -1190,12 +1190,12 @@ function findRelatedAnimes(currentAnime, limit = 10) {
     .slice(0, limit);
 }
 
-// Renderiza carrossel de animes relacionados
+// Renderiza carrossel de animes relacionados com Swiper
 function renderRelatedAnimes(currentAnime) {
   const relatedSection = document.getElementById('related-animes-section');
-  const carouselTrack = document.getElementById('related-animes-track');
+  const swiperWrapper = document.getElementById('related-animes-wrapper');
   
-  if (!relatedSection || !carouselTrack || !currentAnime) return;
+  if (!relatedSection || !swiperWrapper || !currentAnime) return;
 
   const relatedAnimes = findRelatedAnimes(currentAnime);
   
@@ -1206,14 +1206,11 @@ function renderRelatedAnimes(currentAnime) {
 
   // Mostra a seção
   relatedSection.style.display = 'block';
-
-  // Duplica os animes para criar efeito infinito
-  const duplicatedAnimes = [...relatedAnimes, ...relatedAnimes, ...relatedAnimes];
   
   // Renderiza os cards
-  carouselTrack.innerHTML = duplicatedAnimes.map(anime => `
-    <div class="anime-card">
-      <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="anime-card-link">
+  swiperWrapper.innerHTML = relatedAnimes.map(anime => `
+    <div class="swiper-slide">
+      <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="anime-card">
         <div class="image-wrapper">
           <img 
             src="${anime.coverImage}" 
@@ -1256,52 +1253,41 @@ function renderRelatedAnimes(currentAnime) {
     </div>
   `).join('');
 
-  // Configuração do carrossel
-  let currentIndex = relatedAnimes.length; // Começa do conjunto do meio
-  let isTransitioning = false;
-  const track = carouselTrack;
-  const slideWidth = track.querySelector('.anime-card').offsetWidth + 20; // 20 é o margin total
-  
-  // Posiciona no conjunto do meio
-  track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-
-  function slide(direction) {
-    if (isTransitioning) return;
-    isTransitioning = true;
-
-    currentIndex += direction;
-    track.style.transition = 'transform 0.5s ease-in-out';
-    track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-
-    setTimeout(() => {
-      if (currentIndex >= relatedAnimes.length * 2) {
-        currentIndex = relatedAnimes.length;
-        track.style.transition = 'none';
-        track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-      } else if (currentIndex <= 0) {
-        currentIndex = relatedAnimes.length;
-        track.style.transition = 'none';
-        track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+  // Inicializa o Swiper
+  new Swiper('.related-swiper', {
+    slidesPerView: 1,
+    spaceBetween: 20,
+    loop: true,
+    autoplay: {
+      delay: 3000,
+      disableOnInteraction: false,
+    },
+    pagination: {
+      el: '.related-pagination',
+      clickable: true,
+      dynamicBullets: true,
+    },
+    navigation: {
+      nextEl: '.related-swiper .swiper-button-next',
+      prevEl: '.related-swiper .swiper-button-prev',
+    },
+    breakpoints: {
+      // quando a largura da janela é >= 640px
+      640: {
+        slidesPerView: 2,
+        spaceBetween: 20
+      },
+      // quando a largura da janela é >= 768px
+      768: {
+        slidesPerView: 3,
+        spaceBetween: 20
+      },
+      // quando a largura da janela é >= 1024px
+      1024: {
+        slidesPerView: 4,
+        spaceBetween: 20
       }
-      isTransitioning = false;
-    }, 500);
-  }
-
-  // Botões de navegação
-  const prevButton = document.querySelector('#related-animes-section .carousel-button.prev');
-  const nextButton = document.querySelector('#related-animes-section .carousel-button.next');
-
-  prevButton.addEventListener('click', () => slide(-1));
-  nextButton.addEventListener('click', () => slide(1));
-
-  // Auto-play do carrossel
-  let autoplayInterval = setInterval(() => slide(1), 1500);
-
-  // Pausa auto-play quando o mouse estiver sobre o carrossel
-  const container = document.querySelector('#related-animes-section .carousel-container');
-  container.addEventListener('mouseenter', () => clearInterval(autoplayInterval));
-  container.addEventListener('mouseleave', () => {
-    autoplayInterval = setInterval(() => slide(1), 1500);
+    }
   });
 }
 

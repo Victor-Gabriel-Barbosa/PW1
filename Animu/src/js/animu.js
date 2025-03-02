@@ -428,123 +428,111 @@ function toggleFavorite(animeTitle) {
   localStorage.setItem('animuUsers', JSON.stringify(users));
 }
 
-// Renderiza seção de animes em destaque com carrossel
+// Renderiza seção de animes em destaque com Swiper
 function renderFeaturedAnimes() {
-  const carouselTrack = document.querySelector('.carousel-track');
-  if (!carouselTrack) return;
+  const swiperWrapper = document.querySelector('.featured-swiper .swiper-wrapper');
+  if (!swiperWrapper) return;
 
   const featuredAnimes = getFeaturedAnimes();
   const currentUser = JSON.parse(localStorage.getItem('userSession'));
 
   if (featuredAnimes.length === 0) {
-    carouselTrack.innerHTML = '<p class="text-center">Nenhum anime em destaque disponível.</p>';
+    swiperWrapper.innerHTML = '<div class="swiper-slide"><p class="text-center">Nenhum anime em destaque disponível.</p></div>';
     return;
   }
 
-  // Duplicar os animes para criar efeito infinito
-  const duplicatedAnimes = [...featuredAnimes, ...featuredAnimes, ...featuredAnimes];
+  swiperWrapper.innerHTML = featuredAnimes.map(anime => `
+    <div class="swiper-slide">
+      <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="anime-card">
+        <div class="image-wrapper">
+          <img 
+            src="${anime.coverImage}" 
+            alt="${anime.primaryTitle}" 
+            class="anime-image"
+            onerror="this.src='https://ui-avatars.com/api/?name=Anime&background=8B5CF6&color=fff'">
+          
+          <div class="quick-info">
+            <span class="info-pill">⭐ ${Number(anime.score).toFixed(1)}</span>
+            <span class="info-pill">
+              <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-4h2v2h-2v-2zm0-2h2V7h-2v7z"/>
+              </svg>
+              ${anime.episodes > 0 ? anime.episodes : '?'}
+            </span>
+          </div>
 
-  carouselTrack.innerHTML = duplicatedAnimes.map(anime => `
-    <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="anime-card">
-      <div class="image-wrapper">
-        <img 
-          src="${anime.coverImage}" 
-          alt="${anime.primaryTitle}" 
-          class="anime-image"
-          onerror="this.src='https://ui-avatars.com/api/?name=Anime&background=8B5CF6&color=fff'">
-        
-        <div class="quick-info">
-          <span class="info-pill">⭐ ${Number(anime.score).toFixed(1)}</span>
-          <span class="info-pill">
-            <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-4h2v2h-2v-2zm0-2h2V7h-2v7z"/>
-            </svg>
-            ${anime.episodes > 0 ? anime.episodes : '?'}
-          </span>
-        </div>
-
-        <div class="anime-overlay">
-          <div class="overlay-content">
-            <div class="anime-genres">
-              ${anime.genres.slice(0, 3).map(genre =>
-    `<span class="genre-tag">${genre}</span>`
-  ).join('')}
+          <div class="anime-overlay">
+            <div class="overlay-content">
+              <div class="anime-genres">
+                ${anime.genres.slice(0, 3).map(genre =>
+                  `<span class="genre-tag">${genre}</span>`
+                ).join('')}
+              </div>
+              <p class="text-sm mt-2 line-clamp-3">${anime.synopsis || 'Sinopse não disponível.'}</p>
             </div>
-            <p class="text-sm mt-2 line-clamp-3">${anime.synopsis || 'Sinopse não disponível.'}</p>
           </div>
         </div>
-      </div>
 
-      <div class="anime-info">
-        <h3 class="anime-title line-clamp-2">${anime.primaryTitle}</h3>
-        <div class="anime-meta">
-          <span class="meta-item">
-            <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/>
-            </svg>
-            ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}
-          </span>
-          <button 
-            class="meta-item favorite-count ${isAnimeFavorited(anime.primaryTitle) ? 'is-favorited' : ''}"
-            onclick="event.preventDefault(); toggleFavoriteFromCard('${anime.primaryTitle}')"
-            ${!currentUser ? 'title="Faça login para favoritar"' : ''}
-          >
-            <svg class="meta-icon heart-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-            </svg>
-            <span class="favorite-number">${countAnimeFavorites(anime.primaryTitle)}</span>
-          </button>
+        <div class="anime-info">
+          <h3 class="anime-title line-clamp-2">${anime.primaryTitle}</h3>
+          <div class="anime-meta">
+            <span class="meta-item">
+              <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/>
+              </svg>
+              ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}
+            </span>
+            <button 
+              class="meta-item favorite-count ${isAnimeFavorited(anime.primaryTitle) ? 'is-favorited' : ''}"
+              onclick="event.preventDefault(); toggleFavoriteFromCard('${anime.primaryTitle}')"
+              ${!currentUser ? 'title="Faça login para favoritar"' : ''}
+            >
+              <svg class="meta-icon heart-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+              <span class="favorite-number">${countAnimeFavorites(anime.primaryTitle)}</span>
+            </button>
+          </div>
         </div>
-      </div>
-    </a>
+      </a>
+    </div>
   `).join('');
 
-  // Configura o carrossel
-  let currentIndex = featuredAnimes.length; // Começa do conjunto do meio
-  const slideWidth = carouselTrack.querySelector('.anime-card').offsetWidth + 20; // 20 é o margin total
-
-  // Posiciona no conjunto do meio
-  carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-
-  // Botões de navegação
-  const prevButton = document.querySelector('.carousel-button.prev');
-  const nextButton = document.querySelector('.carousel-button.next');
-  let isTransitioning = false;
-
-  function slide(direction) {
-    if (isTransitioning) return;
-    isTransitioning = true;
-
-    currentIndex += direction;
-    carouselTrack.style.transition = 'transform 0.5s ease-in-out';
-    carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-
-    // Verifica se precisa resetar a posição
-    setTimeout(() => {
-      if (currentIndex >= featuredAnimes.length * 2) {
-        currentIndex = featuredAnimes.length;
-        carouselTrack.style.transition = 'none';
-        carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-      } else if (currentIndex <= 0) {
-        currentIndex = featuredAnimes.length;
-        carouselTrack.style.transition = 'none';
-        carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+  // Inicializa o Swiper
+  new Swiper('.featured-swiper', {
+    slidesPerView: 1,
+    spaceBetween: 20,
+    loop: true,
+    autoplay: {
+      delay: 3000,
+      disableOnInteraction: false,
+    },
+    pagination: {
+      el: '.featured-pagination',
+      clickable: true,
+      dynamicBullets: true,
+    },
+    navigation: {
+      nextEl: '.featured-swiper .swiper-button-next',
+      prevEl: '.featured-swiper .swiper-button-prev',
+    },
+    breakpoints: {
+      // quando a largura da janela é >= 640px
+      640: {
+        slidesPerView: 2,
+        spaceBetween: 20
+      },
+      // quando a largura da janela é >= 768px
+      768: {
+        slidesPerView: 3,
+        spaceBetween: 20
+      },
+      // quando a largura da janela é >= 1024px
+      1024: {
+        slidesPerView: 4,
+        spaceBetween: 20
       }
-      isTransitioning = false;
-    }, 500);
-  }
-
-  prevButton.addEventListener('click', () => slide(-1));
-  nextButton.addEventListener('click', () => slide(1));
-
-  // Auto-play do carrossel
-  let autoplayInterval = setInterval(() => slide(1), 1500);
-
-  // Pausa auto-play quando o mouse estiver sobre o carrossel
-  const carouselContainer = document.querySelector('.carousel-container');
-  carouselContainer.addEventListener('mouseenter', () => clearInterval(autoplayInterval));
-  carouselContainer.addEventListener('mouseleave', () => {
-    autoplayInterval = setInterval(() => slide(1), 1500);
+    }
   });
 }
 
@@ -789,109 +777,101 @@ function getCurrentSeason() {
   };
 }
 
-// Renderiza seção de animes da temporada
+// Renderiza seção de animes da temporada com Swiper
 function renderSeasonalAnimes() {
-  const carouselTrack = document.querySelector('.seasonal-carousel .carousel-track');
-  if (!carouselTrack) return;
+  const swiperWrapper = document.querySelector('.seasonal-swiper .swiper-wrapper');
+  if (!swiperWrapper) return;
 
   const seasonalAnimes = getSeasonalAnimes();
   const currentUser = JSON.parse(localStorage.getItem('userSession'));
 
   if (seasonalAnimes.length === 0) {
-    carouselTrack.innerHTML = '<p class="text-center">Nenhum anime da temporada disponível.</p>';
+    swiperWrapper.innerHTML = '<div class="swiper-slide"><p class="text-center">Nenhum anime da temporada disponível.</p></div>';
     return;
   }
 
-  // Duplica os animes para criar efeito infinito
-  const duplicatedAnimes = [...seasonalAnimes, ...seasonalAnimes, ...seasonalAnimes];
-
-  carouselTrack.innerHTML = duplicatedAnimes.map(anime => `
-    <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="anime-card">
-      <div class="image-wrapper">
-        <img 
-          src="${anime.coverImage}" 
-          alt="${anime.primaryTitle}" 
-          class="anime-image"
-          onerror="this.src='https://ui-avatars.com/api/?name=Anime&background=8B5CF6&color=fff'">
-        
-        <div class="quick-info">
-          <span class="info-pill">⭐ ${Number(anime.score).toFixed(1)}</span>
-          <span class="info-pill">
-            <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-4h2v2h-2v-2zm0-2h2V7h-2v7z"/>
-            </svg>
-            ${anime.episodes > 0 ? anime.episodes : '?'}
-          </span>
+  swiperWrapper.innerHTML = seasonalAnimes.map(anime => `
+    <div class="swiper-slide">
+      <a href="animes.html?anime=${encodeURIComponent(anime.primaryTitle)}" class="anime-card">
+        <div class="image-wrapper">
+          <img 
+            src="${anime.coverImage}" 
+            alt="${anime.primaryTitle}" 
+            class="anime-image"
+            onerror="this.src='https://ui-avatars.com/api/?name=Anime&background=8B5CF6&color=fff'">
+          
+          <div class="quick-info">
+            <span class="info-pill">⭐ ${Number(anime.score).toFixed(1)}</span>
+            <span class="info-pill">
+              <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-4h2v2h-2v-2zm0-2h2V7h-2v7z"/>
+              </svg>
+              ${anime.episodes > 0 ? anime.episodes : '?'}
+            </span>
+          </div>
         </div>
-      </div>
 
-      <div class="anime-info">
-        <h3 class="anime-title line-clamp-2">${anime.primaryTitle}</h3>
-        <div class="anime-meta">
-          <span class="meta-item">
-            <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/>
-            </svg>
-            ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}
-          </span>
-          <button 
-            class="meta-item favorite-count ${isAnimeFavorited(anime.primaryTitle) ? 'is-favorited' : ''}"
-            onclick="event.preventDefault(); toggleFavoriteFromCard('${anime.primaryTitle}')"
-            ${!currentUser ? 'title="Faça login para favoritar"' : ''}
-          >
-            <svg class="meta-icon heart-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-            </svg>
-            <span class="favorite-number">${countAnimeFavorites(anime.primaryTitle)}</span>
-          </button>
+        <div class="anime-info">
+          <h3 class="anime-title line-clamp-2">${anime.primaryTitle}</h3>
+          <div class="anime-meta">
+            <span class="meta-item">
+              <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/>
+              </svg>
+              ${(JSON.parse(localStorage.getItem('animeComments')) || {})[anime.primaryTitle]?.length || 0}
+            </span>
+            <button 
+              class="meta-item favorite-count ${isAnimeFavorited(anime.primaryTitle) ? 'is-favorited' : ''}"
+              onclick="event.preventDefault(); toggleFavoriteFromCard('${anime.primaryTitle}')"
+              ${!currentUser ? 'title="Faça login para favoritar"' : ''}
+            >
+              <svg class="meta-icon heart-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+              <span class="favorite-number">${countAnimeFavorites(anime.primaryTitle)}</span>
+            </button>
+          </div>
         </div>
-      </div>
-    </a>
+      </a>
+    </div>
   `).join('');
 
-  // Configuração do carrossel
-  let currentIndex = seasonalAnimes.length;
-  const slideWidth = carouselTrack.querySelector('.anime-card').offsetWidth + 20;
-
-  carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-
-  // Botões de navegação
-  const prevButton = document.querySelector('.seasonal-carousel .carousel-button.prev');
-  const nextButton = document.querySelector('.seasonal-carousel .carousel-button.next');
-  let isTransitioning = false;
-
-  function slide(direction) {
-    if (isTransitioning) return;
-    isTransitioning = true;
-
-    currentIndex += direction;
-    carouselTrack.style.transition = 'transform 0.5s ease-in-out';
-    carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-
-    setTimeout(() => {
-      if (currentIndex >= seasonalAnimes.length * 2) {
-        currentIndex = seasonalAnimes.length;
-        carouselTrack.style.transition = 'none';
-        carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-      } else if (currentIndex <= 0) {
-        currentIndex = seasonalAnimes.length;
-        carouselTrack.style.transition = 'none';
-        carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+  // Inicializa o Swiper
+  new Swiper('.seasonal-swiper', {
+    slidesPerView: 1,
+    spaceBetween: 20,
+    loop: true,
+    autoplay: {
+      delay: 3000,
+      disableOnInteraction: false,
+    },
+    pagination: {
+      el: '.seasonal-pagination',
+      clickable: true,
+      dynamicBullets: true,
+    },
+    navigation: {
+      nextEl: '.seasonal-swiper .swiper-button-next',
+      prevEl: '.seasonal-swiper .swiper-button-prev',
+    },
+    breakpoints: {
+      // quando a largura da janela é >= 640px
+      640: {
+        slidesPerView: 2,
+        spaceBetween: 20
+      },
+      // quando a largura da janela é >= 768px
+      768: {
+        slidesPerView: 3,
+        spaceBetween: 20
+      },
+      // quando a largura da janela é >= 1024px
+      1024: {
+        slidesPerView: 4,
+        spaceBetween: 20
       }
-      isTransitioning = false;
-    }, 500);
-  }
-
-  prevButton.addEventListener('click', () => slide(-1));
-  nextButton.addEventListener('click', () => slide(1));
-
-  // Auto-play do carrossel
-  let autoplayInterval = setInterval(() => slide(1), 3000);
-
-  // Pausar auto-play no hover
-  const carouselContainer = document.querySelector('.seasonal-carousel');
-  carouselContainer.addEventListener('mouseenter', () => clearInterval(autoplayInterval));
-  carouselContainer.addEventListener('mouseleave', () => { autoplayInterval = setInterval(() => slide(1), 3000); });
+    }
+  });
 }
 
 // Atualiza o link da temporada atual no card de Novidades

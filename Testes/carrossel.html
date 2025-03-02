@@ -1,107 +1,199 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <title>Swiper demo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
-  <!-- Link Swiper's CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-
-  <!-- Demo styles -->
-  <style>
-    html,
-    body {
-      position: relative;
-      height: 100%;
-    }
-
-    body {
-      background: #eee;
-      font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-      font-size: 14px;
-      color: #000;
-      margin: 0;
-      padding: 0;
-    }
-
-    .swiper {
-      width: 100%;
-      padding-top: 50px;
-      padding-bottom: 50px;
-    }
-
-    .swiper-slide {
-      background-position: center;
-      background-size: cover;
-      width: 300px;
-      height: 300px;
-    }
-
-    .swiper-slide img {
-      display: block;
-      width: 100%;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemplos de Carrosséis com Swiper</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        h2 {
+            color: #333;
+            margin-top: 40px;
+        }
+        
+        .swiper {
+            width: 100%;
+            margin-bottom: 40px;
+        }
+        
+        .swiper-slide {
+            text-align: center;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            background-color: #fff;
+            border-radius: 8px;
+        }
+        
+        .swiper-slide img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Carrossel com Cards */
+        .card-swiper .swiper-slide {
+            width: 250px;
+            height: 350px;
+        }
+        
+        /* Carrossel com Efeito Coverflow */
+        .coverflow-swiper {
+            padding: 50px 0;
+        }
+        
+        /* Carrossel Vertical */
+        .vertical-swiper {
+            height: 400px;
+        }
+        
+        /* Cube Effect */
+        .cube-swiper {
+            width: 300px;
+            height: 300px;
+            position: relative;
+            margin: 0 auto;
+        }
+        
+        .thumbs-gallery {
+            height: 20%;
+            box-sizing: border-box;
+            padding: 10px 0;
+        }
+        
+        .thumbs-gallery .swiper-slide {
+            height: 100%;
+            opacity: 0.4;
+        }
+        
+        .thumbs-gallery .swiper-slide-thumb-active {
+            opacity: 1;
+        }
+    </style>
 </head>
-
 <body>
-  <!-- Swiper -->
-  <div class="swiper mySwiper">
-    <div class="swiper-wrapper">
-      <div class="swiper-slide">
-        <img src="https://swiperjs.com/demos/images/nature-1.jpg" />
-      </div>
-      <div class="swiper-slide">
-        <img src="https://swiperjs.com/demos/images/nature-2.jpg" />
-      </div>
-      <div class="swiper-slide">
-        <img src="https://swiperjs.com/demos/images/nature-3.jpg" />
-      </div>
-      <div class="swiper-slide">
-        <img src="https://swiperjs.com/demos/images/nature-4.jpg" />
-      </div>
-      <div class="swiper-slide">
-        <img src="https://swiperjs.com/demos/images/nature-5.jpg" />
-      </div>
-      <div class="swiper-slide">
-        <img src="https://swiperjs.com/demos/images/nature-6.jpg" />
-      </div>
-      <div class="swiper-slide">
-        <img src="https://swiperjs.com/demos/images/nature-7.jpg" />
-      </div>
-      <div class="swiper-slide">
-        <img src="https://swiperjs.com/demos/images/nature-8.jpg" />
-      </div>
-      <div class="swiper-slide">
-        <img src="https://swiperjs.com/demos/images/nature-9.jpg" />
-      </div>
+    <h1>Exemplos de Carrosséis com Swiper</h1>
+    
+    <!-- Carrossel Básico -->
+    <h2>Carrossel Básico</h2>
+    <div class="swiper basic-swiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide" style="background-color: #f9cdad;">Slide 1</div>
+            <div class="swiper-slide" style="background-color: #c8c8a9;">Slide 2</div>
+            <div class="swiper-slide" style="background-color: #83af9b;">Slide 3</div>
+            <div class="swiper-slide" style="background-color: #ecd5c5;">Slide 4</div>
+            <div class="swiper-slide" style="background-color: #fe4365;">Slide 5</div>
+        </div>
     </div>
-    <div class="swiper-pagination"></div>
-  </div>
-
-  <!-- Swiper JS -->
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
-  <!-- Initialize Swiper -->
-  <script>
-    var swiper = new Swiper(".mySwiper", {
-      effect: "coverflow",
-      grabCursor: true,
-      centeredSlides: true,
-      slidesPerView: "auto",
-      coverflowEffect: {
-        rotate: 50,
-        stretch: 0,
-        depth: 100,
-        modifier: 1,
-        slideShadows: true,
-      },
-      pagination: {
-        el: ".swiper-pagination",
-      },
-    });
-  </script>
+    
+    <!-- Carrossel com Navegação (setas) e Paginação -->
+    <h2>Carrossel com Navegação e Paginação</h2>
+    <div class="swiper navigation-swiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide" style="background-color: #f9cdad;">Slide 1</div>
+            <div class="swiper-slide" style="background-color: #c8c8a9;">Slide 2</div>
+            <div class="swiper-slide" style="background-color: #83af9b;">Slide 3</div>
+            <div class="swiper-slide" style="background-color: #ecd5c5;">Slide 4</div>
+            <div class="swiper-slide" style="background-color: #fe4365;">Slide 5</div>
+        </div>
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+    </div>
+    
+    <!-- Carrossel com Cards -->
+    <h2>Carrossel com Cards</h2>
+    <div class="swiper card-swiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide" style="background-color: #f9cdad;">Card 1</div>
+            <div class="swiper-slide" style="background-color: #c8c8a9;">Card 2</div>
+            <div class="swiper-slide" style="background-color: #83af9b;">Card 3</div>
+            <div class="swiper-slide" style="background-color: #ecd5c5;">Card 4</div>
+            <div class="swiper-slide" style="background-color: #fe4365;">Card 5</div>
+            <div class="swiper-slide" style="background-color: #79BD9A;">Card 6</div>
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
+    
+    <!-- Carrossel com Efeito Coverflow -->
+    <h2>Carrossel com Efeito Coverflow</h2>
+    <div class="swiper coverflow-swiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide" style="background-color: #f9cdad;">Slide 1</div>
+            <div class="swiper-slide" style="background-color: #c8c8a9;">Slide 2</div>
+            <div class="swiper-slide" style="background-color: #83af9b;">Slide 3</div>
+            <div class="swiper-slide" style="background-color: #ecd5c5;">Slide 4</div>
+            <div class="swiper-slide" style="background-color: #fe4365;">Slide 5</div>
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
+    
+    <!-- Carrossel Vertical -->
+    <h2>Carrossel Vertical</h2>
+    <div class="swiper vertical-swiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide" style="background-color: #f9cdad;">Slide Vertical 1</div>
+            <div class="swiper-slide" style="background-color: #c8c8a9;">Slide Vertical 2</div>
+            <div class="swiper-slide" style="background-color: #83af9b;">Slide Vertical 3</div>
+            <div class="swiper-slide" style="background-color: #ecd5c5;">Slide Vertical 4</div>
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
+    
+    <!-- Carrossel com Efeito Cubo -->
+    <h2>Carrossel com Efeito Cubo</h2>
+    <div class="swiper cube-swiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide" style="background-color: #f9cdad;">Cubo 1</div>
+            <div class="swiper-slide" style="background-color: #c8c8a9;">Cubo 2</div>
+            <div class="swiper-slide" style="background-color: #83af9b;">Cubo 3</div>
+            <div class="swiper-slide" style="background-color: #ecd5c5;">Cubo 4</div>
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
+    
+    <!-- Carrossel com Autoplay -->
+    <h2>Carrossel com Autoplay</h2>
+    <div class="swiper autoplay-swiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide" style="background-color: #f9cdad;">Autoplay 1</div>
+            <div class="swiper-slide" style="background-color: #c8c8a9;">Autoplay 2</div>
+            <div class="swiper-slide" style="background-color: #83af9b;">Autoplay 3</div>
+            <div class="swiper-slide" style="background-color: #ecd5c5;">Autoplay 4</div>
+            <div class="swiper-slide" style="background-color: #fe4365;">Autoplay 5</div>
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
+    
+    <!-- Galeria com Miniaturas -->
+    <h2>Galeria com Miniaturas</h2>
+    <div class="swiper main-gallery">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide" style="background-color: #f9cdad;">Imagem 1</div>
+            <div class="swiper-slide" style="background-color: #c8c8a9;">Imagem 2</div>
+            <div class="swiper-slide" style="background-color: #83af9b;">Imagem 3</div>
+            <div class="swiper-slide" style="background-color: #ecd5c5;">Imagem 4</div>
+        </div>
+    </div>
+    <div class="swiper thumbs-gallery">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide" style="background-color: #f9cdad;">Thumb 1</div>
+            <div class="swiper-slide" style="background-color: #c8c8a9;">Thumb 2</div>
+            <div class="swiper-slide" style="background-color: #83af9b;">Thumb 3</div>
+            <div class="swiper-slide" style="background-color: #ecd5c5;">Thumb 4</div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script src="carrossel.js"></script>
 </body>
-
 </html>
