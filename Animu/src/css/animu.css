@@ -87,6 +87,27 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--primary-color);
 }
 
+.section-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: var(--primary-gradient);
+  border-radius: 2px;
+}
+
 .tag {
   background: var(--primary-color);
   color: white;
@@ -967,6 +988,13 @@ body.dark-mode {
   border-radius: 50%;
   backdrop-filter: blur(4px);
   transition: all 0.3s ease;
+  opacity: 0; /* Botões iniciam invisíveis */
+}
+
+/* Mostra os botões quando o mouse está sobre o swiper */
+.swiper-container:hover .swiper-button-next,
+.swiper-container:hover .swiper-button-prev {
+  opacity: 1;
 }
 
 .swiper-button-next:hover,

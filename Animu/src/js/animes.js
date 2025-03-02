@@ -201,7 +201,7 @@ function renderAnimeDetails(anime) {
 
     ${anime.staff && anime.staff.length > 0 ? `
       <div class="staff-section">
-        <h2 class="text-2xl font-bold mb-4">Staff</h2>
+        <h2 class="section-title">Staff</h2>
         <div class="staff-grid ${anime.staff.length > STAFF_LIMIT ? 'collapsed' : ''}" id="staffGrid">
           ${anime.staff.map(member => `
             <div class="staff-card">
