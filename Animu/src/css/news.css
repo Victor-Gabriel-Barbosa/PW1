@@ -507,13 +507,13 @@
   align-items: center;
 }
 
-.search-container {
+.search-news-container {
   flex: 1;
   min-width: 280px;
   position: relative;
 }
 
-.search-input {
+.search-news-input {
   width: 100%;
   padding: 1rem 3rem 1rem 3rem;
   border-radius: 12px;
@@ -523,9 +523,28 @@
   transition: all 0.3s ease;
 }
 
-.search-input:focus {
+.search-news-input:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px var(--primary-color-alpha);
+}
+
+/* Estilos para o ícone de lupa */
+.search-news-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--primary-color);
+  pointer-events: none;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.search-news-input:focus + .search-news-icon,
+.search-news-container:hover .search-news-icon {
+  opacity: 1;
 }
 
 .filters-group {
