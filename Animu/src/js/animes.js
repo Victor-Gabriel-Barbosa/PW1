@@ -1255,7 +1255,7 @@ function renderRelatedAnimes(currentAnime) {
 
   // Inicializa o Swiper
   new Swiper('.related-swiper', {
-    slidesPerView: 1,
+    slidesPerView: 2,
     spaceBetween: 20,
     loop: true,
     autoplay: {
@@ -1275,17 +1275,17 @@ function renderRelatedAnimes(currentAnime) {
     breakpoints: {
       // quando a largura da janela é >= 640px
       640: {
-        slidesPerView: 2,
+        slidesPerView: 3,
         spaceBetween: 20
       },
       // quando a largura da janela é >= 768px
       768: {
-        slidesPerView: 3,
+        slidesPerView: 4,
         spaceBetween: 20
       },
       // quando a largura da janela é >= 1024px
       1024: {
-        slidesPerView: 4,
+        slidesPerView: 5,
         spaceBetween: 20
       }
     }
