@@ -229,11 +229,48 @@ class NewsManager {
   }
 
   setupEventListeners() {
-    this.searchInput.addEventListener('input', () => this.updateNews());
-    this.categoryFilter.addEventListener('change', () => this.updateNews());
-    this.sortSelect.addEventListener('change', () => this.updateNews());
+    this.searchInput.addEventListener('input', () => {
+      this.updateNews();
+      // Removido o scroll automático aqui
+    });
+    
+    // Manter apenas o scroll ao pressionar Enter
+    this.searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        this.updateNews();
+        this.scrollToResults();
+      }
+    });
+    
+    this.categoryFilter.addEventListener('change', () => {
+      this.updateNews();
+      // Removido o scroll automático aqui
+    });
+    
+    this.sortSelect.addEventListener('change', () => {
+      this.updateNews();
+      // Removido o scroll automático aqui
+    });
+    
     this.prevButton.addEventListener('click', () => this.changePage('prev'));
     this.nextButton.addEventListener('click', () => this.changePage('next'));
+  }
+
+  // Novo método para fazer scroll para os resultados
+  scrollToResults() {
+    const newsGrid = this.newsGrid;
+    if (newsGrid) {
+      // Calcula a posição para scroll
+      const offsetTop = newsGrid.getBoundingClientRect().top + window.pageYOffset;
+      const headerOffset = 80; // Ajuste para compensar cabeçalhos fixos ou outros elementos
+      
+      // Realiza o scroll suave
+      window.scrollTo({
+        top: offsetTop - headerOffset,
+        behavior: 'smooth'
+      });
+    }
   }
 
   changePage(direction) {
