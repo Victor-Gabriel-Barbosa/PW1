@@ -302,16 +302,15 @@ tbody tr:nth-child(5) { animation-delay: 0.5s; }
   z-index: 1;
   background: linear-gradient(
     135deg,
-    rgba(0, 0, 0, 0.6) 0%,
-    rgba(0, 0, 0, 0.6) 100%
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0.5) 100%
   );
   padding: 1rem;
   border-radius: 1.5rem;
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.15) inset;
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+    0 8px 32px var(--primary-color-alpha),
+    0 0 0 1px var(--primary-color-alpha) inset;
+  border: 1px solid var(--primary-color);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -335,8 +334,8 @@ tbody tr:nth-child(5) { animation-delay: 0.5s; }
 
 .parallax-content:hover {
   box-shadow: 
-    0 12px 40px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+    0 12px 40px var(--primary-color),
+    0 0 0 1px var(--primary-color-alpha) inset;
 }
 
 .parallax-content .section-divider {

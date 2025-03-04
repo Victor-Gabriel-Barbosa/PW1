@@ -58,6 +58,7 @@
             <div class="tag">Tailwind CSS</div>
             <div class="tag">Responsivo</div>
             <div class="tag">API REST</div>
+            <div class="tag">Swiper</div>
           </div>
         </section>
 
@@ -105,9 +106,7 @@
     // Observer para animar seções quando ficarem visíveis
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
+        if (entry.isIntersecting) entry.target.classList.add('visible');
       });
     }, {
       threshold: 0.1

@@ -144,7 +144,7 @@ class NewsManager {
   }
 
   createNewsCard(news) {
-    const readMoreLink = this.currentPage === 'index'
+    const newsLink = this.currentPage === 'index'
       ? `news.html?id=${news.id}`  // Link direto para página de notícias quando na index
       : `javascript:void(0)`; // Link JavaScript quando na página de notícias
 
@@ -153,7 +153,7 @@ class NewsManager {
       : `onclick="event.preventDefault(); newsManager.switchToView('detail', '${news.id}')"`; 
 
     return `
-      <article class="news-card">
+      <a href="${newsLink}" ${onClickHandler} class="news-card">
         <div class="news-image-container">
           <img src="${news.image}" alt="${news.title}" class="news-image">
           <span class="news-category">${news.category}</span>
@@ -167,14 +167,8 @@ class NewsManager {
           </div>
           <h3 class="news-title">${news.title}</h3>
           <p class="news-summary">${news.summary}</p>
-          <a href="${readMoreLink}" ${onClickHandler} class="news-read-more">
-            Ler mais
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a 1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-            </svg>
-          </a>
         </div>
-      </article>
+      </a>
     `;
   }
 

@@ -16,6 +16,9 @@
   isolation: isolate;
   height: 100%;
   border: 1px solid rgba(var(--primary-rgb), 0.1);
+  text-decoration: none; /* Garantir que não tenha sublinhado */
+  color: inherit; /* Manter cor do texto original */
+  cursor: pointer; /* Indicar que é clicável */
 }
 
 .news-card::after {
@@ -174,7 +177,7 @@
   font-size: 0.9rem;
   color: var(--text-color);
   opacity: 0.85;
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: 0; /* Alterado para remover espaço extra que era para o botão */
   line-height: 1.6;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -184,36 +187,7 @@
   flex-grow: 1;
 }
 
-.news-read-more {
-  display: flex;
-  align-items: center;
-  color: var(--primary-color);
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
-  margin-top: auto;
-  width: fit-content;
-  padding: 8px 16px;
-  border-radius: 12px;
-  background: var(--primary-color-alpha);
-  gap: 8px;
-}
-
-.news-read-more:hover {
-  background: var(--primary-color);
-  color: white;
-  transform: translateX(4px);
-}
-
-.news-read-more svg {
-  width: 18px;
-  height: 18px;
-  transition: transform 0.3s ease;
-}
-
-.news-card:hover .news-read-more svg {
-  transform: translateX(4px);
-}
+/* Removido o estilo para .news-read-more, já que o botão foi removido */
 
 /* Efeito de carregamento suave */
 .news-card {
@@ -339,34 +313,6 @@
   opacity: 0.85;
   margin-bottom: var(--spacing-lg);
   line-height: 1.6;
-}
-
-.news-read-more {
-  display: flex;
-  align-items: center;
-  color: var(--primary-color);
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
-}
-
-.news-read-more:hover {
-  opacity: 0.8;
-}
-
-.news-read-more svg {
-  width: 20px;
-  height: 20px;
-  margin-left: var(--spacing-xs);
-  transition: transform 0.3s ease;
-}
-
-.news-card:hover .news-read-more {
-  color: var(--primary-color-dark);
-}
-
-.news-card:hover .news-read-more svg {
-  transform: translateX(4px);
 }
 
 .news-header {
