@@ -1,0 +1,52 @@
+<!-- 1) Crie uma página HTML com um botão que, ao ser
+clicado, exibe os números de 1 a 10 em uma lista não
+ordenada na página usando um loop for -->
+
+<!-- 2) Crie uma página HTML com um botão que, ao ser
+clicado, exibe uma lista de frutas (usando um array) em
+uma lista ordenada -->
+
+<!-- 3) Crie uma página HTML com um botão que, ao ser
+clicado, exibe uma mensagem com as propriedades de um
+objeto carro (marca, modelo, ano) em um parágrafo. A
+mensagem deverá ser exibida por meio de uma chamada
+de método do objeto -->
+
+<!-- 4) Crie uma página HTML com dois campos de
+entrada para o usuário informar o nome e a idade.
+Adicione um botão que, ao ser clicado, crie um
+objeto de uma classe Pessoa utilizando os valores
+inseridos pelo usuário e exiba uma mensagem com
+o nome e a idade em um parágrafo. A mensagem
+deverá ser exibida por meio de uma chamada de
+método do objeto -->
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 9</title>
+</head>
+<body>
+  <h1>Exibição de números em lista (Não Ordenada)</h1>
+  <button id="exibirNumeros" onclick="exibirNumeros()">Exibir números de 1 a 10</button>
+  <div id="resultadoNumeros"></div>
+
+  <h1>Exibição de frutas em lista (Ordenada)</h1>
+  <button id="exibirFrutas" onclick="exibirFrutas()">Exibir frutas</button>
+  <div id="resultadoFrutas"></div>
+
+  <h1>Exibição de propriedades de um carro</h1>
+  <button id="exibirCarro" onclick="exibirCarro()">Exibir carro</button>
+  <div id="resultadoCarro"></div>
+
+  <h1>Criação de objeto Pessoa</h1>
+  <input type="text" id="nome" placeholder="Nome"/>
+  <input type="number" id="idade" placeholder="Idade"/>
+  <button id="criarPessoa" onclick="criarPessoa()">Criar Pessoa</button>
+  <div id="resultadoPessoa"></div>
+
+  <script src="aula-9.js"></script>
+</body>
+</html>
