@@ -62,6 +62,11 @@ function criarPessoa() {
     return;
   }
 
+  if (nome.trim() === '') {
+    alert('Por favor, insira um nome válido!');
+    return;
+  }
+
   const pessoa = new Pessoa(nome, idade);
   const resultado = document.getElementById('resultadoPessoa');
   resultado.innerHTML = pessoa.exibirMensagem();
