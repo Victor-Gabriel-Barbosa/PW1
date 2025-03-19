@@ -1,0 +1,212 @@
+<!-- 1) Crie uma tabela utilizando Bootstrap com os seguintes requisitos:
+ Linhas listradas.
+ Bordas visíveis.
+ Efeito de hover nas linhas.
+ Adicione três colunas: Produto, Quantidade e Preço.
+ Adicione pelo menos 5 linhas com produtos fictícios. -->
+
+<!-- 2) Crie uma galeria de imagens com 6 fotos. Use a
+classe .img-thumbnail para miniaturas e .roundedcircle 
+para transformar pelo menos duas imagens em
+círculos. Organize as imagens em uma grade usando
+o sistema de grid do Bootstrap. -->
+
+<!-- 3) Crie uma seção com uma imagem responsiva (.imgfluid) 
+e um texto ao lado. Use .float-start ou .float-end
+para alinhar a imagem à esquerda ou direita do texto. -->
+
+<!-- 4) Crie uma linha de botões com diferentes ações:
+"Salvar" (.btn-success), "Editar" (.btn-warning),
+"Excluir" (.btn-danger) e "Cancelar" (.btn-secondary).
+Use classes de tamanho (.btn-lg, .btn-sm) para variar
+o tamanho dos botões. -->
+
+<!-- 5) Crie um grupo de botões (.btn-group) para simular
+uma barra de navegação. Os botões devem ser:
+"Início", "Sobre", "Serviços", "Contato". Adicione um
+botão desativado (.disabled) para representar uma
+página indisponível. -->
+
+<!-- 6) Crie uma página de produtos que inclua:
+ Uma tabela com produtos (Nome, Preço, Estoque).
+ Imagens dos produtos com bordas arredondadas
+(.rounded).
+ Botões para "Adicionar ao Carrinho" (.btn-primary) e
+"Ver Detalhes" (.btn-info). -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <title>Aula 12</title>
+</head>
+
+<body>
+  <!-- Exercícios [1] -->
+  <div class="row">
+    <h1 class="text-center text-bg-dark py-4">Tabela de Produtos</h1>
+  </div>
+  <div class="container mt-4">
+    <table class="table table-striped table-bordered table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Produto</th>
+          <th scope="col">Quantidade</th>
+          <th scope="col">Preço</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Produto 1</td>
+          <td>10</td>
+          <td>R$ 20,00</td>
+        </tr>
+        <tr>
+          <td>Produto 2</td>
+          <td>5</td>
+          <td>R$ 15,00</td>
+        </tr>
+        <tr>
+          <td>Produto 3</td>
+          <td>8</td>
+          <td>R$ 30,00</td>
+        </tr>
+        <tr>
+          <td>Produto 4</td>
+          <td>12</td>
+          <td>R$ 25,00</td>
+        </tr>
+        <tr>
+          <td>Produto 5</td>
+          <td>7</td>
+          <td>R$ 18,00</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Exercícios [2] -->
+  <div class="row mt-4">
+    <h1 class="text-center text-bg-dark py-4">Galeria de Imagens</h1>
+  </div>
+  <div class="container mt-4">
+    <div class="row text-center">
+      <div class="col-4 mb-4">
+        <img src="https://img.freepik.com/fotos-gratis/bela-cena-de-desenho-animado-de-personagens-de-anime_23-2151035282.jpg?t=st=1742416313~exp=1742419913~hmac=a47dcb6d8910b052701a943daa7a20b11f84b9f2985ebc8a06ab702e992582cd&w=996" class="img-thumbnail rounded-circle" alt="Imagem 1">
+      </div>
+      <div class="col-4 mb-4">
+        <img src="https://img.freepik.com/fotos-gratis/besta-de-dragao-mitico-no-estilo-anime_23-2151112839.jpg?ga=GA1.1.1215212662.1742326587&semt=ais_hybrid" class="img-thumbnail" alt="Imagem 2">
+      </div>
+      <div class="col-4 mb-4">
+        <img src="https://img.freepik.com/fotos-gratis/personagens-de-anime-de-plano-medio-abracando-se_23-2150970787.jpg?ga=GA1.1.1215212662.1742326587&semt=ais_hybrid" class="img-thumbnail rounded-circle" alt="Imagem 3">
+      </div>
+      <div class="col-4 mb-4">
+        <img src="https://img.freepik.com/fotos-gratis/personagem-de-anime-usando-oculos-de-realidade-virtual-no-metaverso_23-2151568818.jpg?ga=GA1.1.1215212662.1742326587&semt=ais_hybrid" class="img-thumbnail" alt="Imagem 4">
+      </div>
+      <div class="col-4 mb-4">
+        <img src="https://img.freepik.com/fotos-gratis/personagem-de-estilo-anime-no-espaco_23-2151133935.jpg?ga=GA1.1.1215212662.1742326587&semt=ais_hybrid" class="img-thumbnail rounded-circle" alt="Imagem 5">
+      </div>
+      <div class="col-4 mb-4">
+        <img src="https://img.freepik.com/fotos-gratis/paisagem-de-anime-de-pessoa-viajando_23-2151038160.jpg?ga=GA1.1.1215212662.1742326587&semt=ais_hybrid" class="img-thumbnail" alt="Imagem 6">
+      </div>
+    </div>
+  </div> 
+
+  <!-- Exercícios [3] -->
+  <div class="row mt-4">
+    <h1 class="text-center text-bg-dark py-4">Imagem com Texto</h1>
+  </div>
+  <div class="container mt-4"> 
+    <div class="row">
+      <div class="col-md-6">
+        <img src="https://img.freepik.com/fotos-gratis/personagem-de-anime-viajando_23-2151278765.jpg?ga=GA1.1.1215212662.1742326587&semt=ais_hybrid" class="img-fluid float-start" alt="Imagem Responsiva">
+      </div>
+      <div class="col-md-6">
+        <h1 class="text-center text-bg-dark">One Piece</h1>
+        <p class="float-end">Gol D. Roger era conhecido como o Rei dos Piratas. Ele conquistou tudo na vida: fortuna, fama e poder. Suas últimas palavras antes de ser executado inspiraram homens do mundo inteiro a se lançarem ao mar: "O meu tesouro? Podem ficar com ele, se quiserem... Mas vão ter que procurá-lo. Deixei tudo naquele lugar!". E assim Roger criou a Grande Era dos Piratas. Passados 22 anos, um garoto chamado Monkey D. Luffy, usuário da Gomu Gomu no Mi, parte em busca do seu sonho: achar o One Piece e se tornar o Rei dos Piratas, que é o título da pessoa que vai conquistar o mundo. Luffy terá de juntar uma tripulação forte no East Blue, o mar mais fraco de todos. Aparecerão muitos inimigos poderosos em seu caminho.</p>  
+      </div>
+    </div>
+  </div>
+
+  <!-- Exercícios [4] -->
+  <div class="row mt-4">
+    <h1 class="text-center text-bg-dark py-4">Botões de Ação</h1>
+  </div>  
+  <div class="container mt-4 text-center">
+    <button type="button" class="btn btn-success btn-lg">Salvar</button>
+    <button type="button" class="btn btn-warning btn-sm">Editar</button>
+    <button type="button" class="btn btn-danger btn-lg">Excluir</button>
+    <button type="button" class="btn btn-secondary btn-sm">Cancelar</button>
+  </div>
+
+  <!-- Exercícios [5] -->
+  <div class="row mt-4">
+    <h1 class="text-center text-bg-dark py-4">Grupo de Botões</h1>
+  </div>
+  <div class="container mt-4 text-center">
+    <div class="btn-group" role="group" aria-label="Basic example">
+      <button type="button" class="btn btn-primary">Início</button>
+      <button type="button" class="btn btn-secondary">Sobre</button>
+      <button type="button" class="btn btn-success">Serviços</button>
+      <button type="button" class="btn btn-danger">Contato</button>
+      <button type="button" class="btn btn-light disabled">Indisponível</button>
+    </div>
+  </div>
+
+  <!-- Exercícios [6] -->
+  <div class="row mt-4">
+    <h1 class="text-center text-bg-dark py-4">Produtos</h1>
+  </div>
+  <div class="container mt-4">
+    <table class="table table-striped table-bordered table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Nome do Produto</th>
+          <th scope="col">Preço</th>
+          <th scope="col">Estoque</th>
+          <th scope="col">Imagem</th>
+          <th scope="col">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Maçã</td>
+          <td>R$ 50,00</td>
+          <td>20</td>
+          <td class="col-4 mb-4"><img src="https://img.freepik.com/psd-gratuitas/close-up-de-uma-maca-deliciosa_23-2151868338.jpg?ga=GA1.1.1215212662.1742326587&semt=ais_hybrid" class="img-thumbnail rounded" alt="Produto A"></td>
+          <td>
+            <button type="button" class="btn btn-primary">Adicionar ao Carrinho</button>
+            <button type="button" class="btn btn-info">Ver Detalhes</button>
+          </td>
+        </tr>
+        <tr>
+          <td>Banana</td>
+          <td>R$ 30,00</td>
+          <td>15</td>
+          <td class="col-4 mb-4"><img src="https://img.freepik.com/vetores-gratis/bando-de-banana-amarela-madura-de-vetor-isolado-no-fundo-branco_1284-45456.jpg?ga=GA1.1.1215212662.1742326587&semt=ais_hybrid" class="img-thumbnail rounded" alt="Produto B"></td>
+          <td>
+            <button type="button" class="btn btn-primary">Adicionar ao Carrinho</button>
+            <button type="button" class="btn btn-info">Ver Detalhes</button>
+          </td>
+        </tr>
+        <tr>
+          <td>Refrigerante</td>
+          <td>R$ 20,00</td>
+          <td>10</td>
+          <td class="col-4 mb-4"><img src="https://img.freepik.com/fotos-gratis/ice-caindo-em-uma-bebida-marrom_1194-1074.jpg?ga=GA1.1.1215212662.1742326587&semt=ais_hybrid" class="img-thumbnail rounded" alt="Produto C"></td>
+          <td>
+            <button type="button" class="btn btn-primary">Adicionar ao Carrinho</button>
+            <button type="button" class="btn btn-info">Ver Detalhes</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+        
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
