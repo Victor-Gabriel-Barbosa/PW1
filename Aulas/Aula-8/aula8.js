@@ -28,12 +28,13 @@ function calcular() {
     document.getElementById('resultado').textContent = `O resultado é: ${resultado}`;
 }
 
-let idades = [];
-let pesos = [];
-let faixaEtaria1 = [];
-let faixaEtaria2 = [];
-let faixaEtaria3 = [];
-let faixaEtaria4 = [];
+let pessoas = [];
+let faixasEtarias = {
+  "até 10 anos": [],
+  "11 a 20 anos": [],
+  "21 a 30 anos": [],
+  "mais de 30 anos": []
+};
 
 function calcularMedia() {
   const idade = parseInt(document.getElementById('idade').value);
@@ -54,32 +55,38 @@ function calcularMedia() {
     return;
   }
 
-  pesos.push(peso);
-  idades.push(idade);
-  const mediaPeso = pesos.reduce((a, b) => a + b, 0) / pesos.length;
-  const mediaIdade = idades.reduce((a, b) => a + b, 0) / idades.length;
+  // Adicionar pessoa ao array principal
+  pessoas.push({ idade, peso });
+  
+  // Adicionar peso à faixa etária correspondente
+  if (idade <= 10) faixasEtarias["até 10 anos"].push(peso);
+  else if (idade <= 20) faixasEtarias["11 a 20 anos"].push(peso);
+  else if (idade <= 30) faixasEtarias["21 a 30 anos"].push(peso);
+  else faixasEtarias["mais de 30 anos"].push(peso);
 
-  if (idade <= 10) faixaEtaria1.push(peso);
-  else if (idade <= 20) faixaEtaria2.push(peso);
-  else if (idade <= 30) faixaEtaria3.push(peso);
-  else faixaEtaria4.push(peso);
+  // Cálculo das médias
+  const calcularMediaArray = arr => arr.reduce((a, b) => a + b, 0) / arr.length || 0;
+  
+  const mediaPeso = calcularMediaArray(pessoas.map(p => p.peso));
+  const mediaIdade = calcularMediaArray(pessoas.map(p => p.idade));
+  
+  // Médias por faixa etária
+  const mediaFaixa1 = calcularMediaArray(faixasEtarias["até 10 anos"]);
+  const mediaFaixa2 = calcularMediaArray(faixasEtarias["11 a 20 anos"]);
+  const mediaFaixa3 = calcularMediaArray(faixasEtarias["21 a 30 anos"]);
+  const mediaFaixa4 = calcularMediaArray(faixasEtarias["mais de 30 anos"]);
 
-  const mediaFaixa1 = faixaEtaria1.reduce((a, b) => a + b, 0) / faixaEtaria1.length || 0;
-  const mediaFaixa2 = faixaEtaria2.reduce((a, b) => a + b, 0) / faixaEtaria2.length || 0;
-  const mediaFaixa3 = faixaEtaria3.reduce((a, b) => a + b, 0) / faixaEtaria3.length || 0;
-  const mediaFaixa4 = faixaEtaria4.reduce((a, b) => a + b, 0) / faixaEtaria4.length || 0;
-
+  // Atualização da interface
   document.getElementById('media').textContent = `A média das idades é: ${mediaIdade}. A média dos pesos é: ${mediaPeso}`;
   document.getElementById('faixa1').textContent = `A média dos pesos da faixa etária 1 (até 10 anos) é: ${mediaFaixa1} kg`;
   document.getElementById('faixa2').textContent = `A média dos pesos da faixa etária 2 (11 a 20 anos) é: ${mediaFaixa2} kg`;
   document.getElementById('faixa3').textContent = `A média dos pesos da faixa etária 3 (21 a 30 anos) é: ${mediaFaixa3} kg`;
   document.getElementById('faixa4').textContent = `A média dos pesos da faixa etária 4 (mais de 30 anos) é: ${mediaFaixa4} kg`;
   
+  // Limpar e focar nos campos
   document.getElementById('idade').value = '';
   document.getElementById('peso').value = '';
   document.getElementById('idade').focus();
-  document.getElementById('peso').focus();
-  document.getElementById('idade').select();
 }
 
 function verificarPessoa() {

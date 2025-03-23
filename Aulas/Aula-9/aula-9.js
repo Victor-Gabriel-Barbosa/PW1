@@ -1,43 +1,44 @@
 // Exibe os números de 1 a 10 em uma lista não ordenada
 function exibirNumeros() {
   const resultado = document.getElementById('resultadoNumeros');
-  resultado.innerHTML = '';
-  const lista = document.createElement('ul');
-  for (let i = 1; i <= 10; i++) {
-    const item = document.createElement('li');
-    item.textContent = i;
-    lista.appendChild(item);
-  }
-  resultado.appendChild(lista);
+
+  let html = '<ul>';
+  const numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  numeros.forEach(numero => { html += `<li>${numero}</li>`; })
+
+  html += '</ul>';
+  
+  resultado.innerHTML = html;
 }
 
 // Exibe uma lista de frutas (usando um array)
 function exibirFrutas() {
-  const frutas = ['Maçã', 'Banana', 'Laranja', 'Uva', 'Pera'];
   const resultado = document.getElementById('resultadoFrutas');
-  resultado.innerHTML = '';
-  const lista = document.createElement('ol');
-  for (let i = 0; i < frutas.length; i++) {
-    const item = document.createElement('li');
-    item.textContent = frutas[i];
-    lista.appendChild(item);
-  }
-  resultado.appendChild(lista);
+
+  let html = '<ol>';
+  const frutas = ['Maçã', 'Banana', 'Laranja', 'Uva', 'Pera'];
+  frutas.forEach(fruta => { html += `<li>${fruta}</li>`; })
+  
+  html += '</ol>';
+
+  resultado.innerHTML = html;
 }
 
 // Exibe uma mensagem com as propriedades de um objeto carro (marca, modelo, ano)
 function exibirCarro() {
+  const resultado = document.getElementById('resultadoCarro');
+
   const carro = {
     marca: 'Wolkswagen',
     modelo: 'Fusca',
     ano: 1970
   };
 
-  const resultado = document.getElementById('resultadoCarro');
-  resultado.innerHTML = '';
-  const lista = document.createElement('p');
-  lista.textContent = `Marca: ${carro.marca}, Modelo: ${carro.modelo}, Ano: ${carro.ano}`;
-  resultado.appendChild(lista);
+  let html = '<p>';
+  html += `Marca: ${carro.marca}, Modelo: ${carro.modelo}, Ano: ${carro.ano}`;
+  html += '</p>';
+
+  resultado.innerHTML = html;
 }
 
 // Classe para representar uma pessoa
@@ -57,17 +58,8 @@ function criarPessoa() {
   const nome = document.getElementById('nome').value;
   const idade = parseInt(document.getElementById('idade').value);
 
-  if (isNaN(idade)) {
-    alert('Por favor, insira uma idade válida!');
-    return;
-  }
-
-  if (nome.trim() === '') {
-    alert('Por favor, insira um nome válido!');
-    return;
-  }
-
   const pessoa = new Pessoa(nome, idade);
   const resultado = document.getElementById('resultadoPessoa');
+
   resultado.innerHTML = pessoa.exibirMensagem();
 }
