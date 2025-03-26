@@ -5,7 +5,6 @@ function exibirNumeros() {
   let html = '<ul>';
   const numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   numeros.forEach(numero => { html += `<li>${numero}</li>`; })
-
   html += '</ul>';
   
   resultado.innerHTML = html;
@@ -18,7 +17,6 @@ function exibirFrutas() {
   let html = '<ol>';
   const frutas = ['Maçã', 'Banana', 'Laranja', 'Uva', 'Pera'];
   frutas.forEach(fruta => { html += `<li>${fruta}</li>`; })
-  
   html += '</ol>';
 
   resultado.innerHTML = html;
@@ -58,8 +56,6 @@ function criarPessoa() {
   const nome = document.getElementById('nome').value;
   const idade = parseInt(document.getElementById('idade').value);
 
-  const pessoa = new Pessoa(nome, idade);
-  const resultado = document.getElementById('resultadoPessoa');
-
-  resultado.innerHTML = pessoa.exibirMensagem();
+  const pessoa = new Pessoa(nome, idade); 
+  document.getElementById('resultadoPessoa').innerHTML = pessoa.exibirMensagem();
 }

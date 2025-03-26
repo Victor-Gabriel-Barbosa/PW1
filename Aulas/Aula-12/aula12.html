@@ -46,8 +46,8 @@ página indisponível. -->
 
 <body>
   <!-- Exercícios [1] -->
-  <div class="row">
-    <h1 class="text-center text-bg-dark py-4">Tabela de Produtos</h1>
+  <div class="container-fluid text-bg-dark py-4">
+    <h1 class="text-center">Tabela de Produtos</h1>
   </div>
   <div class="container mt-4">
     <table class="table table-striped table-bordered table-hover">
@@ -89,8 +89,8 @@ página indisponível. -->
   </div>
 
   <!-- Exercícios [2] -->
-  <div class="row mt-4">
-    <h1 class="text-center text-bg-dark py-4">Galeria de Imagens</h1>
+  <div class="container-fluid text-bg-dark py-4 mt-4">
+    <h1 class="text-center">Galeria de Imagens</h1>
   </div>
   <div class="container mt-4">
     <div class="row text-center">
@@ -116,10 +116,10 @@ página indisponível. -->
   </div> 
 
   <!-- Exercícios [3] -->
-  <div class="row mt-4">
-    <h1 class="text-center text-bg-dark py-4">Imagem com Texto</h1>
+  <div class="container-fluid text-bg-dark py-4 mt-4">
+    <h1 class="text-center">Imagem com Texto</h1>
   </div>
-  <div class="container mt-4"> 
+  <div class="container clearfix mt-4"> 
     <div class="row">
       <div class="col-md-6">
         <img src="https://img.freepik.com/fotos-gratis/personagem-de-anime-viajando_23-2151278765.jpg?ga=GA1.1.1215212662.1742326587&semt=ais_hybrid" class="img-fluid float-start" alt="Imagem Responsiva">
@@ -132,8 +132,8 @@ página indisponível. -->
   </div>
 
   <!-- Exercícios [4] -->
-  <div class="row mt-4">
-    <h1 class="text-center text-bg-dark py-4">Botões de Ação</h1>
+  <div class="container-fluid text-bg-dark py-4 mt-4">
+    <h1 class="text-center">Botões de Ação</h1>
   </div>  
   <div class="container mt-4 text-center">
     <button type="button" class="btn btn-success btn-lg">Salvar</button>
@@ -143,8 +143,8 @@ página indisponível. -->
   </div>
 
   <!-- Exercícios [5] -->
-  <div class="row mt-4">
-    <h1 class="text-center text-bg-dark py-4">Grupo de Botões</h1>
+  <div class="container-fluid text-bg-dark py-4 mt-4">
+    <h1 class="text-center">Grupo de Botões</h1>
   </div>
   <div class="container mt-4 text-center">
     <div class="btn-group" role="group" aria-label="Basic example">
@@ -156,53 +156,70 @@ página indisponível. -->
     </div>
   </div>
 
-  <!-- Exercícios [6] -->
-  <div class="row mt-4">
-    <h1 class="text-center text-bg-dark py-4">Produtos</h1>
+  <!-- Exercício [6] -->
+  <div class="container-fluid text-bg-dark py-4 mt-4">
+    <h1 class="text-center">Tabela de Produtos</h1>
   </div>
   <div class="container mt-4">
     <table class="table table-striped table-bordered table-hover">
-      <thead>
-        <tr>
-          <th scope="col">Nome do Produto</th>
-          <th scope="col">Preço</th>
-          <th scope="col">Estoque</th>
-          <th scope="col">Imagem</th>
-          <th scope="col">Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Maçã</td>
-          <td>R$ 50,00</td>
-          <td>20</td>
-          <td class="col-4 mb-4"><img src="https://img.freepik.com/psd-gratuitas/close-up-de-uma-maca-deliciosa_23-2151868338.jpg?ga=GA1.1.1215212662.1742326587&semt=ais_hybrid" class="img-thumbnail rounded" alt="Produto A"></td>
-          <td>
-            <button type="button" class="btn btn-primary">Adicionar ao Carrinho</button>
-            <button type="button" class="btn btn-info">Ver Detalhes</button>
-          </td>
-        </tr>
-        <tr>
-          <td>Banana</td>
-          <td>R$ 30,00</td>
-          <td>15</td>
-          <td class="col-4 mb-4"><img src="https://img.freepik.com/vetores-gratis/bando-de-banana-amarela-madura-de-vetor-isolado-no-fundo-branco_1284-45456.jpg?ga=GA1.1.1215212662.1742326587&semt=ais_hybrid" class="img-thumbnail rounded" alt="Produto B"></td>
-          <td>
-            <button type="button" class="btn btn-primary">Adicionar ao Carrinho</button>
-            <button type="button" class="btn btn-info">Ver Detalhes</button>
-          </td>
-        </tr>
-        <tr>
-          <td>Refrigerante</td>
-          <td>R$ 20,00</td>
-          <td>10</td>
-          <td class="col-4 mb-4"><img src="https://img.freepik.com/fotos-gratis/ice-caindo-em-uma-bebida-marrom_1194-1074.jpg?ga=GA1.1.1215212662.1742326587&semt=ais_hybrid" class="img-thumbnail rounded" alt="Produto C"></td>
-          <td>
-            <button type="button" class="btn btn-primary">Adicionar ao Carrinho</button>
-            <button type="button" class="btn btn-info">Ver Detalhes</button>
-          </td>
-        </tr>
-      </tbody>
+      <tr>
+        <th>Nome</th>
+        <th>Preço</th>
+        <th>Estoque</th>
+        <th>Imagem</th>
+        <th>Ações</th>
+      </tr>
+
+      <tr>
+        <td>Maçã</td>
+        <td>R$ 2,22</td>
+        <td>111</td>
+        <td class="col-sm-1"> 
+          <img src="https://img.freepik.com/psd-gratuitas/close-up-de-uma-maca-deliciosa_23-2151868338.jpg?ga=GA1.1.1215212662.1742326587&semt=ais_hybrid" 
+               alt="Maçã"
+               class="img-thumbnail rounded">
+        </td>
+        <td>
+          <div class="container">
+            <button type="button" class="btn btn-primary btn-sm">Adicionar ao Carrinho</button>
+            <button type="button" class="btn btn-info btn-sm">Ver Detalhes</button>
+          </div>
+        </td>
+      </tr>
+      
+      <tr>
+        <td>Banana</td>
+        <td>R$ 5,22</td>
+        <td>111</td>
+        <td class="col-sm-1"> 
+          <img src="https://img.freepik.com/vetores-gratis/bando-de-banana-amarela-madura-de-vetor-isolado-no-fundo-branco_1284-45456.jpg?ga=GA1.1.1215212662.1742326587&semt=ais_hybrid" 
+               alt="Banana"
+               class="img-thumbnail rounded">
+        </td>
+        <td>
+          <div class="container">
+            <button type="button" class="btn btn-primary btn-sm">Adicionar ao Carrinho</button>
+            <button type="button" class="btn btn-info btn-sm">Ver Detalhes</button>
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Chocolate</td>
+        <td>R$ 10,12</td>
+        <td>111</td>
+        <td class="col-sm-1"> 
+          <img src="https://img.freepik.com/vetores-gratis/conjunto-de-diferentes-bombons-de-chocolate_23-2147816237.jpg?ga=GA1.1.1215212662.1742326587&semt=ais_hybrid" 
+               alt="Chocolate"
+               class="img-thumbnail rounded">
+        </td>
+        <td>
+          <div class="container">
+            <button type="button" class="btn btn-primary btn-sm">Adicionar ao Carrinho</button>
+            <button type="button" class="btn btn-info btn-sm">Ver Detalhes</button>
+          </div>
+        </td>
+      </tr>
     </table>
   </div>
         

@@ -1,0 +1,106 @@
+<!-- 1) Crie uma página HTML com um botão. Quando o botão
+for clicado, use jQuery para alterar o texto do botão para
+"Você clicou aqui!". -->
+
+<!-- 2) Crie uma página HTML com três divs e adicione um ID
+em uma delas. Use jQuery para alterar a cor de fundo
+apenas da div com o ID específico. -->
+
+<!-- 3) Crie uma página HTML com uma tabela. Use jQuery
+para mudar o fundo das colunas pares para verde e das
+colunas ímpares para amarelo. -->
+
+<!-- 4) Crie uma página HTML com quatro parágrafos e um
+botão. Utilize jQuery para alterar a cor do terceiro
+parágrafo para vermelho quando o botão for clicado. -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <title>Aula 13</title>
+</head>
+
+<body>
+  <!-- Exercício [1] -->
+  <div class="container-fluid text-bg-dark py-4">
+    <h1 class="text-center">Botão Dinâmico</h1>
+  </div>
+  <div class="container text-center mt-4">
+    <button id="btnDin" class="btn btn-primary">Clique aqui</button>
+  </div>
+
+  <!-- Exercício [2] -->
+  <div class="container-fluid text-bg-dark py-4 mt-4">
+    <h1 class="text-center">Cor de Fundo Dinâmica</h1>
+  </div>
+  <div class="container text-center mt-4">
+    <div id="div1" class="p-3">Div 1</div>
+    <div id="div2" class="p-3">Div 2</div>
+    <div id="div3" class="p-3">Div 3</div>
+  </div>
+
+  <!-- Exercício [3] -->
+  <div class="container-fluid text-bg-dark py-4 mt-4">
+    <h1 class="text-center">Tabela Dinâmica</h1>
+  </div>
+  <div class="container mt-4">
+    <table class="table table-striped table-bordered table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Produto</th>
+          <th scope="col">Quantidade</th>
+          <th scope="col">Preço</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Produto 1</td>
+          <td>10</td>
+          <td>R$ 20,00</td>
+        </tr>
+        <tr>
+          <td>Produto 2</td>
+          <td>5</td>
+          <td>R$ 15,00</td>
+        </tr>
+        <tr>
+          <td>Produto 3</td>
+          <td>8</td>
+          <td>R$ 30,00</td>
+        </tr>
+        <tr>
+          <td>Produto 4</td>
+          <td>12</td>
+          <td>R$ 25,00</td>
+        </tr>
+        <tr>
+          <td>Produto 5</td>
+          <td>7</td>
+          <td>R$ 18,00</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Exercício [4] -->
+  <div class="container-fluid text-bg-dark py-4 mt-4">
+    <h1 class="text-center">Parágrafos Dinâmicos</h1>
+  </div>
+  <div class="container text-center mt-4">
+    <p id="par1">Parágrafo 1</p>
+    <p id="par2">Parágrafo 2</p>
+    <p id="par3">Parágrafo 3</p>
+    <p id="par4">Parágrafo 4</p>
+    <button id="btnPar" class="btn btn-primary">Clique para mudar o parágrafo 3</button>
+  </div>
+        
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="aula13.js"></script>
+</body>
+
+</html>

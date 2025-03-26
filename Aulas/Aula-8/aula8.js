@@ -40,25 +40,10 @@ function calcularMedia() {
   const idade = parseInt(document.getElementById('idade').value);
   const peso = parseFloat(document.getElementById('peso').value);
 
-  if (isNaN(idade) || isNaN(peso)) {
-    alert('Por favor, insira valores válidos.');
-    return;
-  }
-
-  if (idade < 1 || idade > 150) {
-    alert('Por favor, insira uma idade válida entre 1 e 150 anos.');
-    return;
-  }
-
-  if (peso < 1 || peso > 500) {
-    alert('Por favor, insira um peso válido entre 1 e 500 kg.');
-    return;
-  }
-
-  // Adicionar pessoa ao array principal
+  // Adiciona pessoa ao array principal
   pessoas.push({ idade, peso });
   
-  // Adicionar peso à faixa etária correspondente
+  // Adiciona peso à faixa etária correspondente
   if (idade <= 10) faixasEtarias["até 10 anos"].push(peso);
   else if (idade <= 20) faixasEtarias["11 a 20 anos"].push(peso);
   else if (idade <= 30) faixasEtarias["21 a 30 anos"].push(peso);
@@ -93,11 +78,6 @@ function verificarPessoa() {
   const nome = document.getElementById('nome').value;
   const idade = parseInt(document.getElementById('idade2').value);
   const altura = parseFloat(document.getElementById('altura').value);
-
-  if (isNaN(idade) || isNaN(altura)) {
-    alert('Por favor, insira valores válidos.');
-    return;
-  }
 
   let pessoa;
   if (idade > 18 && idade < 35 && altura > 1.86) pessoa = nome;
