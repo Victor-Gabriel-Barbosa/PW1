@@ -1,0 +1,32 @@
+.menu {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.tab {
+  display: inline-block;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: black;
+  background-color: #f1f1f1;
+}
+
+.content {
+  display: none;
+  padding: 20px;
+  background-color: #fff;
+}
+
+.content:target {
+  display: block;
+}
+
+/* Estilo para mostrar o conteúdo de "Comidas" por padrão */
+#comidas:target ~ #comidas,
+.content:not(:target) {
+  display: block;
+}
+
+.content:target ~ #comidas {
+  display: none;
+}
