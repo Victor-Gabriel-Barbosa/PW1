@@ -50,7 +50,7 @@ para iterar sobre o array. -->
     <?php
       for ($i = 0; $i < 30; $i++) echo "<li>" . $i + 1 . "</li>";
     ?>
-  </u>
+  </ul>
 
   <!-- Exercício [3] -->
   <div class="container-fluid text-bg-dark py-4 mt-4">
