@@ -13,7 +13,7 @@
 <body>
   <!-- Botão de alternância de tema claro/escuro -->
   <div class="theme-toggle-container">
-    <button id="theme-toggle" class="toggle">
+    <button id="theme-toggle" class="toggle" title="Toggle theme">
       <span class="icon sun"></span>
       <span class="icon moon"></span>
     </button>
@@ -21,12 +21,12 @@
 
   <div class="container">
     <header>
-      <h1 style="text-align: center; color:blueviolet">Pessoal</h1>
-      <p class="subtitle" style="text-align: center">Bacharelado em Sistemas de Informação</p>
+      <h1 class="page-title">Pessoal</h1>
+      <p class="subtitle">Bacharelado em Sistemas de Informação</p>
     </header>
 
-    <div style="text-align: center;">
-      <img src="victor.jpg" alt="Victor" style="width: 20%; height: 20%; border-radius: 10px;">
+    <div class="image-container">
+      <img src="victor.jpg" alt="Victor" class="profile-image">
     </div>
 
     <section class="profile-info">
@@ -48,10 +48,10 @@
         <span class="value">
           <ul>
             <li><a href="https://qedu.org.br/escola/31119474-escola-municipal-professor-martinho-matos"
-                target="_blank">Escola Municipal Professor Martinho Matos</a></li>
-            <li><a href="https://www.mg.gov.br/instituicao_unidade/escola-estadual-zico-mendonca" target="_blank">Escola
+                target="_blank" rel="noopener">Escola Municipal Professor Martinho Matos</a></li>
+            <li><a href="https://www.mg.gov.br/instituicao_unidade/escola-estadual-zico-mendonca" target="_blank" rel="noopener">Escola
                 Estadual Zico Mendonça</a></li>
-            <li><a href="https://iftm.edu.br/" target="_blank">Instituto Federal do Triângulo Mineiro (IFTM)</a></li>
+            <li><a href="https://iftm.edu.br/" target="_blank" rel="noopener">Instituto Federal do Triângulo Mineiro (IFTM)</a></li>
           </ul>
         </span>
       </div>
@@ -61,27 +61,27 @@
         <span class="value">
           <ul>
             <li>
-              <a href="https://www.youtube.com/" target="_blank">
-                <i class="fa-brands fa-youtube" style="color: red;"></i> YouTube
+              <a href="https://www.youtube.com/" target="_blank" rel="noopener">
+                <i class="fa-brands fa-youtube youtube-icon"></i> YouTube
               </a>
             </li>
             <li>
-              <a href="https://www.instagram.com/" target="_blank">
-                <i class="fa-brands fa-instagram" style="color: #e1306c;"></i> Instagram
+              <a href="https://www.instagram.com/" target="_blank" rel="noopener">
+                <i class="fa-brands fa-instagram instagram-icon"></i> Instagram
               </a>
             </li>
             <li>
-              <a href="https://www.github.com/" target="_blank">
+              <a href="https://www.github.com/" target="_blank" rel="noopener">
                 <i class="fa-brands fa-github"></i> GitHub
               </a>
             </li>
             <li>
-              <a href="https://chatgpt.com/" target="_blank">
+              <a href="https://chatgpt.com/" target="_blank" rel="noopener">
                 <i class="fa-solid fa-robot"></i> ChatGPT
               </a>
             </li>
             <li>
-              <a href="https://claude.ai/" target="_blank">
+              <a href="https://claude.ai/" target="_blank" rel="noopener">
                 <i class="fa-solid fa-brain"></i> Claude
               </a>
             </li>
@@ -93,8 +93,8 @@
     <!-- Horários de Aula -->
     &nbsp;
     <div>
-      <h2 style="text-align: center">Tabela de Horários</h2>
-      <table style="text-align: center">
+      <h2 class="schedule-title">Tabela de Horários</h2>
+      <table class="schedule-table">
         <!-- Cabeçalho: Dias da semana -->
         <thead>
           <tr>
